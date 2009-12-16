@@ -1,0 +1,16 @@
+<!ENTITY pyxpcom_gui_app.title   "Python Mozilla GUI App">
+
+<!ENTITY file.label             "File">
+<!ENTITY file.accesskey         "F">
+
+<!ENTITY fileExit.label         "Exit">
+<!ENTITY fileExit.accesskey     "X">
+
+<!ENTITY help.label             "Help">
+<!ENTITY help.accesskey         "H">
+
+<!ENTITY sidebar.label          "Variables">
+<!ENTITY sidebarClose.tooltip   "Close the Variables sidebar">
+
+<!ENTITY helpAbout.label        "About">
+<!ENTITY helpAbout.accesskey    "A">

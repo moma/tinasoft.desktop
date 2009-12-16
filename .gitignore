@@ -1,0 +1,12 @@
+.*
+*.pyc
+*.pyo
+install/libs/pyxpcomext/*
+install/libs/xulrunner/*
+src/*
+tina/xulrunner/*
+*.swp
+*.swo
+*~
+dist/*
+build/*

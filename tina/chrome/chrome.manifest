@@ -1,0 +1,4 @@
+content  pyxpcom_gui_app                content/
+skin     pyxpcom_gui_app  standard/1.0  skin/standard/
+locale   pyxpcom_gui_app  en-US         locale/en-US/
+locale   branding         en-US         locale/en-US/brand/

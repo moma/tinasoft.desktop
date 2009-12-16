@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://pyxpcom_gui_app/skin/pyxpcom_gui_app.css" type="text/css"?>
+
+<!-- Localization values. -->
+<!DOCTYPE window SYSTEM "chrome://pyxpcom_gui_app/locale/pyxpcom_gui_app.dtd">
+
+<!--
+Important: Note the script-type value is set to Python in the window settings.
+           This will default all script handling to Python, so the oncommand
+           and similar events are actually Python scripts!
+-->
+
+<window id="pyxpcom_gui_app"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="&pyxpcom_gui_app.title;"
+        style="width: 700px; height: 500px;"
+        script-type="application/x-python"
+        persist="screenX screenY width height">
+
+  <script type="application/x-python" src="chrome://pyxpcom_gui_app/content/pyxpcom_gui_app.py"/>
+
+  <!-- Menus, that's Python code in the "oncommand" section. -->
+  <toolbox id="toolbox_explorer">
+    <menubar id="menubar_explorer">
+      <menu id="menu_file" label="&file.label;" accesskey="&file.accesskey;">
+        <menupopup id="popup_file">
+          <menuitem id="menu_FileQuitItem"
+                    label="&fileExit.label;"
+                    accesskey="&fileExit.accesskey;"
+                    oncommand="pyxpcom_gui_app_doCommand(event)"
+                    key="key_exit"/>
+        </menupopup>
+      </menu>
+      <menu id="menu_help" label="&help.label;" accesskey="&help.accesskey;">
+        <menupopup id="popup_help">
+          <menuitem id="menu_About"
+                    label="&helpAbout.label;"
+                    accesskey="&helpAbout.accesskey;"
+                    oncommand="pyxpcom_gui_app_doCommand(event)"/>
+        </menupopup>
+      </menu>
+    </menubar>
+
+    <!-- Uncomment for a toolbar widget. -->
+    <!--<toolbar id="toolbar_explorer" mode="icons">-->
+    <!--</toolbar>-->
+
+  </toolbox>
+
+  <browser id="browser"
+           flex="1"
+           src="http://www.python.org/" />
+
+  <statusbar>
+    <!-- mozutils gets imported into scope through pyxpcom_gui_app.py -->
+    <statusbarpanel id="statuspanel" flex="1" onclick="mozutils.doAlert('Hello from Python')"/>
+  </statusbar>
+
+</window>
