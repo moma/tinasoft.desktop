@@ -206,3 +206,9 @@ function workflowTabSelected(event) {
 function startup() {
   document.getElementById("taskLists").selectedPanel.selectedIndex = -1;
 }
+
+function pytest(event) {
+    var tdr = Cc["Python.TinasoftDataRelational"].
+        createInstance(Ci.nsITinasoftDataRelational);
+    tdr.testXPCOM();
+}
