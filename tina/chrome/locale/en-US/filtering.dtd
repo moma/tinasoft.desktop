@@ -1,0 +1,25 @@
+<!ENTITY import.description         "This task will allow you to import a batch file to start a work session.">
+<!ENTITY import.file                "File import">
+<!ENTITY import.file.label          "Select your corpus.csv file:">
+<!ENTITY import.file.title          "Select your corpus.csv file">
+<!ENTITY import.success             "file successfully loaded">
+
+<!ENTITY configure.description      "This task will allow you to configure the workflow">
+<!ENTITY configure.action1.label    "Some action">
+
+<!ENTITY verify.description         "This task will allow you to verify (browse) the computed statistics">
+
+<!ENTITY statistics.description     "This task will allow you to configure the coocurrence settings">
+<!ENTITY statistics.success         "computing statistics.. done">
+
+<!ENTITY clusterize.description     "This task will allow you to configure the clusting settings">
+<!ENTITY clusterize.success         "computing clusters.. done">
+
+<!ENTITY clusterize.description     "This task will allow you to import a batch file to start a work session.">
+<!ENTITY clusterize.file            "File import">
+<!ENTITY clusterize.file.label      "Select your corpus.csv file:">
+<!ENTITY clusterize.file.title      "Select your corpus.csv file">
+<!ENTITY clusterize.success         "file successfully loaded">
+
+<!ENTITY savesettings.label         "Save settings…">
+<!ENTITY save.label                 "Save…">

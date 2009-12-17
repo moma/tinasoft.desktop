@@ -1,9 +1,0 @@
-page {
-  background-image: url("chrome://tina/skin/intro.png");
-  background-repeat: no-repeat;
-  background-position: bottom right;
-}
-
-description {
-  margin: 3em;
-}
