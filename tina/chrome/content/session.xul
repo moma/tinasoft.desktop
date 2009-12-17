@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://tina/skin/tab.css" type="text/css"?>
-<?xml-stylesheet href="chrome://tina/skin/tina.css" type="text/css"?>
+<?xml-stylesheet href="chrome://tina/skin/session.css" type="text/css"?>
 
 <!DOCTYPE window [
 <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd" >
@@ -10,6 +9,7 @@
 <!ENTITY % windowDTD SYSTEM "chrome://tina/locale/tina.dtd" >
 %windowDTD;
 ]>
+
 <window windowtype="TinaSoft:Main" onload="startup()"
         style="&window.style;" title="&brandShortName;"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -17,9 +17,8 @@
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://global/content/contentAreaUtils.js"/>
   <script src="tina.js"/>
+  <script type="application/x-python" src="tina.py"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
-  
-    <label class="head-1" value="Welcome to tina !"/>
 
   <menubar>
     <menu id="sessionMenu" label="&session.menu.label;" accesskey="&session.menu.accesskey;">
@@ -88,15 +87,10 @@
      <radio id="filteringTab" label="&filtering.tab.label;"  href="chrome://tina/content/filtering.xul"/>
      <radio id="visualizationTab" label="&visualization.tab.label;" href="chrome://tina/content/visualization.xul"/>
   </radiogroup>
-    <description>&home.introduction;</description>
-    <hbox align="center">
-        <helplink href="http://tina.csregistry.org/tiki-index.php?page=tinaExtract&amp;bl=n"/>
-        <spacer flex="1"/>
-        <button id="newSessionButton" label="new session.."  accesskey="R" oncommand="newSession()"/>
-     </hbox>
-     
-    <statusbar>
+  <hbox flex="1" id="pane">
+    <iframe id="tabDisplay" flex="1" src="chrome://tina/content/corpus.xul"/>
+  </hbox>
+  <statusbar>
     <statusbarpanel id="statuspanel" flex="1" onclick="pytest()"/>
-   </statusbar>
- 
+  </statusbar>
 </window>

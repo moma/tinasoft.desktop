@@ -1,79 +1,9 @@
-#workflowTabs {
-  border-bottom: 1px solid ThreeDFace;
-  background-color: -moz-Field;
+page {
+  background-image: url("chrome://tina/skin/intro.png");
+  background-repeat: no-repeat;
+  background-position: bottom right;
 }
 
-#workflowTabs radio {
-  -moz-appearance: none;
-  padding: 5px;
-  margin: 0;
-  -moz-box-orient: vertical;
+description {
+  margin: 3em;
 }
-
-#pane {
-  margin: 10px;
-}
-
-
-#tabDisplay {
-  -moz-appearance: listbox;
-}
-
-#workflowTabs radio {
-  background-color: -moz-Field;
-  color: -moz-FieldText;
-}
-
-#workflowTabs radio[selected="true"] {
-  background-color: Highlight;
-  color: HighlightText;
-}
-
-#menu-addons {
-  list-style-image: url("chrome://tina/skin/images/16px/addon.png");
-}
-
-#menu-console {
-  list-style-image: url("chrome://tina/skin/images/16px/console.png");
-}
-
-#menu-config {
-  list-style-image: url("chrome://tina/skin/images/16px/config.png");
-}
-
-#menu-inspector {
-  list-style-image: url("chrome://tina/skin/images/16px/inspector.png");
-}
-
-#menu-help {
-  list-style-image: url("chrome://tina/skin/images/16px/help.png");
-}
-
-#menu-update {
-  list-style-image: url("chrome://tina/skin/images/16px/update.png");
-}
-
-#menu-update[loading] {
-  list-style-image: url("chrome://global/skin/images/16px/loading_16.png");
-}
-
-#corpusTab {
-  list-style-image: url("chrome://tina/skin/images/32px/archives.png");
-}
-#indexationTab {
-  list-style-image: url("chrome://tina/skin/images/32px/TaskWorkflow.png");
-}
-#proximityTab {
-  list-style-image: url("chrome://tina/skin/images/32px/stats2.png");
-}
-#clusteringTab {
-  list-style-image: url("chrome://tina/skin/images/32px/piechart.png");
-}
-#filteringTab {
-  list-style-image: url("chrome://tina/skin/images/32px/filter.png");
-}
-#visualizationTab {
-  list-style-image: url("chrome://tina/skin/images/32px/visualization.png");
-}
-
-
