@@ -1,5 +1,13 @@
+# -*- coding: utf-8 -*-
+
 import mozutils
 from tinasoft_data_relational import TinasoftDataRelational
+
+def pytest(event):
+    #nsITinasoftDataRelational = Components.interfaces.nsITinasoftDataRelational
+    #myco = Components.classes["components://Python.TinasoftDataRelational"].createInstance(nsITinasoftDataRelational)
+    myco = TinasoftDataRelational()
+    print myco
 
 def tina_doCommand(event):
     item_name = event.target.id
