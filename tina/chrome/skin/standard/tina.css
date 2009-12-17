@@ -1,6 +1,114 @@
-/* Important! Need to import the global skin to get default styling. */
-@import url("chrome://global/skin/");
-
-window {
-  background-color    : silver;
+#paneSelector {
+  border-bottom: 1px solid ThreeDFace;
+  background-color: -moz-Field;
 }
+
+#paneSelector radio {
+  -moz-appearance: none;
+  padding: 5px;
+  margin: 0;
+  -moz-box-orient: vertical;
+}
+
+#taskLists radiogroup {
+  margin: 0;
+}
+
+#pane {
+  margin: 10px;
+}
+
+#taskLists {
+  -moz-appearance: listbox;
+  margin-right: 10px;
+}
+
+#taskLists radio {
+  -moz-appearance: none;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0;
+  border-bottom: 1px dotted ActiveBorder;
+  -moz-box-orient: horizontal;
+}
+
+#taskDisplay {
+  -moz-appearance: listbox;
+}
+
+#paneSelector radio,
+#taskLists radio {
+  background-color: -moz-Field;
+  color: -moz-FieldText;
+}
+
+#paneSelector radio[selected="true"],
+#taskLists radio[selected="true"] {
+  background-color: Highlight;
+  color: HighlightText;
+}
+
+#menu-addons {
+  list-style-image: url("chrome://tina/skin/addon.png");
+}
+
+#menu-console {
+  list-style-image: url("chrome://tina/skin/console.png");
+}
+
+#menu-config {
+  list-style-image: url("chrome://tina/skin/config.png");
+}
+
+#menu-inspector {
+  list-style-image: url("chrome://tina/skin/inspector.png");
+}
+
+#menu-help {
+  list-style-image: url("chrome://tina/skin/help.png");
+}
+
+#menu-update {
+  list-style-image: url("chrome://tina/skin/update.png");
+}
+
+#menu-update[loading] {
+  list-style-image: url("chrome://global/skin/icons/loading_16.png");
+}
+
+#textminingPane {
+  list-style-image: url("chrome://tina/skin/textmining/textmining.png");
+}
+
+#menu-import, #task-import {
+  list-style-image: url("chrome://tina/skin/textmining/import.png");
+}
+
+#menu-configure, #task-configure {
+  list-style-image: url("chrome://tina/skin/config.png");
+}
+
+#menu-verify, #task-verify {
+  list-style-image: url("chrome://tina/skin/inspector.png");
+}
+
+#visualizationPane {
+  list-style-image: url("chrome://tina/skin/visualization/visualization.png");
+}
+
+#menu-local, #task-local {
+  list-style-image: url("chrome://tina/skin/visualization/local.png");
+}
+
+#menu-global, #task-global {
+  list-style-image: url("chrome://tina/skin/visualization/global.png");
+}
+
+#menu-clusters, #task-clusters {
+  list-style-image: url("chrome://tina/skin/visualization/clusters.png");
+}
+
+#menu-export, #task-export {
+  list-style-image: url("chrome://tina/skin/visualization/export.png");
+}
+

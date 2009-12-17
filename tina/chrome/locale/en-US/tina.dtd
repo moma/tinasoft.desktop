@@ -62,4 +62,4 @@
 
 <!ENTITY filechooser.browse              "Browse file…">
 <!ENTITY helplink.tooltip                "Learn about this task">
-<!ENTITY intro.description               "Welcome to TinaSoft. Please select a task area above or a task on the left to begin. This is an early release of the Tina software. For any bug or enquiries, please report to julian.bilcke@iscpif.fr">
+<!ENTITY home.introduction               "Welcome to TinaSoft. Please select a task area above or a task on the left to begin. This is an early release of the Tina software. For any bug or enquiries, please report to julian.bilcke@iscpif.fr">

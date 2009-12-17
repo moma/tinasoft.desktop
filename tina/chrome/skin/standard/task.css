@@ -1,0 +1,25 @@
+page {
+  -moz-appearance: none;
+  background: window;
+  padding: 10px;
+}
+
+.task-success {
+  list-style-image: url("chrome://tina/skin/checkmark.png");
+  margin: 1em;
+}
+
+.task-failure {
+  list-style-image: url("chrome://tina/skin/cross.png");
+  margin: 1em;
+}
+
+helplink > button {
+  -moz-appearance: none;
+  list-style-image: url("chrome://tina/skin/help.png");
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+}

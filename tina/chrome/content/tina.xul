@@ -77,26 +77,6 @@
   </radiogroup>
 
   <hbox flex="1" id="pane">
-    <deck id="taskLists" oncommand="taskSelected(event)">
-      <radiogroup id="textminingTasks" xhtml:role="listbox">
-        <radio id="task-import" label="&task-import.label;" 
-               href="chrome://tina/content/textmining/import.xul"/>
-        <radio id="task-configure" label="&task-configure.label;" 
-               href="chrome://tina/content/textmining/configure.xul"/>
-        <radio id="task-verify" label="&task-verify.label;" 
-               href="chrome://tina/content/textmining/verify.xul"/>      
-      </radiogroup>
-      <radiogroup id="visualizationTasks" xhtml:role="listbox">
-        <radio id="task-local" label="&task-local.label;"
-               href="chrome://tina/content/visualization/local.xul"/>
-        <radio id="task-global" label="&task-global.label;"
-               href="chrome://tina/content/visualization/global.xul"/>
-        <radio id="task-clusters" label="&task-clusters.label;"
-               href="chrome://tina/content/visualization/clusters.xul"/>    
-        <radio id="task-export" label="&task-export.label;"
-               href="chrome://tina/content/visualization/export.xul"/>    
-      </radiogroup>
-    </deck>
-    <iframe id="taskDisplay" flex="1" src="chrome://tina/content/intro.xul"/>
+    <iframe id="taskDisplay" flex="1" src="chrome://tina/content/home.xul"/>
   </hbox>
 </window>
