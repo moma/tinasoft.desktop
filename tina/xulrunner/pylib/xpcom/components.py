@@ -150,7 +150,8 @@ class _Interfaces(_ComponentCollection):
         except xpcom.COMException, why:
             # Present a better exception message, and give a more useful error code.
             import nsError
-            raise xpcom.COMException(nsError.NS_ERROR_NO_INTERFACE, "The interface '%s' does not exist" % (name,))
+            print name
+            raise xpcom.COMException(nsError.NS_ERROR_NO_INTERFACE, "The interface '%s' does not exist : %s" % (name,why))
         return _Interface(item.GetName(), item.GetIID())
 
     def _build_dict(self):
