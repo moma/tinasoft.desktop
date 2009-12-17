@@ -1,6 +1,0 @@
-/* Important! Need to import the global skin to get default styling. */
-@import url("chrome://global/skin/");
-
-window {
-  background-color    : silver;
-}
