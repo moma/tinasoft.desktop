@@ -32,7 +32,7 @@
     <statusbar>
     <statusbarpanel id="statuspanel" flex="1" onclick="pytest()"/>
    </statusbar>
-  
+ 
 </window>
 
 

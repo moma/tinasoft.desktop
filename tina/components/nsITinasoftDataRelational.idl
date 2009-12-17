@@ -1,36 +1,5 @@
 #include "nsISupports.idl"
-[scriptable, uuid(c456ceb5-f142-40a8-becc-764911bc8ca5)]
+[scriptable, uuid(d90c75e0-e2e2-4e67-baf7-2553930f3ba7)]
 interface nsITinasoftDataRelational : nsISupports
 {
-    void insertCorpora();
-
-    void insertAssoc();
-
-    void insertCorpus();
-    
-    void insertDocument();
-    
-    void insertNGram();
-    
-    void deleteAssoc(); 
-
-    void loadCorpora();
-        
-    void loadCorpus();
-        
-    void loadDocument();
-        
-    void loadNGram();
-
-    void cleanAssocNGramDocument();
-
-    void fetchCorpusNGram();
- 
-    void fetchCorpusNGramID();
-
-    void fetchDocumentNGram();
-
-    void fetchDocumentNGramID();
-
-    void fetchCorpusDocumentID(); 
 };
