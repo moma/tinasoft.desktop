@@ -1,4 +1,5 @@
 import mozutils
+from tinasoft_data_relational import TinasoftDataRelational
 
 def tina_doCommand(event):
     item_name = event.target.id

@@ -123,7 +123,7 @@ class pyXPCOMExtensionHelper:
             if exists(pylibPath) and pylibPath not in sys.path:
                 if verbose:
                     print "pyXPCOMExtensionHelper:: Adding pylib to sys.path:" \
-                          " %r" % (pylibPath, )
+                        " %r" % (pylibPath, )
                 sys.path.append(pylibPath)
 
         # Extension directories.
