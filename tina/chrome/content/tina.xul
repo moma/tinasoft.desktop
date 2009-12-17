@@ -22,30 +22,37 @@
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 
   <menubar>
-    <menu id="textminingMenu" label="&textminingMenu.label;"
-                               accesskey="&textminingMenu.accesskey;">
-      <menupopup oncommand="changeTask(event.target.getAttribute('task'))">
-        <menuitem id="menu-import" task="task-import" class="menuitem-iconic"
-                  label="&menu-import.label;" accesskey="&menu-import.accesskey;"/>
-        <menuitem id="menu-configure" task="task-configure" class="menuitem-iconic"
-                  label="&menu-configure.label;" accesskey="&menu-configure.accesskey;"/>
-        <menuitem id="menu-verify" task="task-verify" class="menuitem-iconic"
-                  label="&menu-verify.label;" accesskey="&menu-verify.accesskey;"/>
+    <menu id="sessionMenu" label="&session.menu.label;" accesskey="&session.menu.accesskey;">
+      <menupopup>
+        <menuitem id="menu-session-new" oncommand="sessionNew()" class="menuitem-iconic"
+                  label="&session.menu.new.label;" accesskey="&session.menu.new.accesskey;"/>
+        <menuitem id="menu-session-open" oncommand="sessionOpen()" class="menuitem-iconic"
+                  label="&session.menu.open.label;" accesskey="&session.menu.open.accesskey;"/>
+        <menuitem id="menu-session-close" oncommand="sessionClose()" class="menuitem-iconic"
+                  label="&session.menu.close.label;" accesskey="&session.menu.close.accesskey;"/>
+        
+        <menuseperator/>
+        <menuitem id="menu-session-export" oncommand="sessionExport()" class="menuitem-iconic"
+                  label="&session.menu.export.label;" accesskey="&session.menu.export.accesskey;"/>
+        <menuseparator/>
+        <menuitem id="menu-session-exit" oncommand="exit()" class="menuitem-iconic"
+                  label="&session.menu.exit.label;" accesskey="&session.menu.exit.accesskey;"/>
       </menupopup>
     </menu>
-    <menu id="visualizationMenu" label="&visualizationMenu.label;"
-                          accesskey="&visualizationMenu.accesskey;">
-      <menupopup oncommand="changeTask(event.target.getAttribute('task'))">
-        <menuitem id="menu-local" task="task-local" class="menuitem-iconic"
-                  label="&menu-local.label;" accesskey="&menu-local.accesskey;"/>
-        <menuitem id="menu-global" task="task-global" class="menuitem-iconic"
-                  label="&menu-global.label;" accesskey="&menu-global.accesskey;"/>
-        <menuitem id="menu-clusters" task="task-clusters" class="menuitem-iconic"
-                  label="&menu-clusters.label;" accesskey="&menu-clusters.accesskey;"/>
-        <menuitem id="menu-export" task="task-export" class="menuitem-iconic"
-                  label="&menu-export.label;" accesskey="&menu-export.accesskey;"/>
-      </menupopup>
+    
+    <menu id="corpusMenu" label="&corpus.menu.label;" accesskey="&corpus.menu.accesskey;">
     </menu>
+    <menu id="indexationMenu" label="&indexation.menu.label;" accesskey="&indexation.menu.accesskey;">
+    </menu>
+    <menu id="proximityMenu" label="&proximity.menu.label;" accesskey="&proximity.menu.accesskey;">
+    </menu>
+    <menu id="clusteringMenu" label="&clustering.menu.label;" accesskey="&clustering.menu.accesskey;">
+    </menu>
+    <menu id="filteringMenu" label="&filtering.menu.label;" accesskey="&filtering.menu.accesskey;">
+    </menu>
+    <menu id="visualizationMenu" label="&visualization.menu.label;" accesskey="&visualization.menu.accesskey;">
+    </menu>
+    
     <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
       <menupopup>
         <menuitem id="menu-addons" oncommand="openAddons()" class="menuitem-iconic"
@@ -59,6 +66,7 @@
                   label="&inspector.label;" accesskey="&inspector.accesskey;"/>
       </menupopup>
     </menu>
+    
     <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
       <menupopup onpopupshowing="buildHelpMenu();">
         <menuitem id="menu-help" oncommand="openHelp()" class="menuitem-iconic"
@@ -69,16 +77,19 @@
                   label="&about.label;" accesskey="&about.accesskey;"/>
       </menupopup>
     </menu>
+    
   </menubar>
 
-  <radiogroup id="paneSelector" xhtml:role="listbox" orient="horizontal"
-              oncommand="paneSelected(event)">
-    <radio id="textminingPane" label="&textminingPane.label;"/>
-    <radio id="visualizationPane" label="&visualizationPane.label;"/>
+  <radiogroup id="workflowTabs" xhtml:role="listbox" orient="horizontal" oncommand="workflowTabSelected(event)">
+     <radio id="corpusTab" label="&corpus.tab.label;" href="chrome://tina/content/corpus.xul"/>
+     <radio id="indexationTab" label="&indexation.tab.label;" href="chrome://tina/content/indexation.xul" />
+     <radio id="proximityTab" label="&proximity.tab.label;"  href="chrome://tina/content/proximity.xul"/>
+     <radio id="clusteringTab" label="&clustering.tab.label;"  href="chrome://tina/content/clustering.xul"/>
+     <radio id="filteringTab" label="&filtering.tab.label;"  href="chrome://tina/content/filtering.xul"/>
+     <radio id="visualizationTab" label="&visualization.tab.label;" href="chrome://tina/content/visualization.xul"/>
   </radiogroup>
-
   <hbox flex="1" id="pane">
-    <iframe id="taskDisplay" flex="1" src="chrome://tina/content/home.xul"/>
+    <iframe id="tabDisplay" flex="1" src="chrome://tina/content/home.xul"/>
   </hbox>
   <statusbar>
     <statusbarpanel id="statuspanel" flex="1" onclick="pytest()"/>

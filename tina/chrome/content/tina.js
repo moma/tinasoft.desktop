@@ -193,42 +193,13 @@ function changeTask(id) {
   display.setAttribute("src", task.getAttribute("href"));
 }
 
-function paneSelected(event) {
-  if (event.target.localName != "radio")
-    return;
-
-  var selector = document.getElementById("paneSelector");
-  var lists = document.getElementById("taskLists");
-  var newIndex = selector.selectedIndex;
-  if (lists.selectedIndex == newIndex)
-    return;
-
-  if (canChangeTask()) {
-    lists.selectedIndex = newIndex;
-    lists.selectedPanel.selectedIndex = -1;
-    document.getElementById("taskDisplay").setAttribute("src", INTRO_URL);
-  }
-  else {
-    selector.selectedIndex = lists.selectedIndex;
-  }
-}
-
-function taskSelected(event) {
-  if (event.target.localName != "radio")
-    return;
-
+function workflowTabSelected(event) {
+  var selector = document.getElementById("workflowTabs");
   var display = document.getElementById("taskDisplay");
   if (display.getAttribute("src") == event.target.getAttribute("href"))
     return;
-
-  if (canChangeTask()) {
-    display.setAttribute("src", event.target.getAttribute("href"));
-  }
-  else {
-    // XXX revert the change
-  }
+  display.setAttribute("src", event.target.getAttribute("href"));
 }
-
 /**
  * Initialise the window
  */

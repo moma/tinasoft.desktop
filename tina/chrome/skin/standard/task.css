@@ -5,18 +5,18 @@ page {
 }
 
 .task-success {
-  list-style-image: url("chrome://tina/skin/checkmark.png");
+  list-style-image: url("chrome://tina/skin/images/16px/checkmark.png");
   margin: 1em;
 }
 
 .task-failure {
-  list-style-image: url("chrome://tina/skin/cross.png");
+  list-style-image: url("chrome://tina/skin/images/16px/cross.png");
   margin: 1em;
 }
 
 helplink > button {
   -moz-appearance: none;
-  list-style-image: url("chrome://tina/skin/help.png");
+  list-style-image: url("chrome://tina/skin/images/16px/help.png");
   min-width: 0;
   padding: 0;
   margin: 0;
