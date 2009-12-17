@@ -1,2 +1,4 @@
-<!ENTITY about.title   "About TinaSoft Desktop">
-<!ENTITY contact.text  "Julian Bilcke <julian.bilcke@iscpif.fr> and Elias Showk <elias.showk@iscpif.fr>">
+<!ENTITY about.title           "About &brandShortName;">
+<!ENTITY about.size            "width: 20em; height: 22em;">
+
+<!ENTITY iconattribution       "Certain icons are provided under Creative Commons Licenses:">

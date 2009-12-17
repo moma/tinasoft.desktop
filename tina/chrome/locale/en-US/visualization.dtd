@@ -1,0 +1,14 @@
+<!ENTITY global.description              "This task will allow you visualize the Global Network">
+ 
+<!ENTITY local.description               "This task will allow you visualize the Local Network">
+
+<!ENTITY clusters.description            "This task allow you to visualize clusters">
+
+<!ENTITY export.description              "This task allow you to export the visualization data">
+<!ENTITY export.picture.label            "Save picture..">
+<!ENTITY export.graph.label              "Save graph..">
+
+<!ENTITY controls.threshold.label        "Genericity level">
+
+<!ENTITY status.synchronizing            "Synchronizing data, please wait..">
+<!ENTITY status.synchronized             "Data is up to date">

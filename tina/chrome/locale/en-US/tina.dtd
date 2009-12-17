@@ -1,16 +1,65 @@
-<!ENTITY tina.title             "TinaSoft Desktop">
+<!ENTITY window.style                    "width: 50em; height: 40em">
 
-<!ENTITY file.label             "File">
-<!ENTITY file.accesskey         "F">
+<!ENTITY textminingMenu.label             "Textmining">
+<!ENTITY textminingPane.label             "Textmining">
+<!ENTITY textminingMenu.accesskey         "T">
 
-<!ENTITY fileExit.label         "Exit">
-<!ENTITY fileExit.accesskey     "X">
+<!ENTITY menu-import.label                "1. Import corpus">
+<!ENTITY menu-import.accesskey            "I">
+<!ENTITY task-import.label                "1. Import corpus">
 
-<!ENTITY help.label             "Help">
-<!ENTITY help.accesskey         "H">
+<!ENTITY menu-configure.label             "2. Configure workflow">
+<!ENTITY menu-configure.accesskey         "C">
+<!ENTITY task-configure.label             "2. Configure workflow">
 
-<!ENTITY sidebar.label          "Variables">
-<!ENTITY sidebarClose.tooltip   "Close the Variables sidebar">
+<!ENTITY menu-verify.label                "3. Verify results">
+<!ENTITY menu-verify.accesskey            "V">
+<!ENTITY task-verify.label                "3. Verify results">
 
-<!ENTITY helpAbout.label        "About">
-<!ENTITY helpAbout.accesskey    "A">
+<!ENTITY visualizationMenu.label          "Visualization">
+<!ENTITY visualizationPane.label          "Visualization">
+<!ENTITY visualizationMenu.accesskey      "V">
+
+<!ENTITY menu-global.label                "Global Network">
+<!ENTITY menu-global.accesskey            "G">
+<!ENTITY task-global.label                "Global Network">
+
+<!ENTITY menu-local.label                 "Local Network">
+<!ENTITY menu-local.accesskey             "L">
+<!ENTITY task-local.label                 "Local Network">
+
+<!ENTITY menu-clusters.label              "Clusters">
+<!ENTITY menu-clusters.accesskey          "C">
+<!ENTITY task-clusters.label              "Clusters">
+
+<!ENTITY menu-export.label                "Export">
+<!ENTITY menu-export.accesskey            "E">
+<!ENTITY task-export.label                "Export">
+
+<!ENTITY toolsMenu.label                 "Tools">
+<!ENTITY toolsMenu.accesskey             "T">
+
+<!ENTITY addons.label                    "Add-ons">
+<!ENTITY addons.accesskey                "A">
+<!ENTITY console.label                   "Error Console">
+<!ENTITY console.accesskey               "E">
+<!ENTITY config.label                    "Advanced Configuration">
+<!ENTITY config.accesskey                "C">
+<!ENTITY inspector.label                 "DOM Inspector">
+<!ENTITY inspector.accesskey             "I">
+
+
+<!ENTITY helpMenu.label                  "Help">
+<!ENTITY helpMenu.accesskey              "H">
+
+<!ENTITY help.label                      "Help Center">
+<!ENTITY help.accesskey                  "H">
+<!ENTITY updates.label                   "Software Update…">
+<!ENTITY updates.accesskey               "U">
+<!ENTITY about.label                     "About &brandShortName;">
+<!ENTITY about.accesskey                 "A">
+
+
+<!ENTITY filechooser.browse              "Browse file…">
+<!ENTITY helplink.tooltip                "Learn about this task">
+<!ENTITY intro.description               "Welcome to TinaSoft. Please select a task area above or a task on the left to begin. This is an early release of the Tina software. For any bug or enquiries, please report to julian.bilcke@iscpif.fr">

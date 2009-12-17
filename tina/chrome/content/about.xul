@@ -1,17 +1,34 @@
 <?xml version="1.0"?>
 
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://tina/skin/about.css" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://tina/locale/about.dtd">
+<!DOCTYPE dialog [
+<!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd" >
+%brandDTD;
+<!ENTITY % dialogDTD SYSTEM "chrome://tina/locale/about.dtd" >
+%dialogDTD;
+]>
 
-<dialog id="about" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="&about.title;" buttons="accept" width="300" height="200">
-    
-  <script type="application/x-javascript" src="chrome://tina/content/about.js"/>
+<dialog title="&about.title;" style="&about.size;" buttons="accept"
+        windowtype="TinaSoft:About" onload="startup()"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <vbox flex="1">
+  <script src="about.js"/>
+
+  <stringbundle id="strings" src="chrome://tina/locale/about.properties"/>
+
+  <image src="chrome://tina/skin/images/logos/logo.png"/>
+
+  <vbox flex="1" class="aboutbox">
     <label id="version"/>
-    <label id="contact" value="&contact.text;"/>
-    <textbox id="useragent" multiline="true" readonly="true" flex="1"/>
+    <spacer flex="1"/>
+    <description style="text-align: center">&iconattribution;</description>
+    <label href="http://tango.freedesktop.org/"
+           value="Tango Icon Library" class="text-link"/>
+    <label href="http://www.famfamfam.com/lab/icons/silk/"
+           value="FAMFAMFAM Silk Icons" class="text-link"/>
   </vbox>
-</dialog>
 
+</dialog>

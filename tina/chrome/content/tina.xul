@@ -1,60 +1,102 @@
 <?xml version="1.0"?>
 
-<?xml-stylesheet href="chrome://tina/skin/tina.css" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://tina/content/tina.css" type="text/css"?>
+<?xml-stylesheet href="chrome://tina/skin/" type="text/css"?>
 
-<!-- Localization values. -->
-<!DOCTYPE window SYSTEM "chrome://tina/locale/tina.dtd">
+<!DOCTYPE window [
+<!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd" >
+%brandDTD;
+<!ENTITY % windowDTD SYSTEM "chrome://tina/locale/tina.dtd" >
+%windowDTD;
+]>
 
-<!--
-Important: Note the script-type value is set to Python in the window settings.
-           This will default all script handling to Python, so the oncommand
-           and similar events are actually Python scripts!
--->
+<window windowtype="TinaSoft:Main" onload="startup()"
+        style="&window.style;" title="&brandShortName;"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="chrome://global/content/globalOverlay.js"/>
+  <script src="chrome://global/content/contentAreaUtils.js"/>
+  <script src="tina.js"/>
+  <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 
-<window id="tina"
-        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        title="&tina.title;"
-        style="width: 700px; height: 500px;"
-        script-type="application/x-python"
-        persist="screenX screenY width height" >
+  <menubar>
+    <menu id="textminingMenu" label="&textminingMenu.label;"
+                               accesskey="&textminingMenu.accesskey;">
+      <menupopup oncommand="changeTask(event.target.getAttribute('task'))">
+        <menuitem id="menu-import" task="task-import" class="menuitem-iconic"
+                  label="&menu-import.label;" accesskey="&menu-import.accesskey;"/>
+        <menuitem id="menu-configure" task="task-configure" class="menuitem-iconic"
+                  label="&menu-configure.label;" accesskey="&menu-configure.accesskey;"/>
+        <menuitem id="menu-verify" task="task-verify" class="menuitem-iconic"
+                  label="&menu-verify.label;" accesskey="&menu-verify.accesskey;"/>
+      </menupopup>
+    </menu>
+    <menu id="visualizationMenu" label="&visualizationMenu.label;"
+                          accesskey="&visualizationMenu.accesskey;">
+      <menupopup oncommand="changeTask(event.target.getAttribute('task'))">
+        <menuitem id="menu-local" task="task-local" class="menuitem-iconic"
+                  label="&menu-local.label;" accesskey="&menu-local.accesskey;"/>
+        <menuitem id="menu-global" task="task-global" class="menuitem-iconic"
+                  label="&menu-global.label;" accesskey="&menu-global.accesskey;"/>
+        <menuitem id="menu-clusters" task="task-clusters" class="menuitem-iconic"
+                  label="&menu-clusters.label;" accesskey="&menu-clusters.accesskey;"/>
+        <menuitem id="menu-export" task="task-export" class="menuitem-iconic"
+                  label="&menu-export.label;" accesskey="&menu-export.accesskey;"/>
+      </menupopup>
+    </menu>
+    <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
+      <menupopup>
+        <menuitem id="menu-addons" oncommand="openAddons()" class="menuitem-iconic"
+                  label="&addons.label;" accesskey="&addons.accesskey;"/>
+        <menuitem id="menu-console" oncommand="openErrorConsole()" class="menuitem-iconic"
+                  label="&console.label;" accesskey="&console.accesskey;"/>
+        <menuitem id="menu-config" oncommand="openConfig()" class="menuitem-iconic"
+                  label="&config.label;" accesskey="&config.accesskey;"/>
+        <menuseparator/>
+        <menuitem id="menu-inspector" oncommand="openDOMInspector()" class="menuitem-iconic"
+                  label="&inspector.label;" accesskey="&inspector.accesskey;"/>
+      </menupopup>
+    </menu>
+    <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
+      <menupopup onpopupshowing="buildHelpMenu();">
+        <menuitem id="menu-help" oncommand="openHelp()" class="menuitem-iconic"
+                  label="&help.label;" accesskey="&help.accesskey;"/>
+        <menuitem id="menu-updates" oncommand="openUpdates()" class="menuitem-iconic"
+                  label="&updates.label;" accesskey="&updates.accesskey;"/>
+        <menuitem id="aboutName" oncommand="openAbout()"
+                  label="&about.label;" accesskey="&about.accesskey;"/>
+      </menupopup>
+    </menu>
+  </menubar>
 
-  <script type="application/x-python" src="chrome://tina/content/tina.py"/>
+  <radiogroup id="paneSelector" xhtml:role="listbox" orient="horizontal"
+              oncommand="paneSelected(event)">
+    <radio id="textminingPane" label="&textminingPane.label;"/>
+    <radio id="visualizationPane" label="&visualizationPane.label;"/>
+  </radiogroup>
 
-  <!-- Menus, that's Python code in the "oncommand" section. -->
-  <toolbox id="toolbox_explorer">
-    <menubar id="menubar_explorer">
-      <menu id="menu_file" label="&file.label;" accesskey="&file.accesskey;">
-        <menupopup id="popup_file">
-          <menuitem id="menu_FileQuitItem"
-                    label="&fileExit.label;"
-                    accesskey="&fileExit.accesskey;"
-                    oncommand="tina_doCommand(event)"
-                    key="key_exit"/>
-        </menupopup>
-      </menu>
-      <menu id="menu_help" label="&help.label;" accesskey="&help.accesskey;">
-        <menupopup id="popup_help">
-          <menuitem id="menu_About"
-                    label="&helpAbout.label;"
-                    accesskey="&helpAbout.accesskey;"
-                    oncommand="tina_doCommand(event)"/>
-        </menupopup>
-      </menu>
-    </menubar>
-
-    <!-- Uncomment for a toolbar widget. -->
-    <!--<toolbar id="toolbar_explorer" mode="icons">-->
-    <!--</toolbar>-->
-
-  </toolbox>
-
-  <browser id="browser"
-           flex="1"
-           src="http://csregistry.org/" />
-
-  <statusbar>
-    <!-- mozutils gets imported into scope through tina.py -->
-    <statusbarpanel id="statuspanel" flex="1" onclick="mozutils.doAlert('Hello from Python')"/>
-  </statusbar>
-
+  <hbox flex="1" id="pane">
+    <deck id="taskLists" oncommand="taskSelected(event)">
+      <radiogroup id="textminingTasks" xhtml:role="listbox">
+        <radio id="task-import" label="&task-import.label;" 
+               href="chrome://tina/content/textmining/import.xul"/>
+        <radio id="task-configure" label="&task-configure.label;" 
+               href="chrome://tina/content/textmining/configure.xul"/>
+        <radio id="task-verify" label="&task-verify.label;" 
+               href="chrome://tina/content/textmining/verify.xul"/>      
+      </radiogroup>
+      <radiogroup id="visualizationTasks" xhtml:role="listbox">
+        <radio id="task-local" label="&task-local.label;"
+               href="chrome://tina/content/visualization/local.xul"/>
+        <radio id="task-global" label="&task-global.label;"
+               href="chrome://tina/content/visualization/global.xul"/>
+        <radio id="task-clusters" label="&task-clusters.label;"
+               href="chrome://tina/content/visualization/clusters.xul"/>    
+        <radio id="task-export" label="&task-export.label;"
+               href="chrome://tina/content/visualization/export.xul"/>    
+      </radiogroup>
+    </deck>
+    <iframe id="taskDisplay" flex="1" src="chrome://tina/content/intro.xul"/>
+  </hbox>
 </window>
