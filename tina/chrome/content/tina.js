@@ -1,4 +1,5 @@
-
+// tina.xul functions
+//
 function newSession() {
    document.location = "chrome://tina/content/session.xul";
 
