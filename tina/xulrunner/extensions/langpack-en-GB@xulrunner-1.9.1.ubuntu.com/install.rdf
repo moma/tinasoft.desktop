@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+
+-->
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+  <Description about="urn:mozilla:install-manifest"
+               em:id="langpack-en-GB@xulrunner-1.9.1.ubuntu.com"
+               em:name="Xulrunner (en-GB)"
+               em:version="1.9.1.2"
+               em:type="8"
+               em:creator="http://translations.launchpad.net">
+    <em:contributor></em:contributor>
+
+    <em:targetApplication>
+      <Description>
+        <em:id>toolkit@mozilla.org</em:id>
+        <em:minVersion>1.9.1</em:minVersion>
+        <em:maxVersion>1.9.1.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+  </Description>
+</RDF>
