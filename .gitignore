@@ -4,7 +4,6 @@
 install/libs/pyxpcomext/*
 install/libs/xulrunner/*
 src/*
-tina/xulrunner/*
 *.swp
 *.swo
 *~
