@@ -10,7 +10,7 @@ class TinasoftDataRelational(Api):
     def __init__(self):
         Api.__init__(self)
 
-	def connection(self, dbfile):
+	def connectdb(self, dbfile):
 		print "Connecting to : %s"% self.dbfile
 		file = components.classes["@mozilla.org/file/directory_service;1"]\
 			.getService(components.interfaces.nsIProperties)\
