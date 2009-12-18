@@ -65,5 +65,5 @@
 
 <!ENTITY filechooser.browse              "Browse file…">
 <!ENTITY helplink.tooltip                "Learn about this task">
-<!ENTITY home.introduction               "Welcome to &brandShortName;. Please select a task area above or a task on the left to begin. This is an early release of the &brandShortName; software. For any bug or enquiries, please report to tina@iscpif.fr">
+<!ENTITY home.introduction               "Welcome to &brandShortName;!">
 

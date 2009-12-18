@@ -22,6 +22,7 @@
 #workflowTabs radio {
   background-color: -moz-Field;
   color: -moz-FieldText;
+  display: block;
 }
 
 #workflowTabs radio[selected="true"] {
