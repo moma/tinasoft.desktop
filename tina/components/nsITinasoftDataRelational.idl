@@ -2,5 +2,21 @@
 
 [scriptable, uuid(d90c75e0-e2e2-4e67-baf7-2553930f3ba7)]
 interface nsITinasoftDataRelational : nsISupports {
-    void connectdb( in AString dbfilepath );
+    string createTables();
+    string insertCorpora();
+    string insertCorpus();
+    string insertDocument();
+    string insertNGram();
+    string insertAssoc(in string myclassname);
+    string deleteAssoc(in string myclassname);
+    string loadCorpora();
+    string loadCorpus();
+    string loadDocument();
+    string loadNGram();
+    string cleanAssocNGramDocument();
+    string fetchCorpusNGram();
+    string fetchCorpusNGramID();
+    string fetchDocumentNGram();
+    string fetchDocumentNGramID();
+    string fetchCorpusDocumentID();
 };

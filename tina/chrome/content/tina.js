@@ -45,12 +45,7 @@ const INTRO_URL         = "chrome://tina/content/intro.xul";
 
 
 
-function pytest() {
-    var tdr = new TinasoftDataRelational();
-    tdr.init( "testTinasoftDataRelational.db" );
-    dump("end of pytest");
-
-    // If a window with the type exists just focus it otherwise open a new window
+// If a window with the type exists just focus it otherwise open a new window
 function openWindowForType(type, uri, features) {
   var topWindow = Cc['@mozilla.org/appshell/window-mediator;1'].
                   getService(Ci.nsIWindowMediator).
