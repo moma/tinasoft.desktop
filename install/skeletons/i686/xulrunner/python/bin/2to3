@@ -1,0 +1,6 @@
+#!/home/trentm/as/ActivePython-devel/build/py2_6-linux-x86-komodosilo-mozpy/CoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIx/bin/python2.6
+from lib2to3.main import main
+import sys
+import os
+
+sys.exit(main("lib2to3.fixes"))
