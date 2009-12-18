@@ -1,10 +1,18 @@
-rm dist
+rm -Rf dist
+rm tinasoft-*.*
 mkdir dist
+
+echo "Generation Linux 32 bit (i686) distribution.."
+cp -R tina dist/tinasoft-i686
+rm -Rf dist/tinasoft-i686/xulrunner
+cp -R install/skeletons/i686/* dist/tinasoft-i686/.
+tar -cvf tinasoft-1.0-i686.tar.gz dist/tinasoft-i686
+
 echo "Generating Windows distribution.."
-mv tina dist/windows
-rm dist/windows/xulrunner
-cp -R install/skeleton/windows dist/windows
-zip -r tinasoft-1.0.zip dist/windows
+cp -R tina dist/tinasoft-win
+rm -Rf dist/tinasoft-win/xulrunner
+cp -R install/skeletons/windows/* dist/tinasoft-win/.
+zip -r tinasoft-1.0-win.zip dist/tinasoft-win
 #mv tina dist/macosx
 #rm dist/macosx/xulrunner
 #mount -o loop -t hfs posters_above_are_clueless.dmg /mnt
