@@ -8,11 +8,7 @@ function newSession() {
 }
 
 function pytest() {
-    var tdr = Cc["Python.TinasoftDataRelational"].createInstance(Ci.nsITinasoftDataRelational);
-    dump(tdr);
-    tdr.connectdb( "testTinasoftDataRelational.db" );
-	dump("end of pytest");
+    var tdr = new TinasoftDataRelational();
+    tdr.init( "testTinasoftDataRelational.db" );
+    dump("end of pytest");
 }
-
-
-
