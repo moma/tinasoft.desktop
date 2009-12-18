@@ -1,3 +1,5 @@
+
+
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -39,12 +41,23 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
+const INTRO_URL         = "chrome://tina/content/intro.xul";
 
-function workflowTabSelected(event) {
-  var selector = document.getElementById("workflowTabs");
-  var display = document.getElementById("tabDisplay");
-  if (display.getAttribute("src") == event.target.getAttribute("href"))
-    return;
-  display.setAttribute("src", event.target.getAttribute("href"));
+// tina.xul functions
+//
+function newSession() {
+   document.location = "chrome://tina/content/session.xul";
+
 }
+
+function pytest() {
+	alert("start of pytest");
+    var tdr = Cc["Python.TinasoftDataRelational"].createInstance(Ci.nsITinasoftDataRelational);
+    tdr.connection( "testTinasoftDataRelational.db" );
+	alert("end of pytest");
+}
+
+
+
+
 
