@@ -23,8 +23,9 @@ class AssocNGramCorpus (Assoc):
 # SQL BACKEND LAYER
 class Api():
 
-    def __init__(self):
+    def __init__(self, execute_method):
         self.tables = []
+        self.execute = execute_method
  
     # ALWAYS USE getTable to get table names in SQL
     def getTable(self, clss):
@@ -47,7 +48,6 @@ class Api():
                 self.execute('''create table '''+cName+''' (id1 VARCHAR, id2 VARCHAR, occs INTEGER, PRIMARY KEY (id1, id2))''')
             elif cName.startswith('Assoc'):
                 self.execute('''create table '''+cName+''' (id1 VARCHAR, id2 VARCHAR, PRIMARY KEY (id1, id2))''')
-            self.commit()
         except Exception, exc:
             # table already exists
             pass

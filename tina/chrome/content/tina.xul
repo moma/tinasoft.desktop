@@ -16,7 +16,11 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://global/content/contentAreaUtils.js"/>
-  <script src="tina.js"/>
+  <script src="chrome://tina/content/console.js"/>
+  <script src="chrome://tina/content/prefman.js"/>
+  <script src="chrome://tina/content/xmlhttprequester.js"/>
+  <script src="chrome://tina/content/tinasoftdatarelational.js"/>
+  <script src="chrome://tina/content/tina.js"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 
   <menubar>

@@ -1,5 +1,3 @@
-
-
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -35,7 +33,9 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
- * ***** END LICENSE BLOCK ***** */
+ * ***** END LICENSE BLOCK ***** 
+ * tina.js controller
+ * here are the main functions */
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -43,7 +43,14 @@ const Ci = Components.interfaces;
 const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
 const INTRO_URL         = "chrome://tina/content/intro.xul";
 
-// If a window with the type exists just focus it otherwise open a new window
+
+
+function pytest() {
+    var tdr = new TinasoftDataRelational();
+    tdr.init( "testTinasoftDataRelational.db" );
+    dump("end of pytest");
+
+    // If a window with the type exists just focus it otherwise open a new window
 function openWindowForType(type, uri, features) {
   var topWindow = Cc['@mozilla.org/appshell/window-mediator;1'].
                   getService(Ci.nsIWindowMediator).
@@ -135,6 +142,7 @@ function openErrorConsole() {
 
 function openConfig() {
   openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
+>>>>>>> a162654b1c115ee8b665249a07531c26dc1578d3:tina/chrome/content/tina.js
 }
 
 function openDOMInspector() {
