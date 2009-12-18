@@ -16,7 +16,7 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://global/content/contentAreaUtils.js"/>
-  <script src="tina.js"/>
+  <script src="chrome://tina/content/tina.js"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
   
     <label class="head-1" value="Welcome to tina !"/>
@@ -93,10 +93,6 @@
         <helplink href="http://tina.csregistry.org/tiki-index.php?page=tinaExtract&amp;bl=n"/>
         <spacer flex="1"/>
         <button id="newSessionButton" label="new session.."  accesskey="R" oncommand="newSession()"/>
-     </hbox>
-     
-    <statusbar>
-        <statusbarpanel id="statuspanel" flex="1" onclick="pytest()"/>
-    </statusbar>
- 
+        <button id="tinastorageButton" label="test tinasoft.data"  accesskey="T" oncommand="pytest()"/>
+     </hbox> 
 </window>

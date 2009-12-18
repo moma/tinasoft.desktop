@@ -5,8 +5,9 @@ function newSession() {
 
 }
 
-function pytest(event) {
-    var tdr = Cc["Python.TinasoftDataRelational"].
-        createInstance(Ci.nsITinasoftDataRelational);
-    tdr.testXPCOM();
+function pytest() {
+	alert("start of pytest");
+    var tdr = Cc["Python.TinasoftDataRelational"].createInstance(Ci.nsITinasoftDataRelational);
+    tdr.connection( "testTinasoftDataRelational.db" );
+	alert("end of pytest");
 }

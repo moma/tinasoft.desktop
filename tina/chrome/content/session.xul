@@ -17,7 +17,6 @@
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://global/content/contentAreaUtils.js"/>
   <script src="tina.js"/>
-  <script type="application/x-python" src="tina.py"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 
   <menubar>
@@ -90,7 +89,4 @@
   <hbox flex="1" id="pane">
     <iframe id="tabDisplay" flex="1" src="chrome://tina/content/corpus.xul"/>
   </hbox>
-  <statusbar>
-    <statusbarpanel id="statuspanel" flex="1" onclick="pytest()"/>
-  </statusbar>
 </window>

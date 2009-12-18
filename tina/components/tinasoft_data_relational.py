@@ -9,12 +9,21 @@ class TinasoftDataRelational(Api):
 
     def __init__(self):
         Api.__init__(self)
-        if verbose:
-            print "TinasoftDataRelational: __init__ method called"
+
+	def connection(self, dbfile):
+		print "Connecting to : %s"% self.dbfile
+		file = components.classes["@mozilla.org/file/directory_service;1"]\
+			.getService(components.interfaces.nsIProperties)\
+			.get("ProfD", components.interfaces.nsIFile)
+		file.append(self.dbfile)
+		storageService = components.classes["@mozilla.org/storage/service;1"]\
+			.getService(components.interfaces.mozIStorageService)
+		self.engine = storageService.openDatabase(file)
+		print self.engine
 
     def __del__(self):
         if verbose:
-            print "TinasoftDataRelational: __del__ method called - object is destructing"
+            print "TinasoftDataRelational: object is destructing"
 
     def testXPCOM(self):
         cls = components.classes["Python.TestComponent"]
