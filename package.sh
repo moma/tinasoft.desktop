@@ -2,9 +2,11 @@ rm -Rf dist
 rm tinasoft-*.*
 mkdir dist
 
-echo "Generating Linux 64 bit (amd64) distribution.."
-cp -R tina dist/tinasoft-amd64
-tar -cvf tinasoft-1.0-amd64.tar.gz dist/tinasoft-amd64
+echo "Generating Linux 64 bit (x86_64) distribution.."
+cp -R tina dist/tinasoft-x86_64
+rm -Rf dist/tinasoft-i686/xulrunner
+cp -R install/skeletons/x86_64/* dist/tinasoft-x86_64/.
+tar -cvf tinasoft-1.0-x86_64.tar.gz dist/tinasoft-x86_64
 
 echo "Generating Linux 32 bit (i686) distribution.."
 cp -R tina dist/tinasoft-i686
