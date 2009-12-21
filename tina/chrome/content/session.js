@@ -38,13 +38,23 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
-
 function workflowTabSelected(event) {
   var selector = document.getElementById("workflowTabs");
   var display = document.getElementById("tabDisplay");
   if (display.getAttribute("src") == event.target.getAttribute("href"))
     return;
-  display.setAttribute("src", event.target.getAttribute("href"));
+  //display.setAttribute("src", event.target.getAttribute("href"));
+  
+  
+    var guid = "moma@csregistry.org";
+    var folderName = "chrome/content";
+    var fileName = "visualization.html";
+    var appletFile = Components.classes["@mozilla.org/extensions/manager;1"]
+          .getService(Components.interfaces.nsIExtensionManager)
+          .getInstallLocation(guid)
+          .getItemLocation(guid);
+    appletFile.append(folderName);
+    appletFile.append(fileName);
+    display.setAttribute("src", "file://"+appletFile.path);
 }
 

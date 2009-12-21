@@ -27,7 +27,8 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
      <radio id="proximityTab" label="&proximity.tab.label;"  href="chrome://tina/content/proximity.xul"/>
      <radio id="clusteringTab" label="&clustering.tab.label;"  href="chrome://tina/content/clustering.xul"/>
      <radio id="filteringTab" label="&filtering.tab.label;"  href="chrome://tina/content/filtering.xul"/>
-     <radio id="visualizationTab" label="&visualization.tab.label;" href="chrome://tina/content/visualization.xul"/>
+     <radio id="visualizationTab" label="&visualization.tab.label;" href="visualization.html"/>
+     <!--<radio id="visualizationTab" label="&visualization.tab.label;" href="chrome://tina/content/visualization.xul"/>-->
   </radiogroup>
 
   <hbox flex="1" id="pane">
