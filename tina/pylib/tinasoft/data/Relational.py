@@ -9,14 +9,14 @@ class Api():
     # ALWAYS USE getTable to get table names in SQL
     def createTables(self):
         tables = []
-        tables.append("create table Corpora (id VARCHAR PRIMARY KEY);")
-        tables.append("create table Corpus (id VARCHAR PRIMARY KEY, period_start VARCHAR, period_end VARCHAR);")
-        tables.append("create table Document (id VARCHAR PRIMARY KEY, date VARCHAR, blob BLOB);")
-        tables.append("create table NGram (id VARCHAR PRIMARY KEY, str VARCHAR, blob BLOB);")
-        tables.append("create table AssocNGramDocument (id1 VARCHAR, id2 VARCHAR, occs INTEGER, PRIMARY KEY (id1, id2));")
-        tables.append("create table AssocNGramCorpus (id1 VARCHAR, id2 VARCHAR, occs INTEGER, PRIMARY KEY (id1, id2));")
-        tables.append("create table AssocCorpus (id1 VARCHAR, id2 VARCHAR, PRIMARY KEY (id1, id2));")
-        tables.append("create table AssocDocument (id1 VARCHAR, id2 VARCHAR, PRIMARY KEY (id1, id2));")
+        tables.append("create table if not exists Corpora (id VARCHAR PRIMARY KEY);")
+        tables.append("create table if not exists Corpus (id VARCHAR PRIMARY KEY, period_start VARCHAR, period_end VARCHAR);")
+        tables.append("create table if not exists Document (id VARCHAR PRIMARY KEY, date VARCHAR, blob BLOB);")
+        tables.append("create table if not exists NGram (id VARCHAR PRIMARY KEY, str VARCHAR, blob BLOB);")
+        tables.append("create table if not exists AssocNGramDocument (id1 VARCHAR, id2 VARCHAR, occs INTEGER, PRIMARY KEY (id1, id2));")
+        tables.append("create table if not exists AssocNGramCorpus (id1 VARCHAR, id2 VARCHAR, occs INTEGER, PRIMARY KEY (id1, id2));")
+        tables.append("create table if not exists AssocCorpus (id1 VARCHAR, id2 VARCHAR, PRIMARY KEY (id1, id2));")
+        tables.append("create table if not exists AssocDocument (id1 VARCHAR, id2 VARCHAR, PRIMARY KEY (id1, id2));")
         return tables
 
     
@@ -42,7 +42,7 @@ class Api():
         return req
     
     def insertNGram(self):
-        req = 'insert into NGram values (?1, ?2, 3?)'
+        req = 'insert into NGram values (?1, ?2, ?3)'
         return req
     
     def deleteAssoc( self, myclassname ): 

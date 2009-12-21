@@ -3,12 +3,15 @@
 [scriptable, uuid(d90c75e0-e2e2-4e67-baf7-2553930f3ba7)]
 interface nsITinasoftDataRelational : nsISupports {
     void connect(in string filename);
-    string createTables();
     string insertCorpora();
     string insertCorpus();
     string insertDocument();
     string insertNGram();
     string insertAssoc(in string myclassname);
+    string insertAssocCorpus();
+    string insertAssocDocument(); 
+    string insertAssocNGramCorpus();
+    string insertAssocNGramDocument();
     string deleteAssoc(in string myclassname);
     string loadCorpora();
     string loadCorpus();
