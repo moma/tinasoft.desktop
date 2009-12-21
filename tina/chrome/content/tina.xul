@@ -83,8 +83,15 @@
 
     <iframe id="tabDisplay" flex="1" src="chrome://tina/content/home.xul"/>
 
-
+   <statusbar>
+	<statusbarpanel label="Parsing corpus.."/>
+	<progressmeter mode="determined" value="82"/>
+	<spacer flex="1"/>
+    </statusbar>
 </window>
+
+
+
 
 
 

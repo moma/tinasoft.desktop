@@ -41,9 +41,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
-const INTRO_URL         = "chrome://tina/content/intro.xul";
-
-
+const INTRO_URL         = "chrome://tina/content/home.xul";
 
 // If a window with the type exists just focus it otherwise open a new window
 function openWindowForType(type, uri, features) {
@@ -110,26 +108,11 @@ function buildHelpMenu()
     checkForUpdates.removeAttribute("loading");
 }
 
-/*
-function openKeyManager() {
-  var ks = Cc["@toolkit.mozilla.org/keyservice;1"].
-           getService(Ci.nsIKeyService);
-  try {
-    ks.login();
-    openWindowForType("McCoy:KeyManager", "chrome://tina/content/keymanager.xul");
-  }
-  catch (e) {
-    // Login throws if the user cancelled the log in
-  }
-}
-*/
 
-/*
 function openAddons() {
   openWindowForType("Extension:Manager",
                     "chrome://mozapps/content/extensions/extensions.xul");
 }
-*/
 
 function openErrorConsole() {
   openWindowForType("global:console", "chrome://global/content/console.xul");
@@ -137,7 +120,7 @@ function openErrorConsole() {
 
 function openConfig() {
   openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
->>>>>>> a162654b1c115ee8b665249a07531c26dc1578d3:tina/chrome/content/tina.js
+
 }
 
 function openDOMInspector() {

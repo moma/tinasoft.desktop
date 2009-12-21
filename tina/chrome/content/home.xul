@@ -19,13 +19,12 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="home.js"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 
-
     <description>&home.introduction;</description>
     <hbox align="center">
         <helplink href="http://tina.csregistry.org/tiki-index.php?page=tinaExtract&amp;bl=n"/>
         <spacer flex="1"/>
-        <button id="newSessionButton" label="new session.."  accesskey="R" oncommand="newSession()"/>
-        <button id="tinastorageButton" label="test tinasoft.data"  accesskey="T" oncommand="pytest()"/>
+        <button id="newSessionButton" label="NEW SESSION"  oncommand="newSession()"/>
+        <button id="tinastorageButton" label="PYTHON" oncommand="pytest()"/>
      </hbox> 
 </page>
 

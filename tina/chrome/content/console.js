@@ -21,6 +21,6 @@ TinasoftConsole.prototype = {
 		_prompt.alert( null, "Error!", "Error: " + msg );
 	}
 }
-var console = new LinktoolConsole( "tinasoft.desktop" );
+var console = new TinasoftConsole( "tinasoft.desktop" );
 
 
