@@ -10,7 +10,7 @@
 %windowDTD;
 ]>
 
-<window windowtype="TinaSoft:Main" onload="startup()"
+<window windowtype="TinaSoft:Main"
         style="&window.style;" title="&brandShortName;"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
