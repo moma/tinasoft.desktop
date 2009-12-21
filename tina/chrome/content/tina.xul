@@ -68,6 +68,11 @@
         <menuseparator/>
         <menuitem id="menu-inspector" oncommand="openDOMInspector()" class="menuitem-iconic"
                   label="&inspector.label;" accesskey="&inspector.accesskey;"/>
+        <menuitem id="pyshell_menuitem"
+                  label="pyshell"
+                  accesskey="p"
+                  class="menuitem-iconic"
+                  oncommand="pyshell_launch();"/>
       </menupopup>
     </menu>
     

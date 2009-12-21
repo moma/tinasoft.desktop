@@ -124,8 +124,8 @@ function openConfig() {
 }
 
 function openDOMInspector() {
-  window.openDialog("chrome://inspector/content/", "_blank",
-                    "chrome,all,dialog=no", document);
+    openDialog("chrome://inspector/content/", "_blank",
+                    "chrome,all,dialog=no");
 }
 
 /**
@@ -156,8 +156,6 @@ function openHelp() {
   openURL(HELP_URL);
 }
 
-
-
-
-
-
+function pyshell_launch() {
+    openWindowForType("python_shell_window", "chrome://pyshell/content/pyshell.xul", "all=no,width=500,height=400,scrollbars=yes,resizable=yes,dialog=no");
+}

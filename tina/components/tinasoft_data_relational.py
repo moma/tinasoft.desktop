@@ -98,7 +98,7 @@ class TinasoftDataRelational(Api):
                 self.stmSelectAllTables.reset()
             for i in (length(tab)-1):
                 self._dbConn.executeSimpleSQL( drop + tab[i] )
-            self._dbConn.executeSimpleSQL(self.createTables())
+            self._dbConn.executeSimpleSQL(" ".join(self.createTables()))
             return True
         except Exception, e:
             print("resetDatabase Exception ", e)
