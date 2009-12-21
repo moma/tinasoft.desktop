@@ -87,7 +87,7 @@
    <statusbar>
 	<statusbarpanel label="Parsing corpus.."/>
 	<progressmeter mode="determined" value="82"/>
-	<!--<spacer flex="1"/>-->
+	<spacer flex="1"/>
     </statusbar>
 </window>
 

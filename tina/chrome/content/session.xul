@@ -16,7 +16,7 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 >
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://global/content/contentAreaUtils.js"/>
-  <script src="chrome://tina/content/tina.js"/>
+  <script src="chrome://tina/content/session.js"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
   
     <label class="head-1" value="Current session: My session (rename) (close)"/>
