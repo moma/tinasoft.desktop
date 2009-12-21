@@ -43,18 +43,16 @@ function workflowTabSelected(event) {
   var display = document.getElementById("tabDisplay");
   if (display.getAttribute("src") == event.target.getAttribute("href"))
     return;
-  //display.setAttribute("src", event.target.getAttribute("href"));
+    
+  if (event.target.getAttribute("href") == "visualization.html") {
+        var appletFile = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("AChrom", Components.interfaces.nsIFile);
+    display.setAttribute("src", "file://"+appletFile.path+"/content/visualization.html");
+     return;
+    }
+    
+  display.setAttribute("src", event.target.getAttribute("href"));
   
-  
-    var guid = "moma@csregistry.org";
-    var folderName = "chrome/content";
-    var fileName = "visualization.html";
-    var appletFile = Components.classes["@mozilla.org/extensions/manager;1"]
-          .getService(Components.interfaces.nsIExtensionManager)
-          .getInstallLocation(guid)
-          .getItemLocation(guid);
-    appletFile.append(folderName);
-    appletFile.append(fileName);
-    display.setAttribute("src", "file://"+appletFile.path);
 }
 
