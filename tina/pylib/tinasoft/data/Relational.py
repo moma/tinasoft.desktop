@@ -1,142 +1,102 @@
 import tinasoft.data
 
-# APPLICATION LAYER
-class Corpora:
-    pass
-class Corpus:
-    pass
-class Document:
-    pass
-class NGram:
-    pass
-class Assoc (tuple):
-    pass
-class AssocCorpus (Assoc):
-    pass
-class AssocDocument (Assoc):
-    pass
-class AssocNGramDocument (Assoc):
-    pass
-class AssocNGramCorpus (Assoc):
-    pass
-
 # SQL BACKEND LAYER
 class Api():
 
-    def __init__(self, execute_method):
-        self.tables = []
-        self.execute = execute_method
+    def __init__(self):
+        self.tables = ['Corpora', 'Corpus', 'Document', 'NGram', 'AssocCorpus', 'AssocDocument', 'AssocNGramDocument', 'AssocNGramCorpus']
  
     # ALWAYS USE getTable to get table names in SQL
-    def getTable(self, clss):
-        cName = clss.__name__
-        # if already exist, return
-        if cName in self.tables:
-            return cName
-        # else create it
-        self.tables.append(cName)
-        try:
-            if cName == 'Corpora':
-                self.execute('''create table '''+cName+''' (id VARCHAR PRIMARY KEY)''')
-            if cName == 'Corpus':
-                self.execute('''create table '''+cName+''' (id VARCHAR PRIMARY KEY, period_start VARCHAR, period_end VARCHAR)''')
-            if cName == 'Document':
-                self.execute('''create table '''+cName+''' (id VARCHAR PRIMARY KEY, date VARCHAR, blob BLOB)''')
-            if cName == 'NGram':
-                self.execute('''create table '''+cName+''' (id VARCHAR PRIMARY KEY, str VARCHAR, blob BLOB)''')
-            if cName.startswith('AssocNGram') :
-                self.execute('''create table '''+cName+''' (id1 VARCHAR, id2 VARCHAR, occs INTEGER, PRIMARY KEY (id1, id2))''')
-            elif cName.startswith('Assoc'):
-                self.execute('''create table '''+cName+''' (id1 VARCHAR, id2 VARCHAR, PRIMARY KEY (id1, id2))''')
-        except Exception, exc:
-            # table already exists
-            pass
-        return cName
+    def createTables(self):
+        tables = []
+        tables.append("create table Corpora (id VARCHAR PRIMARY KEY);")
+        tables.append("create table Corpus (id VARCHAR PRIMARY KEY, period_start VARCHAR, period_end VARCHAR);")
+        tables.append("create table Document (id VARCHAR PRIMARY KEY, date VARCHAR, blob BLOB);")
+        tables.append("create table NGram (id VARCHAR PRIMARY KEY, str VARCHAR, blob BLOB);")
+        tables.append("create table AssocNGramDocument (id1 VARCHAR, id2 VARCHAR, occs INTEGER, PRIMARY KEY (id1, id2));")
+        tables.append("create table AssocNGramCorpus (id1 VARCHAR, id2 VARCHAR, occs INTEGER, PRIMARY KEY (id1, id2));")
+        tables.append("create table AssocCorpus (id1 VARCHAR, id2 VARCHAR, PRIMARY KEY (id1, id2));")
+        tables.append("create table AssocDocument (id1 VARCHAR, id2 VARCHAR, PRIMARY KEY (id1, id2));")
+        return tables
 
     
     def insertCorpora(self):
-        req = 'insert into ' + self.getTable( Corpora ) + ' values (?)'
+        req = 'insert into Corpora values (?1)'
         return req
 
-    def insertAssoc(self, assoc):
-        myclassname = self.getTable(assoc)
+    def insertAssoc(self, myclassname):
         if myclassname.startswith('AssocNGram'):
             # ngid1, ngid2, occurences
-            req = 'insert into ' + myclassname + ' values (?, ?, ?)'
+            req = 'insert into ' + myclassname + ' values (?1, ?2, ?3)'
         else:
-            req = 'insert into ' + myclassname + ' values (?, ?)'
+            req = 'insert into ' + myclassname + ' values (?1, ?2)'
         return req
 
-    def insertCorpus(self, id, period_start, period_end):
+    def insertCorpus(self):
         # id, period_start, period_end, blob
-        req = 'insert into '+ self.getTable( Corpus ) +' values (?, ?, ?)'
-        tuple = ( id, period_start, period_end )
-        return ( req, tuple )
+        req = 'insert into Corpus values (?1, ?2, ?3)'
+        return req
     
-    def insertDocument(self, id, date, obj):
-        req = 'insert into '+ self.getTable(obj.__class__) +' values (?, ?, ?)'
-        tuple = ( id, date, obj )
-        return ( req, tuple )
+    def insertDocument(self):
+        req = 'insert into Document values (?1, ?2, ?3)'
+        return req
     
-    def insertNGram(self, id, str, obj):
-        req = 'insert into '+ self.getTable(obj.__class__) +' values (?, ?, ?)'
-        tuple = ( id, str, obj )
-        return ( req, tuple )
+    def insertNGram(self):
+        req = 'insert into NGram values (?1, ?2, 3?)'
+        return req
     
-    def deleteAssoc( self, assoc ): 
-        myclassname = self.getTable(assoc.__class__)
+    def deleteAssoc( self, myclassname ): 
         if myclassname.startswith('AssocNGram'):
-            req = 'delete from ' + myclassname + ' where id1 = ?'
+            req = 'delete from ' + myclassname + ' where id1 = ?1'
         else:
-            req = 'delete from ' + myclassname + ' where id1 = ?'
+            req = 'delete from ' + myclassname + ' where id1 = ?1'
         return req
 
-    def loadCorpora(self, id ):
-        req = 'SELECT id FROM '+ self.getTable( Corpora ) +' WHERE id = ?'
-        return ( req, [id] )
+    def loadCorpora(self):
+        req = 'SELECT id FROM Corpora WHERE id = ?1'
+        return req
         
-    def loadCorpus(self, id ):
-        req = 'SELECT id, period_start, period_end FROM '+ self.getTable( Corpus ) \
-                +' WHERE id = ?'
-        return ( req, [id] )
+    def loadCorpus(self):
+        req = 'SELECT id, period_start, period_end FROM Corpus' \
+                +' WHERE id = ?1'
+        return req
         
-    def loadDocument(self, id ):
-        req = 'SELECT id, date, blob FROM '+ self.getTable( Document ) +' WHERE id = ?' 
-        return ( req, [id] )
+    def loadDocument(self):
+        req = 'SELECT id, date, blob FROM Document WHERE id = ?1' 
+        return req
         
-    def loadNGram(self, id ):
-        req = 'SELECT id, blob FROM  '+ self.getTable( NGram ) \
-                +' WHERE id = ?'
-        return ( req, [id] )
+    def loadNGram(self):
+        req = 'SELECT id, blob FROM NGram WHERE id = ?1'
+        return req
 
-    def cleanAssocNGramDocument( self, corpusNum ):
-        req = 'delete from '+ self.getTable( AssocNGramDocument ) \
-                +' where id1 not in (select id1 from AssocNGramCorpus where id2 = ?)'
-        return ( req, [corpusNum] )
+    def cleanAssocNGramDocument(self):
+        req = 'delete from AssocNGramDocument' \
+                +' where id1 not in (select id1 from AssocNGramCorpus where id2 = ?1)'
+        return req
 
-    def fetchCorpusNGram( self, corpusid ):
-        req = ('select id, str, blob from  '+ self.getTable( NGram ) \
-                +' as ng JOIN '+ self.getTable( AssocNGramCorpus ) \
-                +' as assoc ON assoc.id1=ng.id AND assoc.id2 = ?')
-        return (req, [corpusid])
+    def fetchCorpusNGram(self):
+        req = ('select id, str, blob from NGram ' \
+                +' as ng JOIN AssocNgramCorpus' \
+                +' as assoc ON assoc.id1=ng.id AND assoc.id2 = ?1')
+        return req
  
-    def fetchCorpusNGramID( self, corpusid ):
-        req = ('select id1 from '+ self.getTable( AssocNGramCorpus ) \
-                +' where id2 = ?')
-        return (req, [corpusid])
+    def fetchCorpusNGramID(self):
+        req = ('select id1 from AssocNGramCorpus' \
+                +' where id2 = ?1')
+        return req
 
-    def fetchDocumentNGram( self, documentid ):
-        req = ('select ng.id, ng.str, ng.blob from '+ self.getTable( NGram ) \
-                +' as ng JOIN '+ self.getTable( AssocNGramDocument ) \
-                +' as assoc ON assoc.id1=ng.id AND assoc.id2 = ?')
-        return (req, [documentid])
+    def fetchDocumentNGram(self):
+        req = ('select ng.id, ng.str, ng.blob from NGram' \
+                +' as ng JOIN AssocNGramDocument' \
+                +' as assoc ON assoc.id1=ng.id AND assoc.id2 = ?1')
+        return req
 
-    def fetchDocumentNGramID( self, documentid ):
-        req = ('select id1 from '+ self.getTable( AssocNGramDocument ) \
-                +' where id2 = ?')
-        return (req, [documentid])
+    def fetchDocumentNGramID(self):
+        req = ('select id1 from AssocNGramDocument' \
+                +' where id2 = ?1')
+        return req
 
-    def fetchCorpusDocumentID( self, corpusid ): 
-        req = ('select id1 from '+ self.getTable( AssocDocument ) \
-                +' where id2 = ?')
-        return (req, [corpusid])
+    def fetchCorpusDocumentID(self): 
+        req = ('select id1 from AssocDocument' \
+                +' where id2 = ?1')
+        return req

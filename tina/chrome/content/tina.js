@@ -43,12 +43,7 @@ const Ci = Components.interfaces;
 const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
 const INTRO_URL         = "chrome://tina/content/home.xul";
 
-function pytest() {
-    var tdr = new TinasoftDataRelational();
-    tdr.init( "testTinasoftDataRelational.db" );
-    dump("end of pytest");
-
-    // If a window with the type exists just focus it otherwise open a new window
+// If a window with the type exists just focus it otherwise open a new window
 function openWindowForType(type, uri, features) {
   var topWindow = Cc['@mozilla.org/appshell/window-mediator;1'].
                   getService(Ci.nsIWindowMediator).

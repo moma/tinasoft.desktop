@@ -14,11 +14,12 @@
         style="&window.style;" title="&brandShortName;"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-
-  <script src="chrome://tina/content/console.js"/>
-  <script src="chrome://tina/content/prefman.js"/>
-  <script src="chrome://tina/content/xmlhttprequester.js"/>
-  <script src="chrome://tina/content/tinasoftdatarelational.js"/>
+  <script src="chrome://global/content/globalOverlay.js"/>
+  <script src="chrome://global/content/contentAreaUtils.js"/>
+  <script src="console.js"/>
+  <script src="prefman.js"/>
+  <script src="xmlhttprequester.js"/>
+  <script src="tinasoftdatarelational.js"/>
   <script src="tina.js"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 
