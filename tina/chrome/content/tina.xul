@@ -19,7 +19,6 @@
   <script src="console.js"/>
   <script src="prefman.js"/>
   <script src="xmlhttprequester.js"/>
-  <script src="tinasoftdatarelational.js"/>
   <script src="tina.js"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 

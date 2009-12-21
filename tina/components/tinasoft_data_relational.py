@@ -9,6 +9,15 @@ class TinasoftDataRelational(Api):
 
     def __init__(self):
         Api.__init__(self)
+        self._dbFile = null # holds the file object
+        self._dbFileName = null
+        self._dbConn = null
+        self._initialized = False
+        print("TinasoftDataRelational instanciated")
+        self._storageService = components.classes["@mozilla.org/storage/service;1"].\
+            getService(components.interfaces.mozIStorageService)
+        print("@mozilla.org/storage/service;1")
+
 
     def __del__(self):
         if verbose:
