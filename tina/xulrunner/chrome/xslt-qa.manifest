@@ -1,0 +1,2 @@
+content xslt-qa jar:xslt-qa.jar!/content/xslt-qa/
+overlay chrome://communicator/content/tasksOverlay.xul chrome://xslt-qa/content/xslt-qa-overlay.xul

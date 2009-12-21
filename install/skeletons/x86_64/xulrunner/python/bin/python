@@ -1,0 +1,4 @@
+#!/bin/sh
+bindir=`dirname $0`
+libdir=$bindir/../lib
+LD_LIBRARY_PATH=$libdir:$LD_LIBRARY_PATH $bindir/python2.6 "$@"
