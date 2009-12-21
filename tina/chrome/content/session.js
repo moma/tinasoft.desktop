@@ -38,13 +38,21 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
-
 function workflowTabSelected(event) {
   var selector = document.getElementById("workflowTabs");
   var display = document.getElementById("tabDisplay");
   if (display.getAttribute("src") == event.target.getAttribute("href"))
     return;
+    
+  if (event.target.getAttribute("href") == "visualization.html") {
+        var appletFile = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("AChrom", Components.interfaces.nsIFile);
+    display.setAttribute("src", "file://"+appletFile.path+"/content/visualization.html");
+     return;
+    }
+    
   display.setAttribute("src", event.target.getAttribute("href"));
+  
 }
 

@@ -13,7 +13,10 @@
 <window windowtype="TinaSoft:Main"
         style="&window.style;" title="&brandShortName;"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        width="900"
+        height="600"
+        >
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://global/content/contentAreaUtils.js"/>
   <script src="console.js"/>
@@ -85,7 +88,8 @@
 
    <statusbar>
 	<statusbarpanel label="Parsing corpus.."/>
-	<progressmeter mode="determined" value="82"/>
+	<!--<progressmeter mode="undetermined" />-->
+	<!--<progressmeter mode="determined" value="82"/>-->
 	<spacer flex="1"/>
     </statusbar>
 </window>
