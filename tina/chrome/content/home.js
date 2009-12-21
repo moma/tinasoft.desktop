@@ -50,12 +50,11 @@ function newSession() {
 
 }
 
-include('tinasoftdatarelational.js');
-include('console.js');
+//include('tinasoftdatarelational.js');
+//include('console.js');
 
-function pytest() {
-    alert("starting pytest");    
-    var tdr = new TinasoftDataRelational();
-    tdr.init( "testTinasoftDataRelational.db" );
-    alert("ending pytest");
+function pytest(event) {
+    var cls = Cc["Python.TinasoftDataRelational"];
+    var ob = cls.createInstance(Ci.nsITinasoftDataRelational);
+    ob.connect("Test-tdr.sqlite");
 }
