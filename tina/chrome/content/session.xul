@@ -23,8 +23,7 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     <label class="head-1" value="Current session: My session (rename) (close)"/>
 
   <radiogroup id="workflowTabs" xhtml:role="listbox" orient="horizontal" oncommand="workflowTabSelected(event)">
-     <radio id="corpusTab" label="&corpus.tab.label;" href="chrome://tina/content/corpus.xul"/>
-     <radio id="indexationTab" label="&indexation.tab.label;" href="chrome://tina/content/indexation.xul" />
+     <radio id="" label="&indexation.tab.label;" href="chrome://tina/content/indexation.xul" />
      <radio id="proximityTab" label="&proximity.tab.label;"  href="chrome://tina/content/proximity.xul"/>
      <radio id="clusteringTab" label="&clustering.tab.label;"  href="chrome://tina/content/clustering.xul"/>
      <radio id="filteringTab" label="&filtering.tab.label;"  href="chrome://tina/content/filtering.xul"/>

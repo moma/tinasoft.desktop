@@ -17,7 +17,6 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <script src="chrome://global/content/contentAreaUtils.js"/>
     <script src="data.js"/>
     <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
-    <description>&data.introduction;</description>
     <iframe id="dataDisplay" flex="1" src="chrome://tina/content/data.html"/>
 </page>
 
