@@ -55,6 +55,7 @@ function goToDatas() {
 }
 
 function pytest(event) {
+    alert( "clic !" );
     var cls = Cc["Python.TinasoftDataRelational"];
     var ob = cls.createInstance(Ci.nsITinasoftDataRelational);
     ob.connect("Test-tdr.sqlite");

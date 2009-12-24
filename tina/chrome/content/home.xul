@@ -28,7 +28,7 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
         </vbox>
         <spacer flex="1"/>
         <vbox align="center">
-            <button id="sessionButton" class="main-button" label="Work sessions"  oncommand="goToSessions()"/>
+            <button id="sessionButton" class="main-button" label="Work sessions" oncommand="goToSessions()"/>
         </vbox>
         <spacer flex="1"/>
      </hbox>
