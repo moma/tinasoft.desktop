@@ -13,17 +13,15 @@
 <page 
 xmlns:xhtml="http://www.w3.org/1999/xhtml"
 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script src="chrome://global/content/globalOverlay.js"/>
-  <script src="chrome://global/content/contentAreaUtils.js"/>
-  <script src="home.js"/>
-  <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
-
+    <script src="chrome://global/content/globalOverlay.js"/>
+    <script src="chrome://global/content/contentAreaUtils.js"/>
+    <script src="home.js"/>
+    <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
     <description>&home.introduction;</description>
-    <hbox align="center">
-        <helplink href="http://tina.csregistry.org/tiki-index.php?page=tinaExtract&amp;bl=n"/>
-        <spacer flex="1"/>
-        <button id="tinastorageButton" label="test python" oncommand="pytest()"/>
-     </hbox>
+    <xhtml:div align="center" class="ui-state-active">
+        <xhtml:link rel="stylesheet" href="../skin/standard/jqueryui/jquery-ui-1.7.2.custom.css"/>
+        <xhtml:input type="button" id="tinastorageButton" value="test pyxpcom" class="ui-widget ui-state-default" oncommand="pytest()"/>
+     </xhtml:div>
 </page>
 
 

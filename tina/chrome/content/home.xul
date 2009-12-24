@@ -2,7 +2,7 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://tina/skin/tina.css" type="text/css"?>
-
+<?xml-stylesheet href="chrome://tina/skin/standard/jqueryui/jquery-ui-1.7.2.custom.css" type="text/css"?>
 <!DOCTYPE window [
 <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd" >
 %brandDTD;
@@ -23,11 +23,11 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
         <helplink href="http://tina.csregistry.org/tiki-index.php?page=tinaExtract&amp;bl=n"/>
         <spacer flex="1"/>
         <vbox align="center">
-        <button id="sessionButton" label="Work sessions"  oncommand="goToSessions()"/>
+        <button id="dataButton" label="Data sets" class="ui-widget" oncommand="goToDatas()"/>
         </vbox>
         <spacer flex="1"/>
         <vbox align="center">
-        <button id="dataButton" label="Data sets" oncommand="goToDatas()"/>
+        <button id="sessionButton" label="Work sessions" class="ui-widget ui-state-default" oncommand="goToSessions()"/>
         </vbox>
         <spacer flex="1"/>
      </hbox>

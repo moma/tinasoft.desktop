@@ -66,4 +66,5 @@
 <!ENTITY filechooser.browse              "Browse file…">
 <!ENTITY helplink.tooltip                "Learn about this task">
 <!ENTITY home.introduction               "Welcome to &brandShortName;!">
+<!ENTITY data.introduction               "Manage your data sets">
 
