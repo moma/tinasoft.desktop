@@ -14,8 +14,8 @@
         style="&window.style;" title="&brandShortName;"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        width="900"
-        height="600"
+        width="800"
+        height="700"
         >
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://global/content/contentAreaUtils.js"/>
