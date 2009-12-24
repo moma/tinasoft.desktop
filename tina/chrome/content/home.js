@@ -45,13 +45,14 @@ const INTRO_URL         = "chrome://tina/content/intro.xul";
 
 // tina.xul functions
 //
-function newSession() {
+function goToSessions() {
    document.location = "chrome://tina/content/session.xul";
 
 }
+function goToDatas() {
+   document.location = "chrome://tina/content/data.xul";
 
-//include('tinasoftdatarelational.js');
-//include('console.js');
+}
 
 function pytest(event) {
     var cls = Cc["Python.TinasoftDataRelational"];

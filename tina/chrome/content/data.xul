@@ -22,14 +22,7 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <hbox align="center">
         <helplink href="http://tina.csregistry.org/tiki-index.php?page=tinaExtract&amp;bl=n"/>
         <spacer flex="1"/>
-        <vbox align="center">
-        <button id="sessionButton" label="Work sessions"  oncommand="goToSessions()"/>
-        </vbox>
-        <spacer flex="1"/>
-        <vbox align="center">
-        <button id="dataButton" label="Data sets" oncommand="goToDatas()"/>
-        </vbox>
-        <spacer flex="1"/>
+        <button id="tinastorageButton" label="test python" oncommand="pytest()"/>
      </hbox>
 </page>
 
