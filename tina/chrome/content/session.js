@@ -44,11 +44,11 @@ function workflowTabSelected(event) {
   if (display.getAttribute("src") == event.target.getAttribute("href"))
     return;
     
-  if (event.target.getAttribute("href") == "visualization.html") {
+  if (event.target.getAttribute("href") == "visualization") {
         var appletFile = Components.classes["@mozilla.org/file/directory_service;1"]
                      .getService(Components.interfaces.nsIProperties)
                      .get("AChrom", Components.interfaces.nsIFile);
-    display.setAttribute("src", "file://"+appletFile.path+"/content/visualization.html");
+    display.setAttribute("src", "file://"+appletFile.path+"/content/visualization.xul");
      return;
     }
     
