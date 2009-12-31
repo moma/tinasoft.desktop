@@ -10,7 +10,8 @@
         <tina:config>
                 <tina:selection value="2" />
                 <tina:zoom value="1.0" />
-                <tina:threshold value="1.0" /> 
+                <tina:threshold value="1.0" />
+                <tina:showlabels value="true" />
                 <tina:showprojects neighbours="true" all="true" />
                 <tina:showkeywords project="true" batch="false" worldwide="false" />
                 <tina:background r="204" g="122" b="229" />

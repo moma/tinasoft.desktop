@@ -48,7 +48,7 @@ function workflowTabSelected(event) {
         var appletFile = Components.classes["@mozilla.org/file/directory_service;1"]
                      .getService(Components.interfaces.nsIProperties)
                      .get("AChrom", Components.interfaces.nsIFile);
-    display.setAttribute("src", "file://"+appletFile.path+"/content/visualization.xul");
+    display.setAttribute("src", "file://"+appletFile.path+"/content/visualization.html");
      return;
     }
     

@@ -1,36 +1,16 @@
 <?xml version="1.0"?>
-
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://tina/skin/tina.css" type="text/css"?>
-
-<!DOCTYPE window [
-<!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd" >
-%brandDTD;
-<!ENTITY % windowDTD SYSTEM "chrome://tina/locale/tina.dtd" >
-%windowDTD;
-]>
-
 <page 
 xmlns:xhtml="http://www.w3.org/1999/xhtml"
 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script language="javascript">
-  //netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-  </script>
-  
-  <!--<script src="chrome://global/content/globalOverlay.js"/>
-  <script src="chrome://global/content/contentAreaUtils.js"/>-->
-  
   <script src="visualization.js"/>
-  
-  <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
   
   <box orient="vertical">
   <box orient="horizontal">
   
     <box orient="vertical">
         <xhtml:object   id="tinaviz"
-                        classid="java:tinaviz.TinaVizApplet.class" 
+                        classid="java:tinaviz.Main.class" 
             			type="application/x-java-applet"
             			archive="tinaviz.jar,
             			lib/java/core.jar,
@@ -50,9 +30,7 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
             			lib/java/gluegen-rt-natives-linux-i586.jar,
             			lib/java/gluegen-rt-natives-windows-i586.jar,
             			lib/java/gluegen-rt-natives-macosx-ppc.jar,
-            			lib/java/gluegen-rt-natives-macosx-universal.jar,
-            			lib/java/org-gephi-datastructure.jar,
-            			lib/java/org-gephi-graph-api.jar"
+            			lib/java/gluegen-rt-natives-macosx-universal.jar"
             			width="600" height="400"
             			standby="Loading TinaSoft visualization engine..." >
             			
@@ -74,9 +52,7 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
             			lib/java/gluegen-rt-natives-linux-i586.jar,
             			lib/java/gluegen-rt-natives-windows-i586.jar,
             			lib/java/gluegen-rt-natives-macosx-ppc.jar,
-            			lib/java/gluegen-rt-natives-macosx-universal.jar,
-            			lib/java/org-gephi-datastructure.jar,
-            			lib/java/org-gephi-graph-api.jar" />
+            			lib/java/gluegen-rt-natives-macosx-universal.jar" />
 				
 					<xhtml:param name="mayscript" value="true" />
 					<xhtml:param name="scriptable" value="true" />
