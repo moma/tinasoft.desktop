@@ -95,11 +95,7 @@
 <body>
 
 
-    <script type="text/javascript">
-	$(function() {
-		$("#tabs").tabs();
-	});
-	</script>
+    <script type="text/javascript">$(function(){    $("#tabs").tabs();   }); </script>
 	 <div id="tabs">
             <ul>
                 <li><a href="#tabs-1">Corpus</a></li>
@@ -109,9 +105,25 @@
                 <p>Edit or export your data sets</p>
            </div>
             <div id="tabs-2">
-                <div id="tinasoft_container" style="width: 100%; height: 550px;">
-                    <iframe src="file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/vizframe.html" style="border: 0px; width: 100%; height: 100%;" />
-   
+                <div id="container" style="width: 100%; height: 550px;">
+                	
+
+	                <script type="text/javascript">
+	                $(function(){  
+	                    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+                        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+                        var appletPath;
+                        if (path.search(/\\/) != -1) { appletPath = path + "\\content\\vizframe.html" }
+                        else { appletPath = path + "/content/vizframe.html" }
+                        var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+                        appletFile.initWithPath(appletPath);
+                        var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
+                        $('#container').append('<iframe id="vizframe" src="'+appletURL+'" style="border: 0px; width: 100%; height: 100%;" />'); 
+                        // $('#vizframe').attr('src', 'http:LINK');
+
+                    });
+	                </script>
+                   
                 </div>
            </div>
            
