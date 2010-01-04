@@ -6,6 +6,8 @@ function loadNewViz(url) {
     //ob.connect("Test-tdr.sqlite");
 }
 
+
+/*
 function setParameters(config) {
     //var cls = Cc["Python.TinasoftDataRelational"];
     //var ob = cls.createInstance(Ci.nsITinasoftDataRelational);
@@ -24,3 +26,4 @@ function showLabels() {
   var tinaviz = document.getElementById("tinaviz").showLabels(document.getElementById("labels").value);
 
 }
+*/

@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Session</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="index, follow">
+
+<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/jquery-ui-1.7.2.custom.css" />
+<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.selectmenu.css" />
+<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.button.css" />
+
+<script src="lib/js/jquery/jquery-1.3.2.min.js"           type="text/javascript" language="javascript"></script>
+<script src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" type="text/javascript" language="javascript"></script>
+<script src="lib/js/jquery/ui.selectmenu.js"              type="text/javascript" language="javascript"></script>
+<script src="lib/js/jquery/ui.button.js"                  type="text/javascript" language="javascript"></script>
+
+	<style type="text/css"> 
+		/*demo styles*/
+		body {font-size: 100%; font-family:"Verdana",sans-serif; margin: 0px; background-color: #fff; }
+		fieldset { border:0;  margin-bottom: 0px;}	
+		label,select,.ui-select-menu { float: left; margin-right: 10px; }
+		select { width: 200px; }
+		
+		/*select with custom icons*/
+		body a.customicons { height: 2.8em;}
+		body .customicons li a, body a.customicons span.ui-selectmenu-status { line-height: 2em; padding-left: 30px !important; }
+		body .video .ui-selectmenu-item-icon, body .podcast .ui-selectmenu-item-icon, body .rss .ui-selectmenu-item-icon { height: 24px; width: 24px; }
+		body .video .ui-selectmenu-item-icon { background: url(sample_icons/24-video-square.png) 0 0 no-repeat; }
+		body .podcast .ui-selectmenu-item-icon { background: url(sample_icons/24-podcast-square.png) 0 0 no-repeat; }
+		body .rss .ui-selectmenu-item-icon { background: url(sample_icons/24-rss-square.png) 0 0 no-repeat; }
+		
+			.fg-button { outline: 0; margin:0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
+	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
+	
+	a.fg-button { float:left; }
+	
+	/* remove extra button width in IE */
+	button.fg-button { width:auto; overflow:visible; }
+	
+	.fg-button-icon-left { padding-left: 2.1em; }
+	.fg-button-icon-right { padding-right: 2.1em; }
+	.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
+	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
+	
+	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */	
+	
+	.fg-buttonset { float:left; }
+	.fg-buttonset .fg-button { float: left; }
+	.fg-buttonset-single .fg-button, 
+	.fg-buttonset-multi .fg-button { margin-right: -1px;}
+	
+	.fg-toolbar { padding: .5em; margin: 0;  }
+	.fg-toolbar .fg-buttonset { margin-right:1.5em; padding-left: 1px; }
+	.fg-toolbar .fg-button { font-size: 1em;  }
+
+	/*demo page css*/
+	h2 { clear: both; padding-top:1.5em; margin-top:0; } 
+	.strike { text-decoration: line-through; }
+</style>	
+
+<script type="text/javascript">
+	$(function(){
+		//all hover and click logic for buttons
+		$(".fg-button:not(.ui-state-disabled)")
+		.hover(
+			function(){ 
+				$(this).addClass("ui-state-hover"); 
+			},
+			function(){ 
+				$(this).removeClass("ui-state-hover"); 
+			}
+		)
+		.mousedown(function(){
+				$(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
+				if( $(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active') ){ $(this).removeClass("ui-state-active"); }
+				else { $(this).addClass("ui-state-active"); }	
+		})
+		.mouseup(function(){
+			if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button,  .fg-buttonset-multi .fg-button') ){
+				$(this).removeClass("ui-state-active");
+			}
+		});
+		
+		$('#defaultStateToggler').click(function(){
+			$(this).prev('.ui-button').button('option','overrideDefaultState',$(this).button('option','active')?'':false);
+		});
+
+		
+	});
+
+</script>
+
+
+</head>
+<body>
+
+
+    <script type="text/javascript">
+	$(function() {
+		$("#tabs").tabs();
+	});
+	</script>
+	 <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Corpus</a></li>
+                <li><a href="#tabs-2">Visualization</a></li>
+            </ul>
+            <div id="tabs-1">
+                <p>Edit or export your data sets</p>
+           </div>
+            <div id="tabs-2">
+                <div id="tinasoft_container" style="width: 100%; height: 550px;">
+                    <iframe src="file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/vizframe.html" style="border: 0px; width: 100%; height: 100%;" />
+   
+                </div>
+           </div>
+           
+     </div>
+     
+     <!--
+     
+<div><h3>Current session: mysession</h3></div>
+            <div class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+	            <div class="fg-buttonset ui-helper-clearfix">
+		            <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Open"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
+
+		            <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Save"><span class="ui-icon ui-icon-disk"></span> Save</a>
+		            <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a>
+	            </div>
+	            <div class="fg-buttonset fg-buttonset-multi">
+		            <button class="fg-button ui-state-default ui-corner-left"><b>B</b></button>
+		            <button class="fg-button ui-state-default ui-state-active"><i>I</i></button>
+
+		            <button class="fg-button ui-state-default ui-corner-right"><u>U</u></button>
+	            </div>
+	            <div class="fg-buttonset ui-helper-clearfix">
+		            <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
+		            <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>
+	            </div>
+
+	            <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+		            <button class="fg-button ui-state-default ui-priority-primary ui-corner-left ui-state-active">Edit</button>
+		            <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">View</button>
+	            </div>
+            </div>
+            -->
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

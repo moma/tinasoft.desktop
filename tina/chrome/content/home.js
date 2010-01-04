@@ -46,7 +46,7 @@ const INTRO_URL         = "chrome://tina/content/intro.xul";
 // tina.xul functions
 //
 function goToSessions() {
-   document.location = "chrome://tina/content/session.xul";
+   document.location = "chrome://tina/content/session.html";
 
 }
 function goToDatas() {
