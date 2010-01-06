@@ -10,3 +10,4 @@ src/*
 dist/*
 build/*
 tinasoft-*.*
+dropboxize.sh
