@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.1draft" xmlns:viz="http://www.gexf.net/1.1draft/viz.xsd" xmlns:tina="http://localhost/tina/schema/tinaml.xsd">
+    <graph type="static">
+        <attributes class="node" type="dynamic">
+            <attribute id="0" title="category" type="string"/>
+            <attribute id="1" title="genericity" type="float"/> 
+        </attributes> 
+
+            <!-- session parameters (saved within the URL) -->
+        <meta>
+                <selection value="2" />
+                <zoom value="1.0" />
+                <threshold value="1.0" />
+                <showlabels value="true" />
+                <showprojects neighbours="true" all="true" />
+                <showkeywords project="true" batch="false" worldwide="false" />
+                <background r="204" g="122" b="229" />
+                <fontsize size="13" />
+                <maxdeepness value="10" />
+        </meta>
+        <nodes>
+            <node id="0" label="GEOLYS">
+                <viz:color b="244" g="122" r="234"/>
+                <viz:position x="50.360447" y="54.952477" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+            <node id="2" label="EOLIA">
+                <viz:color b="229" g="76" r="204"/>
+                <viz:position x="-57.998253" y="-10.115913" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+            <node id="3" label="genetic">
+                <viz:color b="234" g="91" r="214"/>
+                <viz:position x="12.890304" y="62.777985" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="keyword"/>
+                    <attvalue id="1" value="0.1"/>
+                </attvalues>
+            </node>
+            <node id="4" label="bioengineering">
+                <viz:color b="234" g="91" r="214"/>
+                <viz:position x="12.890304" y="62.777985" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="keyword"/>
+                    <attvalue id="1" value="0.2"/>
+                </attvalues>
+            </node>
+            <node id="5" label="green energy">
+                <viz:color b="234" g="91" r="214"/>
+                <viz:position x="12.890304" y="62.777985" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="keyword"/>
+                    <attvalue id="1" value="0.3"/>
+                </attvalues>
+            </node>
+            <node id="6" label="geothermy">
+                <viz:color b="234" g="91" r="214"/>
+                <viz:position x="12.890304" y="62.777985" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="keyword"/>
+                    <attvalue id="1" value="0.4"/>
+                </attvalues>
+            </node>
+            <node id="7" label="geoengineering">
+                <viz:color b="234" g="91" r="214"/>
+                <viz:position x="12.890304" y="62.777985" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="keyword"/>
+                    <attvalue id="1" value="0.5"/>
+                </attvalues>
+            </node>
+            <node id="8" label="electroengineering">
+                <viz:color b="234" g="91" r="214"/>
+                <viz:position x="12.890304" y="62.777985" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="keyword"/>
+                    <attvalue id="1" value="0.6"/>
+                </attvalues>
+            </node>
+            <node id="9" label="engineering">
+                <viz:color b="234" g="91" r="214"/>
+                <viz:position x="12.890304" y="62.777985" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="keyword"/>
+                    <attvalue id="1" value="0.7"/>
+                </attvalues>
+            </node>
+            <node id="10" label="foo">
+                <viz:color b="234" g="91" r="214"/>
+                <viz:position x="12.890304" y="62.777985" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="keyword"/>
+                    <attvalue id="1" value="0.8"/>
+                </attvalues>
+            </node>
+            <node id="11" label="EuroProject">
+                <viz:color b="229" g="76" r="204"/>
+                <viz:position x="-57.998253" y="-10.115913" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+            <node id="12" label="GreenDevices">
+                <viz:color b="229" g="76" r="204"/>
+                <viz:position x="-57.998253" y="-10.115913" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+            <node id="13" label="BigProject">
+                <viz:color b="229" g="76" r="204"/>
+                <viz:position x="-57.998253" y="-10.115913" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+            <node id="15" label="CancerResearchProject">
+                <viz:color b="229" g="76" r="204"/>
+                <viz:position x="-57.998253" y="-10.115913" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+            <node id="15" label="PRG">
+                <viz:color b="229" g="76" r="204"/>
+                <viz:position x="-57.998253" y="-10.115913" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+            <node id="15" label="MTNT">
+                <viz:color b="229" g="76" r="204"/>
+                <viz:position x="-57.998253" y="-10.115913" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+            <node id="15" label="TINA 2011">
+                <viz:color b="229" g="76" r="204"/>
+                <viz:position x="-57.998253" y="-10.115913" z="0.0"/>
+                <viz:size value="3.8"/>
+                <attvalues>
+                    <attvalue id="0" value="project"/>
+                </attvalues>
+            </node>
+        </nodes>
+        <edges>
+            <edge id="1"  source="0" target="2"/>
+            <edge id="2"  source="1" target="13"/>
+            <edge id="3"  source="1" target="14"/>
+            <edge id="4"  source="1" target="4"/>
+            <edge id="5"  source="2" target="15"/>
+            <edge id="6"  source="2" target="16"/>
+            <edge id="7"  source="2" target="17"/>
+            <edge id="8"  source="3" target="18"/>
+            <edge id="9"  source="3" target="19"/>
+            <edge id="10" source="4" target="10"/>
+            <edge id="11"  source="5" target="2"/>
+            <edge id="12"  source="5" target="13"/>
+            <edge id="13"  source="6" target="3"/>
+            <edge id="14"  source="6" target="14"/>
+            <edge id="15"  source="6" target="15"/>
+            <edge id="16"  source="7" target="11"/>
+            <edge id="17"  source="8" target="7"/>
+            <edge id="18"  source="9" target="8"/>
+            <edge id="19"  source="10" target="9"/>
+            <edge id="20" source="11" target="10"/>
+        </edges>
+    </graph>
+</gexf>

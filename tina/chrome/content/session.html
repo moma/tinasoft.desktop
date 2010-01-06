@@ -130,8 +130,8 @@
 	                    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
                         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
                         var appletPath;
-                        if (path.search(/\\/) != -1) { appletPath = path + "\\content\\vizframe.html" }
-                        else { appletPath = path + "/content/vizframe.html" }
+                        if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
+                        else { appletPath = path + "/content/applet/index.html" }
                         var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
                         appletFile.initWithPath(appletPath);
                         var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
