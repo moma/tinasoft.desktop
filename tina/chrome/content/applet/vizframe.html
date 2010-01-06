@@ -1,99 +1,23 @@
 <html>
   <head>
-  <script src="lib/js/jquery/jquery-1.3.2.min.js"           type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/ui.selectmenu.js"              type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/ui.button.js"                  type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/ui.autocomplete.js"            type="text/javascript" language="javascript"></script>
-
   </head>
   <body>
  <!--[if !IE]> -->
     <object id="tinaviz"
             classid="java:tinaviz.Main.class" 
             type="application/x-java-applet"
-             archive="tinaviz.jar,
-                			lib/java/core.jar,
-                			lib/java/opengl.jar,
-                			lib/java/jogl.jar,
-                			lib/java/jogl.jar.pack.gz,
-                			lib/java/jogl-natives-linux-i586.jar,
-                			lib/java/jogl-natives-linux-amd64.jar,
-                			lib/java/jogl-natives-macosx-ppc.jar,
-                			lib/java/jogl-natives-macosx-universal.jar,
-                			lib/java/jogl-natives-windows-i586.jar,
-                			lib/java/jogl-natives-windows-amd64.jar,
-                			lib/java/gluegen-rt.jar,
-                			lib/java/gluegen-rt.jar.pack.gz,
-                			lib/java/gluegen-rt-natives-linux-amd64.jar,
-                			lib/java/gluegen-rt-natives-windows-amd64.jar,
-                			lib/java/gluegen-rt-natives-linux-i586.jar,
-                			lib/java/gluegen-rt-natives-windows-i586.jar,
-                			lib/java/gluegen-rt-natives-macosx-ppc.jar,
-                			lib/java/gluegen-rt-natives-macosx-universal.jar,
-                			lib/java/org-gephi-datastructure.jar,
-                			lib/java/org-gephi-graph-api.jar,
-                			lib/java/org-gephi-algorithms.jar,
-                			lib/java/org-gephi-data-attributes-api.jar,
-                		    lib/java/org-gephi-data-attributes.jar,
-                		    lib/java/org-gephi-io-importer.jar,
-                		    lib/java/org-gephi-io-container-standard.jar,
-                		    lib/java/org-gephi-io-importer-standard.jar,
-                		    lib/java/org-gephi-io-processor-standard.jar,
-                		    lib/java/org-gephi-graph-dhns.jar,
-                		    lib/java/org-gephi-hierarchy-api.jar,
-                		    lib/java/org-gephi-partition.jar,
-                		    lib/java/org-gephi-partition-api.jar,
-                		    lib/java/org-gephi-layout-api.jar,
-                		    lib/java/org-gephi-layout.jar,
-                		    lib/java/org-gephi-ranking.jar,
-                		    lib/java/org-gephi-visualization.jar"
+             archive="tinaviz.jar,opengl.jar,jogl.jar,gluegen-rt.jar,core.jar"
                 		
-                width="800" 
-                height="520"
+                width="850" 
+                height="550"
                 standby="Loading TinaSoft visualization engine..."  >
                 
-    <param name="archive" value="tinaviz.jar,
-                			lib/java/core.jar,
-                			lib/java/opengl.jar,
-                			lib/java/jogl.jar,
-                			lib/java/jogl.jar.pack.gz,
-                			lib/java/jogl-natives-linux-i586.jar,
-                			lib/java/jogl-natives-linux-amd64.jar,
-                			lib/java/jogl-natives-macosx-ppc.jar,
-                			lib/java/jogl-natives-macosx-universal.jar,
-                			lib/java/jogl-natives-windows-i586.jar,
-                			lib/java/jogl-natives-windows-amd64.jar,
-                			lib/java/gluegen-rt.jar,
-                			lib/java/gluegen-rt.jar.pack.gz,
-                			lib/java/gluegen-rt-natives-linux-amd64.jar,
-                			lib/java/gluegen-rt-natives-windows-amd64.jar,
-                			lib/java/gluegen-rt-natives-linux-i586.jar,
-                			lib/java/gluegen-rt-natives-windows-i586.jar,
-                			lib/java/gluegen-rt-natives-macosx-ppc.jar,
-                			lib/java/gluegen-rt-natives-macosx-universal.jar,
-                			lib/java/org-gephi-datastructure.jar,
-                			lib/java/org-gephi-graph-api.jar,
-                			lib/java/org-gephi-algorithms.jar,
-                			lib/java/org-gephi-data-attributes-api.jar,
-                		    lib/java/org-gephi-data-attributes.jar,
-                		    lib/java/org-gephi-io-importer.jar,
-                		    lib/java/org-gephi-io-container-standard.jar,
-                		    lib/java/org-gephi-io-importer-standard.jar,
-                		    lib/java/org-gephi-io-processor-standard.jar,
-                		    lib/java/org-gephi-graph-dhns.jar,
-                		    lib/java/org-gephi-hierarchy-api.jar,
-                		    lib/java/org-gephi-partition.jar,
-                		    lib/java/org-gephi-partition-api.jar,
-                		    lib/java/org-gephi-layout-api.jar,
-                		    lib/java/org-gephi-layout.jar,
-                		    lib/java/org-gephi-ranking.jar,
-                		    lib/java/org-gephi-visualization.jar" />
+    <param name="archive" value="tinaviz.jar,opengl.jar,jogl.jar,gluegen-rt.jar,core.jar" />
      
     <param name="mayscript" value="true" />
     <param name="scriptable" value="true" />
      
-    <param name="image" value="lib/java/loading.gif" />
+    <param name="image" value="loading.gif" />
     <param name="boxmessage" value="Loading TinaSoft visualization engine..." />
     <param name="boxbgcolor" value="#FFFFFF" />
      
@@ -104,52 +28,17 @@
     id="tinaviz"
     classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
     codebase="http://java.sun.com/update/1.5.0/jinstall-1_5_0_15-windows-i586.cab"
-    width="800" 
-    height="520"
+    width="850" 
+    height="550"
     standby="Loading Processing software..." >
      
     <param name="code" value="tinaviz" />
-    <param name="archive" value="tinaviz.jar,
-                			lib/java/core.jar,
-                			lib/java/opengl.jar,
-                			lib/java/jogl.jar,
-                			lib/java/jogl.jar.pack.gz,
-                			lib/java/jogl-natives-linux-i586.jar,
-                			lib/java/jogl-natives-linux-amd64.jar,
-                			lib/java/jogl-natives-macosx-ppc.jar,
-                			lib/java/jogl-natives-macosx-universal.jar,
-                			lib/java/jogl-natives-windows-i586.jar,
-                			lib/java/jogl-natives-windows-amd64.jar,
-                			lib/java/gluegen-rt.jar,
-                			lib/java/gluegen-rt.jar.pack.gz,
-                			lib/java/gluegen-rt-natives-linux-amd64.jar,
-                			lib/java/gluegen-rt-natives-windows-amd64.jar,
-                			lib/java/gluegen-rt-natives-linux-i586.jar,
-                			lib/java/gluegen-rt-natives-windows-i586.jar,
-                			lib/java/gluegen-rt-natives-macosx-ppc.jar,
-                			lib/java/gluegen-rt-natives-macosx-universal.jar,
-                			lib/java/org-gephi-datastructure.jar,
-                			lib/java/org-gephi-graph-api.jar,
-                			lib/java/org-gephi-algorithms.jar,
-                			lib/java/org-gephi-data-attributes-api.jar,
-                		    lib/java/org-gephi-data-attributes.jar,
-                		    lib/java/org-gephi-io-importer.jar,
-                		    lib/java/org-gephi-io-container-standard.jar,
-                		    lib/java/org-gephi-io-importer-standard.jar,
-                		    lib/java/org-gephi-io-processor-standard.jar,
-                		    lib/java/org-gephi-graph-dhns.jar,
-                		    lib/java/org-gephi-hierarchy-api.jar,
-                		    lib/java/org-gephi-partition.jar,
-                		    lib/java/org-gephi-partition-api.jar,
-                		    lib/java/org-gephi-layout-api.jar,
-                		    lib/java/org-gephi-layout.jar,
-                		    lib/java/org-gephi-ranking.jar,
-                		    lib/java/org-gephi-visualization.jar" />
+    <param name="archive" value="tinaviz.jar,opengl.jar,jogl.jar,gluegen-rt.jar,core.jar" />
      
     <param name="mayscript" value="true" />
     <param name="scriptable" value="true" />
      
-    <param name="image" value="lib/java/loading.gif" />
+    <param name="image" value="loading.gif" />
     <param name="boxmessage" value="Loading TinaSoft visualization engine..." />
     <param name="boxbgcolor" value="#FFFFFF" />
      
