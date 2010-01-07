@@ -11,3 +11,9 @@ dist/*
 build/*
 tinasoft-*.*
 dropboxize.sh
+viz/.*
+viz/dist/*
+viz/build/*
+viz/nbproject/private/*
+viz/*.swp
+viz/*~
