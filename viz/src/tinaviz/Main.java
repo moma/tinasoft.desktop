@@ -1,5 +1,6 @@
 package tinaviz;
 
+import java.awt.Color;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import tinaviz.model.*;
 import processing.opengl.*;
 import processing.core.*;
 import processing.xml.*;
+import processing.pdf.*;
 
 public class Main extends PApplet implements MouseWheelListener {
 
@@ -38,6 +40,10 @@ public class Main extends PApplet implements MouseWheelListener {
     private double inerY = 0.0;
     private double fricX = 1.0;
     private double fricY = 1.0;
+
+    private boolean needRecord = false;
+    private boolean recording = false;
+    private String recordPath = "graph.pdf";
 
     enum quality {
 
@@ -75,7 +81,7 @@ public class Main extends PApplet implements MouseWheelListener {
         float rx = random(width);
         float ry = random(height);
         float radius = 0.0f;
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i <600; i++) {
             radius = random(10.0f, 20.0f);
             if (radius > MAX_RADIUS) {
                 MAX_RADIUS = radius;
@@ -102,6 +108,13 @@ public class Main extends PApplet implements MouseWheelListener {
         if (locked) {
             return;
         }
+         if (needRecord && !recording) {
+             recording = true;
+    // Note that #### will be replaced with the frame number. Fancy!
+    beginRecord(PDF, recordPath);
+
+     textMode(SHAPE);
+  }
 
         background(255);
         stroke(0);
@@ -244,6 +257,13 @@ public class Main extends PApplet implements MouseWheelListener {
                         (float) node.vizy,
                         (float) node.vizradius,
                         (float) node.vizradius);
+
+                /*
+                createGradient(node.vizx,
+                         node.vizy,
+                        node.vizradius,
+                        13, 426);
+                 */
             }
             if (this.currentView.showLabels && !mouseDragging) {
                 fill(120);
@@ -255,6 +275,12 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
         }
+          if (needRecord && recording) {
+            endRecord();
+            textMode(MODEL);
+                needRecord = false;
+                recording = false;
+          }
     }
 
     public float setZoomValue(float value) {
@@ -292,6 +318,12 @@ public class Main extends PApplet implements MouseWheelListener {
     public boolean showNodes(boolean value) {
         this.currentView.showNodes = value;
         return this.currentView.showNodes;
+    }
+
+    public boolean takePDFPicture(String path) {
+        recordPath = path;
+        needRecord = true;
+        return true;
     }
 
     public boolean toggleLinks() {
@@ -392,6 +424,43 @@ public class Main extends PApplet implements MouseWheelListener {
         oldmouseY = mouseY;
 
     }
+/*
+ createGradient(i, j, radius,
+      color(int(random(255)), int(random(255)), int(random(255))),
+      color(int(random(255)), int(random(255)), int(random(255))));
+*/
+
+private void createGradient (double x, double y, double radius, int c1, int c2) {
+  double px = 0, py = 0, angle = 0;
+
+
+  // calculate differences between color components
+  double deltaR = red(c2)-red(c1);
+  double deltaG = green(c2)-green(c1);
+  double deltaB = blue(c2)-blue(c1);
+  // hack to ensure there are no holes in gradient
+  // needs to be increased, as radius increases
+  double gapFiller = 8.0;
+
+  for (int i=0; i< radius; i++){
+    for (double j=0; j<360; j+=1.0/gapFiller){
+      px = x+cos(radians((float)angle))*i;
+      py = y+sin(radians((float)angle))*i;
+      angle+=1.0/gapFiller;
+      int c = color((float)(red(c1)+(i)*(deltaR/radius)),
+      (float)(green(c1)+(i)*(deltaG/radius)),
+      (float)(blue(c1)+(i)*(deltaB/radius))
+        );
+      set((int)px, (int)py, c);
+    }
+  }
+  // adds smooth edge
+  // hack anti-aliasing
+  noFill();
+  strokeWeight(3);
+  ellipse((float)x, (float)y, (float)radius*2, (float)radius*2);
+}
+
 }
 
 

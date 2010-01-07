@@ -178,7 +178,39 @@
 	            function center() {
                     frame.contents().find('#tinaviz')[0].getSubApplet().center();
                 }
+                
+	            function takePDFPicture() {
 
+                    var outputFilePath = "tmp/graph.pdf";
+
+                        var result;
+                        try {
+                            result = frame.contents().find('#tinaviz')[0].getSubApplet().takePDFPicture(outputFilePath);
+                        } catch (e) {
+                            //alert("Oops! Something bad just happened. Calling 911...");
+                            $('#debugdiv').append('<br><b>exception='+e+'</b>'); 
+                            console.log(e);
+                            return;
+                        }
+                        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>'); 
+                        setTimeout("downloadPDF('"+outputFilePath+"')",6000);
+                }
+                
+                function downloadPDF(outputFilePath) {
+                    // TODO retry during 30 seconds
+                var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+                        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+                        var downloadPath;
+                        if (path.search(/\\/) != -1) { downloadPath = path + "\\..\\"+outputFilePath }
+                        else { downloadPath = path + "/../"+outputFilePath  }
+                        var downloadFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+                        downloadFile.initWithPath(downloadPath);
+                        var downloadURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(downloadFile);
+                        
+                        $('#debugdiv').append('<br>window.location.href = "'+downloadURL+'";</p>'); 
+	                    window.location.href = downloadURL;
+	             }
+                
 	            function updateView() {
 	            
 	                    var filename = "test3.gexf";
@@ -186,9 +218,9 @@
                         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
                         var gexfPath;
                         if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
-                        else { appletPath = path + "/content/applet/data/"+filename  }
+                        else { gexfPath = path + "/content/applet/data/"+filename  }
                         var gexfFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-                        gexfFile.initWithPath(appletPath);
+                        gexfFile.initWithPath(gexfPath);
                         var gexfURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(gexfFile);
                         
                         $('#debugdiv').append('<p>applet.updateView("'+gexfURL+'");'); 
@@ -205,6 +237,7 @@
                 }
                 </script>
                 <div>
+                <!--
                 <form>	
 	                <fieldset> 
 		                <legend>Show</legend> 
@@ -231,16 +264,17 @@
 		                <label for="radio-3">Worldwide</label> 
 	                </fieldset> 
                 </form> 
+                -->
                 </div>
        <input id="syncButton" type="button" class="ui-widget ui-state-default" onclick="updateView()" value="sync" />
        <input id="saveButton" type="button" class="ui-widget ui-state-default" onclick="save()" value="save" />
-       <input id="snapshotButton" type="button" class="ui-widget ui-state-default" onclick="snapshot()" value="take snapshot" />
+       <input id="snapshotButton" type="button" class="ui-widget ui-state-default" onclick="snapshot()" value="bookmark" />
+       <input id="snapshotButton" type="button" class="ui-widget ui-state-default" onclick="takePDFPicture()" value="pdf snapshot" /> 
        <input id="centerButton" type="button" class="ui-widget ui-state-default" onclick="center()" value="recenter" />
-          
-       <label>Show:</label>
-       <input id="showLabelsButton" type="button" class="ui-widget ui-state-default" onclick="toggleLabels()" value="show labels" />
-       <input id="showNodesButton" type="button" class="ui-widget ui-state-default" onclick="toggleNodes()" value="show nodes" />
-       <input id="showLinksButton" type="button" class="ui-widget ui-state-default" onclick="toggleLinks()" value="show links" />
+
+       <input id="showLabelsButton" type="button" class="ui-widget ui-state-default" onclick="toggleLabels()" value="labels" />
+       <input id="showNodesButton" type="button" class="ui-widget ui-state-default" onclick="toggleNodes()" value="nodes" />
+       <input id="showLinksButton" type="button" class="ui-widget ui-state-default" onclick="toggleLinks()" value="links" />
                 
             <div id="debugdiv"></div> 
             </div> 
