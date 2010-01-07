@@ -21,28 +21,28 @@ public class Main extends PApplet implements MouseWheelListener {
 
     static int MAXLINKS = 512;
     int sliderZoomLevel = 5;
-    double zoomRatio = 0.2;
+    float zoomRatio = 0.2f;
     List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
     PImage nodeIcon;
     PFont albatar;
-    double vizx = 0;
-    double vizy = 0;
-    int oldmouseX = 0;
-    int oldmouseY = 0;
-    double MAX_RADIUS = 0;
+    float vizx = 0f;
+    float vizy = 0f;
+    float oldmouseX = 0f;
+    float oldmouseY = 0f;
+    float MAX_RADIUS = 0f;
     XMLElement xml;
     View currentView = new View();
     private boolean locked = false;
-    double MAX_ZOOM = 5;
-    double MIN_ZOOM = 0.02;
+    float MAX_ZOOM = 5f;
+    float MIN_ZOOM = 0.02f;
     private boolean mouseDragging = false;
-    private double inerX = 0.0;
-    private double inerY = 0.0;
-    private double fricX = 1.0;
-    private double fricY = 1.0;
+    private float inerX = 0.0f;
+    private float inerY = 0.0f;
+    private float inerZ = 0.0f;
 
-    private boolean needRecord = false;
-    private boolean recording = false;
+    private float fricX = 1.0f;
+    private float fricY = 1.0f;
+    private boolean recordingMode = false;
     private String recordPath = "graph.pdf";
 
     enum quality {
@@ -81,7 +81,7 @@ public class Main extends PApplet implements MouseWheelListener {
         float rx = random(width);
         float ry = random(height);
         float radius = 0.0f;
-        for (int i = 0; i <600; i++) {
+        for (int i = 0; i < 60; i++) {
             radius = random(10.0f, 20.0f);
             if (radius > MAX_RADIUS) {
                 MAX_RADIUS = radius;
@@ -108,56 +108,79 @@ public class Main extends PApplet implements MouseWheelListener {
         if (locked) {
             return;
         }
-         if (needRecord && !recording) {
-             recording = true;
-    // Note that #### will be replaced with the frame number. Fancy!
-    beginRecord(PDF, recordPath);
+        if (recordingMode) {
+            // Note that #### will be replaced with the frame number. Fancy!
+            textMode(SHAPE);
+            beginRecord(PDF, recordPath);
+            subdraw();
+            endRecord();
+            recordingMode = false;
+            textMode(MODEL);
+        }
+        subdraw();
+    }
 
-     textMode(SHAPE);
-  }
+    public void subdraw() {
 
         background(255);
         stroke(0);
         fill(120);
         strokeWeight(1.0f);
+        //zoomRatio = 10.0 / (double) sliderZoomLevel;
+        textFont(albatar, 48);
 
         Node node_a;
         Node node_b;
         Node node;
 
-        double delta = 1;
-        double len = 1;
-        double vx = 1;
-        double vy = 1;
-        double r = 0.05;
-        double a = 0.0002;
+        float len = 1f;
+        float vx = 1f;
+        float vy = 1f;
+        float r = 0.05f;
+        float a = 0.0002f;
 
 
-        //zoomRatio = 10.0 / (double) sliderZoomLevel;
-        textFont(albatar, 48);
+        if (recordingMode || currentView.showPosterOverlay) {
+            fill(30);
+            textSize(40);
+            text("TinaSoft", 15f, 50f);
 
-        scale((float) ((double) zoomRatio * (MAX_ZOOM - MIN_ZOOM) + MIN_ZOOM));
-        //scale((float) zoomRatio * 0.6f);
+            fill(80);
+            textSize(18);
+            text("A cool project subtitle", 18f, 70f);
+            fill(120);
+        }
+
+
 
         if (!mouseDragging) {
-           fricX =(fricX <= 0.01) ? 0 : fricX * 0.92;
-             fricY =(fricY <= 0.01) ? 0 : fricY * 0.92;
+            /*
+            fricX = (fricX <= 0.01f) ? 0f : fricX * 0.92f;
+            fricY = (fricY <= 0.01f) ? 0f : fricY * 0.92f;
 
             // friction
-             inerX *= fricX;
-             inerY *= fricY;
+            inerX *= fricX;
+            inerY *= fricY;
 
             vizx += inerX;
             vizy += inerY;
-
+            */
         }
-        translate((float) vizx, (float) vizy);
-        double dx = 0.0;
-        double dy = 0.0;
 
-        boolean neighbour;
+        inerX *= 0.9f;
+        if (abs(inerX) <= 0.0005) inerX = 0.0f;
+        inerY *= 0.95f;
+        if (abs(inerY) <= 0.0005) inerY = 0.0f;
+        inerZ *= 0.95f;
+        if (abs(inerZ) <= 0.0005) inerZ = 0.0f;
 
-        //fill(200,200,200,20);
+        zoomRatio += inerZ * 0.005f;
+        vizx += inerX * 2.0f;
+        vizy += inerY * 2.0f;
+
+         scale(zoomRatio);
+        translate(vizx, vizy);
+
         stroke(150, 150, 150);
 
         if (!mouseDragging) {
@@ -173,7 +196,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (!mouseDragging) {
                     vx = node_b.x - node_a.x;
                     vy = node_b.y - node_a.y;
-                    len = sqrt(sq((float) vx) + sq((float) vy));
+                    len = sqrt(sq(vx) + sq(vy));
                 }
 
                 if (node_a.neighbours.contains(node_b)) {
@@ -187,23 +210,18 @@ public class Main extends PApplet implements MouseWheelListener {
                     }
                     // AFFICHAGE LIEN (A CHANGER)
 
-                    double ponderated_radius =
-                            ((node_a.radius + node_a.radius) * 0.5);
-                    int rgb = (int) ((255.0 / MAX_RADIUS) * ponderated_radius);
+                    float ponderated_radius =
+                            ((node_a.radius + node_a.radius) * 0.5f);
+                    int rgb = (int) ((255.0f / MAX_RADIUS) * ponderated_radius);
 
                     if (this.currentView.showLinks) {
-
 
                         // old: 150
                         stroke(rgb);
                         if (!mouseDragging) {
-                            strokeWeight((float) ((node_a.radius + node_a.radius) * 0.05));
+                            strokeWeight(((node_a.radius + node_a.radius) * 0.05f));
                         }
-                        line((float) node_a.vizx,
-                                (float) node_a.vizy,
-                                (float) node_b.vizx,
-                                (float) node_b.vizy);
-
+                        line(node_a.x, node_a.y,node_b.x,node_b.y);
                     }
 
 
@@ -227,24 +245,21 @@ public class Main extends PApplet implements MouseWheelListener {
         // UPDATE NODE POSITIONS
         for (int i = 0; i < nodes.size(); i++) {
             node = nodes.get(i);
-
-            node.x = node.x + node.vx;
-            node.y = node.y + node.vy;
-
-            node.vizx = node.x;
-            node.vizy = node.y;
-            node.vizradius = node.radius;
-
+            node.x += node.vx;
+            node.y += node.vy;
             node.vx = 0.0f;
             node.vy = 0.0f;
 
-
             int rgb = (int) ((255.0 / MAX_RADIUS) * node.radius);
 
-            float distance = dist((float) node.vizx, (float) node.vizy, (float) mouseX, (float) mouseY);
+            float distance = dist(
+                    screenX( node.x,node.y, 0f),
+                    screenY(node.x, node.y, 0f),
+                    mouseX,
+                    mouseY);
 
             if (this.currentView.showNodes) {
-                if (distance < node.vizradius) {
+                if (distance <= (node.radius) * zoomRatio) {
                     // fill(200);
                     fill(150, 160, 170);
                 } else {
@@ -253,34 +268,27 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 }
 
-                ellipse((float) node.vizx,
-                        (float) node.vizy,
-                        (float) node.vizradius,
-                        (float) node.vizradius);
+                ellipse(node.x,node.y,node.radius,node.radius);
 
                 /*
                 createGradient(node.vizx,
-                         node.vizy,
-                        node.vizradius,
-                        13, 426);
+                node.vizy,
+                node.vizradius,
+                13, 426);
                  */
             }
-            if (this.currentView.showLabels && !mouseDragging) {
+            if (this.currentView.showLabels && !mouseDragging 
+                    && abs(inerX) < 0.11
+                    && abs(inerY) < 0.11
+                    && abs(inerZ) < 0.11) {
                 fill(120);
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
-                textSize((float) node.radius);
-                text(node.label,
-                        (float) (node.vizx + node.vizradius),
-                        (float) (node.vizy + (node.vizradius / 2.50)));
+                textSize(node.radius);
+                text(node.label,node.x + node.radius,
+                        node.y + (node.radius / 2.50f));
             }
 
         }
-          if (needRecord && recording) {
-            endRecord();
-            textMode(MODEL);
-                needRecord = false;
-                recording = false;
-          }
     }
 
     public float setZoomValue(float value) {
@@ -315,14 +323,18 @@ public class Main extends PApplet implements MouseWheelListener {
         return this.currentView.showNodes;
     }
 
+    public boolean togglePosterOverlay() {
+        this.currentView.showPosterOverlay = !this.currentView.showPosterOverlay;
+        return this.currentView.showPosterOverlay;
+    }
+
     public boolean showNodes(boolean value) {
         this.currentView.showNodes = value;
         return this.currentView.showNodes;
     }
 
     public boolean takePDFPicture(String path) {
-        recordPath = path;
-        needRecord = true;
+        recordingMode = true;
         return true;
     }
 
@@ -337,9 +349,9 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void center() {
-        vizx = width / 2.0;
-        vizy = height / 2.0;
-        zoomRatio = 1.0;
+        vizx = width / 2.0f;
+        vizy = height / 2.0f;
+        zoomRatio = 1.0f;
     }
 
     public int setLiterratureLevel(int value) {
@@ -387,8 +399,9 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseDragged() {
         mouseDragging = true;
-       inerX = ((double) (mouseX - oldmouseX)) / (zoomRatio * 5.0);
-        inerY = ((double) (mouseY - oldmouseY)) / (zoomRatio * 5.0);
+        float dragSensibility = 10.0f;
+        inerX =  ((float)mouseX - oldmouseX) / (zoomRatio * dragSensibility);
+        inerY =  ((float)mouseY - oldmouseY) / (zoomRatio * dragSensibility);
         vizx += inerX;
         vizy += inerY;
 
@@ -404,9 +417,36 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void mouseWheelMoved(MouseWheelEvent e) {
         int notches = e.getWheelRotation();
+
         if (notches < 0) {
+            inerZ -= notches;
+        } else {
+            inerZ -= notches;
+        }
+      
+        //zoomRatio = sliderZoomLevel / 30.0f;
+        inerZ *= 0.95f;
+        if (abs(inerZ) <= 0.0005) inerZ = 0.0f;
+        zoomRatio += inerZ * 0.005f;
+        
+        vizx -= (mouseX - oldmouseX) * zoomRatio * 2.0f;
+        vizy -= (mouseY - oldmouseY) * zoomRatio * 2.0f;
+        oldmouseX = mouseX;
+        oldmouseY = mouseY;
+
+    }
+
+    /*
+     *
+     *   public void mouseWheelMoved(MouseWheelEvent e) {
+        int notches = e.getWheelRotation();
+
+        if (not
+                ches < 0) {
+
             sliderZoomLevel -= notches;
         } else {
+
             sliderZoomLevel -= notches;
         }
         // ne pas trop fatiguer le doigt..
@@ -416,51 +456,50 @@ public class Main extends PApplet implements MouseWheelListener {
             sliderZoomLevel = 1;
         }
 
-        zoomRatio = (double) sliderZoomLevel / 30.0;
+        zoomRatio = sliderZoomLevel / 30.0f;
 
-        vizx -= ((double) (mouseX - oldmouseX)) * zoomRatio;
-        vizy -= ((double) (mouseY - oldmouseY)) * zoomRatio;
+        vizx -= (mouseX - oldmouseX) * zoomRatio;
+        vizy -= (mouseY - oldmouseY) * zoomRatio;
         oldmouseX = mouseX;
         oldmouseY = mouseY;
 
     }
-/*
- createGradient(i, j, radius,
-      color(int(random(255)), int(random(255)), int(random(255))),
-      color(int(random(255)), int(random(255)), int(random(255))));
-*/
+     */
+    /*
+    createGradient(i, j, radius,
+    color(int(random(255)), int(random(255)), int(random(255))),
+    color(int(random(255)), int(random(255)), int(random(255))));
+     */
 
-private void createGradient (double x, double y, double radius, int c1, int c2) {
-  double px = 0, py = 0, angle = 0;
+    private void createGradient(double x, double y, double radius, int c1, int c2) {
+        double px = 0, py = 0, angle = 0;
 
 
-  // calculate differences between color components
-  double deltaR = red(c2)-red(c1);
-  double deltaG = green(c2)-green(c1);
-  double deltaB = blue(c2)-blue(c1);
-  // hack to ensure there are no holes in gradient
-  // needs to be increased, as radius increases
-  double gapFiller = 8.0;
+        // calculate differences between color components
+        double deltaR = red(c2) - red(c1);
+        double deltaG = green(c2) - green(c1);
+        double deltaB = blue(c2) - blue(c1);
+        // hack to ensure there are no holes in gradient
+        // needs to be increased, as radius increases
+        double gapFiller = 8.0;
 
-  for (int i=0; i< radius; i++){
-    for (double j=0; j<360; j+=1.0/gapFiller){
-      px = x+cos(radians((float)angle))*i;
-      py = y+sin(radians((float)angle))*i;
-      angle+=1.0/gapFiller;
-      int c = color((float)(red(c1)+(i)*(deltaR/radius)),
-      (float)(green(c1)+(i)*(deltaG/radius)),
-      (float)(blue(c1)+(i)*(deltaB/radius))
-        );
-      set((int)px, (int)py, c);
+        for (int i = 0; i < radius; i++) {
+            for (double j = 0; j < 360; j += 1.0 / gapFiller) {
+                px = x + cos(radians((float) angle)) * i;
+                py = y + sin(radians((float) angle)) * i;
+                angle += 1.0 / gapFiller;
+                int c = color((float) (red(c1) + (i) * (deltaR / radius)),
+                        (float) (green(c1) + (i) * (deltaG / radius)),
+                        (float) (blue(c1) + (i) * (deltaB / radius)));
+                set((int) px, (int) py, c);
+            }
+        }
+        // adds smooth edge
+        // hack anti-aliasing
+        noFill();
+        strokeWeight(3);
+        ellipse((float) x, (float) y, (float) radius * 2, (float) radius * 2);
     }
-  }
-  // adds smooth edge
-  // hack anti-aliasing
-  noFill();
-  strokeWeight(3);
-  ellipse((float)x, (float)y, (float)radius*2, (float)radius*2);
-}
-
 }
 
 

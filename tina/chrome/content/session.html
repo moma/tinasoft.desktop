@@ -174,6 +174,9 @@
 	            function toggleLinks() {
                     frame.contents().find('#tinaviz')[0].getSubApplet().toggleLinks();
                 }
+                function togglePosterOverlay() {
+                    frame.contents().find('#tinaviz')[0].getSubApplet().togglePosterOverlay();
+                }
                 
 	            function center() {
                     frame.contents().find('#tinaviz')[0].getSubApplet().center();
@@ -268,14 +271,15 @@
                 </div>
        <input id="syncButton" type="button" class="ui-widget ui-state-default" onclick="updateView()" value="sync" />
        <input id="saveButton" type="button" class="ui-widget ui-state-default" onclick="save()" value="save" />
-       <input id="snapshotButton" type="button" class="ui-widget ui-state-default" onclick="snapshot()" value="bookmark" />
-       <input id="snapshotButton" type="button" class="ui-widget ui-state-default" onclick="takePDFPicture()" value="pdf snapshot" /> 
+       <input id="bookmarkButton" type="button" class="ui-widget ui-state-default" onclick="snapshot()" value="bookmark" />
+       <input id="pdfButton" type="button" class="ui-widget ui-state-default" onclick="takePDFPicture()" value="pdf snapshot" /> 
+
        <input id="centerButton" type="button" class="ui-widget ui-state-default" onclick="center()" value="recenter" />
 
        <input id="showLabelsButton" type="button" class="ui-widget ui-state-default" onclick="toggleLabels()" value="labels" />
        <input id="showNodesButton" type="button" class="ui-widget ui-state-default" onclick="toggleNodes()" value="nodes" />
        <input id="showLinksButton" type="button" class="ui-widget ui-state-default" onclick="toggleLinks()" value="links" />
-                
+       <input id="showLegendButton" type="button" class="ui-widget ui-state-default" onclick="togglePosterOverlay()" value="legend" />      
             <div id="debugdiv"></div> 
             </div> 
         </div>

@@ -44,6 +44,7 @@ public class View {
     public boolean showLabels = true;
     public boolean showNodes = true;
     public boolean showLinks = true;
+    public boolean showPosterOverlay = false;
 
     public List projects = new ArrayList<Project>();
     public List keywords = new ArrayList<Keyword>();
@@ -89,7 +90,7 @@ public class View {
         Double zoomLevel = (Double) xml.read(expression, XPathConstants.NUMBER);
         System.out.println("zoom: " + zoomLevel + "\n");
 
-        this.zoom = zoomLevel.intValue();
+        this.zoom = zoomLevel.floatValue();
 
         expression = "/gexf/graph/nodes/node";
         org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList)xml.read(expression,
@@ -129,7 +130,9 @@ public class View {
                     position.getAttributes().getNamedItem("y").getNodeValue()
                     );*/
 
-             Node node = new Node(uuid, label, Math.random() * 30, Math.random() * 300, Math.random() * 300 );//, posx, posy);
+             Node node = new Node(uuid, label, (float)Math.random() * 30f,
+                     (float)Math.random() * 300f,
+                     (float)Math.random() * 300f );//, posx, posy);
 
              if (nodeMap.containsKey(uuid)) {
                  nodeMap.get(uuid).update(node);

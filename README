@@ -1,0 +1,16 @@
+
+If you have linux 64 bits, simply go in the project root directory (current dir) and run:
+
+  ./start
+  
+   to test the application
+   
+ 
+If you need other plateforms, you can run the script:
+
+
+ ./package.sh
+ 
+  To generate binaries for other plateforms in the "dist/" directory,
+  and compressed archives (.tar.gz and .zip) for each plateform 
+  in the project root directory (the current dir).

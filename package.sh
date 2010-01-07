@@ -1,3 +1,5 @@
+cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
+
 rm -Rf dist
 rm tinasoft-*.*
 mkdir dist
