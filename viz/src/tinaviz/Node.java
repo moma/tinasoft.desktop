@@ -23,7 +23,7 @@ public class Node {
     public boolean s = false; // switch
     public int degree = 0;
     public List<Node> neighbours = new ArrayList<Node>();
-
+    public boolean selected = false;
     public Node(String uuid, String label, float radius, float x, float y) {
         this.uuid = uuid;
         this.label = label;

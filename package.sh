@@ -1,4 +1,5 @@
 cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
+cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
 
 rm -Rf dist
 rm tinasoft-*.*

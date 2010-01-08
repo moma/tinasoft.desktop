@@ -20,8 +20,8 @@ import processing.pdf.*;
 public class Main extends PApplet implements MouseWheelListener {
 
     static int MAXLINKS = 512;
-    int sliderZoomLevel = 5;
-    float zoomRatio = 0.2f;
+
+    float zoomRatio = 1.0f;
     List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
     PImage nodeIcon;
     PFont albatar;
@@ -39,11 +39,12 @@ public class Main extends PApplet implements MouseWheelListener {
     private float inerX = 0.0f;
     private float inerY = 0.0f;
     private float inerZ = 0.0f;
-
     private float fricX = 1.0f;
     private float fricY = 1.0f;
     private boolean recordingMode = false;
     private String recordPath = "graph.pdf";
+
+    private boolean mouseClick = false;
 
     enum quality {
 
@@ -81,7 +82,7 @@ public class Main extends PApplet implements MouseWheelListener {
         float rx = random(width);
         float ry = random(height);
         float radius = 0.0f;
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 300; i++) {
             radius = random(10.0f, 20.0f);
             if (radius > MAX_RADIUS) {
                 MAX_RADIUS = radius;
@@ -129,16 +130,13 @@ public class Main extends PApplet implements MouseWheelListener {
         //zoomRatio = 10.0 / (double) sliderZoomLevel;
         textFont(albatar, 48);
 
-        Node node_a;
-        Node node_b;
-        Node node;
+        Node node_a, node_b, node;
 
         float len = 1f;
         float vx = 1f;
         float vy = 1f;
-        float r = 0.05f;
-        float a = 0.0002f;
-
+        float LAYOUT_REPULSION = 0.05f;
+        float LAYOUT_ATTRACTION = 0.0002f;
 
         if (recordingMode || currentView.showPosterOverlay) {
             fill(30);
@@ -151,35 +149,28 @@ public class Main extends PApplet implements MouseWheelListener {
             fill(120);
         }
 
-
-
         if (!mouseDragging) {
-            /*
-            fricX = (fricX <= 0.01f) ? 0f : fricX * 0.92f;
-            fricY = (fricY <= 0.01f) ? 0f : fricY * 0.92f;
-
-            // friction
-            inerX *= fricX;
-            inerY *= fricY;
-
-            vizx += inerX;
-            vizy += inerY;
-            */
         }
 
-        inerX *= 0.9f;
-        if (abs(inerX) <= 0.0005) inerX = 0.0f;
-        inerY *= 0.95f;
-        if (abs(inerY) <= 0.0005) inerY = 0.0f;
-        inerZ *= 0.95f;
-        if (abs(inerZ) <= 0.0005) inerZ = 0.0f;
-
-        zoomRatio += inerZ * 0.005f;
+        //  0.01 = sticky, 0.001 smoothie
+        inerX = (abs(inerX) <= 0.006) ? 0.0f : inerX * 0.9f;
+        inerY = (abs(inerY) <= 0.006) ? 0.0f : inerY * 0.9f;
+        inerZ = (abs(inerZ) <= 0.006) ? 0.0f : inerZ * 0.96f;
+        zoomRatio += inerZ * 0.015f;
         vizx += inerX * 2.0f;
         vizy += inerY * 2.0f;
 
-         scale(zoomRatio);
         translate(vizx, vizy);
+
+       if (zoomRatio > 5f) {
+            zoomRatio = 5f;
+            inerZ = 0.0f;
+        }
+        if (zoomRatio < 0.05f) {
+            zoomRatio = 0.05f;
+            inerZ = 0.0f;
+        }
+        scale(zoomRatio);
 
         stroke(150, 150, 150);
 
@@ -203,36 +194,32 @@ public class Main extends PApplet implements MouseWheelListener {
 
                     // ATTRACTION
                     if (!mouseDragging) {
-                        node_a.vx = node_a.vx + (vx * len) * a;
-                        node_a.vy = node_a.vy + (vy * len) * a;
-                        node_b.vx = node_b.vx - (vx * len) * a;
-                        node_b.vy = node_b.vy - (vy * len) * a;
+                        node_a.vx += (vx * len) * LAYOUT_ATTRACTION;
+                        node_a.vy += (vy * len) * LAYOUT_ATTRACTION;
+                        node_b.vx -= (vx * len) * LAYOUT_ATTRACTION;
+                        node_b.vy -= (vy * len) * LAYOUT_ATTRACTION;
                     }
                     // AFFICHAGE LIEN (A CHANGER)
 
-                    float ponderated_radius =
-                            ((node_a.radius + node_a.radius) * 0.5f);
-                    int rgb = (int) ((255.0f / MAX_RADIUS) * ponderated_radius);
+                    float rpond = ((node_a.radius + node_a.radius) * 0.5f);
+                    int rgb = (int) ((255.0f / MAX_RADIUS) * rpond);
 
                     if (this.currentView.showLinks) {
-
                         // old: 150
                         stroke(rgb);
                         if (!mouseDragging) {
                             strokeWeight(((node_a.radius + node_a.radius) * 0.05f));
                         }
-                        line(node_a.x, node_a.y,node_b.x,node_b.y);
+                        line(node_a.x, node_a.y, node_b.x, node_b.y);
                     }
-
-
 
                 }
                 // REPULSION
                 if (!mouseDragging) {
-                    node_a.vx = node_a.vx - (vx / len) * r;
-                    node_a.vy = node_a.vy - (vy / len) * r;
-                    node_b.vx = node_b.vx + (vx / len) * r;
-                    node_b.vy = node_b.vy + (vy / len) * r;
+                    node_a.vx = node_a.vx - (vx / len) * LAYOUT_REPULSION;
+                    node_a.vy = node_a.vy - (vy / len) * LAYOUT_REPULSION;
+                    node_b.vx = node_b.vx + (vx / len) * LAYOUT_REPULSION;
+                    node_b.vy = node_b.vy + (vy / len) * LAYOUT_REPULSION;
                 }
             } // FOR NODE B
         }   // FOr NODE A
@@ -242,7 +229,8 @@ public class Main extends PApplet implements MouseWheelListener {
             strokeWeight(1.2f);
         }
 
-        // UPDATE NODE POSITIONS
+        // ITERATE OVER NODES
+        // COMPUTE NODE DATA, DRAW NODE..
         for (int i = 0; i < nodes.size(); i++) {
             node = nodes.get(i);
             node.x += node.vx;
@@ -253,7 +241,7 @@ public class Main extends PApplet implements MouseWheelListener {
             int rgb = (int) ((255.0 / MAX_RADIUS) * node.radius);
 
             float distance = dist(
-                    screenX( node.x,node.y, 0f),
+                    screenX(node.x, node.y, 0f),
                     screenY(node.x, node.y, 0f),
                     mouseX,
                     mouseY);
@@ -261,14 +249,28 @@ public class Main extends PApplet implements MouseWheelListener {
             if (this.currentView.showNodes) {
                 if (distance <= (node.radius) * zoomRatio) {
                     // fill(200);
-                    fill(150, 160, 170);
+                    if (mouseClick && !node.selected) {
+                        node.selected = true;
+
+                    } else if (mouseClick && node.selected) {
+                        node.selected = false;
+                    }
                 } else {
                     // fill(120);
                     fill(218, 219, 220);
-
+                    if (mouseClick) {
+                        node.selected = false;
+                    }
                 }
 
-                ellipse(node.x,node.y,node.radius,node.radius);
+                if (node.selected) {
+                    fill(200, 160, 160);
+                    strokeWeight(2.0f);
+                } else {
+                    strokeWeight(1.2f);
+                }
+
+                ellipse(node.x, node.y, node.radius, node.radius);
 
                 /*
                 createGradient(node.vizx,
@@ -277,31 +279,24 @@ public class Main extends PApplet implements MouseWheelListener {
                 13, 426);
                  */
             }
-            if (this.currentView.showLabels && !mouseDragging 
+            if (this.currentView.showLabels && !mouseDragging
                     && abs(inerX) < 0.11
                     && abs(inerY) < 0.11
                     && abs(inerZ) < 0.11) {
                 fill(120);
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
                 textSize(node.radius);
-                text(node.label,node.x + node.radius,
+                text(node.label, node.x + node.radius,
                         node.y + (node.radius / 2.50f));
             }
 
         }
+        mouseClick = false;
     }
 
     public float setZoomValue(float value) {
-        sliderZoomLevel = (int) value;
-        /*
-        if (sliderZoomLevel != 0) {
-        vizx *=  (double)sliderZoomLevel * 0.1;
-        vizy *=  (double)sliderZoomLevel * 0.1;
-        } else {
-        vizx = width/2.0;
-        vizy = height/2.0;
-        }*/
-        return (float) sliderZoomLevel;
+
+        return  0.0f;
     }
 
     public void setGSValue(float value) {
@@ -392,19 +387,21 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mousePressed() {
-        oldmouseX = mouseX;
-        oldmouseY = mouseY;
+       // oldmouseX = mouseX;
+        //oldmouseY = mouseY;
+       // mousePress = true;
+    }
+
+    public void mouseClicked() {
+        mouseClick = true;
     }
 
     @Override
     public void mouseDragged() {
         mouseDragging = true;
         float dragSensibility = 10.0f;
-        inerX =  ((float)mouseX - oldmouseX) / (zoomRatio * dragSensibility);
-        inerY =  ((float)mouseY - oldmouseY) / (zoomRatio * dragSensibility);
-        vizx += inerX;
-        vizy += inerY;
-
+        inerX = ((float) mouseX - oldmouseX) / (zoomRatio * dragSensibility);
+        inerY = ((float) mouseY - oldmouseY) / (zoomRatio * dragSensibility);
         oldmouseX = mouseX;
         oldmouseY = mouseY;
     }
@@ -412,64 +409,13 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseReleased() {
         mouseDragging = false;
-
+        oldmouseX = mouseX;
+        oldmouseY = mouseY;
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-        int notches = e.getWheelRotation();
-
-        if (notches < 0) {
-            inerZ -= notches;
-        } else {
-            inerZ -= notches;
-        }
-      
-        //zoomRatio = sliderZoomLevel / 30.0f;
-        inerZ *= 0.95f;
-        if (abs(inerZ) <= 0.0005) inerZ = 0.0f;
-        zoomRatio += inerZ * 0.005f;
-        
-        vizx -= (mouseX - oldmouseX) * zoomRatio * 2.0f;
-        vizy -= (mouseY - oldmouseY) * zoomRatio * 2.0f;
-        oldmouseX = mouseX;
-        oldmouseY = mouseY;
-
+        inerZ = - e.getWheelRotation();
     }
-
-    /*
-     *
-     *   public void mouseWheelMoved(MouseWheelEvent e) {
-        int notches = e.getWheelRotation();
-
-        if (not
-                ches < 0) {
-
-            sliderZoomLevel -= notches;
-        } else {
-
-            sliderZoomLevel -= notches;
-        }
-        // ne pas trop fatiguer le doigt..
-        if (sliderZoomLevel >= 30) {
-            sliderZoomLevel = 30;
-        } else if (sliderZoomLevel <= 1) {
-            sliderZoomLevel = 1;
-        }
-
-        zoomRatio = sliderZoomLevel / 30.0f;
-
-        vizx -= (mouseX - oldmouseX) * zoomRatio;
-        vizy -= (mouseY - oldmouseY) * zoomRatio;
-        oldmouseX = mouseX;
-        oldmouseY = mouseY;
-
-    }
-     */
-    /*
-    createGradient(i, j, radius,
-    color(int(random(255)), int(random(255)), int(random(255))),
-    color(int(random(255)), int(random(255)), int(random(255))));
-     */
 
     private void createGradient(double x, double y, double radius, int c1, int c2) {
         double px = 0, py = 0, angle = 0;
