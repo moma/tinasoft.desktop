@@ -150,6 +150,8 @@ $.widget("ui.autocomplete", {
 					for (var i=0; i < data.length; i++) {
 						if( data[i].result.toLowerCase() == q.toLowerCase() ) {
 							result = data[i];
+
+							
 							break;
 						}
 					}
@@ -282,6 +284,7 @@ $.widget("ui.autocomplete", {
 				$input.autocomplete("search", function (result){
 						// if no value found, clear the input box
 						if( !result ) {
+						  	options.extraSearch("&&&&&&");
 							if (options.multiple) {
 								var words = trimWords($input.val()).slice(0, -1);
 								$input.val( words.join(options.multipleSeparator) + (words.length ? options.multipleSeparator : "") );
@@ -316,6 +319,10 @@ $.widget("ui.autocomplete", {
 		function request(term, success, failure) {
 			if (!options.matchCase)
 				term = term.toLowerCase();
+							
+			// TODO CONTRIBUTE TO JQUERY LIBRARY
+			options.extraSearch(term);
+	
 			var data = cache.load(term);
 			// recieve the cached data
 			if (data && data.length) {
@@ -459,6 +466,9 @@ $.extend($.ui.autocomplete, {
 		mustMatch: false,
 		// TODO replace
 		extraParams: {},
+
+		extraSearch: function(term) {},
+
 		// TODO remove
 		selectFirst: true,
 		// TODO remove, replaced by parse/source

@@ -63,6 +63,8 @@
 	/*demo page css*/
 	h2 { clear: both; padding-top:1.5em; margin-top:0; } 
 	.strike { text-decoration: line-through; }
+	
+
 </style>	
 
 <script type="text/javascript">
@@ -114,7 +116,18 @@
 <body>
 
 
-    <script type="text/javascript">$(function(){    $("#tabs").tabs();   }); </script>
+    <script type="text/javascript">
+    $(function(){   
+         var $tabs = $("#tabs").tabs({
+             fx: { opacity: 'toggle' },
+             show: function(event, ui) {
+               if($.data(ui.tab, 'load.tabs')=="#tabs-2") {
+                  synchronize();
+               }
+             }
+        }).tabs('rotate', 2000);
+    });    
+    </script>
 	 <div id="tabs">
             <ul>
                 <li><a href="#tabs-1">Corpus</a></li>
@@ -141,26 +154,39 @@
                     });
 	                </script>
                 </div>
-                <script type="text/javascript">
-                	$(function() {
-		                var projects = ['Project', 'Cool Project', 'Another project', 'Green Project', 'Awesome Project', 'Projectable Project', 'Tina', 'elishowk', 'jbilcke', 'Research Project' ];
-		                $("#project").autocomplete({
-			                data: projects
-		                });
-	                });
-	            </script>
 	            <div class="search"> 
-                    <label for="project">Search project:</label> 
-                    <input id="project" name="project" /> 
+                    <label for="searchfield">Search:</label> 
+                    <input id="searchfield" name="searchfield" /> 
                 </div>
                 
                 <script type="text/javascript">
                 
-                var frame = $('#vizframe');
+                frame = $('#vizframe');
+                labels = [];
+
                 $(document).ready(function() {  
                     //applet = $('#vizframe').contents().find('#tinaviz');
                     frame = $('#vizframe');
+                    labels = [];
+                    $("#searchfield").autocomplete({
+			            data: labels,
+			            extraSearch: function(term) {
+			               frame.contents().find('#tinaviz')[0].getSubApplet().searchLabelDynamicFocus(term);
+			            }
+			        });
+			        
+			        // wait for the applet to be ready
+			        setTimeout("synchronize()",5000);
                 } );
+                
+                
+                
+                function synchronize() {
+                     labels = frame.contents().find('#tinaviz')[0].getSubApplet().getLabels();
+                     $("#searchfield").autocomplete("setData", {
+			            data: labels
+			         });
+                }
                 
                 function toggleLabels() {
                     frame.contents().find('#tinaviz')[0].getSubApplet().toggleLabels();
@@ -170,7 +196,10 @@
 	            function toggleNodes() {
                     frame.contents().find('#tinaviz')[0].getSubApplet().toggleNodes();
                 }
-
+                 function centerOnNodeByLabelRegex(regex) {
+                    frame.contents().find('#tinaviz')[0].getSubApplet().centerOnNodeByLabelRegex(regex);
+                }
+   
 	            function toggleLinks() {
                     frame.contents().find('#tinaviz')[0].getSubApplet().toggleLinks();
                 }
@@ -196,10 +225,27 @@
                             return;
                         }
                         $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>'); 
-                        setTimeout("downloadPDF('"+outputFilePath+"', 60)",1000);
+                        setTimeout("downloadFile('"+outputFilePath+"', 60)",1000);
                 }
                 
-                function downloadPDF(outputFilePath, timeout) {
+                function takePNGPicture() {
+
+                    var outputFilePath = "graph.png";
+
+                        var result;
+                        try {
+                            result = frame.contents().find('#tinaviz')[0].getSubApplet().takePNGPicture(outputFilePath);
+                        } catch (e) {
+                            //alert("Oops! Something bad just happened. Calling 911...");
+                            $('#debugdiv').append('<br><b>exception='+e+'</b>'); 
+                            console.log(e);
+                            return;
+                        }
+                        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>'); 
+                        setTimeout("downloadFile('"+outputFilePath+"', 60)",1000);
+                }
+                
+                function downloadFile(outputFilePath, timeout) {
                         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
                         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
                         var downloadPath;
@@ -212,11 +258,11 @@
                              return true;
                         }
                         if (downloadFile.exists() && timeout > 0) {
-                            setTimeout("downloadPDF('"+outputFilePath+"', "+(-1)+")", 1000);
+                            setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 1000);
                             return true;
                         } else {
                             // $('#debugdiv').append('<br>waiting..</p>'); 
-                            setTimeout("downloadPDF('"+outputFilePath+"', "+(timeout -1)+")", 1000);
+                            setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1000);
                             return true;
                         }
                         return false;
@@ -237,6 +283,7 @@
                         var result;
                         try {
                             result = frame.contents().find('#tinaviz')[0].getSubApplet().updateView(gexfURL);
+                            synchronize();
                         } catch (e) {
                             $('#debugdiv').append('<br/><b>== exception '+e+'</b>'); 
                             console.log(e);
@@ -274,21 +321,22 @@
 	                </fieldset> 
                 </form> 
                 -->
-                </div>
+         </div>
        <input id="syncButton" type="button" class="ui-widget ui-state-default" onclick="updateView()" value="sync" />
        <input id="saveButton" type="button" class="ui-widget ui-state-default" onclick="save()" value="save" />
        <input id="bookmarkButton" type="button" class="ui-widget ui-state-default" onclick="snapshot()" value="bookmark" />
-       <input id="pdfButton" type="button" class="ui-widget ui-state-default" onclick="takePDFPicture()" value="pdf snapshot" /> 
-
+       <input id="pdfButton" type="button" class="ui-widget ui-state-default" onclick="takePDFPicture()" value="Save poster (PDF)" /> 
+       <input id="pngButton" type="button" class="ui-widget ui-state-default" onclick="takePNGPicture()" value="Save image (PNG)" /> 
+       
        <input id="centerButton" type="button" class="ui-widget ui-state-default" onclick="center()" value="recenter" />
 
        <input id="showLabelsButton" type="button" class="ui-widget ui-state-default" onclick="toggleLabels()" value="labels" />
        <input id="showNodesButton" type="button" class="ui-widget ui-state-default" onclick="toggleNodes()" value="nodes" />
        <input id="showLinksButton" type="button" class="ui-widget ui-state-default" onclick="toggleLinks()" value="links" />
        <input id="showLegendButton" type="button" class="ui-widget ui-state-default" onclick="togglePosterOverlay()" value="legend" />      
-            <div id="debugdiv"></div> 
-            </div> 
-        </div>
+      <div id="debugdiv"></div> 
+      </div> 
+      </div>
     </body>
 </html>
 

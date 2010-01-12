@@ -17,6 +17,9 @@ import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 public class Main extends PApplet implements MouseWheelListener {
 
     static int MAXLINKS = 512;
@@ -43,8 +46,11 @@ public class Main extends PApplet implements MouseWheelListener {
     private RecordingFormat recordingMode = RecordingFormat.NONE;
     private String recordPath = "graph.pdf";
     private boolean mouseClick = false;
-    private int preloading = 30;
+    private int preSpatialize = 60;
     private float preloadingAlpha = 10;
+    private Pattern pattern;
+    private Matcher matcher;
+    private String currentTextSearch = "&&&&";
 
     public enum RecordingFormat {
 
@@ -63,19 +69,18 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
 
-        size(850, 550, OPENGL);
+        size(850, 550, P2D);
         fill(255, 184);
         frameRate(60);
         // smooth();
         addMouseWheelListener(this);
         //noStroke();
         // current sketch's "data" directory to load successfully
-        System.out.println("loading font..");
+
         albatar = loadFont("AlBattar-48.vlw");
-        System.out.println("loading empty data..");
         currentView = new View();
 
-        //currentView.showLabels = false;
+        // currentView.showLabels = false;
         oldmouseX = mouseX;
         oldmouseY = mouseY;
 
@@ -87,8 +92,8 @@ public class Main extends PApplet implements MouseWheelListener {
         float rx = random(width);
         float ry = random(height);
         float radius = 0.0f;
-        for (int i = 0; i < 200; i++) {
-            radius = random(10.0f, 20.0f);
+        for (int i = 0; i < 800; i++) {
+            radius = random(3.0f, 10.0f);
             if (radius > MAX_RADIUS) {
                 MAX_RADIUS = radius;
             }
@@ -100,11 +105,12 @@ public class Main extends PApplet implements MouseWheelListener {
         Node b;
         for (int i = 0; i < nodes.size(); i++) {
             for (int j = 0; j < nodes.size() && i != j; j++) {
-                if (random(1.0f) < 0.01) { // link density : 0.02 = a lot, 0.0002 = a few
+                if (random(1.0f) < 0.009) { // link density : 0.02 = a lot, 0.0002 = a few
                     nodes.get(i).addNeighbour(nodes.get(j));
                 }
             }
         }
+        System.out.println("Starting visualization..");
     }
 
     @Override
@@ -112,6 +118,12 @@ public class Main extends PApplet implements MouseWheelListener {
         if (locked) {
             return;
         }
+        background(255);
+        stroke(0);
+        fill(120);
+        strokeWeight(1.0f);
+        //zoomRatio = 10.0 / (double) sliderZoomLevel;
+        textFont(albatar, 48);
 
         if (recordingMode != RecordingFormat.NONE) {
             // Note that #### will be replaced with the frame number. Fancy!
@@ -128,8 +140,25 @@ public class Main extends PApplet implements MouseWheelListener {
 
             recordingMode = RecordingFormat.NONE;
             textMode(MODEL);
-            // } else if (preloading-- > 0) {
-            //    spatialize();
+        } else if (preSpatialize-- > 0) {
+            fill(200 - 3 * preSpatialize);
+            textSize(40);
+            if (preSpatialize > 50) {
+                text("Loading.", width / 2.0f - 50, height / 2.0f);
+            } else if (preSpatialize > 40) {
+                text("Loading..", width / 2.0f - 50, height / 2.0f);
+            } else if (preSpatialize > 30) {
+                text("Loading...", width / 2.0f - 50, height / 2.0f);
+            } else if (preSpatialize > 20) {
+                text("Loading.", width / 2.0f - 50, height / 2.0f);
+            } else if (preSpatialize > 10) {
+                text("Loading..", width / 2.0f - 50, height / 2.0f);
+            } else if (preSpatialize > 0) {
+
+                text("Loading...", width / 2.0f - 50, height / 2.0f);
+
+            }
+            spatialize();
         } else {
             subdraw();
         }
@@ -184,12 +213,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void picturedraw() {
 
-        background(255);
-        stroke(0);
-        fill(120);
-        strokeWeight(1.0f);
-        //zoomRatio = 10.0 / (double) sliderZoomLevel;
-        textFont(albatar, 48);
+
 
         Node node_a, node_b, node;
 
@@ -256,13 +280,6 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void subdraw() {
-
-        background(255);
-        stroke(0);
-        fill(120);
-        strokeWeight(1.0f);
-        //zoomRatio = 10.0 / (double) sliderZoomLevel;
-        textFont(albatar, 48);
 
         Node node_a, node_b, node;
 
@@ -357,7 +374,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     n1.vx -= (vx / len) * LAYOUT_REPULSION;
                     n1.vy -= (vy / len) * LAYOUT_REPULSION;
 
-                    n2.vx +=  (vx / len) * LAYOUT_REPULSION;
+                    n2.vx += (vx / len) * LAYOUT_REPULSION;
                     n2.vy += (vy / len) * LAYOUT_REPULSION;
 
                 }
@@ -403,11 +420,17 @@ public class Main extends PApplet implements MouseWheelListener {
                     }
                 }
 
-                if (n.selected) {
-                    fill(200, 160, 160);
+                if (n.label.startsWith(currentTextSearch)) {
+                    fill(200, 100, 100);
                     strokeWeight(2.0f);
                 } else {
-                    strokeWeight(1.2f);
+                    if (n.selected) {
+                        fill(200, 100, 100);
+                        strokeWeight(2.0f);
+                    } else {
+                        fill(200, 200, 200);
+                        strokeWeight(1.2f);
+                    }
                 }
 
                 ellipse(n.x, n.y, n.radius, n.radius);
@@ -426,8 +449,18 @@ public class Main extends PApplet implements MouseWheelListener {
                 fill(120);
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
                 textSize(n.radius);
-                text(n.label, n.x + n.radius,
-                        n.y + (n.radius / 2.50f));
+
+                if (n.label.startsWith(currentTextSearch)) {
+                    fill(60);
+                    text(n.label, n.x + n.radius,
+                            n.y + (n.radius / 2.50f));
+
+                } else {
+
+                    fill(150);//old: 110
+                    text(n.label, n.x + n.radius,
+                            n.y + (n.radius / 2.50f));
+                }
             }
 
         }
@@ -440,6 +473,79 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void setGSValue(float value) {
+        //return sliderZoomLevel;
+    }
+
+    // slick label search engine
+    public int searchLabelDynamicFocus(String term) {
+
+        // Initialize
+        //pattern = Pattern.compile(regex);
+        currentTextSearch = term;
+
+        int m = 0;
+        for (Node n : nodes) {
+
+            //matcher = pattern.matcher(n.label);
+            //if (matcher.matches()) {
+            // System.out.println("lebel=\""+n.label+"\" regex=\""+term+"\"");
+            if (n.label.startsWith(term)) {
+                //n.selected = true;
+                // System.out.println("selected is true!");
+                m++;
+            } else {
+                //n.selected = false;
+            }
+        }
+
+
+        return m;
+
+        //return sliderZoomLevel;
+    }
+    // slick label search engine
+
+    public Object[] searchLabelDynamicFocusAndReturnList(String term) {
+
+        // Initialize
+        //pattern = Pattern.compile(regex);
+        currentTextSearch = term;
+
+        int m = 0;
+        List<Node> results = new ArrayList<Node>();
+        for (Node n : nodes) {
+
+            //matcher = pattern.matcher(n.label);
+            //if (matcher.matches()) {
+            // System.out.println("lebel=\""+n.label+"\" regex=\""+term+"\"");
+            if (n.label.startsWith(term)) {
+                //n.selected = true;
+                // System.out.println("selected is true!");
+                results.add(n);
+                m++;
+            } else {
+                //n.selected = false;
+            }
+
+        }
+
+
+        return results.toArray();
+
+        //return sliderZoomLevel;
+    }
+    // slick label search engine
+
+    public String[] getLabels() {
+
+        String[] results = new String[nodes.size()];
+        int i=0;
+        for (Node n : nodes)
+            results[i++] = n.label;
+        return results;
+    }
+
+    public void centerOnNodeById(int id) {
         //return sliderZoomLevel;
     }
 
