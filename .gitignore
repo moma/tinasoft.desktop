@@ -19,4 +19,4 @@ viz/*.swp
 viz/*~
 tina/tmp/*
 tina/chrome/content/applet/tinaviz.jar
-graph.pdf
+tina/graph.pdf
