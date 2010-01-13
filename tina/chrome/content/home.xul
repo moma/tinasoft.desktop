@@ -31,6 +31,10 @@ xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
             <button id="sessionButton" class="main-button" label="Work sessions" oncommand="goToSessions()"/>
         </vbox>
         <spacer flex="1"/>
+        <vbox align="center">
+            <button id="vizButton" class="main-button" label="Visualization" oncommand="goToVisualization()"/>
+        </vbox>
+        <spacer flex="1"/>
      </hbox>
 </page>
 

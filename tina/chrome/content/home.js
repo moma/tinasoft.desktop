@@ -51,7 +51,10 @@ function goToSessions() {
 }
 function goToDatas() {
    document.location = "chrome://tina/content/data.html";
+}
 
+function goToVisualization() {
+    document.location = "chrome://tina/content/visualization.html";
 }
 
 function pytest(event) {

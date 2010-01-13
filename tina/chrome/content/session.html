@@ -1,132 +1,36 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Session</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="robots" content="index, follow">
+    <title>Session</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="index, follow">
+    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css" />
+    <script src="lib/js/jquery/jquery-1.3.2.min.js"           type="text/javascript" language="javascript"></script>
+    <script src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" type="text/javascript" language="javascript"></script>
+    <script src="console.js"                                  type="text/javascript" language="javascript"></script>
+    <style type="text/css">	
+         .ui-widget { font-size: 0.9em; }
+	    background-color: #ffffff;
 
-<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/jquery-ui-1.7.2.custom.css" />
-<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.selectmenu.css" />
-<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.button.css" />
-<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.autocomplete.css" />
-<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/customInput.jquery.js" />
-
-<script src="lib/js/jquery/jquery-1.3.2.min.js"           type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/ui.selectmenu.js"              type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/ui.button.js"                  type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/ui.autocomplete.js"            type="text/javascript" language="javascript"></script>
-<script src="lib/js/jquery/customInput.jquery.js"         type="text/javascript" language="javascript"></script>
-<script src="console.js"                                  type="text/javascript" language="javascript"></script>
-
-	<style type="text/css"> 
-		/*demo styles*/
-		body {font-size: 100%; font-family:"Verdana",sans-serif; margin: 0px; background-color: #fff; }
-		fieldset { border:0;  margin-bottom: 0px;}	
-		/*
-		label,select,.ui-select-menu { float: left; margin-right: 10px; }
-		*/
-		select { width: 200px; }
-		
-		/*select with custom icons*/
-		body a.customicons { height: 2.8em;}
-		body .customicons li a, body a.customicons span.ui-selectmenu-status { line-height: 2em; padding-left: 30px !important; }
-		body .video .ui-selectmenu-item-icon, body .podcast .ui-selectmenu-item-icon, body .rss .ui-selectmenu-item-icon { height: 24px; width: 24px; }
-		body .video .ui-selectmenu-item-icon { background: url(sample_icons/24-video-square.png) 0 0 no-repeat; }
-		body .podcast .ui-selectmenu-item-icon { background: url(sample_icons/24-podcast-square.png) 0 0 no-repeat; }
-		body .rss .ui-selectmenu-item-icon { background: url(sample_icons/24-rss-square.png) 0 0 no-repeat; }
-		
-			.fg-button { outline: 0; margin:0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
-	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
-	
-	a.fg-button { float:left; }
-	
-	/* remove extra button width in IE */
-	button.fg-button { width:auto; overflow:visible; }
-	
-	.fg-button-icon-left { padding-left: 2.1em; }
-	.fg-button-icon-right { padding-right: 2.1em; }
-	.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
-	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
-	
-	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */	
-	
-	.fg-buttonset { float:left; }
-	.fg-buttonset .fg-button { float: left; }
-	.fg-buttonset-single .fg-button, 
-	.fg-buttonset-multi .fg-button { margin-right: -1px;}
-	
-	.fg-toolbar { padding: .5em; margin: 0;  }
-	.fg-toolbar .fg-buttonset { margin-right:1.5em; padding-left: 1px; }
-	.fg-toolbar .fg-button { font-size: 1em;  }
-
-	/*demo page css*/
-	h2 { clear: both; padding-top:1.5em; margin-top:0; } 
-	.strike { text-decoration: line-through; }
-	
-
-</style>	
-
-<script type="text/javascript">
-	$(function(){
-		//all hover and click logic for buttons
-		$(".fg-button:not(.ui-state-disabled)")
-		.hover(
-			function(){ 
-				$(this).addClass("ui-state-hover"); 
-			},
-			function(){ 
-				$(this).removeClass("ui-state-hover"); 
-			}
-		)
-		.mousedown(function(){
-				$(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
-				if( $(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active') ){ $(this).removeClass("ui-state-active"); }
-				else { $(this).addClass("ui-state-active"); }	
-		})
-		.mouseup(function(){
-			if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button,  .fg-buttonset-multi .fg-button') ){
-				$(this).removeClass("ui-state-active");
-			}
-		});
-		
-		$('#defaultStateToggler').click(function(){
-			$(this).prev('.ui-button').button('option','overrideDefaultState',$(this).button('option','active')?'':false);
-		});
-		
-
-
-		$('input').customInput();
-
-		//$('#vizframe').contents().find('#tinaviz').setLiterratureLevel(4);
-		
-		
-	// float setZoomValue(float value);
-    // void setGSValue(float value);
-    // boolean showLabelsSwitch(boolean value);
-    // int setLiterratureLevel(int value);
-    // boolean loadView(String uri);
-    
-	});
-
-</script>
-
-
+    </style>	
 </head>
 <body>
-
-
     <script type="text/javascript">
     $(function(){   
-         var $tabs = $("#tabs").tabs({
-             fx: { opacity: 'toggle' },
-             show: function(event, ui) {
-               if($.data(ui.tab, 'load.tabs')=="#tabs-2") {
-                  synchronize();
-               }
-             }
-        }).tabs('rotate', 2000);
-    });    
+    
+         var $tabs = $("#tabs").tabs();
+    });  
+    function autoIframe(frameId){
+        try {
+            frame = document.getElementById(frameId);
+            innerDoc = (frame.contentDocument) ? frame.contentDocument : frame.contentWindow.document;
+            objToResize = (frame.style) ? frame.style : frame;
+            objToResize.height = innerDoc.body.scrollHeight + 10;
+        }
+        catch(err) {
+            window.status = err.message;
+        }
+    }
     </script>
 	 <div id="tabs">
             <ul>
@@ -137,217 +41,11 @@
                 <p>Edit or export your data sets</p>
            </div>
             <div id="tabs-2">
-                <div id="container">
-	                <script type="text/javascript">
-	                $(function(){  
-	                    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-                        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-                        var appletPath;
-                        if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
-                        else { appletPath = path + "/content/applet/index.html" }
-                        var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-                        appletFile.initWithPath(appletPath);
-                        var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
-                        $('#container').append('<iframe id="vizframe" src="'+appletURL+'" style="border: 0px; width: 880px; height: 580px;"></iframe>'); 
-                        // $('#vizframe').attr('src', 'http:LINK');
-
-                    });
-	                </script>
-                </div>
-	            <div class="search"> 
-                    <label for="searchfield">Search:</label> 
-                    <input id="searchfield" name="searchfield" /> 
-                </div>
-                
-                <script type="text/javascript">
-                
-                frame = $('#vizframe');
-                labels = [];
-
-                $(document).ready(function() {  
-                    //applet = $('#vizframe').contents().find('#tinaviz');
-                    frame = $('#vizframe');
-                    labels = [];
-                    $("#searchfield").autocomplete({
-			            data: labels,
-			            extraSearch: function(term) {
-			               frame.contents().find('#tinaviz')[0].getSubApplet().searchLabelDynamicFocus(term);
-			            }
-			        });
-			        
-			        // wait for the applet to be ready
-			        setTimeout("synchronize()",5000);
-                } );
-                
-                
-                
-                function synchronize() {
-                     labels = frame.contents().find('#tinaviz')[0].getSubApplet().getLabels();
-                     $("#searchfield").autocomplete("setData", {
-			            data: labels
-			         });
-                }
-                
-                function toggleLabels() {
-                    frame.contents().find('#tinaviz')[0].getSubApplet().toggleLabels();
-                }
-
-
-	            function toggleNodes() {
-                    frame.contents().find('#tinaviz')[0].getSubApplet().toggleNodes();
-                }
-                 function centerOnNodeByLabelRegex(regex) {
-                    frame.contents().find('#tinaviz')[0].getSubApplet().centerOnNodeByLabelRegex(regex);
-                }
-   
-	            function toggleLinks() {
-                    frame.contents().find('#tinaviz')[0].getSubApplet().toggleLinks();
-                }
-                function togglePosterOverlay() {
-                    frame.contents().find('#tinaviz')[0].getSubApplet().togglePosterOverlay();
-                }
-                
-	            function center() {
-                    frame.contents().find('#tinaviz')[0].getSubApplet().center();
-                }
-                
-	            function takePDFPicture() {
-
-                    var outputFilePath = "graph.pdf";
-
-                        var result;
-                        try {
-                            result = frame.contents().find('#tinaviz')[0].getSubApplet().takePDFPicture(outputFilePath);
-                        } catch (e) {
-                            //alert("Oops! Something bad just happened. Calling 911...");
-                            $('#debugdiv').append('<br><b>exception='+e+'</b>'); 
-                            console.log(e);
-                            return;
-                        }
-                        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>'); 
-                        setTimeout("downloadFile('"+outputFilePath+"', 60)",1000);
-                }
-                
-                function takePNGPicture() {
-
-                    var outputFilePath = "graph.png";
-
-                        var result;
-                        try {
-                            result = frame.contents().find('#tinaviz')[0].getSubApplet().takePNGPicture(outputFilePath);
-                        } catch (e) {
-                            //alert("Oops! Something bad just happened. Calling 911...");
-                            $('#debugdiv').append('<br><b>exception='+e+'</b>'); 
-                            console.log(e);
-                            return;
-                        }
-                        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>'); 
-                        setTimeout("downloadFile('"+outputFilePath+"', 60)",1000);
-                }
-                
-                function downloadFile(outputFilePath, timeout) {
-                        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-                        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-                        var downloadPath;
-                        if (path.search(/\\/) != -1) { downloadPath = path + "\\..\\"+outputFilePath }
-                        else { downloadPath = path + "/../"+outputFilePath  }
-                        var downloadFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-                        downloadFile.initWithPath(downloadPath);
-                        if (downloadFile.exists() && timeout < 0) {
-                             window.location.href = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(downloadFile);
-                             return true;
-                        }
-                        if (downloadFile.exists() && timeout > 0) {
-                            setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 1000);
-                            return true;
-                        } else {
-                            // $('#debugdiv').append('<br>waiting..</p>'); 
-                            setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1000);
-                            return true;
-                        }
-                        return false;
-	             }
-                
-	            function updateView() {
-	            
-	                    var filename = "test3.gexf";
-	            	    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-                        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-                        var gexfPath;
-                        if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
-                        else { gexfPath = path + "/content/applet/data/"+filename  }
-                        var gexfFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-                        gexfFile.initWithPath(gexfPath);   
-                        var gexfURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(gexfFile);
-                        $('#debugdiv').append('<p>applet.updateView("'+gexfURL+'");'); 
-                        var result;
-                        try {
-                            result = frame.contents().find('#tinaviz')[0].getSubApplet().updateView(gexfURL);
-                            synchronize();
-                        } catch (e) {
-                            $('#debugdiv').append('<br/><b>== exception '+e+'</b>'); 
-                            console.log(e);
-                            
-                        }
-                        $('#debugdiv').append('<br/>== returned '+result+'</p>'); 
-                }
-                </script>
-                <div>
-                <!--
-                <form>	
-	                <fieldset> 
-		                <legend>Show</legend> 
-		                <input type="checkbox" name="genre" id="check-1" value="action" /> 
-		                <label for="check-1">Labels</label> 
-		
-		                <input type="checkbox" name="genre" id="check-2" value="comedy" /> 
-		                <label for="check-2">Nodes</label> 
-		
-		                <input type="checkbox" name="genre" id="check-3" value="epic" /> 
-		                <label for="check-3">Linksl</label> 
-
-	                </fieldset> 
-		
-	                <fieldset> 
-		                <legend>Keywords</legend> 
-		                <input type="radio" name="opinions" id="radio-1" value="1" /> 
-		                <label for="radio-1">Current project</label> 
-		
-		                <input type="radio" name="opinions" id="radio-2" value="1" /> 
-		                <label for="radio-2">Current batch</label> 
-		
-		                <input type="radio" name="opinions" id="radio-3" value="1" /> 
-		                <label for="radio-3">Worldwide</label> 
-	                </fieldset> 
-                </form> 
-                -->
-         </div>
-       <input id="syncButton" type="button" class="ui-widget ui-state-default" onclick="updateView()" value="sync" />
-       <input id="saveButton" type="button" class="ui-widget ui-state-default" onclick="save()" value="save" />
-       <input id="bookmarkButton" type="button" class="ui-widget ui-state-default" onclick="snapshot()" value="bookmark" />
-       <input id="pdfButton" type="button" class="ui-widget ui-state-default" onclick="takePDFPicture()" value="Save poster (PDF)" /> 
-       <input id="pngButton" type="button" class="ui-widget ui-state-default" onclick="takePNGPicture()" value="Save image (PNG)" /> 
-       
-       <input id="centerButton" type="button" class="ui-widget ui-state-default" onclick="center()" value="recenter" />
-
-       <input id="showLabelsButton" type="button" class="ui-widget ui-state-default" onclick="toggleLabels()" value="labels" />
-       <input id="showNodesButton" type="button" class="ui-widget ui-state-default" onclick="toggleNodes()" value="nodes" />
-       <input id="showLinksButton" type="button" class="ui-widget ui-state-default" onclick="toggleLinks()" value="links" />
-       <input id="showLegendButton" type="button" class="ui-widget ui-state-default" onclick="togglePosterOverlay()" value="legend" />      
-      <div id="debugdiv"></div> 
-      </div> 
+                <iframe id="visualization" name="visualization" class="visualization" src="visualization.html" 
+                 width="100%" height="900px" allowtransparency="true" scrolling="no" 
+                 frameborder="0" onload="this.height=this.contentDocument.height"></iframe>
+            </div>
       </div>
     </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
 

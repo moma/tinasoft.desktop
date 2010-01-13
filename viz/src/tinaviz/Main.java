@@ -69,7 +69,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
 
-        size(850, 550, P2D);
+        size(1100, 800, P2D);
         fill(255, 184);
         frameRate(60);
         // smooth();
