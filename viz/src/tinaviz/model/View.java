@@ -48,6 +48,7 @@ public class View {
 
     public List projects = new ArrayList<Project>();
     public List keywords = new ArrayList<Keyword>();
+    public boolean paused = true;
 
     public class Showprojects {
 

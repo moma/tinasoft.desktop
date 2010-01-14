@@ -25,7 +25,15 @@
     <script src="lib/js/jquery/jquery.jqtransform.js"         type="text/javascript" language="javascript"></script>
 
     <style type="text/css">	
-     .ui-widget { font-size: 0.9em; }
+        /*background: #ffffff;
+    	background-color: #ffffff;
+    	color: #ffffff;*/
+     font-size: 12px;
+     
+     .h3 {  font-size: 14px;  }
+     .p {  font-size: 11px;  }
+     
+     .ui-widget { font-size: 12px; }
 	.fg-button { outline: 0; margin:0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
 	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
 	
@@ -46,23 +54,22 @@
 	.fg-buttonset-single .fg-button, 
 	.fg-buttonset-multi .fg-button { margin-right: -1px;}
 	
-	.fg-toolbar { padding: .5em; margin: 0;  }
-	.fg-toolbar .fg-buttonset { margin-right:1.5em; padding-left: 1px; }
-	.fg-toolbar .fg-button { font-size: 0.7em;  }
+	.fg-toolbar { padding: 8px; margin: 0;  }
+	.fg-toolbar .fg-buttonset { margin-right:12px; padding-left: 1px; }
+	.fg-toolbar .fg-button { font-size: 11px;  }
  
-	/*demo page css*/
-	/*
-	h2 { clear: both; padding-top:1.5em; margin-top:0; } 
-	.strike { text-decoration: line-through; }
-	*/
-	background-color: #ffffff;
+ /* VERTICAL TOOLBAR FOR TINA */
+ .ui-widget-header { border: 1px solid #231d2b; background: #30273a url(images/ui-bg_highlight-soft_25_30273a_1x100.png) 50% 50% repeat-x; color: #ffffff;  }
+.ui-widget-vheader { border: 1px solid #231d2b; background: #30273a url(images/ui-bg_highlight-soft_25_30273a_1x100v.png) 50% 50% repeat-y; color: #ffffff; }
 
 .vizframe {
-   /* position:absolute;
+   position:absolute;/*
     top:0px;
     left:0px;*/
+    top:0px;
+    left:0px;
     width:100%;
-    height:820px;
+    height:100%;
     z-index:2;
     border: 0px;
     background-color: #ffffff;
@@ -70,10 +77,54 @@
      
 }
 
-
-.viztoolbariframe {
+.sidebariframe {
     position:absolute;
-    top:600px;
+    top:30px;
+    right:16px;
+    width:280px;
+    height:500px;
+    background-color: #ffffff;
+    background: #ffffff;
+    border:solid 0px;
+    z-index:5;
+}
+
+.sidebar {
+    position:absolute;
+    top:30px;
+    right:16px;
+    width: 280px;
+    height: 500px;
+    z-index:6;
+}
+
+.vtoolbariframe {
+    position:absolute;
+    top:30px;
+    right: 325px;
+    width: 38px;
+    height:478px;
+    background-color: #ffffff;
+    background: #ffffff;
+    border:solid 0px;
+    z-index:3;
+}
+
+.vtoolbar {
+    position:absolute;
+    top: 30px;
+    right: 317px;
+    width: 22px;
+    height: 460px;
+    z-index:4;
+}
+.altslider {
+    height: 450px;
+}
+
+.htoolbariframe {
+    position:absolute;
+    bottom:80px;
     left:40px;
     width:980px;
     height:45px;
@@ -83,13 +134,14 @@
     z-index:1;
 }
 
-.viztoolbar {
+.htoolbar {
     position:absolute;
-    top:600px;
+    bottom:80px;
     left:40px;
-    z-index:3;
+    z-index:2;
 }
     </style>
+    
     <script type="text/javascript"> 
 	$(function(){
 		//all hover and click logic for buttons
@@ -112,22 +164,15 @@
 				$(this).removeClass("ui-state-active");
 			}
 		});
-		
-		$("#sliderzoom").slider({
-            value:120,
-            min: 1,
-            max: 160,
-            step: 2,
-            slide: function(event, ui) {
-                frame.contents().find('#tinaviz')[0].getSubApplet().setZoomValue(ui.value);
-            }
-        });
 	});
-    </script> 
-
+</script> 
 </head>
 <body>
     <script type="text/javascript">
+    
+frame = $('#vizframe');
+labels = [];
+
 $(function(){  
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
     var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
@@ -137,30 +182,38 @@ $(function(){
     var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
     appletFile.initWithPath(appletPath);
     var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
-    $('#container').append('<iframe id="vizframe" class="vizframe" allowtransparency="true" scrolling="no" width="100%" height="900" frameborder="0" src="'+appletURL+'"></iframe><iframe id="viztoolbariframe" class="viztoolbariframe"></iframe>'); 
+    $('#container').append('<iframe id="vizframe" class="vizframe" allowtransparency="true" scrolling="no" width="100%" height="900" frameborder="0" src="'+appletURL+'"></iframe>');
+    $('#container').append('<iframe id="htoolbariframe" class="htoolbariframe"></iframe>'); 
+    $('#container').append('<iframe id="vtoolbariframe" class="vtoolbariframe"></iframe>'); 
                         // $('#vizframe').attr('src', 'http:LINK');
 });
-        </script>
-    </div>
-    <div class="search"> 
-        <label for="searchfield">Search:</label> 
-        <input id="searchfield" name="searchfield" /> 
-    </div>
-    <script type="text/javascript">
+
+		
+
+
                 
-frame = $('#vizframe');
-labels = [];
 
 $(document).ready(function() {  
     //applet = $('#vizframe').contents().find('#tinaviz');
     frame = $('#vizframe');
     labels = [];
+ 
     $("#searchfield").autocomplete({
 	    data: labels,
 		extraSearch: function(term) {
 		    frame.contents().find('#tinaviz')[0].getSubApplet().searchLabelDynamicFocus(term);
 	    }
 	});
+	$("#altslider").slider({
+			orientation: "vertical",
+			range: true,
+			values: [17, 67],
+			slide: function(event, ui) {
+				//$("#amount").val('$' + ui.values[0] + ' - $' + ui.values[1]); // ui.values[1]
+				frame.contents().find('#tinaviz')[0].getSubApplet().setAltitude(ui.values[1]);
+			}
+	});
+	
 			        
     // wait for the applet to be ready
 	setTimeout("synchronize()",5000);
@@ -199,7 +252,11 @@ function togglePosterOverlay() {
 function center() {
     frame.contents().find('#tinaviz')[0].getSubApplet().center();
 }
-                
+
+function togglePause() {
+    frame.contents().find('#tinaviz')[0].getSubApplet().togglePause();
+}
+                   
 function takePDFPicture() {
     var outputFilePath = "graph.pdf";
     var result;
@@ -335,9 +392,10 @@ function loadNewViz(url) {
     // 
 }
 */
-    </script>
-    <div id="container">
-        <div id="viztoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix viztoolbar"> 
+      </script>
+      <div id="container">
+      </div> 
+      <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix htoolbar"> 
         
 	        <div class="fg-buttonset ui-helper-clearfix"> 
 		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Open" onclick="updateView()"><span class="ui-icon ui-icon-folder-open"></span> Open</a> 
@@ -354,7 +412,8 @@ function loadNewViz(url) {
 		        <button class="fg-button ui-state-active ui-corner-left" onclick="toggleLabels()">labels</button> 
 		        <button class="fg-button ui-state-active" onclick="toggleNodes()">nodes</button> 
 		        <button class="fg-button ui-state-active" onclick="toggleLinks()">links</button> 
-		        <button class="fg-button ui-state-default  ui-corner-right" onclick="togglePosterOverlay()">overlay</button> 
+		        <button class="fg-button ui-state-default" onclick="togglePosterOverlay()">overlay</button> 
+		        <button class="fg-button ui-state-default  ui-corner-right" onclick="togglePause()">pause</button> 
 	        </div>
 	         
 	        <div class="fg-buttonset ui-helper-clearfix"> 
@@ -371,6 +430,28 @@ function loadNewViz(url) {
 	        </div> 
 	        
         </div> 
+        
+        <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar"> 
+            <div id="altslider" class="altslider"></div>
+        </div>
+      
+        <div id="sidebar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix sidebar"> 
+        
+            <div class="search"> 
+                <label for="searchfield">Search:</label> 
+                <input id="searchfield" name="searchfield" /> 
+            </div>
+	        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix"> 
+		        <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button> 
+		        <button class="fg-button ui-state-default ui-priority-primary">batch</button> 
+		        <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button> 
+	        </div> 
+	        
+	        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix"> 
+	            <h3>Project details</h3>
+		        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	        </div> 
+	        
         <div id="debugdiv">
         </div> 
     </body>

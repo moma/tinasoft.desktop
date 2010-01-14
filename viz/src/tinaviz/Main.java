@@ -69,10 +69,19 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
 
-        size(1100, 800, P2D);
+        //String engine = (getParameter("engine")) ? getParameter("engine") : "P2D";
+
+        String engine = P2D;
+        if (getParameter("engine").equals("software")) {
+            engine = P2D;
+        } else if (getParameter("engine").equals("hardware")) {
+            engine = OPENGL;
+        }
+
+        size(1100, 800, engine);
         fill(255, 184);
         frameRate(60);
-        // smooth();
+        smooth();
         addMouseWheelListener(this);
         //noStroke();
         // current sketch's "data" directory to load successfully
@@ -92,7 +101,7 @@ public class Main extends PApplet implements MouseWheelListener {
         float rx = random(width);
         float ry = random(height);
         float radius = 0.0f;
-        for (int i = 0; i < 800; i++) {
+        for (int i = 0; i < 100; i++) {
             radius = random(3.0f, 10.0f);
             if (radius > MAX_RADIUS) {
                 MAX_RADIUS = radius;
@@ -336,7 +345,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     continue;
                 }
 
-                if (!mouseDragging) {
+                if (!mouseDragging ) {
                     vx = n2.x - n1.x;
                     vy = n2.y - n1.y;
                     len = sqrt(sq(vx) + sq(vy));
@@ -346,10 +355,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
                     // ATTRACTION
                     if (!mouseDragging) {
+                        if(!currentView.paused) {
                         n1.vx += (vx * len) * LAYOUT_ATTRACTION;
                         n1.vy += (vy * len) * LAYOUT_ATTRACTION;
                         n2.vx -= (vx * len) * LAYOUT_ATTRACTION;
                         n2.vy -= (vy * len) * LAYOUT_ATTRACTION;
+                        }
                     }
                     // AFFICHAGE LIEN (A CHANGER)
 
@@ -370,12 +381,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 // REPULSION
                 if (!mouseDragging && len != 0) {
 
+                    if(!currentView.paused) {
                     // TODO fix this
                     n1.vx -= (vx / len) * LAYOUT_REPULSION;
                     n1.vy -= (vy / len) * LAYOUT_REPULSION;
 
                     n2.vx += (vx / len) * LAYOUT_REPULSION;
                     n2.vy += (vy / len) * LAYOUT_REPULSION;
+                    }
 
                 }
             } // FOR NODE B
@@ -394,6 +407,7 @@ public class Main extends PApplet implements MouseWheelListener {
             n.y += n.vy;
             n.vx = 0.0f;
             n.vy = 0.0f;
+
 
             int rgb = (int) ((255.0 / MAX_RADIUS) * n.radius);
 
@@ -568,6 +582,10 @@ public class Main extends PApplet implements MouseWheelListener {
         this.currentView.showPosterOverlay = !this.currentView.showPosterOverlay;
         return this.currentView.showPosterOverlay;
     }
+    public boolean togglePause() {
+        this.currentView.paused = !this.currentView.paused;
+        return this.currentView.paused;
+    }
 
     public boolean showNodes(boolean value) {
         this.currentView.showNodes = value;
@@ -600,7 +618,7 @@ public class Main extends PApplet implements MouseWheelListener {
         zoomRatio = 1.0f;
     }
 
-    public int setLiterratureLevel(int value) {
+    public int setAltitude(int value) {
         return 0;
     }
 
