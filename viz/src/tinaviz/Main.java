@@ -16,6 +16,9 @@ import processing.opengl.*;
 import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
+// import netscape.javascript.*;
+//import netscape.javascript.JSObject ;
+import netscape.javascript.*;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -51,6 +54,31 @@ public class Main extends PApplet implements MouseWheelListener {
     private Pattern pattern;
     private Matcher matcher;
     private String currentTextSearch = "&&&&";
+    private JSObject window = null;
+
+    private void showNodeDetails(Node n) {
+        if (currentView.showNodeDetails) return;
+        currentView.animationPaused = true;
+        currentView.colorsDesaturated = true;
+        currentView.zoomFrozen = true;
+        currentView.showNodeDetails = true;
+
+        window.eval(
+                "parent.showNodeDetails(" + screenX(n.x, n.y)
+                + "," + screenY(n.x, n.y)
+                + ",\"" + n.uuid + "\""
+                + ",\"" + n.label + "\");");
+
+    }
+
+    private void hideNodeDetails() {
+        if (!currentView.showNodeDetails) return;
+        window.eval("parent.hideNodeDetails();");
+        currentView.colorsDesaturated = false;
+        currentView.animationPaused = false;
+        currentView.zoomFrozen = false;
+         currentView.showNodeDetails = false;
+    }
 
     public enum RecordingFormat {
 
@@ -119,7 +147,10 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
             }
         }
+
+        window = JSObject.getWindow(this);
         System.out.println("Starting visualization..");
+
     }
 
     @Override
@@ -298,6 +329,16 @@ public class Main extends PApplet implements MouseWheelListener {
         float LAYOUT_REPULSION = 0.01f;
         float LAYOUT_ATTRACTION = 0.0001f;
 
+        if (currentView.colorsDesaturated) {
+            background(200);
+            stroke(0);
+            fill(180);
+        } else {
+            background(255);
+            stroke(0);
+            fill(120);
+        }
+
         if (currentView.showPosterOverlay) {
             fill(30);
             textSize(40);
@@ -345,7 +386,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     continue;
                 }
 
-                if (!mouseDragging ) {
+                if (!mouseDragging) {
                     vx = n2.x - n1.x;
                     vy = n2.y - n1.y;
                     len = sqrt(sq(vx) + sq(vy));
@@ -355,11 +396,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
                     // ATTRACTION
                     if (!mouseDragging) {
-                        if(!currentView.paused) {
-                        n1.vx += (vx * len) * LAYOUT_ATTRACTION;
-                        n1.vy += (vy * len) * LAYOUT_ATTRACTION;
-                        n2.vx -= (vx * len) * LAYOUT_ATTRACTION;
-                        n2.vy -= (vy * len) * LAYOUT_ATTRACTION;
+                        if (!currentView.animationPaused) {
+                            n1.vx += (vx * len) * LAYOUT_ATTRACTION;
+                            n1.vy += (vy * len) * LAYOUT_ATTRACTION;
+                            n2.vx -= (vx * len) * LAYOUT_ATTRACTION;
+                            n2.vy -= (vy * len) * LAYOUT_ATTRACTION;
                         }
                     }
                     // AFFICHAGE LIEN (A CHANGER)
@@ -381,13 +422,13 @@ public class Main extends PApplet implements MouseWheelListener {
                 // REPULSION
                 if (!mouseDragging && len != 0) {
 
-                    if(!currentView.paused) {
-                    // TODO fix this
-                    n1.vx -= (vx / len) * LAYOUT_REPULSION;
-                    n1.vy -= (vy / len) * LAYOUT_REPULSION;
+                    if (!currentView.animationPaused) {
+                        // TODO fix this
+                        n1.vx -= (vx / len) * LAYOUT_REPULSION;
+                        n1.vy -= (vy / len) * LAYOUT_REPULSION;
 
-                    n2.vx += (vx / len) * LAYOUT_REPULSION;
-                    n2.vy += (vy / len) * LAYOUT_REPULSION;
+                        n2.vx += (vx / len) * LAYOUT_REPULSION;
+                        n2.vy += (vy / len) * LAYOUT_REPULSION;
                     }
 
                 }
@@ -422,6 +463,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     // fill(200);
                     if (mouseClick && !n.selected) {
                         n.selected = true;
+                        showNodeDetails(n);
 
                     } else if (mouseClick && n.selected) {
                         n.selected = false;
@@ -553,9 +595,10 @@ public class Main extends PApplet implements MouseWheelListener {
     public String[] getLabels() {
 
         String[] results = new String[nodes.size()];
-        int i=0;
-        for (Node n : nodes)
+        int i = 0;
+        for (Node n : nodes) {
             results[i++] = n.label;
+        }
         return results;
     }
 
@@ -582,9 +625,10 @@ public class Main extends PApplet implements MouseWheelListener {
         this.currentView.showPosterOverlay = !this.currentView.showPosterOverlay;
         return this.currentView.showPosterOverlay;
     }
+
     public boolean togglePause() {
-        this.currentView.paused = !this.currentView.paused;
-        return this.currentView.paused;
+        this.currentView.animationPaused = !this.currentView.animationPaused;
+        return this.currentView.animationPaused;
     }
 
     public boolean showNodes(boolean value) {
@@ -656,6 +700,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mousePressed() {
+
+        hideNodeDetails();
         // oldmouseX = mouseX;
         //oldmouseY = mouseY;
         // mousePress = true;
@@ -669,11 +715,13 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void mouseClicked() {
+        hideNodeDetails();
         mouseClick = true;
     }
 
     @Override
     public void mouseDragged() {
+        hideNodeDetails();
         mouseDragging = true;
         float dragSensibility = 3.0f;
         inerX = ((float) mouseX - oldmouseX) / (zoomRatio * dragSensibility);
@@ -692,6 +740,7 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
+          if (currentView.zoomFrozen) return;
         inerZ = -e.getWheelRotation();
     }
 

@@ -48,7 +48,10 @@ public class View {
 
     public List projects = new ArrayList<Project>();
     public List keywords = new ArrayList<Keyword>();
-    public boolean paused = true;
+    public boolean animationPaused = true;
+    public boolean colorsDesaturated = false;
+    public boolean zoomFrozen = false;
+    public boolean showNodeDetails = false;
 
     public class Showprojects {
 

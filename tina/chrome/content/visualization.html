@@ -14,7 +14,7 @@
     <!--<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/customInput.jquery.css" />-->
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/jqtransform.tina.css" media="all" />
 
-	
+
     <script src="lib/js/jquery/jquery-1.3.2.min.js"           type="text/javascript" language="javascript"></script>
     <script src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" type="text/javascript" language="javascript"></script>
     <script src="lib/js/jquery/ui.selectmenu.js"              type="text/javascript" language="javascript"></script>
@@ -24,43 +24,44 @@
     <script src="console.js"                                  type="text/javascript" language="javascript"></script>
     <script src="lib/js/jquery/jquery.jqtransform.js"         type="text/javascript" language="javascript"></script>
 
-    <style type="text/css">	
+    <style type="text/css">
         /*background: #ffffff;
     	background-color: #ffffff;
     	color: #ffffff;*/
      font-size: 12px;
-     
+
      .h3 {  font-size: 14px;  }
      .p {  font-size: 11px;  }
-     
+
      .ui-widget { font-size: 12px; }
 	.fg-button { outline: 0; margin:0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
 	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
-	
+
 	a.fg-button { float:left; }
-	
+
 	/* remove extra button width in IE */
 	button.fg-button { width:auto; overflow:visible; }
-	
+
 	.fg-button-icon-left { padding-left: 2.1em; }
 	.fg-button-icon-right { padding-right: 2.1em; }
 	.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
 	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
-	
-	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */	
-	
+
+	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */
+
 	.fg-buttonset { float:left; }
 	.fg-buttonset .fg-button { float: left; }
-	.fg-buttonset-single .fg-button, 
+	.fg-buttonset-single .fg-button,
 	.fg-buttonset-multi .fg-button { margin-right: -1px;}
-	
+
 	.fg-toolbar { padding: 8px; margin: 0;  }
 	.fg-toolbar .fg-buttonset { margin-right:12px; padding-left: 1px; }
 	.fg-toolbar .fg-button { font-size: 11px;  }
- 
+
  /* VERTICAL TOOLBAR FOR TINA */
  .ui-widget-header { border: 1px solid #231d2b; background: #30273a url(images/ui-bg_highlight-soft_25_30273a_1x100.png) 50% 50% repeat-x; color: #ffffff;  }
 .ui-widget-vheader { border: 1px solid #231d2b; background: #30273a url(images/ui-bg_highlight-soft_25_30273a_1x100v.png) 50% 50% repeat-y; color: #ffffff; }
+.ui-widget-miniheader { border: 1px solid #231d2b; background: #30273a  50% 50% repeat-y; color: #ffffff; }
 
 .vizframe {
    position:absolute;/*
@@ -74,7 +75,7 @@
     border: 0px;
     background-color: #ffffff;
     background: #ffffff;
-     
+
 }
 
 .sidebariframe {
@@ -140,24 +141,48 @@
     left:40px;
     z-index:2;
 }
+
+.nodedetailsiframe {
+    position:absolute;
+    top:80px;
+    left:40px;
+    width:110px;
+    height: 80px;
+    background-color: #000000;
+    background: #000000;
+    border:solid 0px;
+    z-index:1;
+}
+
+.nodedetails {
+    position:absolute;
+    top:80px;
+    left:40px;
+    width: 100px;
+    height: 70px;
+   /* background-color: #000000;
+    background: #000000;*/
+     border: solid 0px;
+    z-index: 2;
+}
     </style>
-    
-    <script type="text/javascript"> 
+
+    <script type="text/javascript">
 	$(function(){
 		//all hover and click logic for buttons
 		$(".fg-button:not(.ui-state-disabled)")
 		.hover(
-			function(){ 
-				$(this).addClass("ui-state-hover"); 
+			function(){
+				$(this).addClass("ui-state-hover");
 			},
-			function(){ 
-				$(this).removeClass("ui-state-hover"); 
+			function(){
+				$(this).removeClass("ui-state-hover");
 			}
 		)
 		.mousedown(function(){
 				$(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
 				if( $(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active') ){ $(this).removeClass("ui-state-active"); }
-				else { $(this).addClass("ui-state-active"); }	
+				else { $(this).addClass("ui-state-active"); }
 		})
 		.mouseup(function(){
 			if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button,  .fg-buttonset-multi .fg-button') ){
@@ -165,15 +190,15 @@
 			}
 		});
 	});
-</script> 
+</script>
 </head>
 <body>
     <script type="text/javascript">
-    
+
 frame = $('#vizframe');
 labels = [];
 
-$(function(){  
+$(function(){
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
     var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
     var appletPath;
@@ -183,21 +208,27 @@ $(function(){
     appletFile.initWithPath(appletPath);
     var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
     $('#container').append('<iframe id="vizframe" class="vizframe" allowtransparency="true" scrolling="no" width="100%" height="900" frameborder="0" src="'+appletURL+'"></iframe>');
-    $('#container').append('<iframe id="htoolbariframe" class="htoolbariframe"></iframe>'); 
-    $('#container').append('<iframe id="vtoolbariframe" class="vtoolbariframe"></iframe>'); 
+    $('#container').append('<iframe id="htoolbariframe" class="htoolbariframe"></iframe>');
+    $('#container').append('<iframe id="vtoolbariframe" class="vtoolbariframe"></iframe>');
+    $('#container').append('<iframe id="nodedetailsiframe" class="nodedetailsiframe"></iframe>');
                         // $('#vizframe').attr('src', 'http:LINK');
 });
 
-		
 
 
-                
 
-$(document).ready(function() {  
+
+
+$(document).ready(function() {
     //applet = $('#vizframe').contents().find('#tinaviz');
     frame = $('#vizframe');
     labels = [];
- 
+
+	// prehide the node details pane
+    $('#nodedetailsiframe').hide();
+	$('#nodedetails').hide();
+
+
     $("#searchfield").autocomplete({
 	    data: labels,
 		extraSearch: function(term) {
@@ -213,22 +244,22 @@ $(document).ready(function() {
 				frame.contents().find('#tinaviz')[0].getSubApplet().setAltitude(ui.values[1]);
 			}
 	});
-	
-			        
+
+
     // wait for the applet to be ready
 	setTimeout("synchronize()",5000);
-			        
+
 	// wait for the applet to be ready
-	// setTimeout("addToolbar()",2000); 
+	// setTimeout("addToolbar()",2000);
 });
-                
+
 function synchronize() {
     labels = frame.contents().find('#tinaviz')[0].getSubApplet().getLabels();
     $("#searchfield").autocomplete("setData", {
 	    data: labels
 	});
 }
-                
+
 function toggleLabels() {
     frame.contents().find('#tinaviz')[0].getSubApplet().toggleLabels();
 }
@@ -240,7 +271,7 @@ function toggleNodes() {
 function centerOnNodeByLabelRegex(regex) {
     frame.contents().find('#tinaviz')[0].getSubApplet().centerOnNodeByLabelRegex(regex);
 }
-   
+
 function toggleLinks() {
     frame.contents().find('#tinaviz')[0].getSubApplet().toggleLinks();
 }
@@ -248,7 +279,7 @@ function toggleLinks() {
 function togglePosterOverlay() {
     frame.contents().find('#tinaviz')[0].getSubApplet().togglePosterOverlay();
 }
-                
+
 function center() {
     frame.contents().find('#tinaviz')[0].getSubApplet().center();
 }
@@ -256,7 +287,7 @@ function center() {
 function togglePause() {
     frame.contents().find('#tinaviz')[0].getSubApplet().togglePause();
 }
-                   
+
 function takePDFPicture() {
     var outputFilePath = "graph.pdf";
     var result;
@@ -264,14 +295,14 @@ function takePDFPicture() {
         result = frame.contents().find('#tinaviz')[0].getSubApplet().takePDFPicture(outputFilePath);
     } catch (e) {
         //alert("Oops! Something bad just happened. Calling 911...");
-        $('#debugdiv').append('<br><b>exception='+e+'</b>'); 
+        $('#debugdiv').append('<br><b>exception='+e+'</b>');
         console.log(e);
         return;
     }
-    $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>'); 
+    $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
     setTimeout("downloadFile('"+outputFilePath+"', 60)",1000);
 }
-                
+
 function takePNGPicture() {
     var outputFilePath = "graph.png";
     var result;
@@ -279,14 +310,14 @@ function takePNGPicture() {
         result = frame.contents().find('#tinaviz')[0].getSubApplet().takePNGPicture(outputFilePath);
     } catch (e) {
         //alert("Oops! Something bad just happened. Calling 911...");
-        $('#debugdiv').append('<br><b>exception='+e+'</b>'); 
+        $('#debugdiv').append('<br><b>exception='+e+'</b>');
          console.log(e);
          return;
     }
-    $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>'); 
+    $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
     setTimeout("downloadFile('"+outputFilePath+"', 60)",1000);
 }
-                
+
 function downloadFile(outputFilePath, timeout) {
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
     var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
@@ -303,15 +334,15 @@ function downloadFile(outputFilePath, timeout) {
         setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 1000);
         return true;
     } else {
-        // $('#debugdiv').append('<br>waiting..</p>'); 
+        // $('#debugdiv').append('<br>waiting..</p>');
         setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1000);
         return true;
     }
     return false;
 }
-                
+
 function updateView() {
-	            
+
     var filename = "test3.gexf";
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
     var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
@@ -319,26 +350,44 @@ function updateView() {
     if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
     else { gexfPath = path + "/content/applet/data/"+filename  }
     var gexfFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    gexfFile.initWithPath(gexfPath);   
+    gexfFile.initWithPath(gexfPath);
     var gexfURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(gexfFile);
-    $('#debugdiv').append('<p>applet.updateView("'+gexfURL+'");'); 
+    $('#debugdiv').append('<p>applet.updateView("'+gexfURL+'");');
     var result;
     try {
         result = frame.contents().find('#tinaviz')[0].getSubApplet().updateView(gexfURL);
         synchronize();
     } catch (e) {
-        $('#debugdiv').append('<br/><b>== exception '+e+'</b>'); 
+        $('#debugdiv').append('<br/><b>== exception '+e+'</b>');
         console.log(e);
     }
-        $('#debugdiv').append('<br/>== returned '+result+'</p>'); 
+        $('#debugdiv').append('<br/>== returned '+result+'</p>');
 }
-               
+function showNodeDetails(x,y,uuid,label) {
+      $('#nodedetails').css("top",""+y+"px");
+      $('#nodedetails').css("left",""+x+"px");
+      $('#nodedetailsiframe').css("top",""+y+"px");
+      $('#nodedetailsiframe').css("left",""+x+"px");
+
+      $('#nodedetails').html('<div>'+label+'</div>');
+
+    $('#nodedetailsiframe').show();
+	$('#nodedetails').show();
+}
+function hideNodeDetails() {
+    $('#nodedetailsiframe').hide();
+	$('#nodedetails').hide();
+
+      //  $('#nodedetails').append('<br/>== returned '+result+'</p>');
+       // $('#nodedetails').append('<br/>== returned '+result+'</p>');
+}
+
                 /*
 function loadNewViz(url) {
 
     // un seul import de composant xpcom
     var tina = Cc["Python.TinasoftAPI"].createInstance(Ci.nsITinasoftAPI);
-    
+
     // key/value database ?
     //var key = "users/my_user_id/sessions/my_cool_session_id";
     //var key = "jbilcke_session124";
@@ -349,112 +398,114 @@ function loadNewViz(url) {
        // "session not found, aborting..";
        // log the error
        return -1;
-    } 
+    }
     // retourne un objet js/json de la forme:
-    
+
     // session.id = ID de la session
-    // session.name = nom de session lisible (affiché dans la barre de titre par exemple) 
+    // session.name = nom de session lisible (affiché dans la barre de titre par exemple)
     // session.owner = ID du propriétaire de la session
     // session.corpus = ID du corpus
     // session.bookmarks = ID de la collection de bookmarks
     // session.network = ID du graphe
-    
+
     var user = tina.user(session.owner);
     if (!user) {
        // TODO
        // "session not found, aborting..";
        // log the error
        return -1;
-    } 
-    
+    }
+
     // user.id = user id, unique
-    // user.name = nom de l'utilisateur 
-    // 
-    
+    // user.name = nom de l'utilisateur
+    //
+
         // session.id = session id, unique
-    // session.name = nom de session lisible (affiché dans la barre de titre par exemple) 
+    // session.name = nom de session lisible (affiché dans la barre de titre par exemple)
     // session.owner = propriétaire de la session, sous forme de user_id
     // session.corpus
     var bookmarks = tina.bookmarks(session.bookmarks);
     if (!bookmarks) {
-    
+
        // bookmarks est une liste de bookmark
        // TODO
        // "session not found, aborting..";
        // log the error
        return -1;
-    } 
-     
+    }
+
     var bookmarks = tina.bookmarks("bookmarks");
-        
+
     // user.id = user id, unique
-    // user.name = nom de l'utilisateur 
-    // 
+    // user.name = nom de l'utilisateur
+    //
 }
 */
       </script>
       <div id="container">
-      </div> 
-      <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix htoolbar"> 
-        
-	        <div class="fg-buttonset ui-helper-clearfix"> 
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Open" onclick="updateView()"><span class="ui-icon ui-icon-folder-open"></span> Open</a> 
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Save" onclick="save()"><span class="ui-icon ui-icon-disk"></span> Save</a> 
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="snapshot" onclick="snapshot()"><span class="ui-icon ui-icon-disk"></span> Snapshot</a> 
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a> 
-	        </div> 
-	        
-	        <div class="fg-buttonset ui-helper-clearfix"> 
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Reset view" onclick="center()"><span class="ui-icon ui-icon-circle-zoomout"></span>reset view</a> 
-	        </div> 
-	        
-	        <div class="fg-buttonset fg-buttonset-multi"> 
-		        <button class="fg-button ui-state-active ui-corner-left" onclick="toggleLabels()">labels</button> 
-		        <button class="fg-button ui-state-active" onclick="toggleNodes()">nodes</button> 
-		        <button class="fg-button ui-state-active" onclick="toggleLinks()">links</button> 
-		        <button class="fg-button ui-state-default" onclick="togglePosterOverlay()">overlay</button> 
-		        <button class="fg-button ui-state-default  ui-corner-right" onclick="togglePause()">pause</button> 
+      </div>
+      <div id="nodedetails" class="fg-toolbar ui-widget-miniheader ui-corner-all ui-helper-clearfix nodedetails">
+      </div>
+      <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix htoolbar">
+
+	        <div class="fg-buttonset ui-helper-clearfix">
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Open" onclick="updateView()"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Save" onclick="save()"><span class="ui-icon ui-icon-disk"></span> Save</a>
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="snapshot" onclick="snapshot()"><span class="ui-icon ui-icon-disk"></span> Snapshot</a>
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a>
 	        </div>
-	         
-	        <div class="fg-buttonset ui-helper-clearfix"> 
-	            <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print" onclick="takePDFPicture()"><span class="ui-icon ui-icon-print"></span> Picture</a> 
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"onclick="takePNGPicture()"><span class="ui-icon ui-icon-print"></span> PDF</a> 
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a> 
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a> 
-	        </div> 
-	        
-	        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix"> 
-		        <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button> 
-		        <button class="fg-button ui-state-default ui-priority-primary">batch</button> 
-		        <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button> 
-	        </div> 
-	        
-        </div> 
-        
-        <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar"> 
+
+	        <div class="fg-buttonset ui-helper-clearfix">
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Reset view" onclick="center()"><span class="ui-icon ui-icon-circle-zoomout"></span>reset view</a>
+	        </div>
+
+	        <div class="fg-buttonset fg-buttonset-multi">
+		        <button class="fg-button ui-state-active ui-corner-left" onclick="toggleLabels()">labels</button>
+		        <button class="fg-button ui-state-active" onclick="toggleNodes()">nodes</button>
+		        <button class="fg-button ui-state-active" onclick="toggleLinks()">links</button>
+		        <button class="fg-button ui-state-default" onclick="togglePosterOverlay()">overlay</button>
+		        <button class="fg-button ui-state-default  ui-corner-right" onclick="togglePause()">pause</button>
+	        </div>
+
+	        <div class="fg-buttonset ui-helper-clearfix">
+	            <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print" onclick="takePDFPicture()"><span class="ui-icon ui-icon-print"></span> Picture</a>
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"onclick="takePNGPicture()"><span class="ui-icon ui-icon-print"></span> PDF</a>
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>
+	        </div>
+
+	        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+		        <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button>
+		        <button class="fg-button ui-state-default ui-priority-primary">batch</button>
+		        <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button>
+	        </div>
+
+        </div>
+
+        <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar">
             <div id="altslider" class="altslider"></div>
         </div>
-      
-        <div id="sidebar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix sidebar"> 
-        
-            <div class="search"> 
-                <label for="searchfield">Search:</label> 
-                <input id="searchfield" name="searchfield" /> 
+
+        <div id="sidebar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix sidebar">
+
+            <div class="search">
+                <label for="searchfield">Search:</label>
+                <input id="searchfield" name="searchfield" />
             </div>
-	        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix"> 
-		        <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button> 
-		        <button class="fg-button ui-state-default ui-priority-primary">batch</button> 
-		        <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button> 
-	        </div> 
-	        
-	        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix"> 
-	            <h3>Project details</h3>
-		        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	        </div> 
-	        
-        <div id="debugdiv">
-        </div> 
-    </body>
+				<div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+				<button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button>
+				<button class="fg-button ui-state-default ui-priority-primary">batch</button>
+				<button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button>
+			</div>
+
+			<div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+				<h3>Project details</h3>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			</div>
+
+		<div id="debugdiv">
+		</div>
+	</body>
 </html>
 
 
