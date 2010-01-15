@@ -59,7 +59,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private void showNodeDetails(Node n) {
         if (currentView.showNodeDetails) return;
         currentView.animationPaused = true;
-        currentView.colorsDesaturated = true;
+        //currentView.colorsDesaturated = true;
         currentView.zoomFrozen = true;
         currentView.showNodeDetails = true;
 
@@ -74,7 +74,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private void hideNodeDetails() {
         if (!currentView.showNodeDetails) return;
         window.eval("parent.hideNodeDetails();");
-        currentView.colorsDesaturated = false;
+        //currentView.colorsDesaturated = false;
         currentView.animationPaused = false;
         currentView.zoomFrozen = false;
          currentView.showNodeDetails = false;
