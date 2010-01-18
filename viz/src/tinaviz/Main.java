@@ -100,10 +100,12 @@ public class Main extends PApplet implements MouseWheelListener {
         //String engine = (getParameter("engine")) ? getParameter("engine") : "P2D";
 
         String engine = P2D;
-        if (getParameter("engine").equals("software")) {
+        if (getParameter("engine") != null) {
+            if (getParameter("engine").equals("software")) {
             engine = P2D;
-        } else if (getParameter("engine").equals("hardware")) {
-            engine = OPENGL;
+            } else if (getParameter("engine").equals("hardware")) {
+                engine = OPENGL;
+            }
         }
 
         size(1100, 800, engine);
@@ -150,7 +152,18 @@ public class Main extends PApplet implements MouseWheelListener {
 
         window = JSObject.getWindow(this);
         System.out.println("Starting visualization..");
-
+        /*
+        try {
+            updateView("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/data/test2.gexf");
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (XPathExpressionException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
     }
 
     @Override
@@ -469,13 +482,12 @@ public class Main extends PApplet implements MouseWheelListener {
                         n.selected = false;
                     }
                 } else {
-                    // fill(120);
-                    fill(218, 219, 220);
                     if (mouseClick) {
                         n.selected = false;
                     }
                 }
-
+                
+                
                 if (n.label.startsWith(currentTextSearch)) {
                     fill(200, 100, 100);
                     strokeWeight(2.0f);
@@ -484,7 +496,8 @@ public class Main extends PApplet implements MouseWheelListener {
                         fill(200, 100, 100);
                         strokeWeight(2.0f);
                     } else {
-                        fill(200, 200, 200);
+                        // fill(200, 200, 200);
+                        fill(218, 219, 220);
                         strokeWeight(1.2f);
                     }
                 }

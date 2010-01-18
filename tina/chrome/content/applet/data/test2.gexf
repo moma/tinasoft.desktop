@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gexf xmlns="http://www.gexf.net/1.1draft" xmlns:viz="http://www.gexf.net/1.1draft/viz.xsd" xmlns:tina="http://localhost/tina/schema/tinaml.xsd">
+<gexf xmlns="http://www.gexf.net/1.1draft" xmlns:viz="http://www.gexf.net/1.1draft/viz.xsd">
     <graph type="static">
         <attributes class="node" type="dynamic">
             <attribute id="0" title="category" type="string"/>
@@ -7,17 +7,18 @@
         </attributes> 
 
             <!-- session parameters (saved within the URL) -->
-        <tina:config>
-                <tina:selection value="2" />
-                <tina:zoom value="1.0" />
-                <tina:threshold value="1.0" />
-                <tina:showlabels value="true" />
-                <tina:showprojects neighbours="true" all="true" />
-                <tina:showkeywords project="true" batch="false" worldwide="false" />
-                <tina:background r="204" g="122" b="229" />
-                <tina:fontsize size="13" />
-                <tina:maxdeepness value="10" />
-        </tina:config>
+        <tina>
+                <preselect node="2" /><!-- value = node id -->
+                <center mode="selection"/><!-- modes: selection, graph, coordinates -->
+                <zoom value="1.0" />
+                <threshold value="1.0" />
+                <labels show="true" />
+                <nodes show="true" />
+                <links show="true" />
+                <background r="204" g="122" b="229" />
+                <fontsize size="13" />
+                <maxdeepness value="10" />
+        </tina>
         <nodes>
             <node id="1" label="GEOLYS">
                 <viz:color b="244" g="122" r="234"/>
@@ -25,6 +26,7 @@
                 <viz:size value="3.8"/>
                 <attvalues>
                     <attvalue id="0" value="project"/>
+                    <attvalue id="1" value="0.001"/>     
                 </attvalues>
             </node>
             <node id="2" label="EOLIA">
@@ -33,6 +35,7 @@
                 <viz:size value="3.8"/>
                 <attvalues>
                     <attvalue id="0" value="project"/>
+                    <attvalue id="1" value="0.01"/>     
                 </attvalues>
             </node>
             <node id="3" label="genetic">
@@ -77,7 +80,7 @@
                 <viz:size value="3.8"/>
                 <attvalues>
                     <attvalue id="0" value="keyword"/>
-                    <attvalue id="1" value="0.5"/>
+                    <attvalue id="1" value="0.05"/>
                 </attvalues>
             </node>
             <node id="3" label="electroengineering">
@@ -104,7 +107,7 @@
                 <viz:size value="3.8"/>
                 <attvalues>
                     <attvalue id="0" value="keyword"/>
-                    <attvalue id="1" value="0.8"/>
+                    <attvalue id="1" value="0.08"/>
                 </attvalues>
             </node>
         </nodes>
@@ -112,13 +115,13 @@
             <edge id="1"  source="1" target="2"/>
             <edge id="2"  source="1" target="3"/>
             <edge id="3"  source="2" target="3"/>
-            <edge id="4"  source="2" target="4"/>
+            <edge id="4"  source="3" target="4"/>
             <edge id="5"  source="2" target="5"/>
-            <edge id="6"  source="2" target="6"/>
-            <edge id="7"  source="2" target="7"/>
-            <edge id="8"  source="2" target="8"/>
-            <edge id="9"  source="2" target="9"/>
-            <edge id="10" source="2" target="10"/>
+            <edge id="6"  source="3" target="5"/>
+            <edge id="7"  source="5" target="6"/>
+            <edge id="8"  source="6" target="8"/>
+            <edge id="9"  source="5" target="9"/>
+            <edge id="10" source="8" target="10"/>
         </edges>
     </graph>
 </gexf>
