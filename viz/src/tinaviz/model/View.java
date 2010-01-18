@@ -39,7 +39,8 @@ public class View {
     public static final String NS = "tina";
     public int selection = 0;
     public float zoom = 0.5f;
-    public float threshold = 0.5f;
+    public float upperThreshold = 1.0f;
+    public float lowerThreshold = 0.0f;
     public boolean showLabels = true;
     public boolean showNodes = true;
     public boolean showLinks = true;
@@ -50,6 +51,7 @@ public class View {
     public boolean colorsDesaturated = false;
     public boolean zoomFrozen = false;
     public boolean showNodeDetails = false;
+    public String selectedNodeID = "";
 
     public class Showprojects {
 
@@ -87,22 +89,24 @@ public class View {
 
         xml = new XPathReader(uri);
         String meta = "/gexf/graph/tina/";
-        Double zoomValue = (Double) xml.read(meta+"zoom/@value", XPathConstants.NUMBER);
+        Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
         this.zoom = zoomValue.floatValue();
-        System.out.println("zoom: "+zoom);
-        Double thresholdValue = (Double) xml.read(meta+"threshold/@value", XPathConstants.NUMBER);
-        this.threshold = thresholdValue.floatValue();
-        System.out.println("threshold: "+threshold);
+        System.out.println("zoom: " + zoom);
+        Double thresholdValue = (Double) xml.read(meta + "threshold/@value", XPathConstants.NUMBER);
+        this.upperThreshold = thresholdValue.floatValue();
+        System.out.println("threshold: " + upperThreshold);
+        this.lowerThreshold = 0.0f;
 
-        String preselected = (String) xml.read(meta+"preselect/@node", XPathConstants.STRING);
-        System.out.println("preselected: "+preselected);
-        
-        this.showLabels = (Boolean) xml.read(meta+"labels/@show", XPathConstants.BOOLEAN);
-        this.showNodes = (Boolean) xml.read(meta+"nodes/@show", XPathConstants.BOOLEAN);
-        this.showLinks = (Boolean) xml.read(meta+"links/@show", XPathConstants.BOOLEAN);
-        
+        this.selectedNodeID = (String) xml.read(meta + "preselect/@node", XPathConstants.STRING);
+        System.out.println("preselected: " + selectedNodeID);
 
-        //System.out.println("threshold: " + thresholdValue + "\n");
+        this.showLabels = (Boolean) xml.read(meta + "labels/@show", XPathConstants.BOOLEAN);
+        this.showNodes = (Boolean) xml.read(meta + "nodes/@show", XPathConstants.BOOLEAN);
+        this.showLinks = (Boolean) xml.read(meta + "links/@show", XPathConstants.BOOLEAN);
+
+        System.out.println("showLabels: " + showLabels + "\n");
+        System.out.println("showNodes: " + showNodes + "\n");
+        System.out.println("showLinks: " + showLinks + "\n");
 
         org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
                 XPathConstants.NODESET);
@@ -114,23 +118,22 @@ public class View {
             }*/
             //System.out.println(xmlnode.getNodeValue());
 
-            org.w3c.dom.NamedNodeMap nodeAttributes = xmlnode.getAttributes();
+            org.w3c.dom.NamedNodeMap xmlnodeAttributes = xmlnode.getAttributes();
 
-            org.w3c.dom.NodeList nodeProperties = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
 
             //String uuid = nodeAttributes.getNamedItem("id").getNodeValue();
             //String label = nodeAttributes.getNamedItem("label").getNodeValue();
 
 
-            String uuid = nodeAttributes.getNamedItem("id").getNodeValue();
+            String uuid = xmlnodeAttributes.getNamedItem("id").getNodeValue();
 
-            String label = (nodeAttributes.getNamedItem("label") != null)
-                    ? nodeAttributes.getNamedItem("label").getNodeValue()
+            String label = (xmlnodeAttributes.getNamedItem("label") != null)
+                    ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
                     : uuid;
 
 
-
-            org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
+            //org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
+            //org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
             /*
             Double posx = Double.parseDouble(
             position.getAttributes().getNamedItem("x").getNodeValue()
@@ -139,13 +142,42 @@ public class View {
             position.getAttributes().getNamedItem("y").getNodeValue()
             );*/
 
-            Node node = new Node(uuid, label, (float) Math.random() * 30f,
-                    (float) Math.random() * 300f,
-                    (float) Math.random() * 300f);//, posx, posy);
+            Node node = new Node(uuid, label, (float) Math.random() * 10f,
+                    (float) Math.random() * 400f,
+                    (float) Math.random() * 400f);//, posx, posy);
 
-            if (preselected.equals(uuid)) {
-                node.selected = true;
+
+            org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
+
+            for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
+                org.w3c.dom.Node n = xmlnodeChildren.item(j);
+                if (n.getNodeName() == "attvalues") {
+                   // System.out.println("in attributes tag");
+                    org.w3c.dom.NodeList xmlattribs = n.getChildNodes();
+                    for (int k = 0; k < xmlattribs.getLength(); k++) {
+                        org.w3c.dom.Node attr = xmlattribs.item(k);
+                        if (attr.getNodeName() == "attvalue") {
+                           // System.out.println("in attribute tag");
+                            if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("0")) {
+                                node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
+                                // System.out.println(" - category: "+node.category);
+
+                            } else if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("1")) {
+                                 node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                // System.out.println("  - genericity: "+node.genericity );
+
+                            }
+                        }
+
+                    }
+                }
             }
+
+            System.out.println("selectedNodeID: "+selectedNodeID);
+            System.out.println("node uuid: "+uuid);
+            //if (selectedNodeID.equals(uuid)) {
+            //    node.selected = true;
+            //}
 
             if (nodeMap.containsKey(uuid)) {
                 nodeMap.get(uuid).update(node);

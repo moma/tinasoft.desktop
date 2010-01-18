@@ -57,7 +57,9 @@ public class Main extends PApplet implements MouseWheelListener {
     private JSObject window = null;
 
     private void showNodeDetails(Node n) {
-        if (currentView.showNodeDetails) return;
+        if (currentView.showNodeDetails) {
+            return;
+        }
         currentView.animationPaused = true;
         //currentView.colorsDesaturated = true;
         currentView.zoomFrozen = true;
@@ -72,12 +74,14 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     private void hideNodeDetails() {
-        if (!currentView.showNodeDetails) return;
+        if (!currentView.showNodeDetails) {
+            return;
+        }
         window.eval("parent.hideNodeDetails();");
         //currentView.colorsDesaturated = false;
         currentView.animationPaused = false;
         currentView.zoomFrozen = false;
-         currentView.showNodeDetails = false;
+        currentView.showNodeDetails = false;
     }
 
     public enum RecordingFormat {
@@ -102,10 +106,12 @@ public class Main extends PApplet implements MouseWheelListener {
         String engine = P2D;
         if (getParameter("engine") != null) {
             if (getParameter("engine").equals("software")) {
-            engine = P2D;
+                engine = P2D;
             } else if (getParameter("engine").equals("hardware")) {
                 engine = OPENGL;
             }
+            // applet specific
+            window = JSObject.getWindow(this);
         }
 
         size(1100, 800, engine);
@@ -126,6 +132,7 @@ public class Main extends PApplet implements MouseWheelListener {
         vizx = (width / 2.0f);
         vizy = (height / 2.0f);
 
+        /*
         Node node;
         System.out.println("Generating random graph..");
         float rx = random(width);
@@ -150,9 +157,10 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
-        window = JSObject.getWindow(this);
+    */
+
         System.out.println("Starting visualization..");
-        /*
+
         try {
             updateView("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/data/test2.gexf");
         } catch (URISyntaxException ex) {
@@ -163,7 +171,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (XPathExpressionException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }
 
     @Override
@@ -462,6 +470,10 @@ public class Main extends PApplet implements MouseWheelListener {
             n.vx = 0.0f;
             n.vy = 0.0f;
 
+            if (n.genericity < currentView.lowerThreshold
+                    || n.genericity > currentView.upperThreshold) {
+                continue;
+            }
 
             int rgb = (int) ((255.0 / MAX_RADIUS) * n.radius);
 
@@ -474,27 +486,30 @@ public class Main extends PApplet implements MouseWheelListener {
             if (this.currentView.showNodes) {
                 if (distance <= (n.radius) * zoomRatio) {
                     // fill(200);
-                    if (mouseClick && !n.selected) {
-                        n.selected = true;
-                        showNodeDetails(n);
-
-                    } else if (mouseClick && n.selected) {
-                        n.selected = false;
-                    }
-                } else {
                     if (mouseClick) {
-                        n.selected = false;
+                        mouseClick = false;
+                        System.out.println("clicked on node "+n.uuid + " (selected node: "+currentView.selectedNodeID+")");
+                        if (currentView.selectedNodeID.equals(n.uuid)) {
+                            currentView.selectedNodeID = "NULL";
+                            //n.selected = true;
+                            // showNodeDetails(n);
+
+                        } else {
+                             currentView.selectedNodeID = n.uuid;
+                            //n.selected = false;
+                        }
                     }
                 }
-                
-                
+            
+
                 if (n.label.startsWith(currentTextSearch)) {
                     fill(200, 100, 100);
-                    strokeWeight(2.0f);
+                    strokeWeight(1.8f);
                 } else {
-                    if (n.selected) {
+
+                    if (currentView.selectedNodeID.equals(n.uuid)) {
                         fill(200, 100, 100);
-                        strokeWeight(2.0f);
+                        strokeWeight(1.8f);
                     } else {
                         // fill(200, 200, 200);
                         fill(218, 219, 220);
@@ -533,7 +548,12 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
         }
-        mouseClick = false;
+        if (mouseClick) {
+            // the event was not catched.. so we assume we clicked somewhere else
+               currentView.selectedNodeID = "";
+                    mouseClick = false;
+         }
+
     }
 
     public float setZoomValue(float value) {
@@ -675,8 +695,25 @@ public class Main extends PApplet implements MouseWheelListener {
         zoomRatio = 1.0f;
     }
 
-    public int setAltitude(int value) {
-        return 0;
+    public float setLowerThreshold(float threshold) {
+        return currentView.lowerThreshold = threshold;
+    }
+
+    public float getLowerThreshold() {
+        return currentView.lowerThreshold;
+    }
+
+    public float setUpperThreshold(float threshold) {
+        return currentView.upperThreshold = threshold;
+    }
+
+    public float getUpperThreshold() {
+        return currentView.upperThreshold;
+    }
+
+    public void setGenericityRange(int from, int to, int precision) {
+        setLowerThreshold(((float) from) / (float) precision);
+        setUpperThreshold(((float) to) / (float) precision);
     }
 
     public boolean updateView(String uri)
@@ -728,13 +765,13 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void mouseClicked() {
-        hideNodeDetails();
+        // hideNodeDetails();
         mouseClick = true;
     }
 
     @Override
     public void mouseDragged() {
-        hideNodeDetails();
+        // hideNodeDetails();
         mouseDragging = true;
         float dragSensibility = 3.0f;
         inerX = ((float) mouseX - oldmouseX) / (zoomRatio * dragSensibility);
@@ -753,8 +790,10 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-          if (currentView.zoomFrozen) return;
-        inerZ = -e.getWheelRotation();
+        if (currentView.zoomFrozen) {
+            return;
+        }
+        inerZ = -e.getWheelRotation() * 2;
     }
 
     void arrow(float x1, float y1, float x2, float y2, float radius) {

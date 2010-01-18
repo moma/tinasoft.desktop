@@ -24,7 +24,11 @@ public class Node {
     public int degree = 0;
     public List<Node> neighbours = new ArrayList<Node>();
     public boolean selected = false;
-    public Node(String uuid, String label, float radius, float x, float y) {
+    public boolean highlighted = false;
+    public float genericity = 1.0f;
+    public String category = "default";
+
+    public Node(String uuid, String label,  float radius, float x, float y) {
         this.uuid = uuid;
         this.label = label;
         this.radius = radius;
@@ -32,14 +36,15 @@ public class Node {
         this.y = y;
     }
 
-    public Node(String uuid, String label, float x, float y) {
+    public Node(String uuid, String label,  float x, float y) {
         this.uuid = uuid;
         this.label = label;
         this.x = x;
         this.y = y;
+
     }
 
-    public Node(String uuid, String label, float radius) {
+    public Node(String uuid, String label,  float radius) {
         this.uuid = uuid;
         this.label = label;
         this.radius = radius;
@@ -69,5 +74,9 @@ public class Node {
         this.neighbours = node.neighbours;
         this.s = node.s; // switch
         this.degree = node.degree;
+        this.genericity = node.genericity;
+        this.selected = node.selected;
+        this.highlighted = node.highlighted;
+        this.category = node.category;
     }
 }

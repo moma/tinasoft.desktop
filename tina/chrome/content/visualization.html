@@ -238,10 +238,10 @@ $(document).ready(function() {
 	$("#altslider").slider({
 			orientation: "vertical",
 			range: true,
-			values: [17, 67],
+			values: [0, 100],
 			slide: function(event, ui) {
 				//$("#amount").val('$' + ui.values[0] + ' - $' + ui.values[1]); // ui.values[1]
-				frame.contents().find('#tinaviz')[0].getSubApplet().setAltitude(ui.values[1]);
+				frame.contents().find('#tinaviz')[0].getSubApplet().setGenericityRange(ui.values[0],ui.values[1], 100);
 			}
 	});
 
