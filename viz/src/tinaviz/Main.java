@@ -98,13 +98,18 @@ public class Main extends PApplet implements MouseWheelListener {
         SLOW // round corners
     }
 
+    /*
+   public static void main (String[] args){
+   }
+*/
+    
     @Override
     public void setup() {
 
         //String engine = (getParameter("engine")) ? getParameter("engine") : "P2D";
 
 
-        String engine = P2D;
+        String engine = OPENGL;
         if (getParameter("engine") != null) {
             if (getParameter("engine").equals("software")) {
                 engine = P2D;
@@ -118,9 +123,9 @@ public class Main extends PApplet implements MouseWheelListener {
            w = (Integer) window.call("getWidth", null);
            h = (Integer) window.call("getHeight", null);
            window.eval("parent.resizeApplet("+w+","+h+");");
-            size(w, h, P2D); 
+            size(w, h, engine);
         } else {
-                  size(screen.width, screen.height, P2D);  
+                  size(screen.width, screen.height, engine);
         }
 
 
@@ -650,6 +655,38 @@ public class Main extends PApplet implements MouseWheelListener {
         //return sliderZoomLevel;
     }
 
+
+     public boolean updateViewFromString(String src)
+            throws
+            URISyntaxException,
+            MalformedURLException,
+            IOException,
+            XPathExpressionException {
+        // locked = true;
+        boolean result = false;
+
+        //try {
+        System.out.println("updating view from string..");
+        // locked = true;
+        result = currentView.updateFromString(src);
+        nodes = new ArrayList<Node>(currentView.nodeMap.values());
+        //nodes = currentView.nodeList;
+        //locked = false;
+            /*
+        } catch (MalformedURLException ex) {
+        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+        locked = false;
+        }
+         */
+        // update the scene
+
+        return result;
+    }
     public boolean toggleLabels() {
         this.currentView.showLabels = !this.currentView.showLabels;
         return this.currentView.showLabels;
@@ -727,7 +764,7 @@ public class Main extends PApplet implements MouseWheelListener {
         setUpperThreshold(((float) to) / (float) precision);
     }
 
-    public boolean updateView(String uri)
+    public boolean updateViewFromURI(String uri)
             throws
             URISyntaxException,
             MalformedURLException,
@@ -739,7 +776,7 @@ public class Main extends PApplet implements MouseWheelListener {
         //try {
         System.out.println("updating view..");
         // locked = true;
-        result = currentView.update(uri);
+        result = currentView.updateFromURI(uri);
         nodes = new ArrayList<Node>(currentView.nodeMap.values());
         //nodes = currentView.nodeList;
         //locked = false;
