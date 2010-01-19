@@ -103,6 +103,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         //String engine = (getParameter("engine")) ? getParameter("engine") : "P2D";
 
+
         String engine = P2D;
         if (getParameter("engine") != null) {
             if (getParameter("engine").equals("software")) {
@@ -112,9 +113,16 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             // applet specific
             window = JSObject.getWindow(this);
+           int w = screen.width;
+           int h = screen.height;
+           w = (Integer) window.call("getWidth", null);
+           h = (Integer) window.call("getHeight", null);
+            size(w, h, P2D); 
+        } else {
+                  size(screen.width, screen.height, P2D);  
         }
 
-        size(1100, 800, engine);
+
         fill(255, 184);
         frameRate(60);
         smooth();
@@ -132,7 +140,7 @@ public class Main extends PApplet implements MouseWheelListener {
         vizx = (width / 2.0f);
         vizy = (height / 2.0f);
 
-        /*
+        
         Node node;
         System.out.println("Generating random graph..");
         float rx = random(width);
@@ -157,10 +165,10 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
-    */
+    
 
         System.out.println("Starting visualization..");
-
+/*
         try {
             updateView("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/data/test2.gexf");
         } catch (URISyntaxException ex) {
@@ -172,6 +180,8 @@ public class Main extends PApplet implements MouseWheelListener {
         } catch (XPathExpressionException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+ * */
+ 
     }
 
     @Override

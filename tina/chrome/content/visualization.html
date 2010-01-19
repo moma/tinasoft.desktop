@@ -72,7 +72,6 @@
     width:100%;
     height:100%;
     z-index:2;
-    border: 0px;
     background-color: #ffffff;
     background: #ffffff;
 
@@ -99,29 +98,7 @@
     z-index:6;
 }
 
-.vtoolbariframe {
-    position:absolute;
-    top:30px;
-    right: 325px;
-    width: 38px;
-    height:478px;
-    background-color: #ffffff;
-    background: #ffffff;
-    border:solid 0px;
-    z-index:3;
-}
 
-.vtoolbar {
-    position:absolute;
-    top: 30px;
-    right: 317px;
-    width: 22px;
-    height: 460px;
-    z-index:4;
-}
-.altslider {
-    height: 450px;
-}
 
 .htoolbariframe {
     position:absolute;
@@ -164,6 +141,50 @@
     background: #000000;*/
      border: solid 0px;
     z-index: 2;
+}
+
+
+.vtoolbariframe {
+    position:absolute;
+    top:30px;
+    right: 325px;
+    width: 45px;
+    height:478px;
+    background-color: #ffffff;
+    background: #ffffff;
+    border:solid 0px;
+    z-index:3;
+}
+
+.vtoolbar {
+    position:absolute;
+    top: 30px;
+    right: 317px;
+    width: 45px;
+    height: 460px;
+    z-index:4;
+    margin: 0px;
+    padding: 0px;
+}
+.altslider {
+    position: relative;
+    left: 16px;
+    height: 400px;
+    top: 8px;
+}
+
+.thresholdInput {
+     position: relative;
+     border: solid 0px;
+     background: none;
+     color: #ffffff;
+     left: 8px;
+}
+.upperInput {
+     top: 5px;
+}
+.lowerInput {
+     bottom: 5px;
 }
     </style>
 
@@ -216,13 +237,47 @@ $(function(){
 
 
 
+function getWidth() {
+        var x = 0;
+        if (self.innerHeight) {
+                x = self.innerWidth;
+        }
+        else if (document.documentElement && document.documentElement.clientHeight) {
+                x = document.documentElement.clientWidth;
+        }
+        else if (document.body) {
+                x = document.body.clientWidth;
+        }
+        return x;
+}
+ 
+function getHeight() {
+        var y = 0;
+        if (self.innerHeight) {
+                y = self.innerHeight;
+        }
+        else if (document.documentElement && document.documentElement.clientHeight) {
+                y = document.documentElement.clientHeight; 
+	}
+        else if (document.body) {
+                y = document.body.clientHeight; 
+	}
+        return y;
+}
 
+function resize() {
+    frame.contents().find('#tinaviz')[0].width = getWidth();
+    frame.contents().find('#tinaviz')[0].height = getHeight();
 
+}
 
 $(document).ready(function() {
     //applet = $('#vizframe').contents().find('#tinaviz');
     frame = $('#vizframe');
+
     labels = [];
+
+	setTimeout("resize()",2000);
 
 	// prehide the node details pane
     $('#nodedetailsiframe').hide();
@@ -241,7 +296,9 @@ $(document).ready(function() {
 			values: [0, 100],
 			slide: function(event, ui) {
 				//$("#amount").val('$' + ui.values[0] + ' - $' + ui.values[1]); // ui.values[1]
-				frame.contents().find('#tinaviz')[0].getSubApplet().setGenericityRange(ui.values[0],ui.values[1], 100);
+				frame.contents().find('#tinaviz')[0].getSubApplet().setGenericityRange(ui.values[1],ui.values[0], 100);
+				$("#upperThresholdInput").val(ui.values[1]/100);
+				$("#lowerThresholdInput").val(ui.values[0]/100);
 			}
 	});
 
@@ -483,7 +540,9 @@ function loadNewViz(url) {
         </div>
 
         <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar">
+	    <input id="upperThresholdInput" class="thresholdInput upperThreshold" value="1.0" />
             <div id="altslider" class="altslider"></div>
+	    <input id="lowerThresholdInput" class="thresholdInput lowerThreshold" value="0.0" />
         </div>
 
         <div id="sidebar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix sidebar">
