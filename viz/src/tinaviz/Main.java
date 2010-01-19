@@ -117,6 +117,7 @@ public class Main extends PApplet implements MouseWheelListener {
            int h = screen.height;
            w = (Integer) window.call("getWidth", null);
            h = (Integer) window.call("getHeight", null);
+           window.eval("parent.resizeApplet("+w+","+h+");");
             size(w, h, P2D); 
         } else {
                   size(screen.width, screen.height, P2D);  
