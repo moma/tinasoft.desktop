@@ -72,7 +72,6 @@
     width:100%;
     height:100%;
     z-index:2;
-    border: 0px;
     background-color: #ffffff;
     background: #ffffff;
 
@@ -99,35 +98,13 @@
     z-index:6;
 }
 
-.vtoolbariframe {
-    position:absolute;
-    top:30px;
-    right: 325px;
-    width: 38px;
-    height:478px;
-    background-color: #ffffff;
-    background: #ffffff;
-    border:solid 0px;
-    z-index:3;
-}
 
-.vtoolbar {
-    position:absolute;
-    top: 30px;
-    right: 317px;
-    width: 22px;
-    height: 460px;
-    z-index:4;
-}
-.altslider {
-    height: 450px;
-}
 
 .htoolbariframe {
     position:absolute;
     bottom:80px;
     left:40px;
-    width:980px;
+    width:969px;
     height:45px;
     background-color: #ffffff;
     background: #ffffff;
@@ -164,6 +141,52 @@
     background: #000000;*/
      border: solid 0px;
     z-index: 2;
+}
+
+
+.vtoolbariframe {
+    position:absolute;
+    top:30px;
+    /*right: 325px;*/
+    left: 40px;
+    width: 47px;
+    height:462px;
+    background-color: #ffffff;
+    background: #ffffff;
+    border:solid 0px;
+    z-index:3;
+}
+
+.vtoolbar {
+    position:absolute;
+    top: 30px;
+    /*right: 317px;*/
+    left: 40px;
+    width: 45px;
+    height: 460px;
+    z-index:4;
+    margin: 0px;
+    padding: 0px;
+}
+.altslider {
+    position: relative;
+    left: 16px;
+    height: 400px;
+    top: 8px;
+}
+
+.thresholdInput {
+     position: relative;
+     border: solid 0px;
+     background: none;
+     color: #ffffff;
+     left: 8px;
+}
+.upperInput {
+     top: 5px;
+}
+.lowerInput {
+     bottom: 5px;
 }
     </style>
 
@@ -215,14 +238,17 @@ $(function(){
 });
 
 
-
-
-
+function resizeApplet(width, height) {
+    frame.contents().find('#tinaviz')[0].width = width;
+    frame.contents().find('#tinaviz')[0].height = height;
+}
 
 $(document).ready(function() {
     //applet = $('#vizframe').contents().find('#tinaviz');
     frame = $('#vizframe');
+
     labels = [];
+
 
 	// prehide the node details pane
     $('#nodedetailsiframe').hide();
@@ -241,7 +267,9 @@ $(document).ready(function() {
 			values: [0, 100],
 			slide: function(event, ui) {
 				//$("#amount").val('$' + ui.values[0] + ' - $' + ui.values[1]); // ui.values[1]
-				frame.contents().find('#tinaviz')[0].getSubApplet().setGenericityRange(ui.values[0],ui.values[1], 100);
+				frame.contents().find('#tinaviz')[0].getSubApplet().setGenericityRange(ui.values[1],ui.values[0], 100);
+				$("#upperThresholdInput").val(ui.values[1]/100);
+				$("#lowerThresholdInput").val(ui.values[0]/100);
 			}
 	});
 
@@ -483,7 +511,9 @@ function loadNewViz(url) {
         </div>
 
         <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar">
+	    <input id="upperThresholdInput" class="thresholdInput upperThreshold" value="1.0" />
             <div id="altslider" class="altslider"></div>
+	    <input id="lowerThresholdInput" class="thresholdInput lowerThreshold" value="0.0" />
         </div>
 
         <div id="sidebar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix sidebar">

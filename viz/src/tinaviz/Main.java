@@ -98,12 +98,18 @@ public class Main extends PApplet implements MouseWheelListener {
         SLOW // round corners
     }
 
+    /*
+   public static void main (String[] args){
+   }
+*/
+    
     @Override
     public void setup() {
 
         //String engine = (getParameter("engine")) ? getParameter("engine") : "P2D";
 
-        String engine = P2D;
+
+        String engine = OPENGL;
         if (getParameter("engine") != null) {
             if (getParameter("engine").equals("software")) {
                 engine = P2D;
@@ -112,9 +118,17 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             // applet specific
             window = JSObject.getWindow(this);
+           int w = screen.width;
+           int h = screen.height;
+           w = (Integer) window.call("getWidth", null);
+           h = (Integer) window.call("getHeight", null);
+           window.eval("parent.resizeApplet("+w+","+h+");");
+            size(w, h, engine);
+        } else {
+                  size(screen.width, screen.height, engine);
         }
 
-        size(1100, 800, engine);
+
         fill(255, 184);
         frameRate(60);
         smooth();
@@ -132,7 +146,7 @@ public class Main extends PApplet implements MouseWheelListener {
         vizx = (width / 2.0f);
         vizy = (height / 2.0f);
 
-        /*
+        
         Node node;
         System.out.println("Generating random graph..");
         float rx = random(width);
@@ -157,10 +171,10 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
-    */
+    
 
         System.out.println("Starting visualization..");
-
+/*
         try {
             updateView("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/data/test2.gexf");
         } catch (URISyntaxException ex) {
@@ -172,6 +186,8 @@ public class Main extends PApplet implements MouseWheelListener {
         } catch (XPathExpressionException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+ * */
+ 
     }
 
     @Override
@@ -639,6 +655,38 @@ public class Main extends PApplet implements MouseWheelListener {
         //return sliderZoomLevel;
     }
 
+
+     public boolean updateViewFromString(String src)
+            throws
+            URISyntaxException,
+            MalformedURLException,
+            IOException,
+            XPathExpressionException {
+        // locked = true;
+        boolean result = false;
+
+        //try {
+        System.out.println("updating view from string..");
+        // locked = true;
+        result = currentView.updateFromString(src);
+        nodes = new ArrayList<Node>(currentView.nodeMap.values());
+        //nodes = currentView.nodeList;
+        //locked = false;
+            /*
+        } catch (MalformedURLException ex) {
+        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+        Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+        locked = false;
+        }
+         */
+        // update the scene
+
+        return result;
+    }
     public boolean toggleLabels() {
         this.currentView.showLabels = !this.currentView.showLabels;
         return this.currentView.showLabels;
@@ -716,7 +764,7 @@ public class Main extends PApplet implements MouseWheelListener {
         setUpperThreshold(((float) to) / (float) precision);
     }
 
-    public boolean updateView(String uri)
+    public boolean updateViewFromURI(String uri)
             throws
             URISyntaxException,
             MalformedURLException,
@@ -728,7 +776,7 @@ public class Main extends PApplet implements MouseWheelListener {
         //try {
         System.out.println("updating view..");
         // locked = true;
-        result = currentView.update(uri);
+        result = currentView.updateFromURI(uri);
         nodes = new ArrayList<Node>(currentView.nodeMap.values());
         //nodes = currentView.nodeList;
         //locked = false;

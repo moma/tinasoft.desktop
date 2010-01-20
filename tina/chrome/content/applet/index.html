@@ -15,18 +15,53 @@
 		  font-weight: normal; 
 		  line-height: normal; 
 		}
+                .container {
+			border: dashed 2px;
+		}
 		/* ]]> */
 		</style>
+<script type="text/javascript">
+
+
+function getWidth() {
+        var x = 0;
+        if (self.innerHeight) {
+                x = self.innerWidth;
+        }
+        else if (document.documentElement && document.documentElement.clientHeight) {
+                x = document.documentElement.clientWidth;
+        }
+        else if (document.body) {
+                x = document.body.clientWidth;
+        }
+        return x;
+}
+ 
+function getHeight() {
+        var y = 0;
+        if (self.innerHeight) {
+                y = self.innerHeight;
+        }
+        else if (document.documentElement && document.documentElement.clientHeight) {
+                y = document.documentElement.clientHeight; 
+	}
+        else if (document.body) {
+                y = document.body.clientHeight; 
+	}
+        return y;
+}
+
+</script>
 	</head>
 	<body>
 		<div id="content">	 
-			<div id="container">	
+			<div id="container" class="container">	
 			<!--[if !IE]> -->
 				<object id="tinaviz"
 				        classid="java:com.sun.opengl.util.JOGLAppletLauncher.class" 
             			type="application/x-java-applet"
             			archive="tinaviz.jar,opengl.jar,jogl.jar,gluegen-rt.jar,core.jar,itext.jar,pdf.jar"
-            			width="1100" height="800"
+            			
             			standby="Loading visualization..." >
             			
 					<param name="archive" value="tinaviz.jar,opengl.jar,jogl.jar,gluegen-rt.jar,core.jar,itext.jar,pdf.jar" />
@@ -50,7 +85,7 @@
 				<object id="tinaviz"
 				        classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" 
 						codebase="http://java.sun.com/update/1.5.0/jinstall-1_5_0_15-windows-i586.cab"
-						width="1100" height="800"
+						
 						standby="Loading visualization..."  >
 						
 					<param name="code" value="com.sun.opengl.util.JOGLAppletLauncher" />

@@ -2,11 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package tinaviz.model;
 
-
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,32 +20,39 @@ import javax.xml.xpath.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 public class XPathReader {
 
     private InputStream xmlStream;
-
     private Document xmlDocument;
     private XPath xPath;
 
-    public XPathReader(String uriString) throws URISyntaxException, MalformedURLException, IOException {
+    public XPathReader() {
+    }
+
+    public void parseFromURI(String uriString) throws URISyntaxException, MalformedURLException, IOException {
 
         this.xmlStream = new URI(uriString).toURL().openStream();
-        /*
-        BufferedReader in = new BufferedReader(
-				new InputStreamReader(
-				url.openStream()));
-        this.xmlFile = xmlFile;*/
         initObjects();
     }
 
-    private void initObjects(){
+    public void parseFromStream(InputStream inputStream) throws URISyntaxException, MalformedURLException, IOException {
+
+        this.xmlStream = inputStream;
+        initObjects();
+    }
+
+    public void parseFromString(String inputString) throws URISyntaxException, MalformedURLException, IOException {
+
+        this.xmlStream = new ByteArrayInputStream(inputString.getBytes());
+        initObjects();
+    }
+
+    private void initObjects() {
         try {
-            xmlDocument = DocumentBuilderFactory.
-			newInstance().newDocumentBuilder().
-			parse(xmlStream);
-            xPath =  XPathFactory.newInstance().
-			newXPath();
+            xmlDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().
+                    parse(xmlStream);
+            xPath = XPathFactory.newInstance().
+                    newXPath();
         } catch (IOException ex) {
             //ex.printStackTrace();
             System.out.println(ex.getMessage());
@@ -60,18 +66,16 @@ public class XPathReader {
     }
 
     public Object read(String expression,
-			QName returnType) throws XPathExpressionException{
+            QName returnType) throws XPathExpressionException {
         //try {
-            XPathExpression xPathExpression =
-			xPath.compile(expression);
+        XPathExpression xPathExpression =
+                xPath.compile(expression);
 
-            return xPathExpression.evaluate
-			(xmlDocument, returnType);
+        return xPathExpression.evaluate(xmlDocument, returnType);
         /*} catch (XPathExpressionException ex) {
-            //ex.printStackTrace();
-            System.out.println(ex.getMessage());
-            return null;
+        //ex.printStackTrace();
+        System.out.println(ex.getMessage());
+        return null;
         }*/
     }
-    
 }

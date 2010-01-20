@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -78,16 +79,25 @@ public class View {
     }
 
     public View(String uri) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
-
-        update(uri);
-
+        updateFromURI(uri);
     }
 
-    public boolean update(String uri) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
-
-        XPathReader xml = null;
-
-        xml = new XPathReader(uri);
+    public boolean updateFromURI(String uri) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
+        XPathReader xml = new XPathReader();
+        xml.parseFromURI(uri);
+        return parseXML(xml);
+    }
+        public boolean updateFromString(String str) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
+        XPathReader xml = new XPathReader();
+        xml.parseFromString(str);
+        return parseXML(xml);
+    }
+       public boolean updateFromInputStream(InputStream inputStream) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
+        XPathReader xml = new XPathReader();
+        xml.parseFromStream(inputStream);
+        return parseXML(xml);
+    }
+    private boolean parseXML(XPathReader xml) throws XPathExpressionException {
         String meta = "/gexf/graph/tina/";
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
         this.zoom = zoomValue.floatValue();
