@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE  window>
+
+<window id="webtop-sample"
+        style="background-color: #ffffff;"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script type="application/x-javascript" src="chrome://jslib/content/jslib.js" />
+
+<script>
+  include (jslib_routines);
+</script>
+
+<toolbox>
+  <toolbar grippyhidden="true">
+    <label color="black" value="JSLib Web Top" style="margin-left: 10px;" />
+		<spacer flex="1" />
+    <button color="black" label="yahoo" 
+		        oncommand="window.frames[0].location='http://www.yahoo.com';" />
+    <button color="black" label="google" 
+		        oncommand="window.frames[0].location='http://www.google.com';" />
+    <button color="black" label="close" oncommand="close();" />
+    <button color="black" label="quit" oncommand="quit();" />
+	</toolbar>
+</toolbox>
+
+<browser id="content" type="content-primary" 
+         src="http://jslib.mozdev.org/" 
+				 flex="1" />
+
+</window>

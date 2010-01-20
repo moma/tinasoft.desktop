@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE window> 
+
+<window 
+  id="jslib-dom-test" 
+  title="multipart-XMLHttpRequest" 
+  style="background-color: #cccccc; width: 200px; height: 100px;" 
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script type="application/x-javascript">
+<![CDATA[
+function test () 
+{ 
+  jslib.init(this); 
+  dump("testing . . .");
+  jslibPrint("printing from jsLib . . .");
+  include (jslib_file);
+  // var f = new File("c:\\tmp\\fubar.dat");
+  var f = new File("/tmp/fubar.dat");
+  alert(f.path);
+  jslibPrint(f.path);
+  jslibPrint(f.exists());
+  f.create();
+  jslibPrint(f.exists());
+}
+
+]]>
+</script>
+
+  <vbox flex="1" pack="center"> 
+    <spacer flex="1" /> 
+    <button label="Test new jslib dom object" oncommand="test();" /> 
+    <spacer flex="1" /> 
+  </vbox> 
+
+</window>
+

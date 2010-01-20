@@ -1,0 +1,21 @@
+window {
+  max-width: 400px; 
+  max-height: 240px; 
+  background-color: 
+  black; color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+image {
+  width: 400px; 
+  height: 200px; 
+}
+
+#jslib-version { margin-left: 10px; }
+
+.small 
+{ 
+  font-size: x-small;
+  font-weight: normal;
+}
+

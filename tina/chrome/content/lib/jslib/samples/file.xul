@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE  window>
+
+<window 
+  id="file-window"
+  title="File"
+  width="200"
+  height="200"
+  style="background-color: #cccccc;"
+  onload="init();"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+
+<script type="application/x-javascript">
+
+var gFile;
+function init()
+{
+  jslib.init(this);
+  include (jslib_file);
+
+  var platform = navigator.platform;
+  var localFile;
+  if (/win/i.test(platform)) {
+    // a local file for windows systems
+    localFile = "c:\\tmp\\fubar.dat";
+  } else {
+    // a local file for unix or osx type systems
+    localFile = "/tmp/fubar.dat";
+  }
+
+  gFile = new File(localFile);
+}
+
+</script>
+                                                                                                               
+<hbox flex="1" pack="center">
+  <spacer flex="1" />
+  <vbox>
+    <spacer flex="1" />
+    <button label="Function List" oncommand="alert(gFile.help);" />
+    <button label="path"   oncommand="alert(gFile.path);" />
+    <button label="exists" oncommand="alert(gFile.exists());" />
+    <button label="create" oncommand="if (!gFile.exists()) gFile.create();" />
+    <button label="remove" oncommand="if (gFile.exists()) gFile.remove();" />
+    <spacer flex="1" />
+  </vbox>
+  <spacer flex="1" />
+</hbox>
+
+</window>
+

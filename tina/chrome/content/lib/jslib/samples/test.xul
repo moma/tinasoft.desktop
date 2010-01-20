@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE window> 
+
+<window 
+  id="jslib-test" 
+  style="background-color: #cccccc; width: 100px; height: 100px;" 
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script type="application/x-javascript">
+
+<![CDATA[
+
+jslib.init(this);
+JS_LIB_DEBUG = JS_LIB_ON;
+
+function auTest ()
+{
+  include(jslib_autoupdate);
+  var url = "http://linuxbox/angelsoft/update-test.rdf";
+  var au = new AutoUpdate(url,  "mise");
+  au.checkForUpdate();
+}
+
+function duTest ()
+{
+  include(jslib_dirutils);
+  var du = new DirUtils;
+  jslibPrint(du.getTmpDir());
+  du.useObj = true;
+  jslibPrint(du.getTmpDir().isDir());
+
+}
+
+function profileTest ()
+{
+  include(jslib_profile);
+  var p = new Profile;
+  jslibPrint(p.currentProfile);
+  // jslibPrint(p.profileExists("launchy"));
+  // p.deleteProfile("launchy", true);
+  // jslibPrint(p.profileCount);
+  // var list = p.getProfileList();
+  // jslibPrintProperties(list);
+  // jslibPrintMsg("list 0", list[0]);
+
+  /**************
+  // jslib.init(this);
+  include (jslib_packageinfo)
+  var pi = new PackageInfo("jslib");
+  alert(pi.path);
+  **************/
+
+}
+
+]]>
+</script>
+
+  <vbox flex="1" pack="center"> 
+    <spacer flex="1" /> 
+    <button label="delete profile" oncommand="profileTest();" /> 
+    <button label="dirutils" oncommand="duTest();" /> 
+    <button label="AutoUpdate" oncommand="auTest();" /> 
+    <spacer flex="1" /> 
+  </vbox> 
+
+  <browser id="content" type="content-primary" />
+  
+</window>
+

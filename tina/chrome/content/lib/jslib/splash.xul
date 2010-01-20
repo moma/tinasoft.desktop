@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="jslib.css" type="text/css"?>
+
+<!DOCTYPE window>
+
+<window id="jslib-splash"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        orient="vertical"
+        onload="focus();">
+
+  <image src="jslib.png" onclick="close();" />
+  <hbox flex="1">
+    <label id="jslib-version" value="v 0.1.361" />
+    <spacer flex="1" />
+    <label class="small" value="(click anywhere to close)" />
+  </hbox>
+
+</window>

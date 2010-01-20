@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE  window>
+
+<window 
+    id="jslib-launcher"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    title="Launch jsLib"
+    onload="launchSplash();">
+
+<script type="application/x-javascript">
+<![CDATA[
+
+jslib.init(this);
+include(jslib_window);
+
+function launchSplash ()
+{
+  if (window.arguments && window.arguments[0] != "") {
+    var relPath = window.arguments[0];
+
+    switch (relPath)
+    {
+      case "about":
+      relPath = "jslib/content/aboutDialog.xul";
+      break;
+
+      case "version":
+      jslibLaunchSplash(); 
+      return closeWin();
+    }
+
+    var win = new CommonWindow(JS_LIB_PATH+relPath, 350, 300);
+    win.position = JS_MIDDLE_CENTER;
+    win.open();
+  } else { 
+    jslibLaunchSplash(); 
+  }
+
+  closeWin();
+}
+
+function closeWin ()
+{
+  if (content || _content ) return;
+
+  setTimeout("close()", 1000);
+}
+
+]]>
+</script>
+
+<vbox id="appcontent" flex="100%">
+  <description>          </description>
+</vbox>
+
+</window>

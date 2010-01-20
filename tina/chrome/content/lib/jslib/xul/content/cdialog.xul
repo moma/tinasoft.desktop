@@ -1,0 +1,42 @@
+<?xml version="1.0"?> 
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?> 
+<?xml-stylesheet href="chrome://jslib/content/xul/skin/cdialog.css" type="text/css"?> 
+
+<!DOCTYPE window [
+<!ENTITY % cdialogDTD SYSTEM "chrome://jslib/content/xul/locale/en-US/cdialog.dtd" >
+%cdialogDTD;
+]>
+
+<window id="cdialog"
+        xmlns:html="http://www.w3.org/TR/REC-html40"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="&defaultTitle.label;"
+        onload="onStartupLoad();"
+        width="400"
+        height="150"
+        class="dialog"
+        orient="vertical"
+        persist="screenX screenY"
+        screenX="24" screenY="24">
+              
+  <script type="application/x-javascript" src="chrome://jslib/content/xul/content/cdialog.js"/>
+
+  <keyset>
+    <key keycode="VK_ENTER" oncommand="doEnter();"/>
+    <key keycode="VK_RETURN" oncommand="doEnter();"/>
+    <key keycode="VK_ESCAPE" oncommand="doEsc();"/>
+  </keyset>
+
+  <hbox>
+    <vbox class="cdialog" id="imageBox"/>
+    <separator orient="vertical" class="thin"/>
+    <vbox class="cdialog" id="messageBox" flex="1">
+      <description id="messageText">Message Here</description>
+    </vbox>
+  </hbox> 
+
+  <spacer flex="1"/>
+  <separator class="groove"/>
+  <hbox id="buttonBox"/>
+</window>

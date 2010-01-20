@@ -1,0 +1,17 @@
+#aboutDialog {
+  background-color: #FFFFFF;
+  width: 40em;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 15px;
+}
+
+.linklabel {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#jslibVersionNum,
+.bold { font-weight: bold; }
+

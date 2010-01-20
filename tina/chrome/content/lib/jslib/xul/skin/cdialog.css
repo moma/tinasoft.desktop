@@ -1,0 +1,12 @@
+@import url(chrome://global/skin/);
+
+vbox.cdialog
+{
+  margin         : 15px;
+}
+
+@namespace url(http://www.w3.org/1999/xhtml); 
+
+html {
+  font-size      : 12pt;
+}

@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE window>
+
+<window id="jslib-socket-test" 
+  title="jslib Socket Test"
+  style="background-color: #cccccc;  width: 500px;"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  onload="initialize();"
+>
+
+  <script type="application/x-javascript">
+	jslib.init(this);
+	JS_LIB_DEBUG = true;
+	jslibTurnDumpOn();
+
+    try {
+      // enablePrivilege is required if not running chrome'd
+      // (other tweaks might apply, check out public.mozdev.jslib)
+      netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+      include(jslib_socket);
+    }
+    catch( e ) { alert( e ); }
+
+    var gSocket = new Socket;
+    var hostElement;
+    var portElement;
+    var sendMsg;
+    var socketResults;
+    var statusMsg;
+
+    function initialize()
+    {
+      hostElement = document.getElementById( "host" );
+      portElement = document.getElementById( "port" );
+      sendMsg = document.getElementById( "sendMsg" );
+      socketResults = document.getElementById( "socketResults" );
+      statusMsg = document.getElementById( "statusMsg" );
+    }
+
+    function closeSocket( theSocket )
+    {
+      theSocket.close();
+      statusMsg.value = "socket was closed";
+    }
+
+    function openSocket( theSocket )
+    {
+      if( theSocket.isConnected )
+        return;
+
+      var host = hostElement.value;
+
+      var port = portElement.value;
+
+      theSocket.open( host, port, true );
+	  statusMsg.value = "an attempt was made to open the socket";
+    }
+
+    function receiveSocket( theSocket )
+    {
+	  bytesAvailable = theSocket.available();
+	  if( theSocket.isConnected )
+		{
+          socketData = theSocket.read( bytesAvailable );
+          socketResults.value = "[" + socketData + "]\nLength: " + 
+              socketData.length;
+	    }
+	  else
+		socketResults.value = "the socket is closed";
+    }
+
+    function sendSocket( theSocket )
+    {
+      theMsg = sendMsg.value;
+      theSocket.write( theMsg+"\0" );
+      statusMsg.value = "sent [" + theMsg + "]";
+    }
+
+    function testSocket( theSocket )
+    {
+		statusMsg.value = ( theSocket.isAlive() 
+			? "socket is connected"
+			: "socket is not connected" );
+    }
+
+	function availableSocket( theSocket )
+	{
+		statusMsg.value = ( theSocket.isAlive()
+			? "socket has " + theSocket.available() + " bytes pending"
+			: "socket is not connected" );
+	}
+  </script>
+
+  <hbox>
+    <vbox flex="1">
+      <hbox>
+        <label control="host" value="Host:"/>
+          <textbox id="host" value="127.0.0.1" />
+      </hbox>
+      <hbox>
+        <label control="port" value="Port:"/>
+          <textbox id="port" value="80" />
+      </hbox>
+      <hbox>
+        <label control="statusMsg" value="Status:"/>
+          <textbox id="statusMsg" value="" flex="1" />
+      </hbox>
+      <hbox>
+        <label control="sendMsg" value="Send:"/>
+          <textbox id="sendMsg" value="" flex="1" />
+      </hbox>
+      <hbox>
+        <label control="socketResults" value="Response:"/>
+          <textbox id="socketResults" value="" flex="1" />
+      </hbox>
+    </vbox>
+    
+    <vbox flex="0" >
+      <spacer flex="1" />
+      <button label="Open" oncommand="openSocket( gSocket );" />
+      <button label="Send" oncommand="sendSocket( gSocket );" />
+      <button label="Receive" oncommand="receiveSocket( gSocket );" />
+      <button label="Connected?" oncommand="testSocket( gSocket );" />
+      <button label="Available?" oncommand="availableSocket( gSocket );" />
+      <button label="Close" oncommand="closeSocket( gSocket );" />
+      <spacer flex="1" />
+    </vbox>
+  </hbox>
+</window>

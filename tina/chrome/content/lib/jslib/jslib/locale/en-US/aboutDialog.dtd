@@ -1,0 +1,6 @@
+<!ENTITY about.dialog.title "jsLib Mozilla JavaScript Library">
+
+<!ENTITY about.version.label "Version number:">
+<!ENTITY about.jslib.label "written by Pete Collins and the jsLib Team">
+<!ENTITY about.mozdev.label1 "Hosted by">
+<!ENTITY about.mozdev.label2 "mozdev.org">

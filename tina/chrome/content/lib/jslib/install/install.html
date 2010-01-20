@@ -1,0 +1,55 @@
+<!--
+
+The contents of this file are subject to the Mozilla Public
+License Version 1.1 (the "License"); you may not use this file
+except in compliance with the License. You may obtain a copy of
+the License at http://www.mozilla.org/MPL/
+
+Software distributed under the License is distributed on an "AS
+IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+implied. See the License for the specific language governing
+rights and limitations under the License.
+
+The Original Code is jslib team code.
+The Initial Developer of the Original Code is jslib team.
+
+Portions created by jslib team are
+Copyright (C) 2000 jslib team.  All
+Rights Reserved.
+
+Original Author: Pete Collins <pete@mozdev.org>
+Contributor(s):
+
+-->
+
+<html><head><title>startInstall</title>
+<script language="JavaScript" src="install.js"></script>
+<script>
+<!--
+function launch()
+{
+    var xpi = new Object();
+
+    if (isWindows())
+    {
+      xpi["Java"] = "ftp://ftp.netscape.com/pub/netscape6/english/6.0/windows/win32/xpi/jre.xpi";
+      startInstall(xpi, 1);
+    }
+    else if (isLinux())
+    {
+      xpi["Java"] = "ftp://ftp.netscape.com/pub/netscape6/english/6.0/unix/linux22/xpi/jre.xpi";
+      startInstall(xpi, 1);
+    }
+    else
+      badPlatform();
+}
+//-->
+</script>
+</head><body>
+
+<form name="installForm">
+<input type=button onClick="launch();" onCommand="launch();" value="Install Java">
+</form>
+
+</body></html><!--$Date: 2002/01/15 17:10:48 $ -->
+

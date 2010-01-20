@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE  window>
+
+<window id="webtop mode"
+        style="visibility: collapsed;"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script type="application/x-javascript" src="chrome://jslib/content/jslib.js" />
+
+<script>
+  include (jslib_window);
+  const URL = 'chrome://jslib/content/samples/webtop_sample.xul';
+  var win = new CommonWindow(URL, 640, 480);
+  win.openWebTop();
+	close();
+</script>
+
+</window>

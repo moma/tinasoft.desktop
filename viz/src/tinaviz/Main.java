@@ -65,7 +65,7 @@ public class Main extends PApplet implements MouseWheelListener {
         currentView.zoomFrozen = true;
         currentView.showNodeDetails = true;
 
-        window.eval(
+        if (window!=null) window.eval(
                 "parent.showNodeDetails(" + screenX(n.x, n.y)
                 + "," + screenY(n.x, n.y)
                 + ",\"" + n.uuid + "\""
@@ -77,7 +77,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (!currentView.showNodeDetails) {
             return;
         }
-        window.eval("parent.hideNodeDetails();");
+        if (window!=null)  window.eval("parent.hideNodeDetails();");
         //currentView.colorsDesaturated = false;
         currentView.animationPaused = false;
         currentView.zoomFrozen = false;
@@ -99,33 +99,32 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     /*
-   public static void main (String[] args){
-   }
-*/
-    
+    public static void main (String[] args){
+    }
+     */
     @Override
     public void setup() {
 
         //String engine = (getParameter("engine")) ? getParameter("engine") : "P2D";
 
 
-        String engine = OPENGL;
+        String engine = P2D;
         if (getParameter("engine") != null) {
             if (getParameter("engine").equals("software")) {
                 engine = P2D;
             } else if (getParameter("engine").equals("hardware")) {
                 engine = OPENGL;
             }
-            // applet specific
             window = JSObject.getWindow(this);
-           int w = screen.width;
-           int h = screen.height;
-           w = (Integer) window.call("getWidth", null);
-           h = (Integer) window.call("getHeight", null);
-           window.eval("parent.resizeApplet("+w+","+h+");");
+            int w = screen.width;
+            int h = screen.height;
+            w = (Integer) window.call("getWidth", null);
+            h = (Integer) window.call("getHeight", null);
+            window.eval("parent.resizeApplet(" + w + "," + h + ");");
             size(w, h, engine);
         } else {
-                  size(screen.width, screen.height, engine);
+
+            size(screen.width, screen.height, engine);
         }
 
 
@@ -146,18 +145,20 @@ public class Main extends PApplet implements MouseWheelListener {
         vizx = (width / 2.0f);
         vizy = (height / 2.0f);
 
-        
+
         Node node;
         System.out.println("Generating random graph..");
         float rx = random(width);
         float ry = random(height);
         float radius = 0.0f;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 600; i++) {
             radius = random(3.0f, 10.0f);
             if (radius > MAX_RADIUS) {
                 MAX_RADIUS = radius;
             }
             node = new Node("" + i, "node " + i, radius, random(width / 2), random(height / 2));
+            node.genericity = random(1.0f);
+            // System.out.println(node.genericity);
             nodes.add(node);
         }
 
@@ -171,23 +172,23 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
-    
 
         System.out.println("Starting visualization..");
-/*
+
+        /*
         try {
-            updateView("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/data/test2.gexf");
+        updateViewFromURI("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/data/test2.gexf");
         } catch (URISyntaxException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
- * */
- 
+
+         */
     }
 
     @Override
@@ -393,7 +394,7 @@ public class Main extends PApplet implements MouseWheelListener {
             //  0.01 = sticky, 0.001 smoothie
             inerX = (abs(inerX) <= 0.006) ? 0.0f : inerX * 0.9f;
             inerY = (abs(inerY) <= 0.006) ? 0.0f : inerY * 0.9f;
-            inerZ = (abs(inerZ) <= 0.006) ? 0.0f : inerZ * 0.96f;
+            inerZ = (abs(inerZ) <= 0.006) ? 0.0f : inerZ * 0.9f;
             vizx += inerX * 2.0f;
             vizy += inerY * 2.0f;
             zoomRatio += inerZ * 0.015f;
@@ -413,7 +414,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         stroke(150, 150, 150);
 
-        if (!mouseDragging) {
+        if (cameraIsStopped()) {
             strokeWeight(3.0f);
         }
 
@@ -423,7 +424,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     continue;
                 }
 
-                if (!mouseDragging) {
+                if (cameraIsStopped()) {
                     vx = n2.x - n1.x;
                     vy = n2.y - n1.y;
                     len = sqrt(sq(vx) + sq(vy));
@@ -442,22 +443,29 @@ public class Main extends PApplet implements MouseWheelListener {
                     }
                     // AFFICHAGE LIEN (A CHANGER)
 
-                    float rpond = ((n1.radius * 2) * 0.5f);
+                    float rpond = ((n1.radius +n2.radius )  * 0.5f);
                     int rgb = (int) ((255.0f / MAX_RADIUS) * rpond);
 
                     if (this.currentView.showLinks) {
                         // old: 150
                         stroke(rgb);
-                        if (!mouseDragging) {
-                            strokeWeight(((n1.radius + n1.radius) * 0.05f));
+                        if (cameraIsStopped()) {
+                            strokeWeight(((n1.radius + n2.radius) * 0.05f));
                         }
-                        line(n1.x, n1.y, n2.x, n2.y);
-                        arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
+
+                        if ((n1.genericity <= currentView.upperThreshold
+                                && n1.genericity >= currentView.lowerThreshold)
+                                && (n2.genericity <= currentView.upperThreshold
+                                && n2.genericity >= currentView.lowerThreshold)) {
+                            line(n1.x, n1.y, n2.x, n2.y);
+                            arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
+                        }
+
                     }
 
                 }
                 // REPULSION
-                if (!mouseDragging && len != 0) {
+                if (cameraIsStopped() && len != 0) {
 
                     if (!currentView.animationPaused) {
                         // TODO fix this
@@ -473,7 +481,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }   // FOr NODE A
 
         stroke(20, 20, 20);
-        if (!mouseDragging) {
+        if (cameraIsStopped()) {
             strokeWeight(1.2f);
         }
 
@@ -486,8 +494,8 @@ public class Main extends PApplet implements MouseWheelListener {
             n.vx = 0.0f;
             n.vy = 0.0f;
 
-            if (n.genericity < currentView.lowerThreshold
-                    || n.genericity > currentView.upperThreshold) {
+            if (!(n.genericity <= currentView.upperThreshold
+                    && n.genericity >= currentView.lowerThreshold)) {
                 continue;
             }
 
@@ -504,19 +512,19 @@ public class Main extends PApplet implements MouseWheelListener {
                     // fill(200);
                     if (mouseClick) {
                         mouseClick = false;
-                        System.out.println("clicked on node "+n.uuid + " (selected node: "+currentView.selectedNodeID+")");
+                        System.out.println("clicked on node " + n.uuid + " (selected node: " + currentView.selectedNodeID + ")");
                         if (currentView.selectedNodeID.equals(n.uuid)) {
                             currentView.selectedNodeID = "NULL";
                             //n.selected = true;
                             // showNodeDetails(n);
 
                         } else {
-                             currentView.selectedNodeID = n.uuid;
+                            currentView.selectedNodeID = n.uuid;
                             //n.selected = false;
                         }
                     }
                 }
-            
+
 
                 if (n.label.startsWith(currentTextSearch)) {
                     fill(200, 100, 100);
@@ -542,7 +550,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 13, 426);
                  */
             }
-            if (this.currentView.showLabels && !mouseDragging
+            if (this.currentView.showLabels && cameraIsStopped()
                     && abs(inerX) < 0.11
                     && abs(inerY) < 0.11
                     && abs(inerZ) < 0.11) {
@@ -566,19 +574,15 @@ public class Main extends PApplet implements MouseWheelListener {
         }
         if (mouseClick) {
             // the event was not catched.. so we assume we clicked somewhere else
-               currentView.selectedNodeID = "";
-                    mouseClick = false;
-         }
+            currentView.selectedNodeID = "";
+            mouseClick = false;
+        }
 
     }
 
     public float setZoomValue(float value) {
 
         return 0.0f;
-    }
-
-    public void setGSValue(float value) {
-        //return sliderZoomLevel;
     }
 
     // slick label search engine
@@ -655,8 +659,7 @@ public class Main extends PApplet implements MouseWheelListener {
         //return sliderZoomLevel;
     }
 
-
-     public boolean updateViewFromString(String src)
+    public boolean updateViewFromString(String src)
             throws
             URISyntaxException,
             MalformedURLException,
@@ -687,6 +690,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         return result;
     }
+
     public boolean toggleLabels() {
         this.currentView.showLabels = !this.currentView.showLabels;
         return this.currentView.showLabels;
@@ -796,10 +800,16 @@ public class Main extends PApplet implements MouseWheelListener {
         return result;
     }
 
+    public boolean cameraIsMoving() {
+        return !(abs(inerX + inerY + inerZ) == 0.0f);
+    }
+    public boolean cameraIsStopped() {
+        return (abs(inerX + inerY + inerZ) == 0.0f);
+    }
     @Override
     public void mousePressed() {
 
-        hideNodeDetails();
+        // hideNodeDetails();
         // oldmouseX = mouseX;
         //oldmouseY = mouseY;
         // mousePress = true;
@@ -841,7 +851,10 @@ public class Main extends PApplet implements MouseWheelListener {
         if (currentView.zoomFrozen) {
             return;
         }
+        //System.out.println("new inerZ="+inerZ);
         inerZ = -e.getWheelRotation() * 2;
+        //System.out.println("new inerZ="+inerZ);
+
     }
 
     void arrow(float x1, float y1, float x2, float y2, float radius) {

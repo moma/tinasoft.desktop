@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE window> 
+
+<window 
+  id="jslib-sound-test" 
+  style="background-color: #cccccc; width: 200px; height: 100px;" 
+  title="Sound Test"
+  titlemodifier="jsLib"
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script type="application/x-javascript">
+<![CDATA[
+
+  jslib.init(this);
+
+  include (jslib_sound);
+  include (jslib_dirutils);
+
+  var gSound = new Sound;
+
+  function testRemote ()
+  {
+    jslibPrint("Testing remote file ...");
+    var url = "http://jslib.mozdev.org/test.wav";
+    gSound.init(url);
+    gSound.play();
+  }
+
+  function testLocal ()
+  {
+    jslibPrint("Testing local file ...");
+    var du = new DirUtils;
+    du.useObj = true;
+    var sf = du.getAppResDir();
+    sf.append("samples");
+    sf.append("test.wav");
+    jslibPrintMsg("exists", sf.exists());
+    if (sf.exists()) {
+      gSound.init(sf.URL);
+    } else {
+      var f = "file:///C:/Windows/Media/chord.wav";
+      gSound.init(f);
+    }
+    gSound.play();
+  }
+
+  function beep ()
+  {
+    jslibPrint("Testing beep ...");
+    gSound.beep();
+  }
+
+]]>
+</script>
+
+<hbox flex="1" pack="center"> 
+  <spacer flex="1" /> 
+  <vbox>
+    <spacer flex="1" /> 
+    <button label="Test Remote Sound File" oncommand="testRemote();" /> 
+    <button label="Test Local Sound File" oncommand="testLocal();" /> 
+    <button label="Test Beep" oncommand="beep();" /> 
+    <spacer flex="1" /> 
+  </vbox>
+  <spacer flex="1" /> 
+</hbox> 
+
+</window>
+
