@@ -582,7 +582,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public float setZoomValue(float value) {
 
-        return 0.0f;
+        currentView.zoom = value;
+        return currentView.zoom;
     }
 
     // slick label search engine

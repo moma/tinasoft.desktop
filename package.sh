@@ -14,8 +14,8 @@ mkdir dist
 install/scripts/build.win.sh
 zip -r tinasoft-1.0-win.zip dist/tinasoft-win
 
-#install/scripts/build.mac.sh
-#zip -r tinasoft-1.0-mac.zip dist/tinasoft-mac
+install/scripts/build.mac.sh
+zip -r tinasoft-1.0-mac.zip dist/tinasoft-mac
 #mount -o loop -t hfs tinasoft.dmg /mnt/mydmg
 #cp -R /mnt/mydmg/*  
 #unmount /mnt/mydmg
