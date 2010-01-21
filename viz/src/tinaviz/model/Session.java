@@ -33,7 +33,7 @@ import tinaviz.Node;
 //import org.w3c.dom.*;
 
 /**
- *
+ * Link-less design
  * @author jbilcke
  */
 public class Session {
@@ -54,6 +54,15 @@ public class Session {
     public boolean showNodeDetails = false;
     public String selectedNodeID = "";
 
+  public class Metrics {
+
+    public float minX = 0.0f;
+    public float minY = 0.0f;
+    public float maxX = 1.0f;
+    public float maxY = 1.0f;
+
+    }
+
     public class Showprojects {
 
         public boolean neighbours = false;
@@ -67,6 +76,7 @@ public class Session {
         public boolean worldwide = false;
     }
 
+    public Metrics metrics = new Metrics();
     public Showprojects showProjects = new Showprojects();
     public Showkeywords showKeywords = new Showkeywords();
     public Color background = new Color(12, 12, 12);
@@ -123,6 +133,12 @@ public class Session {
         this.showNodes = (Boolean) xml.read(meta + "nodes/@show", XPathConstants.BOOLEAN);
         this.showLinks = (Boolean) xml.read(meta + "links/@show", XPathConstants.BOOLEAN);
 
+        // reset the graph metrics
+        metrics.minX = 0.0f;
+        metrics.minY = 0.0f;
+        metrics.maxX = 0.0f;
+        metrics.maxY = 0.0f;
+
         System.out.println("showLabels: " + showLabels + "\n");
         System.out.println("showNodes: " + showNodes + "\n");
         System.out.println("showLinks: " + showLinks + "\n");
@@ -164,6 +180,12 @@ public class Session {
             Node node = new Node(uuid, label, (float) Math.random() * 10f,
                     (float) Math.random() * 400f,
                     (float) Math.random() * 400f);//, posx, posy);
+
+            // update the graph metrics
+            if (node.x < metrics.minX) metrics.minX = node.x;
+            if (node.x > metrics.maxX) metrics.maxX = node.x;
+            if (node.y < metrics.minY) metrics.minY = node.y;
+            if (node.y > metrics.maxY) metrics.maxY = node.y;
 
 
             org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();

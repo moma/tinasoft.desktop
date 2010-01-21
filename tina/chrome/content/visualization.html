@@ -79,8 +79,8 @@
     position:absolute;
     top:30px;
     right:16px;
-    width:280px;
-    height:500px;
+    width:298px;
+    height:517px;
     background-color: #ffffff;
     background: #ffffff;
     border:solid 0px;
@@ -97,6 +97,11 @@
 }
 
 
+.htoolbar {
+    position:absolute;
+    bottom:80px;
+    left:40px;
+}
 
 .htoolbariframe {
     position:absolute;
@@ -110,10 +115,7 @@
     z-index:1;
 }
 
-.htoolbar {
-    position:absolute;
-    bottom:80px;
-    left:40px;
+.htoolbardiv {
     z-index:2;
 }
 
@@ -192,6 +194,13 @@
     
     
 	$(function(){
+	
+	    // hide all the GUI until we loaded the applet
+	    $("#gui").hide();
+	    
+	    frame = $('#vizframe');
+        labels = [];
+
 		//all hover and click logic for buttons
 		$(".fg-button:not(.ui-state-disabled)")
 		.hover(
@@ -218,8 +227,7 @@
 <body>
     <script type="text/javascript">
 
-frame = $('#vizframe');
-labels = [];
+
 
 $(function(){
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
@@ -230,10 +238,7 @@ $(function(){
     var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
     appletFile.initWithPath(appletPath);
     var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
-    $('#container').append('<iframe id="vizframe" class="vizframe" allowtransparency="true" scrolling="no" width="100%" height="900" frameborder="0" src="'+appletURL+'"></iframe>');
-    $('#container').append('<iframe id="htoolbariframe" class="htoolbariframe"></iframe>');
-    $('#container').append('<iframe id="vtoolbariframe" class="vtoolbariframe"></iframe>');
-    $('#container').append('<iframe id="nodedetailsiframe" class="nodedetailsiframe"></iframe>');
+    $('#container').html('<iframe id="vizframe" class="vizframe" allowtransparency="true" scrolling="no" width="100%" height="900" frameborder="0" src="'+appletURL+'"></iframe>');
                         // $('#vizframe').attr('src', 'http:LINK');
 });
 
@@ -241,19 +246,17 @@ $(function(){
 function resizeApplet(width, height) {
     frame.contents().find('#tinaviz')[0].width = width;
     frame.contents().find('#tinaviz')[0].height = height;
+    
+
+    // update the new layout (recenter the toolbar)
+    $('.htoolbar').css('left', (  (width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
+    
+    $('#gui').show();
+
 }
 
 $(document).ready(function() {
-    //applet = $('#vizframe').contents().find('#tinaviz');
     frame = $('#vizframe');
-
-    labels = [];
-
-
-	// prehide the node details pane
-    $('#nodedetailsiframe').hide();
-	$('#nodedetails').hide();
-
 
     $("#searchfield").autocomplete({
 	    data: labels,
@@ -523,69 +526,84 @@ function loadNewViz(url) {
       </script>
       <div id="container">
       </div>
-      <div id="nodedetails" class="fg-toolbar ui-widget-miniheader ui-corner-all ui-helper-clearfix nodedetails">
-      </div>
-      <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix htoolbar">
+      <div id="gui">
+          <div id="iframes">
+                <iframe id="htoolbariframe" class="htoolbar htoolbariframe"></iframe>
+                <iframe id="vtoolbariframe" class="vtoolbariframe"></iframe>
+                <iframe id="sidebariframe" class="sidebariframe"></iframe>
+                <!--<iframe id="nodedetailsiframe" class="nodedetailsiframe"></iframe>-->
+          </div> <!-- IFRAMES -->
+          <div id="toolbars">
+              <div id="nodedetails" class="fg-toolbar ui-widget-miniheader ui-corner-all ui-helper-clearfix nodedetails">
+              </div>
+              <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix htoolbar htoolbardiv">
 
-	        <div class="fg-buttonset ui-helper-clearfix">
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Open" onclick="updateView()"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Save" onclick="save()"><span class="ui-icon ui-icon-disk"></span> Save</a>
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="snapshot" onclick="snapshot()"><span class="ui-icon ui-icon-disk"></span> Snapshot</a>
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a>
-	        </div>
+	                <div class="fg-buttonset ui-helper-clearfix">
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Open" onclick="updateView()"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Save" onclick="save()"><span class="ui-icon ui-icon-disk"></span> Save</a>
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="snapshot" onclick="snapshot()"><span class="ui-icon ui-icon-disk"></span> Snapshot</a>
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a>
+	                </div>
 
-	        <div class="fg-buttonset ui-helper-clearfix">
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Reset view" onclick="center()"><span class="ui-icon ui-icon-circle-zoomout"></span>reset view</a>
-	        </div>
+	                <div class="fg-buttonset ui-helper-clearfix">
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Reset view" onclick="center()"><span class="ui-icon ui-icon-circle-zoomout"></span>reset view</a>
+	                </div>
 
-	        <div class="fg-buttonset fg-buttonset-multi">
-		        <button class="fg-button ui-state-default ui-corner-left" onclick="toggleLabels()">labels</button>
-		        <button class="fg-button ui-state-default ui-state-active" onclick="toggleNodes()">nodes</button>
-		        <button class="fg-button ui-state-default ui-state-active" onclick="toggleLinks()">links</button>
-		        <button class="fg-button ui-state-default" onclick="togglePosterOverlay()">overlay</button>
-		        <button class="fg-button ui-state-default ui-corner-right" onclick="togglePause()">pause</button>
-	        </div>
+	                <div class="fg-buttonset fg-buttonset-multi">
+		                <button class="fg-button ui-state-default ui-state-active ui-corner-left"   onclick="toggleLabels()">labels</button>
+		                <button class="fg-button ui-state-default ui-state-active"                  onclick="toggleNodes()">nodes</button>
+		                <button class="fg-button ui-state-default ui-state-active"                  onclick="toggleLinks()">links</button>
+		                <button class="fg-button ui-state-default"                                  onclick="togglePosterOverlay()">overlay</button>
+		                <button class="fg-button ui-state-default ui-corner-right"                  onclick="togglePause()">pause</button>
+	                </div>
 
-	        <div class="fg-buttonset ui-helper-clearfix">
-	            <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print" onclick="takePDFPicture()"><span class="ui-icon ui-icon-print"></span> Picture</a>
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"onclick="takePicture()"><span class="ui-icon ui-icon-print"></span> PDF</a>
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>
-	        </div>
+	                <div class="fg-buttonset ui-helper-clearfix">
+	                    <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print" onclick="takePDFPicture()"><span class="ui-icon ui-icon-image"></span>Take Picture</a>
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"onclick="takePicture()"><span class="ui-icon ui-icon-print"></span>Export PDF</a>
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>
+	                </div>
 
-	        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
-		        <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button>
-		        <button class="fg-button ui-state-default ui-priority-primary">batch</button>
-		        <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button>
-	        </div>
+	                <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+		                <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button>
+		                <button class="fg-button ui-state-default ui-priority-primary">batch</button>
+		                <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button>
+	                </div>
 
-        </div>
+                </div>
 
-        <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar">
-	    <input id="upperThresholdInput" class="thresholdInput upperThreshold" value="1.0" />
-            <div id="altslider" class="altslider"></div>
-	    <input id="lowerThresholdInput" class="thresholdInput lowerThreshold" value="0.0" />
-        </div>
+                <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar">
+	            <input id="upperThresholdInput" class="thresholdInput upperThreshold" value="1.0" />
+                    <div id="altslider" class="altslider"></div>
+	            <input id="lowerThresholdInput" class="thresholdInput lowerThreshold" value="0.0" />
+                </div>
 
-        <div id="sidebar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix sidebar">
+                <div id="sidebar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix sidebar">
 
-            <div class="search">
-                <label for="searchfield">Search:</label>
-                <input id="searchfield" name="searchfield" />
-            </div>
-				<div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
-				<button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button>
-				<button class="fg-button ui-state-default ui-priority-primary">batch</button>
-				<button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button>
-			</div>
+                    <div class="search">
+                        <label for="searchfield">Search:</label>
+                        <input id="searchfield" name="searchfield" />
+                    </div>
+				        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+				        <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button>
+				        <button class="fg-button ui-state-default ui-priority-primary">batch</button>
+				        <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button>
+			        </div>
 
-			<div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
-				<h3>Project details</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-			</div>
+			        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+				        <h3>Project details</h3>
+				        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			        </div>
+			        
+		            <div id="debugdiv">
+		            </div>
+		
+                </div> <!-- SIDEBAR -->
+            
+            </div> <!-- TOOLBARS-->
+        </div> <!-- GUI -->
 
-		<div id="debugdiv">
-		</div>
+		
 	</body>
 </html>
 

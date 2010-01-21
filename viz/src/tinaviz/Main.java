@@ -154,8 +154,6 @@ public class Main extends PApplet implements MouseWheelListener {
         oldmouseX = mouseX;
         oldmouseY = mouseY;
 
-        vizx = (width / 2.0f);
-        vizy = (height / 2.0f);
 
 
         Node node;
@@ -210,6 +208,7 @@ public class Main extends PApplet implements MouseWheelListener {
         textFont(font, 48);
 
         // recordingMode = RecordingFormat.PDF;
+        center();
     }
 
     @Override
@@ -748,18 +747,6 @@ public class Main extends PApplet implements MouseWheelListener {
     public void centerOnNodeById(int id) {
         //return sliderZoomLevel;
     }
-
-    public boolean updateViewFromString(String src)
-            throws
-            URISyntaxException,
-            MalformedURLException,
-            IOException,
-            XPathExpressionException {
-        session.updateFromString(src);
-        preSpatialize = 60;
-        return true;
-    }
-
     public boolean updateViewFromURI(String uri)
             throws
             URISyntaxException,
@@ -767,9 +754,24 @@ public class Main extends PApplet implements MouseWheelListener {
             IOException,
             XPathExpressionException {
         session.updateFromURI(uri);
+        return postUpdateView();
+    }
+    public boolean updateViewFromString(String src)
+            throws
+            URISyntaxException,
+            MalformedURLException,
+            IOException,
+            XPathExpressionException {
+        session.updateFromString(src);
+        return postUpdateView();
+    }
+    private boolean postUpdateView() {
+        // prepare the scene depending on graph metrics
         preSpatialize = 60;
+        center();
         return true;
     }
+
 
     public boolean toggleLabels() {
         this.session.showLabels = !this.session.showLabels;
@@ -838,9 +840,11 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void center() {
-        vizx = width / 2.0f;
-        vizy = height / 2.0f;
-        zoomRatio = 1.0f;
+        vizx = 0;
+        vizy = 0;
+        //vizx += width - (session.metrics.maxX - session.metrics.minX);
+        //vizy += height - (session.metrics.maxY - session.metrics.minY);
+        zoomRatio = 1.5f;
     }
 
     public float setLowerThreshold(float threshold) {
@@ -917,7 +921,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (session.zoomFrozen) {
             return;
         }
-        recordingMode = RecordingFormat.PDF;
+
         //System.out.println("new inerZ="+inerZ);
         inerZ = -e.getWheelRotation() * 2;
         //System.out.println("new inerZ="+inerZ);
