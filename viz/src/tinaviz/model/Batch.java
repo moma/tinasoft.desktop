@@ -12,5 +12,5 @@ package tinaviz.model;
 public class Batch {
 
     public String name;
-    public View view;
+    public Session view;
 }

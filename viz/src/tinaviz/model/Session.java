@@ -21,6 +21,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.xpath.XPathExpressionException;
@@ -35,7 +36,7 @@ import tinaviz.Node;
  *
  * @author jbilcke
  */
-public class View {
+public class Session {
 
     public static final String NS = "tina";
     public int selection = 0;
@@ -46,8 +47,7 @@ public class View {
     public boolean showNodes = true;
     public boolean showLinks = true;
     public boolean showPosterOverlay = false;
-    public List projects = new ArrayList<Project>();
-    public List keywords = new ArrayList<Keyword>();
+
     public boolean animationPaused = true;
     public boolean colorsDesaturated = false;
     public boolean zoomFrozen = false;
@@ -66,19 +66,28 @@ public class View {
         public boolean batch = false;
         public boolean worldwide = false;
     }
+
     public Showprojects showProjects = new Showprojects();
     public Showkeywords showKeywords = new Showkeywords();
     public Color background = new Color(12, 12, 12);
     public int fontsize = 12;
     public int maxdeepness = 10;
-    public float MAX_RADIUS = 0.0f;
+
+
+    // DATA PROPERTIES
+    public List projects = new ArrayList<Project>();
+    public List keywords = new ArrayList<Keyword>();
     public Map<String, tinaviz.Node> nodeMap = new HashMap<String, tinaviz.Node>();
     //public List<tinaviz.Node> nodeList = new ArrayList<tinaviz.Node>();
 
-    public View() {
+    // RUNTIME DATA, NOT SERIALIZED
+    public float MAX_RADIUS = 0.0f;
+    public AtomicBoolean isSynced = new AtomicBoolean(false);
+
+    public Session() {
     }
 
-    public View(String uri) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
+    public Session(String uri) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
         updateFromURI(uri);
     }
 
@@ -217,6 +226,7 @@ public class View {
 
         }
 
+        isSynced.set(false);
         //traverseNodes(thirdProject);
         return true;
     }

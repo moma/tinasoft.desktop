@@ -328,14 +328,14 @@ function takePDFPicture() {
         return;
     }
     $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
-    setTimeout("downloadFile('"+outputFilePath+"', 60)",1000);
+    setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
 }
 
-function takePNGPicture() {
+function takePicture() {
     var outputFilePath = "graph.png";
     var result;
     try {
-        result = frame.contents().find('#tinaviz')[0].getSubApplet().takePNGPicture(outputFilePath);
+        result = frame.contents().find('#tinaviz')[0].getSubApplet().takePicture(outputFilePath);
     } catch (e) {
         //alert("Oops! Something bad just happened. Calling 911...");
         $('#debugdiv').append('<br><b>exception='+e+'</b>');
@@ -343,7 +343,7 @@ function takePNGPicture() {
          return;
     }
     $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
-    setTimeout("downloadFile('"+outputFilePath+"', 60)",1000);
+    setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
 }
 
 function downloadFile(outputFilePath, timeout) {
@@ -359,11 +359,11 @@ function downloadFile(outputFilePath, timeout) {
         return true;
    }
     if (downloadFile.exists() && timeout > 0) {
-        setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 1000);
+        setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 3000);
         return true;
     } else {
         // $('#debugdiv').append('<br>waiting..</p>');
-        setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1000);
+        setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1500);
         return true;
     }
     return false;
@@ -548,7 +548,7 @@ function loadNewViz(url) {
 
 	        <div class="fg-buttonset ui-helper-clearfix">
 	            <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print" onclick="takePDFPicture()"><span class="ui-icon ui-icon-print"></span> Picture</a>
-		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"onclick="takePNGPicture()"><span class="ui-icon ui-icon-print"></span> PDF</a>
+		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"onclick="takePicture()"><span class="ui-icon ui-icon-print"></span> PDF</a>
 		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
 		        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>
 	        </div>
