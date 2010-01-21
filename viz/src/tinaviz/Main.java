@@ -546,7 +546,7 @@ public class Main extends PApplet implements MouseWheelListener {
                                 && (n2.genericity <= session.upperThreshold
                                 && n2.genericity >= session.lowerThreshold)) {
                             line(n1.x, n1.y, n2.x, n2.y);
-                            arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
+                            if (cameraIsStopped()) arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
                         }
 
                     }
