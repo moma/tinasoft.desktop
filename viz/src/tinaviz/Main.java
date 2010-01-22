@@ -127,6 +127,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 engine = OPENGL;
 
             }
+            engine = OPENGL;
             window = JSObject.getWindow(this);
             int w = screen.width;
             int h = screen.height;
@@ -161,7 +162,7 @@ public class Main extends PApplet implements MouseWheelListener {
         float rx = random(width);
         float ry = random(height);
         float radius = 0.0f;
-        for (int i = 0; i < 600; i++) {
+        for (int i = 0; i < 200; i++) {
             radius = random(3.0f, 10.0f);
             if (radius > MAX_RADIUS) {
                 MAX_RADIUS = radius;
@@ -207,7 +208,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
         textFont(font, 48);
 
-        // recordingMode = RecordingFormat.PDF;
         center();
     }
 
@@ -478,11 +478,13 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!mouseDragging) {
 
+            // todo: make it proportionnal to the zoom level ?
+
 
             //  0.01 = sticky, 0.001 smoothie
-            inerX = (abs(inerX) <= 0.006) ? 0.0f : inerX * 0.9f;
-            inerY = (abs(inerY) <= 0.006) ? 0.0f : inerY * 0.9f;
-            inerZ = (abs(inerZ) <= 0.006) ? 0.0f : inerZ * 0.9f;
+            inerX = (abs(inerX) <= 0.09) ? 0.0f : inerX * 0.9f;
+            inerY = (abs(inerY) <= 0.09) ? 0.0f : inerY * 0.9f;
+            inerZ = (abs(inerZ) <= 0.06) ? 0.0f : inerZ * 0.9f;
             vizx += inerX * 2.0f;
             vizy += inerY * 2.0f;
             zoomRatio += inerZ * 0.015f;
@@ -498,7 +500,7 @@ public class Main extends PApplet implements MouseWheelListener {
             zoomRatio = 0.05f;
             inerZ = 0.0f;
         }
-        scale(zoomRatio);
+        scale( zoomRatio * (log(zoomRatio)));
 
         stroke(150, 150, 150);
 
@@ -638,10 +640,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 13, 426);
                  */
             }
-            if (this.session.showLabels && cameraIsStopped()
-                    && abs(inerX) < 0.11
-                    && abs(inerY) < 0.11
-                    && abs(inerZ) < 0.11) {
+            if (this.session.showLabels && cameraIsStopped()) {
                 fill(120);
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
                 textSize(n.radius);
@@ -948,35 +947,14 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.popMatrix();
     }
 
-    private void createGradient(double x, double y, double radius, int c1, int c2) {
-        double px = 0, py = 0, angle = 0;
-
-
-        // calculate differences between color components
-        double deltaR = red(c2) - red(c1);
-        double deltaG = green(c2) - green(c1);
-        double deltaB = blue(c2) - blue(c1);
-        // hack to ensure there are no holes in gradient
-        // needs to be increased, as radius increases
-        double gapFiller = 8.0;
-
-        for (int i = 0; i < radius; i++) {
-            for (double j = 0; j < 360; j += 1.0 / gapFiller) {
-                px = x + cos(radians((float) angle)) * i;
-                py = y + sin(radians((float) angle)) * i;
-                angle += 1.0 / gapFiller;
-                int c = color((float) (red(c1) + (i) * (deltaR / radius)),
-                        (float) (green(c1) + (i) * (deltaG / radius)),
-                        (float) (blue(c1) + (i) * (deltaB / radius)));
-                set((int) px, (int) py, c);
-            }
-        }
-        // adds smooth edge
-        // hack anti-aliasing
-        noFill();
-        strokeWeight(3);
-        ellipse((float) x, (float) y, (float) radius * 2, (float) radius * 2);
-    }
+    float logify (float x) {
+  if (abs(x) < 0.01f) return 0.0f;
+  return (x>0) ?  log100((int)(abs(x)*100.0f)) : -log100((int)(abs(x)*100.0f));
+}
+float log100 (int x) {
+  return (log(x) / ((float)log(100)));
+}
+   
 }
 
 
