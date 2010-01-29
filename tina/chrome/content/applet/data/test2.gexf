@@ -3,7 +3,7 @@
     <graph type="static">
         <attributes class="node" type="dynamic">
             <attribute id="0" title="category" type="string"/>
-            <attribute id="1" title="genericity" type="float"/> 
+            <attribute id="1" title="proximity" type="float"/> 
         </attributes> 
 
             <!-- session parameters (saved within the URL) -->
@@ -17,7 +17,6 @@
                 <links show="true" />
                 <background r="204" g="122" b="229" />
                 <fontsize size="13" />
-                <maxdeepness value="10" />
         </tina>
         <nodes>
             <node id="1" label="GEOLYS">

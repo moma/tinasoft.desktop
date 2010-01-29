@@ -192,13 +192,12 @@
 
     <script type="text/javascript">
     
-    
+    view = {};
 	$(function(){
 	
 	    // hide all the GUI until we loaded the applet
 	    $("#gui").hide();
 	    
-	    frame = $('#vizframe');
         labels = [];
 
 		//all hover and click logic for buttons
@@ -246,7 +245,6 @@ $(function(){
 function resizeApplet(width, height) {
     frame.contents().find('#tinaviz')[0].width = width;
     frame.contents().find('#tinaviz')[0].height = height;
-    
 
     // update the new layout (recenter the toolbar)
     $('.htoolbar').css('left', (  (width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
@@ -256,7 +254,6 @@ function resizeApplet(width, height) {
 }
 
 $(document).ready(function() {
-    frame = $('#vizframe');
 
     $("#searchfield").autocomplete({
 	    data: labels,
@@ -285,45 +282,20 @@ $(document).ready(function() {
 });
 
 function synchronize() {
-    labels = frame.contents().find('#tinaviz')[0].getSubApplet().getLabels();
-    $("#searchfield").autocomplete("setData", {
-	    data: labels
-	});
+    labels = applet.getLabels();
+    // updateAutocomplete();
 }
 
-function toggleLabels() {
-    frame.contents().find('#tinaviz')[0].getSubApplet().toggleLabels();
-}
-
-function toggleNodes() {
-    frame.contents().find('#tinaviz')[0].getSubApplet().toggleNodes();
-}
-
-function centerOnNodeByLabelRegex(regex) {
-    frame.contents().find('#tinaviz')[0].getSubApplet().centerOnNodeByLabelRegex(regex);
-}
-
-function toggleLinks() {
-    frame.contents().find('#tinaviz')[0].getSubApplet().toggleLinks();
-}
-
-function togglePosterOverlay() {
-    frame.contents().find('#tinaviz')[0].getSubApplet().togglePosterOverlay();
-}
-
-function center() {
-    frame.contents().find('#tinaviz')[0].getSubApplet().center();
-}
-
-function togglePause() {
-    frame.contents().find('#tinaviz')[0].getSubApplet().togglePause();
+function registerApplet() {
+    applet = $('#vizframe').contents().find('#tinaviz')[0];
+    viz = applet.getSubApplet(); 
 }
 
 function takePDFPicture() {
     var outputFilePath = "graph.pdf";
     var result;
     try {
-        result = frame.contents().find('#tinaviz')[0].getSubApplet().takePDFPicture(outputFilePath);
+        result = applet.takePDFPicture(outputFilePath);
     } catch (e) {
         //alert("Oops! Something bad just happened. Calling 911...");
         $('#debugdiv').append('<br><b>exception='+e+'</b>');
@@ -338,7 +310,7 @@ function takePicture() {
     var outputFilePath = "graph.png";
     var result;
     try {
-        result = frame.contents().find('#tinaviz')[0].getSubApplet().takePicture(outputFilePath);
+        result = applet.takePicture(outputFilePath);
     } catch (e) {
         //alert("Oops! Something bad just happened. Calling 911...");
         $('#debugdiv').append('<br><b>exception='+e+'</b>');
@@ -541,35 +513,35 @@ function loadNewViz(url) {
 	                <div class="fg-buttonset ui-helper-clearfix">
 		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Open" onclick="updateView()"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
 		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Save" onclick="save()"><span class="ui-icon ui-icon-disk"></span> Save</a>
-		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="snapshot" onclick="snapshot()"><span class="ui-icon ui-icon-disk"></span> Snapshot</a>
-		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a>
+		                <!--<a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="snapshot" onclick="snapshot()"><span class="ui-icon ui-icon-disk"></span> Snapshot</a>-->
+		                <!--<a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a>-->
 	                </div>
 
 	                <div class="fg-buttonset ui-helper-clearfix">
-		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Reset view" onclick="center()"><span class="ui-icon ui-icon-circle-zoomout"></span>reset view</a>
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Reset view" onclick="view.center()"><span class="ui-icon ui-icon-circle-zoomout"></span>reset view</a>
 	                </div>
 
 	                <div class="fg-buttonset fg-buttonset-multi">
-		                <button class="fg-button ui-state-default ui-state-active ui-corner-left"   onclick="toggleLabels()">labels</button>
-		                <button class="fg-button ui-state-default ui-state-active"                  onclick="toggleNodes()">nodes</button>
-		                <button class="fg-button ui-state-default ui-state-active"                  onclick="toggleLinks()">links</button>
-		                <button class="fg-button ui-state-default"                                  onclick="togglePosterOverlay()">overlay</button>
-		                <button class="fg-button ui-state-default ui-corner-right"                  onclick="togglePause()">pause</button>
+		                <button class="fg-button ui-state-default ui-state-active ui-corner-left"   onclick="view.toggleLabels()">labels</button>
+		                <button class="fg-button ui-state-default ui-state-active"                  onclick="view.toggleNodes()">nodes</button>
+		                <button class="fg-button ui-state-default ui-state-active"                  onclick="view.toggleLinks()">links</button>
+		                <!--<button class="fg-button ui-state-default"                                  onclick="view.togglePosterOverlay()">overlay</button>-->
+		                <button class="fg-button ui-state-default ui-corner-right"                  onclick="view.togglePause()">pause</button>
 	                </div>
 
 	                <div class="fg-buttonset ui-helper-clearfix">
 	                    <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print" onclick="takePDFPicture()"><span class="ui-icon ui-icon-image"></span>Take Picture</a>
 		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"onclick="takePicture()"><span class="ui-icon ui-icon-print"></span>Export PDF</a>
-		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
-		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>
+		                <!--<a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
+		                <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>-->
 	                </div>
 
 	                <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
-		                <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button>
-		                <button class="fg-button ui-state-default ui-priority-primary">batch</button>
-		                <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button>
+		                <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left" onclick="view.keepNodesWith('type','projects')">Projects</button>
+		                <button class="fg-button ui-state-default ui-state-active ui-priority-primary " onclick="view.keepNodesWith('type','projects')">"<>"</button>	                
+		                <button class="fg-button ui-state-default ui-priority-primary" onclick="view.keepNodesWith('type','fields')">Fields</button>
 	                </div>
-
+	                
                 </div>
 
                 <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar">
