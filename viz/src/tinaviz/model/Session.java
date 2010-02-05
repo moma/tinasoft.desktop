@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -47,20 +48,75 @@ public class Session {
     public boolean showNodes = true;
     public boolean showLinks = true;
     public boolean showPosterOverlay = false;
-
     public boolean animationPaused = true;
     public boolean colorsDesaturated = false;
     public boolean zoomFrozen = false;
     public boolean showNodeDetails = false;
     public String selectedNodeID = "";
 
-  public class Metrics {
+    public class Metrics {
 
-    public float minX = 0.0f;
-    public float minY = 0.0f;
-    public float maxX = 1.0f;
-    public float maxY = 1.0f;
+        public float minX = 0.0f;
+        public float minY = 0.0f;
+        public float maxX = 1.0f;
+        public float maxY = 1.0f;
+    }
 
+    public class Filter {
+
+        public Map<String, String> keepNodesWith = new HashMap<String, String>();
+
+        public void clear() {
+            keepNodesWith.clear();
+        }
+
+        public Map<String, tinaviz.Node> keepNodesWith(Map<String, tinaviz.Node> nodes) {
+            Map<String, tinaviz.Node> results = new HashMap<String, tinaviz.Node>();
+
+            for (String nk : nodes.keySet()) {
+
+                Node n = nodes.get(nk);
+
+                boolean mustSkip = false;
+                for (String k : keepNodesWith.keySet()) {
+
+                    Field f = null;
+                    String value = "";
+
+                    try {
+                        f = n.getClass().getField(k);
+                    } catch (NoSuchFieldException ex) {
+                        Logger.getLogger(Filter.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SecurityException ex) {
+                        Logger.getLogger(Filter.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    try {
+                        value = (String) f.get(n);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(Filter.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(Filter.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+
+                    if (!value.matches(keepNodesWith.get(k))) {
+                        mustSkip = true;
+                        break;
+                    }
+
+                }
+
+                if (mustSkip) {
+                    continue;
+                }
+                Node result = new Node("");
+                result.update(n);
+                results.put(result.uuid, result);
+            }
+            return results;
+
+        }
     }
 
     public class Showprojects {
@@ -75,21 +131,19 @@ public class Session {
         public boolean batch = false;
         public boolean worldwide = false;
     }
-
     public Metrics metrics = new Metrics();
     public Showprojects showProjects = new Showprojects();
     public Showkeywords showKeywords = new Showkeywords();
     public Color background = new Color(12, 12, 12);
     public int fontsize = 12;
     public int maxdeepness = 10;
-
-
     // DATA PROPERTIES
     public List projects = new ArrayList<Project>();
     public List keywords = new ArrayList<Keyword>();
-    public Map<String, tinaviz.Node> nodeMap = new HashMap<String, tinaviz.Node>();
+    public Map<String, tinaviz.Node> storedNodes = new HashMap<String, tinaviz.Node>();
+    public Map<String, tinaviz.Node> filteredNodes = new HashMap<String, tinaviz.Node>();
+    // public Map<String, tinaviz.Node> nodeMap = new HashMap<String, tinaviz.Node>();
     //public List<tinaviz.Node> nodeList = new ArrayList<tinaviz.Node>();
-
     // RUNTIME DATA, NOT SERIALIZED
     public float MAX_RADIUS = 0.0f;
     public AtomicBoolean isSynced = new AtomicBoolean(false);
@@ -106,16 +160,19 @@ public class Session {
         xml.parseFromURI(uri);
         return parseXML(xml);
     }
-        public boolean updateFromString(String str) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
+
+    public boolean updateFromString(String str) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
         XPathReader xml = new XPathReader();
         xml.parseFromString(str);
         return parseXML(xml);
     }
-       public boolean updateFromInputStream(InputStream inputStream) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
+
+    public boolean updateFromInputStream(InputStream inputStream) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
         XPathReader xml = new XPathReader();
         xml.parseFromStream(inputStream);
         return parseXML(xml);
     }
+
     private boolean parseXML(XPathReader xml) throws XPathExpressionException {
         String meta = "/gexf/graph/tina/";
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
@@ -182,10 +239,18 @@ public class Session {
                     (float) Math.random() * 400f);//, posx, posy);
 
             // update the graph metrics
-            if (node.x < metrics.minX) metrics.minX = node.x;
-            if (node.x > metrics.maxX) metrics.maxX = node.x;
-            if (node.y < metrics.minY) metrics.minY = node.y;
-            if (node.y > metrics.maxY) metrics.maxY = node.y;
+            if (node.x < metrics.minX) {
+                metrics.minX = node.x;
+            }
+            if (node.x > metrics.maxX) {
+                metrics.maxX = node.x;
+            }
+            if (node.y < metrics.minY) {
+                metrics.minY = node.y;
+            }
+            if (node.y > metrics.maxY) {
+                metrics.maxY = node.y;
+            }
 
 
             org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
@@ -193,18 +258,18 @@ public class Session {
             for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
                 org.w3c.dom.Node n = xmlnodeChildren.item(j);
                 if (n.getNodeName() == "attvalues") {
-                   // System.out.println("in attributes tag");
+                    // System.out.println("in attributes tag");
                     org.w3c.dom.NodeList xmlattribs = n.getChildNodes();
                     for (int k = 0; k < xmlattribs.getLength(); k++) {
                         org.w3c.dom.Node attr = xmlattribs.item(k);
                         if (attr.getNodeName() == "attvalue") {
-                           // System.out.println("in attribute tag");
+                            // System.out.println("in attribute tag");
                             if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("0")) {
                                 node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
                                 // System.out.println(" - category: "+node.category);
 
                             } else if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("1")) {
-                                 node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
                                 // System.out.println("  - genericity: "+node.genericity );
 
                             }
@@ -214,16 +279,16 @@ public class Session {
                 }
             }
 
-            System.out.println("selectedNodeID: "+selectedNodeID);
-            System.out.println("node uuid: "+uuid);
+            System.out.println("selectedNodeID: " + selectedNodeID);
+            System.out.println("node uuid: " + uuid);
             //if (selectedNodeID.equals(uuid)) {
             //    node.selected = true;
             //}
 
-            if (nodeMap.containsKey(uuid)) {
-                nodeMap.get(uuid).update(node);
+            if (storedNodes.containsKey(uuid)) {
+                storedNodes.get(uuid).update(node);
             } else {
-                nodeMap.put(uuid, node);
+                storedNodes.put(uuid, node);
                 //nodeList.add(node);
             }
 
@@ -242,8 +307,8 @@ public class Session {
 
             String source = edgeAttributes.getNamedItem("source").getNodeValue();
             String target = edgeAttributes.getNamedItem("target").getNodeValue();
-            if (nodeMap.containsKey(source) && nodeMap.containsKey(target)) {
-                nodeMap.get(source).addNeighbour(nodeMap.get(target));
+            if (storedNodes.containsKey(source) && storedNodes.containsKey(target)) {
+                storedNodes.get(source).addNeighbour(storedNodes.get(target));
             }
 
         }

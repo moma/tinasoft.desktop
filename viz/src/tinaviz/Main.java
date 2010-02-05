@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -133,6 +135,7 @@ public class Main extends PApplet implements MouseWheelListener {
             int h = screen.height;
             w = (Integer) window.call("getWidth", null);
             h = (Integer) window.call("getHeight", null);
+            window.eval("parent.registerApplet();");
             window.eval("parent.resizeApplet(" + w + "," + h + ");");
             size(w, h, engine);
         } else {
@@ -217,7 +220,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!session.isSynced.getAndSet(true)) {
             if (!debugMode) {
-                nodes = new ArrayList<Node>(session.nodeMap.values());
+                nodes = new ArrayList<Node>(session.storedNodes.values());
             }
         }
 
@@ -584,6 +587,45 @@ public class Main extends PApplet implements MouseWheelListener {
             n.vx = 0.0f;
             n.vy = 0.0f;
 
+            // node filter
+            //
+            
+            boolean mustSkip = false;
+            for (String k : session.filterKeepNodesWith.keySet()) {
+
+                Field f = null;
+                 String value = "";
+                /*
+                try {
+                    f = n.getClass().getField(k);
+                } catch (NoSuchFieldException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SecurityException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               
+                try {
+                    value = (String) f.get(n);
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }*/
+
+                  /*
+                if (!value.matches(session.keepNodesWith.get(k))) {
+                    mustSkip = true;
+                    break;
+                }
+                  */
+            }
+           
+            if (mustSkip) continue;
+            
+            
+            //Field f = n.getClass().getField(nomChamp);
+            //f.set(o,val);
+
             if (!(n.genericity <= session.upperThreshold
                     && n.genericity >= session.lowerThreshold)) {
                 continue;
@@ -771,6 +813,14 @@ public class Main extends PApplet implements MouseWheelListener {
         return true;
     }
 
+    public boolean toggleNodeFilter(String attr, String value) {
+        if (session.filterKeepNodesWith.containsKey(attr)) {
+            session.filterKeepNodesWith.remove(attr);
+        } else {
+            session.filterKeepNodesWith.put(attr, value);
+        }
+        return true;
+    }
 
     public boolean toggleLabels() {
         this.session.showLabels = !this.session.showLabels;
