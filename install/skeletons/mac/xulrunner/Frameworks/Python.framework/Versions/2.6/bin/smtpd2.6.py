@@ -1,4 +1,4 @@
-#!/Users/toddw/src/pyxpcomext/src/build/py_install/Python.framework/Versions/2.6/bin/python2.6
+#!/Users/toddw/src/pythonext/src/build/py_install/Python.framework/Versions/2.6/bin/python2.6
 """An RFC 2821 smtp proxy.
 
 Usage: %(program)s [options] [localhost:localport [remotehost:remoteport]]
@@ -420,7 +420,7 @@ class MailmanProxy(PureProxy):
         s = StringIO(data)
         msg = Message.Message(s)
         # These headers are required for the proper execution of Mailman.  All
-        # MTAs in existance seem to add these if the original message doesn't
+        # MTAs in existence seem to add these if the original message doesn't
         # have them.
         if not msg.getheader('from'):
             msg['From'] = mailfrom

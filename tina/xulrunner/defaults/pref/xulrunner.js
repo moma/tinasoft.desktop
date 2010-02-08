@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-//@line 38 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/xulrunner/app/xulrunner.js"
+//@line 38 "/home/jbilcke/Desktop/mozilla-1.9.2/xulrunner/app/xulrunner.js"
 
 // We need to override the default values of these preferences since all.js
 // assumes these are in the navigator package, which for us is non-existant.
@@ -48,7 +48,7 @@ pref("intl.charsetmenu.browser.more2",  "chrome://global/locale/intl.properties"
 pref("intl.charsetmenu.browser.more3",  "chrome://global/locale/intl.properties");
 pref("intl.charsetmenu.browser.more4",  "chrome://global/locale/intl.properties");
 pref("intl.charsetmenu.browser.more5",  "chrome://global/locale/intl.properties");
-pref("intl.charsetmenu.browser.unicode",  "chrome://global/locale/intl.properties");
+pref("intl.charsetmenu.browser.unicode",  "UTF-8, UTF-16LE, UTF-16BE, UTF-32, UTF-32LE, UTF-32BE");
 pref("intl.charset.detector", "chrome://global/locale/intl.properties");
 pref("intl.charset.default",  "chrome://global-platform/locale/intl.properties");
 pref("intl.menuitems.alwaysappendaccesskeys","chrome://global/locale/intl.properties");
@@ -59,7 +59,7 @@ pref("xpinstall.dialog.progress.skin", "chrome://mozapps/content/extensions/exte
 pref("xpinstall.dialog.progress.type.chrome", "Extension:Manager");
 pref("xpinstall.dialog.progress.type.skin", "Extension:Manager");
 pref("xpinstall.enabled", true);
-//@line 65 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/xulrunner/app/xulrunner.js"
+//@line 65 "/home/jbilcke/Desktop/mozilla-1.9.2/xulrunner/app/xulrunner.js"
 pref("browser.preferences.instantApply", true);
-//@line 70 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/xulrunner/app/xulrunner.js"
+//@line 70 "/home/jbilcke/Desktop/mozilla-1.9.2/xulrunner/app/xulrunner.js"
 pref("browser.preferences.animateFadeIn", false);

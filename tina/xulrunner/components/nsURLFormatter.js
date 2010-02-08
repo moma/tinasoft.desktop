@@ -1,4 +1,4 @@
-//@line 37 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/urlformatter/src/nsURLFormatter.js"
+//@line 37 "/home/jbilcke/Desktop/mozilla-1.9.2/toolkit/components/urlformatter/src/nsURLFormatter.js"
 /**
  * @class nsURLFormatterService
  *
@@ -7,7 +7,7 @@
  * Mozilla Applications linking to Mozilla websites are strongly encouraged to use
  * URLs of the following format:
  *
- *   http[s]://%LOCALE%.%SERVICE%.mozilla.[com|org]/%LOCALE%/
+ *   http[s]://%SERVICE%.mozilla.[com|org]/%LOCALE%/
  */
 
 const Cc = Components.classes;

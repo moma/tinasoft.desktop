@@ -1,0 +1,5 @@
+#!/home/komodo-build/as/activepython/build/py2_6_4-linux-x86_64-komodosilo/CoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIx/bin/python2.6
+
+import pydoc
+if __name__ == '__main__':
+    pydoc.cli()

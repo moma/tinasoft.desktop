@@ -88,6 +88,12 @@ WIN32 is still required for the locale module.
 #define USE_SOCKET
 #endif
 
+/* CE6 doesn't have strdup() but _strdup(). Assume the same for earlier versions. */
+#if defined(MS_WINCE)
+#  include <stdlib.h>
+#  define strdup _strdup
+#endif
+
 #ifdef MS_WINCE
 /* Python uses GetVersion() to distinguish between
  * Windows NT and 9x/ME where OS Unicode support is concerned.
@@ -399,11 +405,11 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* Define to 1 if you have the `copysign' function. */
 #define HAVE_COPYSIGN 1
 
-/* Define to 1 if you have the `isinf' function. */
-#define HAVE_ISINF 1
+/* Define to 1 if you have the `isinf' macro. */
+#define HAVE_DECL_ISINF 1
 
 /* Define to 1 if you have the `isnan' function. */
-#define HAVE_ISNAN 1
+#define HAVE_DECL_ISNAN 1
 
 /* Define if on AIX 3.
    System headers sometimes define this.

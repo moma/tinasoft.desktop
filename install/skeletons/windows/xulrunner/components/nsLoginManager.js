@@ -51,20 +51,7 @@ LoginManager.prototype = {
     contractID: "@mozilla.org/login-manager;1",
     classID: Components.ID("{cb9e0de8-3598-4ed7-857b-827f011ad5d8}"),
     QueryInterface : XPCOMUtils.generateQI([Ci.nsILoginManager,
-                                            Ci.nsISupportsWeakReference,
-                                            Ci.nsILoginManager_MOZILLA_1_9_1,
-                                            Ci.nsIClassInfo]),
-
-    /* ---------- extra requirements for nsIClassInfo ---------- */
-    getInterfaces: function(countRef) {
-        let interfaces = [Ci.nsILoginManager, Ci.nsISupportsWeakReference,
-                          Ci.nsILoginManager_MOZILLA_1_9_1, Ci.nsIClassInfo];
-        countRef.value = interfaces.length;
-        return interfaces;
-    },
-    getHelperForLanguage: function (language) null,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
-    flags: Ci.nsIClassInfo.SINGLETON,
+                                            Ci.nsISupportsWeakReference]),
 
 
     /* ---------- private memebers ---------- */
@@ -389,9 +376,13 @@ LoginManager.prototype = {
                     var [usernameField, passwordField, ignored] =
                         this._pwmgr._getFormFields(acForm, false);
                     if (usernameField == acInputField && passwordField) {
+                        let oldValue = passwordField.value;
                         // Clobber any existing password.
                         passwordField.value = "";
-                        this._pwmgr._fillForm(acForm, true, true, null);
+                        let [didFillForm, foundLogins] =
+                            this._pwmgr._fillForm(acForm, true, true, null);
+                        if (!didFillForm)
+                            passwordField.value = oldValue;
                     } else {
                         this._pwmgr.log("Oops, form changed before AC invoked");
                     }
@@ -611,9 +602,11 @@ LoginManager.prototype = {
 
         var result = null;
 
-        if (aPreviousResult) {
+        if (aPreviousResult &&
+                aSearchString.substr(0, aPreviousResult.searchString.length) == aPreviousResult.searchString) {
             this.log("Using previous autocomplete result");
             result = aPreviousResult;
+            result.wrappedJSObject.searchString = aSearchString;
 
             // We have a list of results for a shorter search string, so just
             // filter them further based on the new search string.
@@ -1338,6 +1331,12 @@ UserAutoCompleteResult.prototype = {
 
     // private
     logins : null,
+
+    // Allow autoCompleteSearch to get at the JS object so it can
+    // modify some readonly properties for internal use.
+    get wrappedJSObject() {
+        return this;
+    },
 
     // Interfaces from idl...
     searchString : null,

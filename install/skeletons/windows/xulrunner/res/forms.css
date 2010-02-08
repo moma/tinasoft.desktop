@@ -49,19 +49,23 @@
 
 /* miscellaneous form elements */
 
-legend {
+fieldset > legend {
   padding-left: 2px;
   padding-right: 2px;
   border: none;
-  position: static ! important;
-  float: none ! important;
-  width: -moz-fit-content ! important;
-  min-width: 0 ! important;
-  max-width: none ! important;
-  height: auto ! important;
-  min-height: 0 ! important;
-  max-height: none ! important;
+  position: static;
+  float: none;
+  width: -moz-fit-content;
+  min-width: 0;
+  max-width: none;
+  height: auto;
+  min-height: 0;
+  max-height: none;
   white-space: nowrap;
+}
+
+legend {
+  display: block;
 }
 
 fieldset {
@@ -105,8 +109,9 @@ input {
 }
 
 input > .anonymous-div {
-  white-space: pre;
   word-wrap: normal !important;
+  /* Make the line-height equal to the available height */
+  line-height: -moz-block-height;
 }
 
 textarea {
@@ -136,6 +141,7 @@ textarea > scrollbar {
 
 textarea > .anonymous-div,
 input > .anonymous-div {
+  white-space: pre;
   overflow: auto;
   border: 0px !important;
   /* The 1px horizontal padding is for parity with Win/IE */
@@ -147,6 +153,15 @@ input > .anonymous-div {
   ime-mode: inherit;
 }
 
+textarea > .anonymous-div.wrap,
+input > .anonymous-div.wrap {
+  white-space: pre-wrap;
+}
+textarea > .anonymous-div.inherit-overflow,
+input > .anonymous-div.inherit-overflow {
+  overflow: inherit;
+}
+
 input:-moz-read-write,
 textarea:-moz-read-write {
   -moz-user-modify: read-write !important;
@@ -155,8 +170,8 @@ textarea:-moz-read-write {
 select {
   margin: 0;
   border-color: ThreeDFace;
-  background-color: -moz-Field;
-  color: -moz-FieldText;
+  background-color: -moz-Combobox;
+  color: -moz-ComboboxText;
   font: -moz-list;
   line-height: normal !important;
   white-space: nowrap !important;
@@ -180,6 +195,8 @@ select[size],
 select[multiple],
 select[size][multiple] {
   /* Different alignment and padding for listbox vs combobox */
+  background-color: -moz-Field;
+  color: -moz-FieldText;
   vertical-align: text-bottom;
   padding: 1px 0 1px 0;
   -moz-appearance: listbox;
@@ -188,6 +205,8 @@ select[size][multiple] {
 select[size="0"],
 select[size="1"] {
   /* Except this is not a listbox */
+  background-color: -moz-Combobox;
+  color: -moz-ComboboxText;
   vertical-align: baseline;
   padding: 0;
   -moz-appearance: menulist;
@@ -339,7 +358,7 @@ optgroup[disabled] {
 /* hidden inputs */
 input[type="hidden"] {
   -moz-appearance: none;
-  display: none;
+  display: none !important;
   padding: 0;
   border: 0;
   cursor: auto;

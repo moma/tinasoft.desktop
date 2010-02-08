@@ -116,6 +116,18 @@
 /* Define if you have the 'resize_term' function. */
 #define HAVE_CURSES_RESIZE_TERM 1
 
+/* Define to 1 if you have the declaration of `isfinite', and to 0 if you
+   don't. */
+#define HAVE_DECL_ISFINITE 1
+
+/* Define to 1 if you have the declaration of `isinf', and to 0 if you don't.
+   */
+#define HAVE_DECL_ISINF 1
+
+/* Define to 1 if you have the declaration of `isnan', and to 0 if you don't.
+   */
+#define HAVE_DECL_ISNAN 1
+
 /* Define to 1 if you have the declaration of `tzname', and to 0 if you don't.
    */
 /* #undef HAVE_DECL_TZNAME */
@@ -316,12 +328,6 @@
 /* Define to 1 if you have the <io.h> header file. */
 /* #undef HAVE_IO_H */
 
-/* Define to 1 if you have the `isinf' function. */
-#define HAVE_ISINF 1
-
-/* Define to 1 if you have the `isnan' function. */
-#define HAVE_ISNAN 1
-
 /* Define to 1 if you have the `kill' function. */
 #define HAVE_KILL 1
 
@@ -361,7 +367,7 @@
 /* Define to 1 if you have the <libintl.h> header file. */
 #define HAVE_LIBINTL_H 1
 
-/* Define to 1 if you have the `readline' library (-lreadline). */
+/* Define if you have the readline library (-lreadline). */
 #define HAVE_LIBREADLINE 1
 
 /* Define to 1 if you have the `resolv' library (-lresolv). */
@@ -996,6 +1002,9 @@
 /* #undef WORDS_BIGENDIAN */
 #endif
 #endif
+
+/* Define if arithmetic is subject to x87-style double rounding issue */
+/* #undef X87_DOUBLE_ROUNDING */
 
 /* Define to 1 if on AIX 3.
    System headers sometimes define this.

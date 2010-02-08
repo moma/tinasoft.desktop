@@ -1,6 +1,6 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
-//@line 44 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 44 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
 */
 
 //
@@ -13,6 +13,7 @@ const Ci = Components.interfaces;
 const Cr = Components.results;
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.import("resource://gre/modules/LightweightThemeManager.jsm");
 
 const PREF_EM_CHECK_COMPATIBILITY     = "extensions.checkCompatibility";
 const PREF_EM_CHECK_UPDATE_SECURITY   = "extensions.checkUpdateSecurity";
@@ -21,6 +22,8 @@ const PREF_EM_ENABLED_ITEMS           = "extensions.enabledItems";
 const PREF_UPDATE_COUNT               = "extensions.update.count";
 const PREF_UPDATE_DEFAULT_URL         = "extensions.update.url";
 const PREF_EM_NEW_ADDONS_LIST         = "extensions.newAddons";
+const PREF_EM_DISABLED_ADDONS_LIST    = "extensions.disabledAddons";
+const PREF_EM_SHOW_MISMATCH_UI        = "extensions.showMismatchUI";
 const PREF_EM_IGNOREMTIMECHANGES      = "extensions.ignoreMTimeChanges";
 const PREF_EM_DISABLEDOBSOLETE        = "extensions.disabledObsolete";
 const PREF_EM_EXTENSION_FORMAT        = "extensions.%UUID%.";
@@ -30,6 +33,7 @@ const PREF_EM_ITEM_UPDATE_URL         = "extensions.%UUID%.update.url";
 const PREF_EM_DSS_ENABLED             = "extensions.dss.enabled";
 const PREF_DSS_SWITCHPENDING          = "extensions.dss.switchPending";
 const PREF_DSS_SKIN_TO_SELECT         = "extensions.lastSelectedSkin";
+const PREF_LWTHEME_TO_SELECT          = "extensions.lwThemeToSelect";
 const PREF_GENERAL_SKINS_SELECTEDSKIN = "general.skins.selectedSkin";
 const PREF_EM_LOGGING_ENABLED         = "extensions.logging.enabled";
 const PREF_EM_UPDATE_INTERVAL         = "extensions.update.interval";
@@ -46,12 +50,10 @@ const FILE_EXTENSIONS_STARTUP_CACHE   = "extensions.cache";
 const FILE_EXTENSIONS_LOG             = "extensions.log";
 const FILE_AUTOREG                    = ".autoreg";
 const FILE_INSTALL_MANIFEST           = "install.rdf";
-const FILE_CONTENTS_MANIFEST          = "contents.rdf";
 const FILE_CHROME_MANIFEST            = "chrome.manifest";
 
 const UNKNOWN_XPCOM_ABI               = "unknownABI";
 
-const FILE_DEFAULT_THEME_JAR          = "classic.jar";
 const TOOLKIT_ID                      = "toolkit@mozilla.org"
 
 const KEY_PROFILEDIR                  = "ProfD";
@@ -84,7 +86,6 @@ const CATEGORY_INSTALL_LOCATIONS      = "extension-install-locations";
 const CATEGORY_UPDATE_PARAMS          = "extension-update-params";
 
 const PREFIX_NS_EM                    = "http://www.mozilla.org/2004/em-rdf#";
-const PREFIX_NS_CHROME                = "http://www.mozilla.org/rdf/chrome#";
 const PREFIX_ITEM_URI                 = "urn:mozilla:item:";
 const PREFIX_EXTENSION                = "urn:mozilla:extension:";
 const PREFIX_THEME                    = "urn:mozilla:theme:";
@@ -101,6 +102,20 @@ const URI_BRAND_PROPERTIES            = "chrome://branding/locale/brand.properti
 const URI_DOWNLOADS_PROPERTIES        = "chrome://mozapps/locale/downloads/downloads.properties";
 const URI_EXTENSION_UPDATE_DIALOG     = "chrome://mozapps/content/extensions/update.xul";
 const URI_EXTENSION_LIST_DIALOG       = "chrome://mozapps/content/extensions/list.xul";
+
+/**
+ * Constants that internal code can use to indicate the reason for an add-on
+ * update check. external code uses other constants in nsIExtensionManager.idl.
+ */
+const MAX_PUBLIC_UPDATE_WHEN          = 15;
+const UPDATE_WHEN_PERIODIC_UPDATE     = 16;
+const UPDATE_WHEN_ADDON_INSTALLED     = 17;
+
+/**
+ * Bitmask of the different types of update check.
+ */
+const UPDATE_TYPE_COMPATIBILITY       = 32;
+const UPDATE_TYPE_NEWVERSION          = 64;
 
 const INSTALLERROR_SUCCESS               = 0;
 const INSTALLERROR_INVALID_VERSION       = -1;
@@ -129,6 +144,7 @@ var gApp  = null;
 var gPref = null;
 var gRDF  = null;
 var gOS   = null;
+var gCheckCompatibilityPref;
 var gEmSingleton          = null;
 var gBlocklist            = null;
 var gXPCOMABI             = null;
@@ -145,91 +161,25 @@ var gFirstRun             = false;
 var gAllowFlush           = true;
 var gDSNeedsFlush         = false;
 var gManifestNeedsFlush   = false;
+var gDefaultTheme         = "classic/1.0";
+
+const URI_EXTENSION_MANAGER           = "chrome://mozapps/content/extensions/extensions.xul";
+const FEATURES_EXTENSION_MANAGER      = "chrome,menubar,extra-chrome,toolbar,dialog=no,resizable";
+const FEATURES_EXTENSION_UPDATES      = "chrome,centerscreen,extra-chrome,dialog,resizable,modal";
 
 /**
  * Valid GUIDs fit this pattern.
  */
 var gIDTest = /^(\{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}|[a-z0-9-\._]*\@[a-z0-9-\._]+)$/i;
 
+var gBranchVersion = /^([^\.]+\.[^a-z\.]+[a-z]?).*/gi;
+
 // shared code for suppressing bad cert dialogs
-//@line 41 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\shared\src\badCertHandler.js"
-
-/**
- * Only allow built-in certs for HTTPS connections.  See bug 340198.
- */
-function checkCert(channel) {
-  if (!channel.originalURI.schemeIs("https"))  // bypass
-    return;
-
-  const Ci = Components.interfaces;  
-  var cert =
-      channel.securityInfo.QueryInterface(Ci.nsISSLStatusProvider).
-      SSLStatus.QueryInterface(Ci.nsISSLStatus).serverCert;
-
-  var issuer = cert.issuer;
-  while (issuer && !cert.equals(issuer)) {
-    cert = issuer;
-    issuer = cert.issuer;
-  }
-
-  var errorstring = "cert issuer is not built-in";
-  if (!issuer)
-    throw errorstring;
-
-  issuer = issuer.QueryInterface(Ci.nsIX509Cert3);
-  var tokenNames = issuer.getAllTokenNames({});
-
-  if (!tokenNames.some(isBuiltinToken))
-    throw errorstring;
-}
-
-function isBuiltinToken(tokenName) {
-  return tokenName == "Builtin Object Token";
-}
-
-/**
- * This class implements nsIBadCertListener.  Its job is to prevent "bad cert"
- * security dialogs from being shown to the user.  It is better to simply fail
- * if the certificate is bad. See bug 304286.
- */
-function BadCertHandler() {
-}
-BadCertHandler.prototype = {
-
-  // nsIChannelEventSink
-  onChannelRedirect: function(oldChannel, newChannel, flags) {
-    // make sure the certificate of the old channel checks out before we follow
-    // a redirect from it.  See bug 340198.
-    checkCert(oldChannel);
-  },
-
-  // Suppress any certificate errors
-  notifyCertProblem: function(socketInfo, status, targetSite) {
-    return true;
-  },
-
-  // Suppress any ssl errors
-  notifySSLError: function(socketInfo, error, targetSite) {
-    return true;
-  },
-
-  // nsIInterfaceRequestor
-  getInterface: function(iid) {
-    return this.QueryInterface(iid);
-  },
-
-  // nsISupports
-  QueryInterface: function(iid) {
-    if (!iid.equals(Components.interfaces.nsIChannelEventSink) &&
-        !iid.equals(Components.interfaces.nsIBadCertListener2) &&
-        !iid.equals(Components.interfaces.nsISSLErrorListener) &&
-        !iid.equals(Components.interfaces.nsIInterfaceRequestor) &&
-        !iid.equals(Components.interfaces.nsISupports))
-      throw Components.results.NS_ERROR_NO_INTERFACE;
-    return this;
-  }
-};
-//@line 196 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+XPCOMUtils.defineLazyGetter(this, "gCertUtils", function() {
+  let temp = { };
+  Components.utils.import("resource://gre/modules/CertUtils.jsm", temp);
+  return temp;
+});
 
 /**
  * Creates a Version Checker object.
@@ -276,10 +226,6 @@ var BundleManager = {
 //
 function EM_NS(property) {
   return PREFIX_NS_EM + property;
-}
-
-function CHROME_NS(property) {
-  return PREFIX_NS_CHROME + property;
 }
 
 function EM_R(property) {
@@ -566,25 +512,52 @@ function removeDirRecursive(dir) {
 }
 
 /**
- * Logs a string to the error console.
+ * Logs a string to the error console and the text console if logging is
+ * enabled.
  * @param   string
- *          The string to write to the error console.
+ *          The log message.
  */
 function LOG(string) {
   if (gLoggingEnabled) {
-    dump("*** " + string + "\n");
+    dump("*** EM_LOG *** " + string + "\n");
     if (gConsole)
       gConsole.logStringMessage(string);
   }
 }
 
 /**
- * Logs a string to the error console and to a permanent log file. 
+ * Logs a warning to the error console and if logging is enabled to the text
+ * console.
  * @param   string
- *          The string to write out.
+ *          The warning message.
+ */
+function WARN(string) {
+  if (gLoggingEnabled)
+    dump("*** EM_WARN *** " + string + "\n");
+  if (gConsole) {
+    var message = Cc["@mozilla.org/scripterror;1"].
+                  createInstance(Ci.nsIScriptError);
+    message.init(string, null, null, 0, 0, Ci.nsIScriptError.warningFlag,
+                 "component javascript");
+    gConsole.logMessage(message);
+  }
+}
+
+/**
+ * Logs an error to the error console and to a permanent log file.
+ * @param   string
+ *          The error message.
  */  
 function ERROR(string) {
-  LOG(string);
+  if (gLoggingEnabled)
+    dump("*** EM_ERROR *** " + string + "\n");
+  if (gConsole) {
+    var message = Cc["@mozilla.org/scripterror;1"].
+                  createInstance(Ci.nsIScriptError);
+    message.init(string, null, null, 0, 0, Ci.nsIScriptError.errorFlag,
+                 "component javascript");
+    gConsole.logMessage(message);
+  }
   try {
     var tstamp = new Date();
     var logfile = getFile(KEY_PROFILEDIR, [FILE_EXTENSIONS_LOG]);
@@ -856,6 +829,35 @@ function getZipReaderForFile(zipFile) {
     throw e;
   }
   return zipReader;
+}
+
+/**
+ * Verifies that a zip file's contents are all signed by the same principal.
+ * Directory entries and anything in the META-INF directory are not checked.
+ * @param   zip
+ *          A nsIZipReader to check
+ * @param   principal
+ *          The nsIPrincipal to compare against
+ * @return  true if all the contents were signed by the principal, false
+ *          otherwise.
+ */
+function verifyZipSigning(zip, principal) {
+  var count = 0;
+  var entries = zip.findEntries(null);
+  while (entries.hasMore()) {
+    var entry = entries.getNext();
+    // Nothing in META-INF is in the manifest.
+    if (entry.substr(0, 9) == "META-INF/")
+      continue;
+    // Directory entries aren't in the manifest.
+    if (entry.substr(-1) == "/")
+      continue;
+    count++;
+    var entryPrincipal = zip.getCertificatePrincipal(entry);
+    if (!entryPrincipal || !principal.equals(entryPrincipal))
+      return false;
+  }
+  return zip.manifestEntriesCount == count;
 }
 
 /**
@@ -1291,7 +1293,7 @@ DirectoryInstallLocation.prototype = {
    * See nsIExtensionManager.idl
    */
   getItemFile: function DirInstallLocation_getItemFile(id, filePath) {
-    var itemLocation = this.getItemLocation(id).clone();
+    var itemLocation = this.getItemLocation(id);
     var parts = filePath.split("/");
     for (var i = 0; i < parts.length; ++i)
       itemLocation.append(parts[i]);
@@ -1397,7 +1399,7 @@ DirectoryInstallLocation.prototype = {
   QueryInterface: XPCOMUtils.generateQI([Ci.nsIInstallLocation])
 };
 
-//@line 1364 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 1443 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
 
 const nsIWindowsRegKey = Ci.nsIWindowsRegKey;
 
@@ -1455,7 +1457,7 @@ WinRegInstallLocation.prototype = {
     var appVendor = gApp.vendor;
     var appName = gApp.name;
 
-//@line 1426 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 1505 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
 
     // XULRunner-based apps may intentionally not specify a vendor:
     if (appVendor != "")
@@ -1516,7 +1518,9 @@ WinRegInstallLocation.prototype = {
   },
 
   getItemLocation: function RegInstallLocation_getItemLocation(id) {
-    return this._IDToDirMap[id];
+    if (!(id in this._IDToDirMap))
+      return null;
+    return this._IDToDirMap[id].clone();
   },
 
   getIDForLocation: function RegInstallLocation_getIDForLocation(dir) {
@@ -1524,7 +1528,9 @@ WinRegInstallLocation.prototype = {
   },
 
   getItemFile: function RegInstallLocation_getItemFile(id, filePath) {
-    var itemLocation = this.getItemLocation(id).clone();
+    var itemLocation = this.getItemLocation(id);
+    if (!itemLocation)
+      return null;
     var parts = filePath.split("/");
     for (var i = 0; i < parts.length; ++i)
       itemLocation.append(parts[i]);
@@ -1538,380 +1544,11 @@ WinRegInstallLocation.prototype = {
   QueryInterface: XPCOMUtils.generateQI([Ci.nsIInstallLocation])
 };
 
-//@line 1509 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 1592 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
 
 /**
- * An object which handles the installation of an Extension.
- * @constructor
- */
-function Installer(ds, id, installLocation, type) {
-  this._ds = ds;
-  this._id = id;
-  this._type = type;
-  this._installLocation = installLocation;
-}
-Installer.prototype = {
-  // Item metadata
-  _id: null,
-  _ds: null,
-  _installLocation: null,
-  _metadataDS: null,
-
-  /**
-   * Gets the Install Manifest datasource we are installing from.
-   */
-  get metadataDS() {
-    if (!this._metadataDS) {
-      var metadataFile = this._installLocation
-                             .getItemFile(this._id, FILE_INSTALL_MANIFEST);
-      if (!metadataFile.exists())
-        return null;
-      this._metadataDS = getInstallManifest(metadataFile);
-      if (!this._metadataDS) {
-        LOG("Installer::install: metadata datasource for extension " +
-            this._id + " at " + metadataFile.path + " could not be loaded. " +
-            " Installation will not proceed.");
-      }
-    }
-    return this._metadataDS;
-  },
-
-  /**
-   * Installs the Extension
-   * @param   file
-   *          A XPI/JAR file to install from. If this is null or does not exist,
-   *          the item is assumed to be an expanded directory, located at the GUID
-   *          key in the supplied Install Location.
-   */
-  installFromFile: function Installer_installFromFile(file) {
-    // Move files from the staging dir into the extension's final home.
-    if (file && file.exists()) {
-      this._installExtensionFiles(file);
-    }
-
-    if (!this.metadataDS)
-      return;
-
-    // Upgrade old-style contents.rdf Chrome Manifests if necessary.
-    if (this._type == Ci.nsIUpdateItem.TYPE_THEME)
-      this.upgradeThemeChrome();
-    else
-      this.upgradeExtensionChrome();
-
-    // Add metadata for the extension to the global extension metadata set
-    this._ds.addItemMetadata(this._id, this.metadataDS, this._installLocation);
-  },
-
-  /**
-   * Safely extract the Extension's files into the target folder.
-   * @param   file
-   *          The XPI/JAR file to install from.
-   */
-  _installExtensionFiles: function Installer__installExtensionFiles(file) {
-    /**
-      * Callback for |safeInstallOperation| that performs file level installation
-      * steps for an Extension.
-      * @param   extensionID
-      *          The GUID of the Extension being installed.
-      * @param   installLocation
-      *          The Install Location where the Extension is being installed.
-      * @param   xpiFile
-      *          The source XPI file that contains the Extension.
-      */
-    function extractExtensionFiles(extensionID, installLocation, xpiFile) {
-      // Create a logger to log install operations for uninstall. This must be
-      // created in the |safeInstallOperation| callback, since it creates a file
-      // in the target directory. If we do this outside of the callback, we may
-      // be clobbering a file we should not be.
-      var zipReader = getZipReaderForFile(xpiFile);
-
-      // create directories first
-      var entries = zipReader.findEntries("*/");
-      while (entries.hasMore()) {
-        var entryName = entries.getNext();
-        var target = installLocation.getItemFile(extensionID, entryName);
-        if (!target.exists()) {
-          try {
-            target.create(Ci.nsILocalFile.DIRECTORY_TYPE, PERMS_DIRECTORY);
-          }
-          catch (e) {
-            ERROR("extractExtensionsFiles: failed to create target directory for extraction " +
-                  " file = " + target.path + ", exception = " + e + "\n");
-          }
-        }
-      }
-
-      entries = zipReader.findEntries(null);
-      while (entries.hasMore()) {
-        var entryName = entries.getNext();
-        target = installLocation.getItemFile(extensionID, entryName);
-        if (target.exists())
-          continue;
-
-        try {
-          target.create(Ci.nsILocalFile.NORMAL_FILE_TYPE, PERMS_FILE);
-        }
-        catch (e) {
-          ERROR("extractExtensionsFiles: failed to create target file for extraction " +
-                " file = " + target.path + ", exception = " + e + "\n");
-        }
-        zipReader.extract(entryName, target);
-      }
-      zipReader.close();
-    }
-
-    /**
-      * Callback for |safeInstallOperation| that performs file level installation
-      * steps for a Theme.
-      * @param   id
-      *          The GUID of the Theme being installed.
-      * @param   installLocation
-      *          The Install Location where the Theme is being installed.
-      * @param   jarFile
-      *          The source JAR file that contains the Theme.
-      */
-    function extractThemeFiles(id, installLocation, jarFile) {
-      var themeDirectory = installLocation.getItemLocation(id);
-      var zipReader = getZipReaderForFile(jarFile);
-
-      // The only critical file is the install.rdf and we would not have
-      // gotten this far without one.
-      var rootFiles = [FILE_INSTALL_MANIFEST, FILE_CHROME_MANIFEST,
-                       "preview.png", "icon.png"];
-      for (var i = 0; i < rootFiles.length; ++i) {
-        try {
-          var target = installLocation.getItemFile(id, rootFiles[i]);
-          zipReader.extract(rootFiles[i], target);
-        }
-        catch (e) {
-        }
-      }
-
-      var manifestFile = installLocation.getItemFile(id, FILE_CHROME_MANIFEST);
-      // new theme structure requires a chrome.manifest file
-      if (manifestFile.exists()) {
-        var entries = zipReader.findEntries(DIR_CHROME + "/*");
-        while (entries.hasMore()) {
-          var entryName = entries.getNext();
-          if (entryName.charAt(entryName.length - 1) == "/")
-            continue;
-          target = installLocation.getItemFile(id, entryName);
-          try {
-            target.create(Ci.nsILocalFile.NORMAL_FILE_TYPE, PERMS_FILE);
-          }
-          catch (e) {
-            ERROR("extractThemeFiles: failed to create target file for extraction " +
-                  " file = " + target.path + ", exception = " + e + "\n");
-          }
-          zipReader.extract(entryName, target);
-        }
-        zipReader.close();
-      }
-      else { // old theme structure requires only an install.rdf
-        try {
-          var contentsManifestFile = installLocation.getItemFile(id, FILE_CONTENTS_MANIFEST);
-          contentsManifestFile.create(Ci.nsILocalFile.NORMAL_FILE_TYPE, PERMS_FILE);
-          zipReader.extract(FILE_CONTENTS_MANIFEST, contentsManifestFile);
-        }
-        catch (e) {
-          zipReader.close();
-          ERROR("extractThemeFiles: failed to extract contents.rdf: " + target.path);
-          throw e; // let the safe-op clean up
-        }
-        zipReader.close();
-        var chromeDir = installLocation.getItemFile(id, DIR_CHROME);
-        try {
-          jarFile.copyTo(chromeDir, jarFile.leafName);
-        }
-        catch (e) {
-          ERROR("extractThemeFiles: failed to copy theme JAR file to: " + chromeDir.path);
-          throw e; // let the safe-op clean up
-        }
-
-        if (!installer.metadataDS && installer._type == Ci.nsIUpdateItem.TYPE_THEME) {
-          var themeName = extensionStrings.GetStringFromName("incompatibleThemeName");
-          if (contentsManifestFile && contentsManifestFile.exists()) {
-            var contentsManifest = gRDF.GetDataSourceBlocking(getURLSpecFromFile(contentsManifestFile));
-            try {
-              var ctr = getContainer(contentsManifest,
-                                     gRDF.GetResource("urn:mozilla:skin:root"));
-              var elts = ctr.GetElements();
-              var nameArc = gRDF.GetResource(CHROME_NS("displayName"));
-              while (elts.hasMoreElements()) {
-                var elt = elts.getNext().QueryInterface(Ci.nsIRDFResource);
-                themeName = stringData(contentsManifest.GetTarget(elt, nameArc, true));
-                if (themeName)
-                  break;
-              }
-            }
-            catch (e) {
-              themeName = extensionStrings.GetStringFromName("incompatibleThemeName");
-            }
-          }
-          showIncompatibleError({ name: themeName, version: "",
-                                  type: Ci.nsIUpdateItem.TYPE_THEME });
-          LOG("Theme JAR file: " + jarFile.leafName + " contains an Old-Style " +
-              "Theme that is not compatible with this version of the software.");
-          throw new Error("Old Theme"); // let the safe-op clean up
-        }
-      }
-    }
-
-    var installer = this;
-    var callback = extractExtensionFiles;
-    if (this._type == Ci.nsIUpdateItem.TYPE_THEME)
-      callback = extractThemeFiles;
-    safeInstallOperation(this._id, this._installLocation,
-                          { callback: callback, data: file });
-  },
-
-  /**
-   * Upgrade contents.rdf Chrome Manifests used by this Theme to the new
-   * chrome.manifest format if necessary.
-   */
-  upgradeThemeChrome: function Installer_upgradeThemeChrome() {
-    // Use the Chrome Registry API to install the theme there
-    var cr = Cc["@mozilla.org/chrome/chrome-registry;1"].
-             getService(Ci.nsIToolkitChromeRegistry);
-    var manifestFile = this._installLocation.getItemFile(this._id, FILE_CHROME_MANIFEST);
-    if (manifestFile.exists() ||
-        this._id == stripPrefix(RDFURI_DEFAULT_THEME, PREFIX_ITEM_URI))
-      return;
-
-    try {
-      // creates a chrome manifest for themes
-      var manifestURI = getURIFromFile(manifestFile);
-      var chromeDir = this._installLocation.getItemFile(this._id, DIR_CHROME);
-      // We're relying on the fact that there is only one JAR file
-      // in the "chrome" directory. This is a hack, but it works.
-      var entries = chromeDir.directoryEntries.QueryInterface(Ci.nsIDirectoryEnumerator);
-      var jarFile = entries.nextFile;
-      if (jarFile) {
-        var jarFileURI = getURIFromFile(jarFile);
-        var contentsURI = newURI("jar:" + jarFileURI.spec + "!/");
-        var contentsFile = this._installLocation.getItemFile(this._id, FILE_CONTENTS_MANIFEST);
-        var contentsFileURI = getURIFromFile(contentsFile.parent);
-
-        cr.processContentsManifest(contentsFileURI, manifestURI, contentsURI, false, true);
-      }
-      entries.close();
-      contentsFile.remove(false);
-    }
-    catch (e) {
-      // Failed to register chrome, for any number of reasons - non-existent
-      // contents.rdf file at the location specified, malformed contents.rdf,
-      // etc. Set the pending op to be OP_NEEDS_UNINSTALL so that the
-      // extension is uninstalled properly during the subsequent uninstall
-      // pass in |ExtensionManager::_finishOperations|
-      ERROR("upgradeThemeChrome: failed for theme " + this._id + " - why " +
-            "not convert to the new chrome.manifest format while you're at it? " +
-            "Failure exception: " + e);
-      showMessage("malformedRegistrationTitle", [], "malformedRegistrationMessage",
-                  [BundleManager.appName]);
-
-      var stageFile = this._installLocation.getStageFile(this._id);
-      if (stageFile)
-        this._installLocation.removeFile(stageFile);
-
-      StartupCache.put(this._installLocation, this._id, OP_NEEDS_UNINSTALL, true);
-      StartupCache.write();
-    }
-  },
-
-  /**
-   * Upgrade contents.rdf Chrome Manifests used by this Extension to the new
-   * chrome.manifest format if necessary.
-   */
-  upgradeExtensionChrome: function Installer_upgradeExtensionChrome() {
-    // If the extension is aware of the new flat chrome manifests and has
-    // included one, just use it instead of generating one from the
-    // install.rdf/contents.rdf data.
-    var manifestFile = this._installLocation.getItemFile(this._id, FILE_CHROME_MANIFEST);
-    if (manifestFile.exists())
-      return;
-
-    try {
-      // Enumerate the metadata datasource files collection and register chrome
-      // for each file, calling _registerChrome for each.
-      var chromeDir = this._installLocation.getItemFile(this._id, DIR_CHROME);
-
-      if (!manifestFile.parent.exists())
-        return;
-
-      // Even if an extension doesn't have any chrome, we generate an empty
-      // manifest file so that we don't try to upgrade from the "old-style"
-      // chrome manifests at every startup.
-      manifestFile.create(Ci.nsILocalFile.NORMAL_FILE_TYPE, PERMS_FILE);
-
-      var manifestURI = getURIFromFile(manifestFile);
-      var files = this.metadataDS.GetTargets(gInstallManifestRoot, EM_R("file"), true);
-      while (files.hasMoreElements()) {
-        var file = files.getNext().QueryInterface(Ci.nsIRDFResource);
-        var chromeFile = chromeDir.clone();
-        var fileName = file.Value.substr("urn:mozilla:extension:file:".length, file.Value.length);
-        chromeFile.append(fileName);
-
-        var fileURLSpec = getURLSpecFromFile(chromeFile);
-        if (!chromeFile.isDirectory()) {
-          var zipReader = getZipReaderForFile(chromeFile);
-          fileURLSpec = "jar:" + fileURLSpec + "!/";
-          var contentsFile = this._installLocation.getItemFile(this._id, FILE_CONTENTS_MANIFEST);
-          contentsFile.create(Ci.nsILocalFile.NORMAL_FILE_TYPE, PERMS_FILE);
-        }
-
-        var providers = [EM_R("package"), EM_R("skin"), EM_R("locale")];
-        for (var i = 0; i < providers.length; ++i) {
-          var items = this.metadataDS.GetTargets(file, providers[i], true);
-          while (items.hasMoreElements()) {
-            var item = items.getNext().QueryInterface(Ci.nsIRDFLiteral);
-            var fileURI = newURI(fileURLSpec + item.Value);
-            // Extract the contents.rdf files instead of opening them inside of
-            // the jar. This prevents the jar from being cached by the zip
-            // reader which will keep the jar in use and prevent deletion.
-            if (zipReader) {
-              zipReader.extract(item.Value + FILE_CONTENTS_MANIFEST, contentsFile);
-              var contentsFileURI = getURIFromFile(contentsFile.parent);
-            }
-            else
-              contentsFileURI = fileURI;
-
-            var cr = Cc["@mozilla.org/chrome/chrome-registry;1"].
-                     getService(Ci.nsIToolkitChromeRegistry);
-            cr.processContentsManifest(contentsFileURI, manifestURI, fileURI, true, false);
-          }
-        }
-        if (zipReader) {
-          zipReader.close();
-          zipReader = null;
-          contentsFile.remove(false);
-        }
-      }
-    }
-    catch (e) {
-      // Failed to register chrome, for any number of reasons - non-existent
-      // contents.rdf file at the location specified, malformed contents.rdf,
-      // etc. Set the pending op to be OP_NEEDS_UNINSTALL so that the
-      // extension is uninstalled properly during the subsequent uninstall
-      // pass in |ExtensionManager::_finishOperations|
-      ERROR("upgradeExtensionChrome: failed for extension " + this._id + " - why " +
-            "not convert to the new chrome.manifest format while you're at it? " +
-            "Failure exception: " + e);
-      showMessage("malformedRegistrationTitle", [], "malformedRegistrationMessage",
-                  [BundleManager.appName]);
-
-      var stageFile = this._installLocation.getStageFile(this._id);
-      if (stageFile)
-        this._installLocation.removeFile(stageFile);
-
-      StartupCache.put(this._installLocation, this._id, OP_NEEDS_UNINSTALL, true);
-      StartupCache.write();
-    }
-  }
-};
-
-/**
- * Safely attempt to perform a caller-defined install operation for a given
- * item ID. Using aggressive success-safety checks, this function will attempt
+ * Safely attempt to install or uninstall a given item ID in an install
+ * location. Using aggressive success-safety checks, this function will attempt
  * to move an existing location for an item aside and then allow installation
  * into the appropriate folder. If any operation fails the installation will
  * abort and roll back from the moved-aside old version.
@@ -1919,16 +1556,10 @@ Installer.prototype = {
  *          The GUID of the item to perform the operation on.
  * @param   installLocation
  *          The Install Location where the item is installed.
- * @param   installCallback
- *          A caller supplied JS object with the following properties:
- *          "data"      A data parameter to be passed to the callback.
- *          "callback"  A function to perform the install operation. This
- *                      function is passed three parameters:
- *                      1. The GUID of the item being operated on.
- *                      2. The Install Location where the item is installed.
- *                      3. The "data" parameter on the installCallback object.
+ * @param   file
+ *          An xpi file to install to the location or null to just uninstall
  */
-function safeInstallOperation(itemID, installLocation, installCallback) {
+function safeInstallOperation(itemID, installLocation, file) {
   var movedFiles = [];
 
   /**
@@ -2090,28 +1721,61 @@ function safeInstallOperation(itemID, installLocation, installCallback) {
     }
   }
 
-  // Now tell the client to do their stuff.
-  try {
-    installCallback.callback(itemID, installLocation, installCallback.data);
-  }
-  catch (e) {
-    // This means the install operation failed. Remove everything and roll back.
-    ERROR("safeInstallOperation: install operation (caller-supplied callback) failed, " +
-          "rolling back file moves and aborting installation.");
+  if (file) {
+    // Extract the xpi's files into the new directory
     try {
-      // Us-generated. Safe.
-      removeDirRecursive(itemLocation);
+      var zipReader = getZipReaderForFile(file);
+
+      // create directories first
+      var entries = zipReader.findEntries("*/");
+      while (entries.hasMore()) {
+        var entryName = entries.getNext();
+        var target = installLocation.getItemFile(itemID, entryName);
+        if (!target.exists()) {
+          try {
+            target.create(Ci.nsILocalFile.DIRECTORY_TYPE, PERMS_DIRECTORY);
+          }
+          catch (e) {
+            ERROR("extractFiles: failed to create target directory for extraction " +
+                  "file = " + target.path + ", exception = " + e + "\n");
+          }
+        }
+      }
+
+      entries = zipReader.findEntries(null);
+      while (entries.hasMore()) {
+        var entryName = entries.getNext();
+        target = installLocation.getItemFile(itemID, entryName);
+        if (target.exists())
+          continue;
+
+        zipReader.extract(entryName, target);
+        target.permissions = PERMS_FILE;
+      }
     }
     catch (e) {
-      ERROR("safeInstallOperation: failed to remove the folder we failed to install " +
-            "an item into: " + itemLocation.path + " -- There is not much to suggest " +
-            "here... maybe restart and try again?");
+      // This means the install operation failed. Remove everything and roll back.
+      ERROR("safeInstallOperation: file extraction failed, " +
+            "rolling back file moves and aborting installation.");
+      try {
+        // Us-generated. Safe.
+        removeDirRecursive(itemLocation);
+      }
+      catch (e) {
+        ERROR("safeInstallOperation: failed to remove the folder we failed to install " +
+              "an item into: " + itemLocation.path + " -- There is not much to suggest " +
+              "here... maybe restart and try again?");
+        cleanUpTrash(itemLocationTrash);
+        throw e;
+      }
+      rollbackMove();
       cleanUpTrash(itemLocationTrash);
       throw e;
     }
-    rollbackMove();
-    cleanUpTrash(itemLocationTrash);
-    throw e;
+    finally {
+      if (zipReader)
+        zipReader.close();
+    }
   }
 
   // Now, and only now - after everything else has succeeded (against all odds!)
@@ -2455,11 +2119,18 @@ function ExtensionManager() {
     gXPCOMABI = UNKNOWN_XPCOM_ABI;
   }
   gPref = Cc["@mozilla.org/preferences-service;1"].
-          getService(Ci.nsIPrefBranch2);
+          getService(Ci.nsIPrefBranch2).
+          QueryInterface(Ci.nsIPrefService);
+  var defaults = gPref.getDefaultBranch("");
+  try {
+    gDefaultTheme = defaults.getCharPref(PREF_GENERAL_SKINS_SELECTEDSKIN);
+  } catch(e) {}
 
   gOS = Cc["@mozilla.org/observer-service;1"].
         getService(Ci.nsIObserverService);
   gOS.addObserver(this, "xpcom-shutdown", false);
+  gOS.addObserver(this, "lightweight-theme-preview-requested", false);
+  gOS.addObserver(this, "lightweight-theme-change-requested", false);
 
   gConsole = Cc["@mozilla.org/consoleservice;1"].
              getService(Ci.nsIConsoleService);
@@ -2527,7 +2198,7 @@ function ExtensionManager() {
     InstallLocations.put(systemLocation);
   }
 
-//@line 2498 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 2246 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
   // Register HKEY_LOCAL_MACHINE Install Location
   InstallLocations.put(
       new WinRegInstallLocation("winreg-app-global",
@@ -2541,7 +2212,7 @@ function ExtensionManager() {
                                 nsIWindowsRegKey.ROOT_KEY_CURRENT_USER,
                                 false,
                                 Ci.nsIInstallLocation.PRIORITY_APP_SYSTEM_USER + 10));
-//@line 2512 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 2260 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
 
   // Register Additional Install Locations
   var categoryManager = Cc["@mozilla.org/categorymanager;1"].
@@ -2570,13 +2241,66 @@ ExtensionManager.prototype = {
     case "offline-requested":
       this._confirmCancelDownloadsOnOffline(subject);
       break;
+    case "lightweight-theme-preview-requested":
+      if (gPref.prefHasUserValue(PREF_GENERAL_SKINS_SELECTEDSKIN)) {
+        let cancel = subject.QueryInterface(Ci.nsISupportsPRBool);
+        cancel.data = true;
+      }
+      break;
+    case "lightweight-theme-change-requested":
+      let theme = JSON.parse(data);
+      if (!theme)
+        return;
+
+      if (gPref.prefHasUserValue(PREF_GENERAL_SKINS_SELECTEDSKIN)) {
+        if (getPref("getBoolPref", PREF_EM_DSS_ENABLED, false)) {
+          gPref.clearUserPref(PREF_GENERAL_SKINS_SELECTEDSKIN);
+          return;
+        }
+
+        let cancel = subject.QueryInterface(Ci.nsISupportsPRBool);
+        cancel.data = true;
+        gPref.setBoolPref(PREF_DSS_SWITCHPENDING, true);
+        gPref.setCharPref(PREF_DSS_SKIN_TO_SELECT, gDefaultTheme);
+        gPref.setCharPref(PREF_LWTHEME_TO_SELECT, theme.id);
+
+        // Open the UI so the user can see that a restart is necessary
+        var wm = Cc["@mozilla.org/appshell/window-mediator;1"].
+                 getService(Ci.nsIWindowMediator);
+        var win = wm.getMostRecentWindow("Extension:Manager");
+
+        if (win) {
+          win.showView("themes");
+          return;
+        }
+
+        var ww = Cc["@mozilla.org/embedcomp/window-watcher;1"].
+                 getService(Ci.nsIWindowWatcher);
+        var param = Cc["@mozilla.org/supports-array;1"].
+                    createInstance(Ci.nsISupportsArray);
+        var arg = Cc["@mozilla.org/supports-string;1"].
+                  createInstance(Ci.nsISupportsString);
+        arg.data = "themes";
+        param.AppendElement(arg);
+        ww.openWindow(null, URI_EXTENSION_MANAGER, null, FEATURES_EXTENSION_MANAGER, param);
+        return;
+      }
+      else {
+        // Cancel any pending theme change and allow the lightweight theme
+        // change to go ahead
+        if (gPref.prefHasUserValue(PREF_DSS_SWITCHPENDING))
+          gPref.clearUserPref(PREF_DSS_SWITCHPENDING);
+        if (gPref.prefHasUserValue(PREF_DSS_SKIN_TO_SELECT))
+          gPref.clearUserPref(PREF_DSS_SKIN_TO_SELECT);
+      }
+      break;
     case "xpcom-shutdown":
       this._shutdown();
       break;
     case "nsPref:changed":
       if (data == PREF_EM_LOGGING_ENABLED)
         this._loggingToggled();
-      else if (data == PREF_EM_CHECK_COMPATIBILITY ||
+      else if (data == gCheckCompatibilityPref ||
                data == PREF_EM_CHECK_UPDATE_SECURITY)
         this._updateAppDisabledState();
       else if ((data == PREF_MATCH_OS_LOCALE) || (data == PREF_SELECTED_LOCALE))
@@ -2615,7 +2339,7 @@ ExtensionManager.prototype = {
    * we must app-enable or app-disable the item based on the new settings.
    */
   _updateAppDisabledState: function EM__updateAppDisabledState() {
-    gCheckCompatibility = getPref("getBoolPref", PREF_EM_CHECK_COMPATIBILITY, true);
+    gCheckCompatibility = getPref("getBoolPref", gCheckCompatibilityPref, true);
     gCheckUpdateSecurity = getPref("getBoolPref", PREF_EM_CHECK_UPDATE_SECURITY, true);
     var ds = this.datasource;
 
@@ -2647,27 +2371,48 @@ ExtensionManager.prototype = {
         gPref.setCharPref(PREF_GENERAL_SKINS_SELECTEDSKIN, toSelect);
         gPref.clearUserPref(PREF_DSS_SWITCHPENDING);
         gPref.clearUserPref(PREF_DSS_SKIN_TO_SELECT);
+
+        // If we've changed to a non-default theme make sure there is no
+        // lightweight theme selected
+        if (toSelect != gDefaultTheme) {
+          if (gPref.prefHasUserValue(PREF_LWTHEME_TO_SELECT))
+            gPref.clearUserPref(PREF_LWTHEME_TO_SELECT);
+          LightweightThemeManager.currentTheme = null;
+        }
+      }
+
+      if (gPref.prefHasUserValue(PREF_LWTHEME_TO_SELECT)) {
+        var id = gPref.getCharPref(PREF_LWTHEME_TO_SELECT);
+        if (id)
+          LightweightThemeManager.currentTheme = LightweightThemeManager.getUsedTheme(id);
+        else
+          LightweightThemeManager.currentTheme = null;
+        gPref.clearUserPref(PREF_LWTHEME_TO_SELECT);
       }
     }
     catch (e) {
     }
 
-    if ("nsICrashReporter" in Ci && gApp instanceof Ci.nsICrashReporter) {
-      // Annotate the crash report with the list of add-ons
-      try {
-        try {
-          gApp.annotateCrashReport("Add-ons", gPref.getCharPref(PREF_EM_ENABLED_ITEMS));
-        } catch (e) { }
-        gApp.annotateCrashReport("Theme", gPref.getCharPref(PREF_GENERAL_SKINS_SELECTEDSKIN));
-      }
-      catch (ex) {
-        // This will fail in unnofficial builds, ignorable error
-      }
-    }
+    var version = gApp.version.replace(gBranchVersion, "$1");
+    gCheckCompatibilityPref = PREF_EM_CHECK_COMPATIBILITY + "." + version;
 
     gLoggingEnabled = getPref("getBoolPref", PREF_EM_LOGGING_ENABLED, false);
-    gCheckCompatibility = getPref("getBoolPref", PREF_EM_CHECK_COMPATIBILITY, true);
+    gCheckCompatibility = getPref("getBoolPref", gCheckCompatibilityPref, true);
     gCheckUpdateSecurity = getPref("getBoolPref", PREF_EM_CHECK_UPDATE_SECURITY, true);
+
+    if ("nsICrashReporter" in Ci && gApp instanceof Ci.nsICrashReporter) {
+      // Annotate the crash report with relevant add-on information.
+      try {
+        gApp.annotateCrashReport("Add-ons", gPref.getCharPref(PREF_EM_ENABLED_ITEMS));
+      } catch (e) { }
+      try {
+        gApp.annotateCrashReport("Theme", gPref.getCharPref(PREF_GENERAL_SKINS_SELECTEDSKIN));
+      } catch (e) { }
+      try {
+        gApp.annotateCrashReport("EMCheckCompatibility", gCheckCompatibility);
+      } catch (e) { }
+    }
+
     gPref.addObserver("extensions.", this, false);
     gPref.addObserver(PREF_MATCH_OS_LOCALE, this, false);
     gPref.addObserver(PREF_SELECTED_LOCALE, this, false);
@@ -2681,9 +2426,6 @@ ExtensionManager.prototype = {
     if (!getPref("getBoolPref", PREF_UPDATE_NOTIFYUSER, false))
       return;
 
-    const EMURL = "chrome://mozapps/content/extensions/extensions.xul";
-    const EMFEATURES = "chrome,centerscreen,extra-chrome,dialog,resizable,modal";
-
     var ww = Cc["@mozilla.org/embedcomp/window-watcher;1"].
              getService(Ci.nsIWindowWatcher);
     var param = Cc["@mozilla.org/supports-array;1"].
@@ -2692,7 +2434,7 @@ ExtensionManager.prototype = {
               createInstance(Ci.nsISupportsString);
     arg.data = "updates-only";
     param.AppendElement(arg);
-    ww.openWindow(null, EMURL, null, EMFEATURES, param);
+    ww.openWindow(null, URI_EXTENSION_MANAGER, null, FEATURES_EXTENSION_UPDATES, param);
   },
 
   /**
@@ -2719,6 +2461,8 @@ ExtensionManager.prototype = {
     }
 
     gOS.removeObserver(this, "xpcom-shutdown");
+    gOS.removeObserver(this, "lightweight-theme-preview-requested");
+    gOS.removeObserver(this, "lightweight-theme-change-requested");
 
     // Release strongly held services.
     gOS = null;
@@ -2779,7 +2523,7 @@ ExtensionManager.prototype = {
   /**
    * See nsIExtensionManager.idl
    */
-  start: function EM_start(commandLine) {
+  start: function EM_start() {
     var isDirty, forceAutoReg;
 
     // Check for missing manifests - e.g. missing extensions.ini, missing
@@ -2830,21 +2574,7 @@ ExtensionManager.prototype = {
       ERROR("Error flushing caches: " + e);
     }
 
-    if (!needsRestart)
-      this._startTimers();
-
     return needsRestart;
-  },
-
-  /**
-   * Begins all background update check timers
-   */
-  _startTimers: function EM__startTimers() {
-    // Register a background update check timer
-    var tm = Cc["@mozilla.org/updates/timer-manager;1"].
-             getService(Ci.nsIUpdateTimerManager);
-    var interval = getPref("getIntPref", PREF_EM_UPDATE_INTERVAL, 86400);
-    tm.registerTimer("addon-background-update-timer", this, interval);
   },
 
   /**
@@ -2862,60 +2592,9 @@ ExtensionManager.prototype = {
     updater.checkForUpdates(items, items.length,
                             Ci.nsIExtensionManager.UPDATE_CHECK_NEWVERSION,
                             new BackgroundUpdateCheckListener(this.datasource),
-                            null, null);
-  },
+                            UPDATE_WHEN_PERIODIC_UPDATE);
 
-  /**
-   * See nsIExtensionManager.idl
-   */
-  handleCommandLineArgs: function EM_handleCommandLineArgs(commandLine) {
-    try {
-      var globalExtension = commandLine.handleFlagWithParam("install-global-extension", false);
-      if (globalExtension) {
-        var file = commandLine.resolveFile(globalExtension);
-        this._installGlobalItem(file);
-      }
-      var globalTheme = commandLine.handleFlagWithParam("install-global-theme", false);
-      if (globalTheme) {
-        file = commandLine.resolveFile(globalTheme);
-        this._installGlobalItem(file);
-      }
-    }
-    catch (e) {
-      ERROR("ExtensionManager:handleCommandLineArgs - failure, catching exception - lineno: " +
-            e.lineNumber + " - file: " + e.fileName + " - " + e);
-    }
-    commandLine.preventDefault = true;
-  },
-
-  /**
-   * Installs an XPI/JAR file into the KEY_APP_GLOBAL install location.
-   * @param   file
-   *          The XPI/JAR file to extract
-   */
-  _installGlobalItem: function EM__installGlobalItem(file) {
-    if (!file || !file.exists())
-      throw new Error("Unable to find the file specified on the command line!");
-//@line 2867 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
-    // make sure the file is local on Windows
-    file.normalize();
-    if (file.path[1] != ':')
-      throw new Error("Can't install global chrome from non-local file "+file.path);
-//@line 2872 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
-    var installManifestFile = extractRDFFileToTempDir(file, FILE_INSTALL_MANIFEST, true);
-    if (!installManifestFile.exists())
-      throw new Error("The package is missing an install manifest!");
-    var installManifest = getInstallManifest(installManifestFile);
-    installManifestFile.remove(false);
-    var installData = this._getInstallData(installManifest);
-    var installer = new Installer(installManifest, installData.id,
-                                  InstallLocations.get(KEY_APP_GLOBAL),
-                                  installData.type);
-    installer._installExtensionFiles(file);
-    if (installData.type == Ci.nsIUpdateItem.TYPE_THEME)
-      installer.upgradeThemeChrome();
-    else
-      installer.upgradeExtensionChrome();
+    LightweightThemeManager.updateCurrentTheme();
   },
 
   /**
@@ -3192,19 +2871,32 @@ ExtensionManager.prototype = {
           // walk these lists multiple times on every startup.
           var item = this._getItemForDroppedFile(entry, location);
           if (item) {
-            droppedInFiles.push({ file: entry, location: location });
             var prettyName = "";
             try {
               var zipReader = getZipReaderForFile(entry);
-              var principal = { };
-              var certPrincipal = zipReader.getCertificatePrincipal(null, principal);
-              // XXXbz This string could be empty.  This needs better
-              // UI to present principal.value.certificate's subject.
-              prettyName = principal.value.prettyName;
+              zipReader.QueryInterface(Ci.nsIJAR);
+              var principal = zipReader.getCertificatePrincipal(null);
+              if (principal && principal.hasCertificate) {
+                if (verifyZipSigning(zipReader, principal)) {
+                  x509 = principal.certificate;
+                  if (x509 instanceof Ci.nsIX509Cert && x509.commonName.length > 0)
+                    prettyName = x509.commonName;
+                  else
+                    prettyName = principal.prettyName;
+                }
+                else {
+                  // The xpi isn't correctly signed, don't offer to install.
+                  LOG("Ignoring " + entry.path + " as it is not correctly signed.");
+                  zipReader.close();
+                  entry.remove(true);
+                  continue;
+                }
+              }
             }
             catch (e) { }
             if (zipReader)
               zipReader.close();
+            droppedInFiles.push({ file: entry, location: location });
             xpinstallStrings = xpinstallStrings.concat([item.name,
                                                         getURLSpecFromFile(entry),
                                                         item.iconURL,
@@ -3336,107 +3028,6 @@ ExtensionManager.prototype = {
     installDroppedInFiles(droppedInFiles, xpinstallStrings);
 
     return isDirty;
-  },
-
-  /**
-   * Upgrades contents.rdf files to chrome.manifest files for any existing
-   * Extensions and Themes.
-   * @returns true if actions were performed that require a restart, false
-   *          otherwise.
-   */
-  _upgradeChrome: function EM__upgradeChrome() {
-    if (inSafeMode())
-      return false;
-
-    var checkForNewChrome = false;
-    var ds = this.datasource;
-    // If we have extensions that were installed before the new flat chrome
-    // manifests, and are still valid, we need to manually create the flat
-    // manifest files.
-    var extensions = this._getActiveItems(Ci.nsIUpdateItem.TYPE_EXTENSION +
-                                          Ci.nsIUpdateItem.TYPE_LOCALE);
-    for (var i = 0; i < extensions.length; ++i) {
-      var e = extensions[i];
-      var itemLocation = e.location.getItemLocation(e.id);
-      var manifest = itemLocation.clone();
-      manifest.append(FILE_CHROME_MANIFEST);
-      if (!manifest.exists()) {
-        var installRDF = itemLocation.clone();
-        installRDF.append(FILE_INSTALL_MANIFEST);
-        var installLocation = this.getInstallLocation(e.id);
-        if (installLocation && installRDF.exists()) {
-          var itemLocation = installLocation.getItemLocation(e.id);
-          if (itemLocation.exists() && itemLocation.isDirectory()) {
-            var installer = new Installer(ds, e.id, installLocation,
-                                          Ci.nsIUpdateItem.TYPE_EXTENSION);
-            installer.upgradeExtensionChrome();
-          }
-        }
-        else {
-          ds.removeItemMetadata(e.id);
-          ds.removeItemFromContainer(e.id);
-        }
-
-        checkForNewChrome = true;
-      }
-    }
-
-    var themes = this._getActiveItems(Ci.nsIUpdateItem.TYPE_THEME);
-    // If we have themes that were installed before the new flat chrome
-    // manifests, and are still valid, we need to manually create the flat
-    // manifest files.
-    for (i = 0; i < themes.length; ++i) {
-      var item = themes[i];
-      var itemLocation = item.location.getItemLocation(item.id);
-      var manifest = itemLocation.clone();
-      manifest.append(FILE_CHROME_MANIFEST);
-      if (manifest.exists() ||
-          item.id == stripPrefix(RDFURI_DEFAULT_THEME, PREFIX_ITEM_URI))
-        continue;
-
-      var entries;
-      try {
-        var manifestURI = getURIFromFile(manifest);
-        var chromeDir = itemLocation.clone();
-        chromeDir.append(DIR_CHROME);
-
-        if (!chromeDir.exists() || !chromeDir.isDirectory()) {
-          ds.removeItemMetadata(item.id);
-          ds.removeItemFromContainer(item.id);
-          continue;
-        }
-
-        // We're relying on the fact that there is only one JAR file
-        // in the "chrome" directory. This is a hack, but it works.
-        entries = chromeDir.directoryEntries.QueryInterface(Ci.nsIDirectoryEnumerator);
-        var jarFile = entries.nextFile;
-        if (jarFile) {
-          var jarFileURI = getURIFromFile(jarFile);
-          var contentsURI = newURI("jar:" + jarFileURI.spec + "!/");
-
-          // Use the Chrome Registry API to install the theme there
-          var cr = Cc["@mozilla.org/chrome/chrome-registry;1"].
-                   getService(Ci.nsIToolkitChromeRegistry);
-          cr.processContentsManifest(contentsURI, manifestURI, contentsURI, false, true);
-        }
-        entries.close();
-      }
-      catch (e) {
-        ERROR("_upgradeChrome: failed to upgrade contents manifest for " +
-              "theme: " + item.id + ", exception: " + e + "... The theme will be " +
-              "disabled.");
-        this._appDisableItem(item.id);
-      }
-      finally {
-        try {
-          entries.close();
-        }
-        catch (e) {
-        }
-      }
-      checkForNewChrome = true;
-    }
-    return checkForNewChrome;
   },
 
   _checkForUncoveredItem: function EM__checkForUncoveredItem(id) {
@@ -3603,14 +3194,6 @@ ExtensionManager.prototype = {
       }
       while (PendingOperations.size > 0);
 
-      // Upgrade contents.rdf files to the new chrome.manifest format for
-      // existing Extensions and Themes
-      if (this._upgradeChrome()) {
-        var cr = Cc["@mozilla.org/chrome/chrome-registry;1"].
-                 getService(Ci.nsIChromeRegistry);
-        cr.checkForNewChrome();
-      }
-
       // If no additional restart is required, it implies that there are
       // no new components that need registering so we can inform the app
       // not to do any extra startup checking next time round.
@@ -3652,11 +3235,6 @@ ExtensionManager.prototype = {
     // Block attempts to flush for the entire startup
     gAllowFlush = false;
 
-    // Version mismatch, we have to load the extensions datasource and do
-    // version checking. Time hit here doesn't matter since this doesn't happen
-    // all that often.
-    this._upgradeFromV10();
-
     // Make the extensions datasource consistent if it isn't already.
     var isDirty;
     [isDirty,] = this._ensureDatasetIntegrity();
@@ -3697,6 +3275,7 @@ ExtensionManager.prototype = {
     ds.endUpdateBatch();
 
     var badItems = [];
+    var disabledAddons = [];
     var allAppManaged = true;
     elements = ctr.GetElements();
     while (elements.hasMoreElements()) {
@@ -3750,6 +3329,7 @@ ExtensionManager.prototype = {
       }
       else if (!ds.getItemProperty(id, "appDisabled")) {
         properties.appDisabled = EM_L("true");
+        disabledAddons.push(id);
       }
 
       ds.setItemProperties(id, properties);
@@ -3787,10 +3367,21 @@ ExtensionManager.prototype = {
     // Update the manifests to reflect the items that were disabled / enabled.
     this._updateManifests(true);
 
-    // Always check for compatibility updates when upgrading if we have add-ons
-    // that aren't managed by the application.
-    if (!allAppManaged)
-      this._showMismatchWindow(inactiveItemIDs);
+    // Determine if we should check for compatibility updates when upgrading if
+    // we have add-ons that aren't managed by the application.
+    if (!allAppManaged && !gFirstRun && disabledAddons.length > 0) {
+      // Should we show a UI or just pass the list via a pref?
+      if (getPref("getBoolPref", PREF_EM_SHOW_MISMATCH_UI, true)) {
+        this._showMismatchWindow(inactiveItemIDs);
+      }
+      else {
+        // Remember the list of add-ons that were disabled this time around
+        gPref.setCharPref(PREF_EM_DISABLED_ADDONS_LIST, disabledAddons.join(","));
+      }
+    } else if (gPref.prefHasUserValue(PREF_EM_DISABLED_ADDONS_LIST)) {
+      // Clear the disabled addons list if necessary
+      gPref.clearUserPref(PREF_EM_DISABLED_ADDONS_LIST);
+    }
 
     // Finish any pending upgrades from the compatibility update to avoid an
     // additional restart.
@@ -3844,190 +3435,6 @@ ExtensionManager.prototype = {
       var ww = Cc["@mozilla.org/embedcomp/window-watcher;1"].
                getService(Ci.nsIWindowWatcher);
       ww.openWindow(null, URI_EXTENSION_UPDATE_DIALOG, "", features, variant);
-    }
-  },
-
-  /*
-   * Catch all for facilitating a version 1.0 profile upgrade.
-   * 1) removes the abandoned default theme directory from the profile.
-   * 2) prepares themes installed with version 1.0 for installation.
-   * 3) initiates an install to populate the new extensions datasource.
-   * 4) migrates the disabled attribute from the old datasource.
-   * 5) migrates the app compatibility info from the old datasource.
-   */
-  _upgradeFromV10: function EM__upgradeFromV10() {
-    var extensionsDS = getFile(KEY_PROFILEDIR, [FILE_EXTENSIONS]);
-    var dsExists = extensionsDS.exists();
-    // Toolkiit 1.7 profiles (Firefox 1.0, Thunderbird 1.0, etc.) have a default
-    // theme directory in the profile's extensions directory that will be
-    // disabled due to having a maxVersion that is incompatible with the
-    // toolkit 1.8 release of the app.
-    var profileDefaultTheme = getDirNoCreate(KEY_PROFILEDS, [DIR_EXTENSIONS,
-                                             stripPrefix(RDFURI_DEFAULT_THEME, PREFIX_ITEM_URI)]);
-    if (profileDefaultTheme && profileDefaultTheme.exists()) {
-      removeDirRecursive(profileDefaultTheme);
-      // Sunbird 0.3a1 didn't move the default theme into the app's extensions
-      // directory and we can't install it while uninstalling the one in the
-      // profile directory. If we have a toolkit 1.8 extensions datasource and
-      // a profile default theme deleting the toolkit 1.8 extensions datasource
-      // will fix this problem when the datasource is re-created.
-      if (dsExists)
-        extensionsDS.remove(false);
-    }
-
-    // return early if the toolkit 1.7 extensions datasource file doesn't exist.
-    var oldExtensionsFile = getFile(KEY_PROFILEDIR, [DIR_EXTENSIONS, "Extensions.rdf"]);
-    if (!oldExtensionsFile.exists())
-      return;
-
-    // Sunbird 0.2 used a different GUID for the default theme
-    profileDefaultTheme = getDirNoCreate(KEY_PROFILEDS, [DIR_EXTENSIONS,
-                                         "{8af2d0a7-e394-4de2-ae55-2dae532a7a9b}"]);
-    if (profileDefaultTheme && profileDefaultTheme.exists())
-      removeDirRecursive(profileDefaultTheme);
-
-    // Firefox 0.9 profiles may have DOMi 1.0 with just an install.rdf
-    var profileDOMi = getDirNoCreate(KEY_PROFILEDS, [DIR_EXTENSIONS,
-                                     "{641d8d09-7dda-4850-8228-ac0ab65e2ac9}"]);
-    if (profileDOMi && profileDOMi.exists())
-      removeDirRecursive(profileDOMi);
-
-    // return early to avoid migrating data twice if we already have a
-    // toolkit 1.8 extension datasource.
-    if (dsExists)
-      return;
-
-    // Prepare themes for installation
-    // Only enumerate directories in the app-profile and app-global locations.
-    var locations = [KEY_APP_PROFILE, KEY_APP_GLOBAL];
-    for (var i = 0; i < locations.length; ++i) {
-      var location = InstallLocations.get(locations[i]);
-      if (!location.canAccess)
-        continue;
-
-      var entries = location.itemLocations;
-      var entry;
-      while ((entry = entries.nextFile)) {
-        var installRDF = entry.clone();
-        installRDF.append(FILE_INSTALL_MANIFEST);
-
-        var chromeDir = entry.clone();
-        chromeDir.append(DIR_CHROME);
-
-        // It must be a directory without an install.rdf and it must contain
-        // a chrome directory
-        if (!entry.isDirectory() || installRDF.exists() || !chromeDir.exists())
-          continue;
-
-        var chromeEntries = chromeDir.directoryEntries.QueryInterface(Ci.nsIDirectoryEnumerator);
-        if (!chromeEntries.hasMoreElements())
-          continue;
-
-        // We're relying on the fact that there is only one JAR file
-        // in the "chrome" directory. This is a hack, but it works.
-        var jarFile = chromeEntries.nextFile;
-        if (jarFile.isDirectory())
-          continue;
-        var id = location.getIDForLocation(entry);
-
-        try {
-          var zipReader = getZipReaderForFile(jarFile);
-          zipReader.extract(FILE_INSTALL_MANIFEST, installRDF);
-
-          var contentsManifestFile = location.getItemFile(id, FILE_CONTENTS_MANIFEST);
-          zipReader.extract(FILE_CONTENTS_MANIFEST, contentsManifestFile);
-
-          var rootFiles = ["preview.png", "icon.png"];
-          for (var i = 0; i < rootFiles.length; ++i) {
-            try {
-              var target = location.getItemFile(id, rootFiles[i]);
-              zipReader.extract(rootFiles[i], target);
-            }
-            catch (e) {
-            }
-          }
-          zipReader.close();
-        }
-        catch (e) {
-          ERROR("ExtensionManager:_upgradeFromV10 - failed to extract theme files\r\n" +
-                "Exception: " + e);
-        }
-      }
-    }
-
-    // When upgrading from a version 1.0 profile we need to populate the
-    // extensions datasource with all items before checking for incompatible
-    // items since the datasource hasn't been created yet.
-    var itemsToCheck = [];
-    if (this._checkForFileChanges()) {
-      // Create a list of all items that are to be installed so we can migrate
-      // these items's settings to the new datasource.
-      var items = PendingOperations.getOperations(OP_NEEDS_INSTALL);
-      for (i = items.length - 1; i >= 0; --i) {
-        if (items[i].locationKey == KEY_APP_PROFILE ||
-            items[i].locationKey == KEY_APP_GLOBAL)
-          itemsToCheck.push(items[i].id);
-      }
-      this._finishOperations();
-    }
-
-    // If there are no items to migrate settings for return early.
-    if (itemsToCheck.length == 0)
-      return;
-
-    var fileURL = getURLSpecFromFile(oldExtensionsFile);
-    var oldExtensionsDS = gRDF.GetDataSourceBlocking(fileURL);
-    var versionChecker = getVersionChecker();
-    var ds = this.datasource;
-    var currAppVersion = gApp.version;
-    var currAppID = gApp.ID;
-    for (var i = 0; i < itemsToCheck.length; ++i) {
-      var item = ds.getItemForID(itemsToCheck[i]);
-      var oldPrefix = (item.type == Ci.nsIUpdateItem.TYPE_EXTENSION) ? PREFIX_EXTENSION : PREFIX_THEME;
-      var oldRes = gRDF.GetResource(oldPrefix + item.id);
-      // Disable the item if it was disabled in the version 1.0 extensions
-      // datasource.
-      if (oldExtensionsDS.GetTarget(oldRes, EM_R("disabled"), true))
-        ds.setItemProperty(item.id, EM_R("userDisabled"), EM_L("true"));
-
-      // app enable all items. If it is incompatible it will be app disabled
-      // later on.
-      ds.setItemProperty(item.id, EM_R("appDisabled"), null);
-
-      // if the item is already compatible don't attempt to migrate the
-      // item's compatibility info
-      var newRes = getResourceForID(itemsToCheck[i]);
-      if (ds.isCompatible(ds, newRes))
-        continue;
-
-      var updatedMinVersion = null;
-      var updatedMaxVersion = null;
-      var targetApps = oldExtensionsDS.GetTargets(oldRes, EM_R("targetApplication"), true);
-      while (targetApps.hasMoreElements()) {
-        var targetApp = targetApps.getNext();
-        if (targetApp instanceof Ci.nsIRDFResource) {
-          try {
-            var foundAppID = stringData(oldExtensionsDS.GetTarget(targetApp, EM_R("id"), true));
-            // Different target application?  (Note:  v1.0 didn't support toolkit app ID)
-            if (foundAppID != currAppID)
-              continue;
-
-            updatedMinVersion = stringData(oldExtensionsDS.GetTarget(targetApp, EM_R("minVersion"), true));
-            updatedMaxVersion = stringData(oldExtensionsDS.GetTarget(targetApp, EM_R("maxVersion"), true));
-
-            // Only set the target app info if the extension's target app info
-            // in the version 1.0 extensions datasource makes it compatible
-            if (versionChecker.compare(currAppVersion, updatedMinVersion) >= 0 &&
-                versionChecker.compare(currAppVersion, updatedMaxVersion) <= 0)
-              ds.setTargetApplicationInfo(item.id, foundAppID, updatedMinVersion,
-                                          updatedMaxVersion, null);
-
-            break;
-          }
-          catch (e) {
-          }
-        }
-      }
     }
   },
 
@@ -4298,10 +3705,9 @@ ExtensionManager.prototype = {
       installData.error = INSTALLERROR_INSECURE_UPDATE;
       return installData;
     }
-      
-    // Check that the target application range allows compatibility with the app
-    if (gCheckCompatibility &&
-        !this.datasource.isCompatible(installManifest, gInstallManifestRoot, undefined)) {
+
+    // Check that the item is compatible with the application.
+    if (!this.datasource.isCompatible(installManifest, gInstallManifestRoot, false)) {
       installData.error = INSTALLERROR_INCOMPATIBLE_VERSION;
       return installData;
     }
@@ -4334,10 +3740,8 @@ ExtensionManager.prototype = {
 
     // If there are no compatibility checks running and no downloads in
     // progress then the install operations are complete.
-    if (this._compatibilityCheckCount == 0 && this._transactions.length == 0) {
-      for (var i = 0; i < this._installListeners.length; ++i)
-        this._installListeners[i].onInstallsCompleted();
-    }
+    if (this._compatibilityCheckCount == 0 && this._transactions.length == 0)
+      this._callInstallListeners("onInstallsCompleted");
   },
 
   /**
@@ -4545,10 +3949,12 @@ ExtensionManager.prototype = {
         this._xpi             = xpiFile;
         this._installManifest = installManifest;
 
-        for (var i = 0; i < em._installListeners.length; ++i)
-          em._installListeners[i].onCompatibilityCheckStarted(item);
+        em._callInstallListeners("onCompatibilityCheckStarted", item);
         em._compatibilityCheckCount++;
-        em.update([item], 1, Ci.nsIExtensionManager.UPDATE_CHECK_COMPATIBILITY, this);
+        var updater = new ExtensionItemUpdater(em);
+        updater.checkForUpdates([item], 1,
+                                Ci.nsIExtensionManager.UPDATE_CHECK_COMPATIBILITY,
+                                this, UPDATE_WHEN_ADDON_INSTALLED);
       },
 
       /**
@@ -4588,8 +3994,7 @@ ExtensionManager.prototype = {
         em.datasource.removeDownload(this._xpi.path);
         LOG("Version Check Phone Home Completed");
 
-        for (var i = 0; i < em._installListeners.length; ++i)
-          em._installListeners[i].onCompatibilityCheckEnded(addon, status);
+        em._callInstallListeners("onCompatibilityCheckEnded", addon, status);
 
         // Only compatibility updates (e.g. STATUS_VERSIONINFO) are currently
         // supported
@@ -4634,9 +4039,8 @@ ExtensionManager.prototype = {
               BundleManager.appName + " " + gApp.version + ", Toolkit " +
               gApp.platformVersion + ". Remote compatibility check did not " +
               "resolve this.");
-          
-          for (var i = 0; i < em._installListeners.length; ++i)
-            em._installListeners[i].onInstallEnded(addon, INSTALLERROR_INCOMPATIBLE_VERSION);
+
+          em._callInstallListeners("onInstallEnded", addon, INSTALLERROR_INCOMPATIBLE_VERSION);
 
           // We are responsible for cleaning up this file!
           InstallLocations.get(aInstallLocationKey).removeFile(this._xpi);
@@ -4645,10 +4049,8 @@ ExtensionManager.prototype = {
         em._compatibilityCheckCount--;
         // If there are no more compatibility checks running and no downloads in
         // progress then the install operations are complete.
-        if (em._compatibilityCheckCount == 0 && em._transactions.length == 0) {
-          for (var i = 0; i < em._installListeners.length; ++i)
-            em._installListeners[i].onInstallsCompleted();
-        }
+        if (em._compatibilityCheckCount == 0 && em._transactions.length == 0)
+          em._callInstallListeners("onInstallsCompleted");
       },
 
       QueryInterface: XPCOMUtils.generateQI([Ci.nsIAddonUpdateCheckListener])
@@ -4664,9 +4066,8 @@ ExtensionManager.prototype = {
       var addon = makeItem(getURIFromFile(aXPIFile).spec, "",
                            aInstallLocationKey, "", "", "",
                            getURIFromFile(aXPIFile).spec,
-                           "", "", "", "", 0, gApp.id);
-      for (var i = 0; i < this._installListeners.length; ++i)
-        this._installListeners[i].onInstallStarted(addon);
+                           "", "", "", "", 0, gApp.ID);
+      this._callInstallListeners("onInstallStarted", addon);
 
       shouldPhoneHomeIfNecessary = true;
       var installManifest = null;
@@ -4680,8 +4081,7 @@ ExtensionManager.prototype = {
       if (!installManifest) {
         LOG("The Install Manifest supplied by this item is not well-formed. " +
             "Installation will not proceed.");
-        for (var i = 0; i < this._installListeners.length; ++i)
-          this._installListeners[i].onInstallEnded(addon, INSTALLERROR_INVALID_MANIFEST);
+        this._callInstallListeners("onInstallEnded", addon, INSTALLERROR_INVALID_MANIFEST);
         return INSTALLERROR_INVALID_MANIFEST;
       }
     }
@@ -4749,8 +4149,7 @@ ExtensionManager.prototype = {
         // this function, BEFORE staging takes place... technically speaking
         // a location could become readonly during the phone home process,
         // but that's an edge case I don't care about.
-        for (var i = 0; i < this._installListeners.length; ++i)
-          this._installListeners[i].onInstallEnded(addon, INSTALLERROR_RESTRICTED);
+        this._callInstallListeners("onInstallEnded", addon, INSTALLERROR_RESTRICTED);
         return INSTALLERROR_RESTRICTED;
       }
 
@@ -4846,9 +4245,7 @@ ExtensionManager.prototype = {
     stageXPIForOtherApps(aXPIFile, installData);
 
     // The install of this item is complete, notify observers
-    for (var i = 0; i < this._installListeners.length; ++i)
-      this._installListeners[i].onInstallEnded(addon, installData.error);
-
+    this._callInstallListeners("onInstallEnded", addon, installData.error);
     return installData.error;
   },
 
@@ -4995,10 +4392,23 @@ ExtensionManager.prototype = {
     if (!file && "stageFile" in installLocation)
       file = installLocation.getStageFile(id);
 
-    // If |file| is null or does not exist, the installer assumes the item is
-    // a dropped-in directory.
-    var installer = new Installer(this.datasource, id, installLocation, type);
-    installer.installFromFile(file);
+    // If there is a staged file then we must extract it to the correct place,
+    // otherwise we are dealing with a dropped-in directory.
+    if (file && file.exists())
+      safeInstallOperation(id, installLocation, file);
+
+    var metadataFile = installLocation.getItemFile(id, FILE_INSTALL_MANIFEST);
+    if (metadataFile && metadataFile.exists()) {
+      var metadataDS = getInstallManifest(metadataFile);
+      if (metadataDS) {
+        // Add metadata for the item to the extensions datasource
+        this.datasource.addItemMetadata(id, metadataDS, installLocation);
+      }
+    }
+    else {
+      LOG("_finalizeInstall: install manifest for extension " + id + " at " +
+          metadataFile.path + " could not be loaded. Add-on is not usable.");
+    }
 
     // If the file was staged, we must clean it up ourselves, otherwise the
     // EM caller is responsible for doing so (e.g. XPInstall)
@@ -5029,7 +4439,7 @@ ExtensionManager.prototype = {
       var installRDF = extractRDFFileToTempDir(stagedFile, FILE_INSTALL_MANIFEST, true);
     else
       installRDF = installLocation.getItemFile(id, FILE_INSTALL_MANIFEST);
-    if (installRDF.exists()) {
+    if (installRDF && installRDF.exists()) {
       var installManifest = getInstallManifest(installRDF);
       if (installManifest) {
         var type = getAddonTypeFromInstallManifest(installManifest);
@@ -5064,10 +4474,9 @@ ExtensionManager.prototype = {
     var installLocation = this.getInstallLocation(id);
     if (!installLocation.itemIsManagedIndependently(id)) {
       try {
-        // Having a callback that does nothing just causes the directory to be
+        // Passing null for the file to install will just cause the directory
         // removed.
-        safeInstallOperation(id, installLocation,
-                             { data: null, callback: function() { } });
+        safeInstallOperation(id, installLocation, null);
       }
       catch (e) {
         ERROR("_finalizeUninstall: failed to remove directory for item: " + id +
@@ -5076,7 +4485,7 @@ ExtensionManager.prototype = {
         // If there is no manifest then either the rollback failed, or there was
         // no manifest in the first place. Either way this item is now invalid
         // and we shouldn't try to re-install it.
-        if (manifest.exists()) {
+        if (manifest && manifest.exists()) {
           // Removal of the files failed, reset the uninstalled flag and rewrite
           // the install manifests so this item's components are registered.
           // Clear the op flag from the Startup Cache
@@ -5138,7 +4547,7 @@ ExtensionManager.prototype = {
       }
       else {
         if (opType == OP_NEEDS_UPGRADE)
-          ds.setItemProperty(id, "newVersion", null);
+          ds.setItemProperty(id, EM_R("newVersion"), null);
         this._setOp(id, OP_NEEDS_UNINSTALL);
         var type = ds.getItemProperty(id, "type");
         var restartRequired = this.installRequiresRestart(id, type);
@@ -5492,10 +4901,9 @@ ExtensionManager.prototype = {
    */
   _isUsableItem: function EM__isUsableItem(id) {
     var ds = this.datasource;
-    /* If we're not compatibility checking or if the item is compatible
-     * and if it isn't blocklisted and has all dependencies satisfied then
-     * proceed to the security check */
-    if ((!gCheckCompatibility || ds.getItemProperty(id, "compatible") == "true") &&
+    /* If the item is compatible and if it isn't blocklisted and has all
+     * dependencies satisfied then proceed to the security check */
+    if (ds.isCompatible(ds, getResourceForID(id), false) &&
         ds.getItemProperty(id, "blocklisted") == "false" &&
         ds.getItemProperty(id, "satisfiesDependencies") == "true") {
 
@@ -5543,7 +4951,13 @@ ExtensionManager.prototype = {
    * See nsIExtensionManager.idl
    */
   update: function EM_update(items, itemCount, updateCheckType, listener,
-                             appVersion, platformVersion) {
+                             updateType, appVersion, platformVersion) {
+
+    // Callers through the API are only allowed to use update types declared
+    // in nsIExtensionManager.idl
+    if (updateType > MAX_PUBLIC_UPDATE_WHEN)
+      throw Cr.NS_ERROR_ILLEGAL_VALUE;
+
     for (i = 0; i < itemCount; ++i) {
       var currItem = items[i];
       if (!currItem)
@@ -5555,7 +4969,7 @@ ExtensionManager.prototype = {
 
     var updater = new ExtensionItemUpdater(this);
     updater.checkForUpdates(items, items.length, updateCheckType, listener,
-                            appVersion, platformVersion);
+                            updateType, appVersion, platformVersion);
   },
 
   /**
@@ -5658,42 +5072,16 @@ ExtensionManager.prototype = {
   },
 
   /* See nsIExtensionManager.idl */
-  getIncompatibleItemList: function EM_getIncompatibleItemList(id, appVersion,
+  getIncompatibleItemList: function EM_getIncompatibleItemList(appVersion,
                                                                platformVersion,
                                                                type,
                                                                includeDisabled,
                                                                countRef) {
-    var items = this.datasource.getIncompatibleItemList(id, appVersion ? appVersion : undefined,
+    var items = this.datasource.getIncompatibleItemList(appVersion ? appVersion : undefined,
                                                         platformVersion ? platformVersion : undefined,
                                                         type, includeDisabled);
     countRef.value = items.length;
     return items;
-  },
-
-  /**
-   * Move an Item to the index of another item in its container.
-   * @param   movingID
-   *          The ID of the item to be moved.
-   * @param   destinationID
-   *          The ID of an item to move another item to.
-   */
-  moveToIndexOf: function EM_moveToIndexOf(movingID, destinationID) {
-    this.datasource.moveToIndexOf(movingID, destinationID);
-  },
-
-  /**
-   * Sorts addons of the specified type by the specified property starting from
-   * the top of their container. If the addons are already sorted then no action
-   * is performed.
-   * @param   type
-   *          The nsIUpdateItem type of the items to sort.
-   * @param   propertyName
-   *          The RDF property name used for sorting.
-   * @param   isAscending
-   *          true to sort ascending and false to sort descending
-   */
-  sortTypeByProperty: function EM_sortTypeByProperty(type, propertyName, isAscending) {
-    this.datasource.sortTypeByProperty(type, propertyName, isAscending);
   },
 
   /////////////////////////////////////////////////////////////////////////////
@@ -5720,13 +5108,13 @@ ExtensionManager.prototype = {
       // count to 0 to prevent this dialog from being displayed again.
       this._downloadCount = 0;
       var result;
-//@line 5691 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 5156 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
       result = this._confirmCancelDownloads(this._downloadCount,
                                             "quitCancelDownloadsAlertTitle",
                                             "quitCancelDownloadsAlertMsgMultiple",
                                             "quitCancelDownloadsAlertMsg",
                                             "dontQuitButtonWin");
-//@line 5703 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 5168 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
       if (subject instanceof Ci.nsISupportsPRBool)
         subject.data = result;
     }
@@ -5831,12 +5219,17 @@ ExtensionManager.prototype = {
       // being updated during an install.
       if (!manager) {
         var id = currItem.id
-        ds.setItemProperties(id, {
+        var props = {
           availableUpdateURL: null,
           availableUpdateHash: null,
           availableUpdateVersion: null,
           availableUpdateInfo: null
-        });
+        };
+        var updateVersion = ds.getItemProperty(id, "availableUpdateVersion");
+        var updateURL = ds.getItemProperty(id, "availableUpdateURL");
+        if (updateVersion && (updateURL == currItem.xpiURL))
+          props.newVersion = EM_L(updateVersion);
+        ds.setItemProperties(id, props);
         ds.updateProperty(id, "availableUpdateURL");
         ds.updateProperty(id, "updateable");
       }
@@ -5885,12 +5278,10 @@ ExtensionManager.prototype = {
     switch (state) {
     case nsIXPIProgressDialog.DOWNLOAD_START:
       ds.updateDownloadState(id, "downloading");
-      for (var i = 0; i < this._installListeners.length; ++i)
-        this._installListeners[i].onDownloadStarted(addon);
+      this._callInstallListeners("onDownloadStarted", addon);
       break;
     case nsIXPIProgressDialog.DOWNLOAD_DONE:
-      for (var i = 0; i < this._installListeners.length; ++i)
-        this._installListeners[i].onDownloadEnded(addon);
+      this._callInstallListeners("onDownloadEnded", addon);
       break;
     case nsIXPIProgressDialog.INSTALL_START:
       ds.updateDownloadState(id, "finishing");
@@ -5907,10 +5298,8 @@ ExtensionManager.prototype = {
       }
       transaction.removeDownload(addon.xpiURL);
       // A successful install will be passing notifications via installItemFromFile
-      if (value != 0) {
-        for (var i = 0; i < this._installListeners.length; ++i)
-          this._installListeners[i].onInstallEnded(addon, value);
-      }
+      if (value != 0)
+        this._callInstallListeners("onInstallEnded", addon, value);
       break;
     case nsIXPIProgressDialog.DIALOG_CLOSE:
       for (var i = 0; i < this._transactions.length; ++i) {
@@ -5923,10 +5312,8 @@ ExtensionManager.prototype = {
 
             // If there are no compatibility checks running then the install
             // operations are complete.
-            if (this._compatibilityCheckCount == 0) {
-              for (var i = 0; i < this._installListeners.length; ++i)
-                this._installListeners[i].onInstallsCompleted();
-            }
+            if (this._compatibilityCheckCount == 0)
+              this._callInstallListeners("onInstallsCompleted");
           }
           break;
         }
@@ -5938,8 +5325,7 @@ ExtensionManager.prototype = {
   },
 
   onProgress: function EM_onProgress(addon, value, maxValue) {
-    for (var i = 0; i < this._installListeners.length; ++i)
-      this._installListeners[i].onDownloadProgress(addon, value, maxValue);
+    this._callInstallListeners("onDownloadProgress", addon, value, maxValue);
 
     var id = addon.id != addon.xpiURL ? PREFIX_ITEM_URI + addon.id : addon.xpiURL;
     var progress = Math.round((value / maxValue) * 100);
@@ -5957,7 +5343,25 @@ ExtensionManager.prototype = {
   },
 
   removeInstallListenerAt: function EM_removeInstallListenerAt(index) {
-    this._installListeners.splice(index, 1);
+    if (index < 0 || index >= this._installListeners.length)
+      throw Cr.NS_ERROR_INVALID_ARGUMENT;
+
+    this._installListeners[index] = null;
+    while (this._installListeners[this._installListeners.length - 1] === null)
+      this._installListeners.splice(this._installListeners.length - 1, 1);
+  },
+
+  _callInstallListeners: function EM__callInstallListeners(method) {
+    for (var i = 0; i < this._installListeners.length; ++i) {
+      try {
+        if (this._installListeners[i])
+          this._installListeners[i][method].apply(this._installListeners[i],
+                                                  Array.slice(arguments, 1));
+      }
+      catch (e) {
+        LOG("Failure in install listener's " + method + ": " + e);
+      }
+    }
   },
 
   /**
@@ -6004,7 +5408,11 @@ ExtensionManager.prototype = {
   classDescription: "Extension Manager",
   contractID: "@mozilla.org/extensions/manager;1",
   classID: Components.ID("{8A115FAA-7DCB-4e8f-979B-5F53472F51CF}"),
-  _xpcom_categories: [{ category: "profile-after-change" }],
+  _xpcom_categories: [{ category: "profile-after-change" },
+                      { category: "update-timer",
+                        value: "@mozilla.org/extensions/manager;1," +
+                               "getService,addon-background-update-timer," +
+                               PREF_EM_UPDATE_INTERVAL + ",86400" }],
   _xpcom_factory: {
     createInstance: function(outer, iid) {
       if (outer != null)
@@ -6135,9 +5543,6 @@ BackgroundUpdateCheckListener.prototype = {
       gPref.setBoolPref(PREF_UPDATE_NOTIFYUSER, false);
     }
     else {
-      const EMURL = "chrome://mozapps/content/extensions/extensions.xul";
-      const EMFEATURES = "chrome,menubar,extra-chrome,toolbar,dialog=no,resizable";
-
       var ww = Cc["@mozilla.org/embedcomp/window-watcher;1"].
                getService(Ci.nsIWindowWatcher);
       var param = Cc["@mozilla.org/supports-array;1"].
@@ -6146,7 +5551,7 @@ BackgroundUpdateCheckListener.prototype = {
                 createInstance(Ci.nsISupportsString);
       arg.data = "updates";
       param.AppendElement(arg);
-      ww.openWindow(null, EMURL, null, EMFEATURES, param);
+      ww.openWindow(null, URI_EXTENSION_MANAGER, null, FEATURES_EXTENSION_MANAGER, param);
     }
   },
   
@@ -6247,16 +5652,18 @@ ExtensionItemUpdater.prototype = {
   _emDS               : null,
   _em                 : null,
   _updateCheckType    : 0,
+  _updateType         : 0,
   _items              : [],
   _listener           : null,
 
   /* ExtensionItemUpdater
-//@line 6253 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 5736 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
   */
   checkForUpdates: function ExtensionItemUpdater_checkForUpdates(aItems,
                                                                  aItemCount,
                                                                  aUpdateCheckType,
                                                                  aListener,
+                                                                 aUpdateType,
                                                                  aAppVersion,
                                                                  aPlatformVersion) {
     if (aUpdateCheckType == Ci.nsIExtensionManager.UPDATE_NOTIFY_NEWVERSION) {
@@ -6276,6 +5683,14 @@ ExtensionItemUpdater.prototype = {
     this._updateCheckType = aUpdateCheckType;
     this._items = aItems;
     this._responseCount = aItemCount;
+
+    this._updateType = aUpdateType;
+    // All update check types look for compatibility currently
+    this._updateType |= UPDATE_TYPE_COMPATIBILITY;
+    // Only two types also look for new versions
+    if (aUpdateCheckType == Ci.nsIExtensionManager.UPDATE_NOTIFY_NEWVERSION ||
+        aUpdateCheckType == Ci.nsIExtensionManager.UPDATE_CHECK_NEWVERSION)
+      this._updateType |= UPDATE_TYPE_NEWVERSION;
 
     // This is the number of extensions/themes/etc that we found updates for.
     this._updateCount = 0;
@@ -6401,6 +5816,10 @@ ExtensionItemUpdater.prototype = {
  * appropriate values.
  * @param   aItem
  *          The nsIUpdateItem representing the item
+ * @param   aAppVersion
+ *          The application version to check for updates for
+ * @param   aUpdateType
+ *          The type of the update (see nsIExtensionManager)
  * @param   aURI
  *          The uri to escape
  * @param   aDS
@@ -6408,7 +5827,7 @@ ExtensionItemUpdater.prototype = {
  *
  * @returns the appropriately escaped uri.
  */
-function escapeAddonURI(aItem, aAppVersion, aURI, aDS)
+function escapeAddonURI(aItem, aAppVersion, aUpdateType, aURI, aDS)
 {
   var itemStatus = "userEnabled";
   if (aDS.getItemProperty(aItem.id, "userDisabled") == "true" ||
@@ -6438,6 +5857,8 @@ function escapeAddonURI(aItem, aAppVersion, aURI, aDS)
   aURI = aURI.replace(/%APP_ABI%/g, gXPCOMABI);
   aURI = aURI.replace(/%APP_LOCALE%/g, gLocale);
   aURI = aURI.replace(/%CURRENT_APP_VERSION%/g, gApp.version);
+  if (aUpdateType)
+    aURI = aURI.replace(/%UPDATE_TYPE%/g, aUpdateType);
 
   // Replace custom parameters (names of custom parameters must have at
   // least 3 characters to prevent lookups for something like %D0%C8)
@@ -6533,15 +5954,16 @@ RDFItemUpdater.prototype = {
     if (!dsURI)
       dsURI = gPref.getCharPref(PREF_UPDATE_DEFAULT_URL);
 
-    dsURI = escapeAddonURI(aItem, this._updater._appVersion, dsURI, emDS);
+    dsURI = escapeAddonURI(aItem, this._updater._appVersion,
+                           this._updater._updateType, dsURI, emDS);
 
     // Verify that the URI provided is valid
     try {
       var uri = newURI(dsURI);
     }
     catch (e) {
-      LOG("RDFItemUpdater:checkForUpdates: There was an error loading the \r\n" +
-          " update datasource for: " + dsURI + ", item = " + aItem.id + ", error: " + e);
+      WARN("RDFItemUpdater:checkForUpdates: There was an error loading the \r\n" +
+           " update datasource for: " + dsURI + ", item = " + aItem.id + ", error: " + e);
       this._updater.checkForDone(aItem,
                                  Ci.nsIAddonUpdateCheckListener.STATUS_FAILURE);
       return;
@@ -6553,7 +5975,7 @@ RDFItemUpdater.prototype = {
     var request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
                   createInstance(Ci.nsIXMLHttpRequest);
     request.open("GET", uri.spec, true);
-    request.channel.notificationCallbacks = new BadCertHandler();
+    request.channel.notificationCallbacks = new gCertUtils.BadCertHandler();
     request.overrideMimeType("text/xml");
     request.channel.loadFlags |= Ci.nsIRequest.LOAD_BYPASS_CACHE;
 
@@ -6566,7 +5988,7 @@ RDFItemUpdater.prototype = {
   onXMLLoad: function RDFItemUpdater_onXMLLoad(aEvent, aItem) {
     var request = aEvent.target;
     try {
-      checkCert(request.channel);
+      gCertUtils.checkCert(request.channel);
     }
     catch (e) {
       // This may be overly restrictive in two cases: corporate installations
@@ -6626,15 +6048,15 @@ RDFItemUpdater.prototype = {
     if (status == 0)
       statusText = "nsIXMLHttpRequest channel unavailable";
 
-    LOG("RDFItemUpdater:onError: There was an error loading the \r\n" +
-        "the update datasource for item " + aItem.id + ", error: " + statusText);
+    WARN("RDFItemUpdater:onError: There was an error loading the \r\n" +
+         "the update datasource for item " + aItem.id + ", error: " + statusText);
     this._updater.checkForDone(aItem,
                                Ci.nsIAddonUpdateCheckListener.STATUS_FAILURE);
   },
 
   onDatasourceLoaded: function RDFItemUpdater_onDatasourceLoaded(aDatasource, aLocalItem) {
     /*
-//@line 6676 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
+//@line 6175 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\mozapps\extensions\src\nsExtensionManager.js.in"
     */
     if (!aDatasource.GetAllResources().hasMoreElements()) {
       LOG("RDFItemUpdater:onDatasourceLoaded: Datasource empty.\r\n" +
@@ -6662,29 +6084,29 @@ RDFItemUpdater.prototype = {
                          getService(Ci.nsIDataSignatureVerifier);
           try {
             if (!verifier.verifyData(updateString, signature, aLocalItem.updateKey)) {
-              LOG("RDFItemUpdater:onDatasourceLoaded: Update manifest for " +
-                  aLocalItem.id + " failed signature check.");
+              WARN("RDFItemUpdater:onDatasourceLoaded: Update manifest for " +
+                   aLocalItem.id + " failed signature check.");
               this._updater.checkForDone(aLocalItem, Ci.nsIAddonUpdateCheckListener.STATUS_FAILURE);
               return;
             }
           }
           catch (e) {
-            LOG("RDFItemUpdater:onDatasourceLoaded: Failed to verify signature for " +
-                aLocalItem.id + ". This indicates a malformed update key or signature.");
+            WARN("RDFItemUpdater:onDatasourceLoaded: Failed to verify signature for " +
+                 aLocalItem.id + ". This indicates a malformed update key or signature.");
             this._updater.checkForDone(aLocalItem, Ci.nsIAddonUpdateCheckListener.STATUS_FAILURE);
             return;
           }
         }
         catch (e) {
-          LOG("RDFItemUpdater:onDatasourceLoaded: Failed to generate signature " +
-              "string for " + aLocalItem.id + ". Serializer threw " + e);
+          WARN("RDFItemUpdater:onDatasourceLoaded: Failed to generate signature " +
+               "string for " + aLocalItem.id + ". Serializer threw " + e);
           this._updater.checkForDone(aLocalItem, Ci.nsIAddonUpdateCheckListener.STATUS_FAILURE);
           return;
         }
       }
       else {
-        LOG("RDFItemUpdater:onDatasourceLoaded: Update manifest for " +
-            aLocalItem.id + " did not contain a signature.");
+        WARN("RDFItemUpdater:onDatasourceLoaded: Update manifest for " +
+             aLocalItem.id + " did not contain a signature.");
         this._updater.checkForDone(aLocalItem, Ci.nsIAddonUpdateCheckListener.STATUS_FAILURE);
         return;
       }
@@ -6793,15 +6215,15 @@ RDFItemUpdater.prototype = {
       updates = updates.QueryInterface(Ci.nsIRDFResource);
     }
     catch (e) {
-      LOG("RDFItemUpdater:_parseV20UpdateInfo: No updates were found for:\r\n" +
-          aLocalItem.id + "\r\n" +
-          "If you are an Extension developer and were expecting there to be\r\n" +
-          "updates, this could mean any number of things, since the RDF system\r\n" +
-          "doesn't give up much in the way of information when the load fails.\r\n" +
-          "\r\nTry checking that: \r\n" +
-          " 1. Your RDF File is correct - e.g. check that there is a top level\r\n" +
-          "    RDF Resource with a URI urn:mozilla:extension:{GUID}, and that\r\n" +
-          "    the <em:updates> listed all have matching GUIDs.");
+      WARN("RDFItemUpdater:_parseV20UpdateInfo: No updates were found for:\r\n" +
+           aLocalItem.id + "\r\n" +
+           "If you are an Extension developer and were expecting there to be\r\n" +
+           "updates, this could mean any number of things, since the RDF system\r\n" +
+           "doesn't give up much in the way of information when the load fails.\r\n" +
+           "\r\nTry checking that: \r\n" +
+           " 1. Your RDF File is correct - e.g. check that there is a top level\r\n" +
+           "    RDF Resource with a URI urn:mozilla:extension:{GUID}, and that\r\n" +
+           "    the <em:updates> listed all have matching GUIDs.");
       return null;
     }
 
@@ -6892,9 +6314,9 @@ RDFItemUpdater.prototype = {
          * the sha hashing algorithms as secure. */
         if (gCheckUpdateSecurity && updateLink.substring(0, 6) != "https:" && 
             (!updateHash || updateHash.substring(0, 3) != "sha")) {
-          LOG("RDFItemUpdater:_parseV20Update: Update for " + aLocalItem.id +
-              " at " + updateLink + " ignored because it is insecure. updateLink " +
-              " must be a https url or an updateHash must be specified.");
+          WARN("RDFItemUpdater:_parseV20Update: Update for " + aLocalItem.id +
+               " at " + updateLink + " ignored because it is insecure. updateLink " +
+               " must be a https url or an updateHash must be specified.");
           continue;
         }
       }
@@ -7175,6 +6597,10 @@ ExtensionsDataSource.prototype = {
    *          datasource or an Install Manifest.
    * @param   source
    *          The RDF Resource of the item to inspect for compatibility.
+   * @param   alwaysCheckVersion
+   *          Set to true to only obey the compatibility information in the
+   *          datasource. When false the compatibility range may be ignored
+   *          if compatibility checking is disabled.
    * @param   appVersion
    *          The version of the application we are checking for compatibility
    *          against. If this parameter is undefined, the version of the running
@@ -7184,9 +6610,15 @@ ExtensionsDataSource.prototype = {
    * @returns true if the item is compatible with this version of the
    *          application, false, otherwise.
    */
-  isCompatible: function EMDS_isCompatible(datasource, source, appVersion, platformVersion) {
+  isCompatible: function EMDS_isCompatible(datasource, source, alwaysCheckVersion,
+                                           appVersion, platformVersion) {
     // The Default Theme is always compatible.
     if (source.EqualsNode(this._defaultTheme))
+      return true;
+
+    // Items pending install have no target application info in the datasource
+    if (datasource === this &&
+        this._getItemProperty(source, "opType") == OP_NEEDS_INSTALL)
       return true;
 
     var appID = gApp.ID;
@@ -7207,12 +6639,16 @@ ExtensionsDataSource.prototype = {
       var minVersion  = stringData(datasource.GetTarget(targetApp, minVersionRes, true));
       var maxVersion  = stringData(datasource.GetTarget(targetApp, maxVersionRes, true));
       if (id == appID) {
+        if (!alwaysCheckVersion && !gCheckCompatibility)
+          return true;
         rv = (versionChecker.compare(appVersion, minVersion) >= 0) &&
              (versionChecker.compare(appVersion, maxVersion) <= 0);
         return rv; // App takes precedence over toolkit.
       }
 
       if (id == TOOLKIT_ID) {
+        if (!alwaysCheckVersion && !gCheckCompatibility)
+          return true;
         rv =  (versionChecker.compare(platformVersion, minVersion) >= 0) &&
               (versionChecker.compare(platformVersion, maxVersion) <= 0);
         // Keep looping, in case the app id is later.
@@ -7223,8 +6659,6 @@ ExtensionsDataSource.prototype = {
 
   /**
    * Gets a list of items that are incompatible with a specific application version.
-   * @param   appID
-   *          The ID of the application - XXXben unused?
    * @param   appVersion
    *          The Version of the application to check for incompatibility against.
    * @param   platformVersion
@@ -7236,8 +6670,7 @@ ExtensionsDataSource.prototype = {
    * @returns An array of nsIUpdateItems that are incompatible with the application
    *          ID/Version supplied.
    */
-  getIncompatibleItemList: function EMDS_getIncompatibleItemList(appID,
-                                                                 appVersion,
+  getIncompatibleItemList: function EMDS_getIncompatibleItemList(appVersion,
                                                                  platformVersion,
                                                                  desiredType,
                                                                  includeDisabled) {
@@ -7265,7 +6698,7 @@ ExtensionsDataSource.prototype = {
         continue;
 
       if (type != -1 && (type & desiredType) &&
-          !this.isCompatible(this, item, appVersion, platformVersion))
+          !this.isCompatible(this, item, true, appVersion, platformVersion))
         items.push(this.getItemForID(id));
     }
     return items;
@@ -7805,9 +7238,9 @@ ExtensionsDataSource.prototype = {
                        "aboutURL", "iconURL", "internalName", "updateKey"];
 
     // Items installed into restricted Install Locations can also be locked
-    // (can't be removed or disabled), and hidden (not shown in the UI)
+    // (can't be removed or disabled)
     if (installLocation.restricted)
-      singleProps = singleProps.concat(["locked", "hidden"]);
+      singleProps = singleProps.concat(["locked"]);
     if (installLocation.name == KEY_APP_GLOBAL)
       singleProps = singleProps.concat(["appManaged"]);
     for (var i = 0; i < singleProps.length; ++i) {
@@ -7949,86 +7382,6 @@ ExtensionsDataSource.prototype = {
                                         EM_L(""));
       }
     }
-  },
-
-  /**
-   * Move an Item to the index of another item in its container.
-   * @param   movingID
-   *          The ID of the item to be moved.
-   * @param   destinationID
-   *          The ID of an item to move another item to.
-   */
-  moveToIndexOf: function EMDS_moveToIndexOf(movingID, destinationID) {
-    var extensions = gRDF.GetResource(RDFURI_ITEM_ROOT);
-    var ctr = getContainer(this._inner, extensions);
-    var item = gRDF.GetResource(movingID);
-    var index = ctr.IndexOf(gRDF.GetResource(destinationID));
-    if (index == -1)
-      index = 1; // move to the beginning if destinationID is not found
-    this._inner.beginUpdateBatch();
-    ctr.RemoveElement(item, true);
-    ctr.InsertElementAt(item, index, true);
-    this._inner.endUpdateBatch();
-    this.Flush();
-  },
-
-  /**
-   * Sorts addons of the specified type by the specified property starting from
-   * the top of their container. If the addons are already sorted then no action
-   * is performed.
-   * @param   type
-   *          The nsIUpdateItem type of the items to sort.
-   * @param   propertyName
-   *          The RDF property name used for sorting.
-   * @param   isAscending
-   *          true to sort ascending and false to sort descending
-   */
-  sortTypeByProperty: function EMDS_sortTypeByProperty(type, propertyName, isAscending) {
-    var items = [];
-    var ctr = getContainer(this._inner, this._itemRoot);
-    var elements = ctr.GetElements();
-    // Base 0 ordinal for checking against the existing order after sorting
-    var ordinal = 0;
-    while (elements.hasMoreElements()) {
-      var item = elements.getNext().QueryInterface(Ci.nsIRDFResource);
-      var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
-      var itemType = this.getItemProperty(id, "type");
-      if (itemType & type) {
-        items.push({ item   : item,
-                     ordinal: ordinal,
-                     sortkey: this.getItemProperty(id, propertyName) });
-        ordinal++;
-      }
-    }
-
-    var direction = isAscending ? 1 : -1;
-    // Locale sensitive sort
-    function compare(a, b) {
-      return String.localeCompare(a.sortkey, b.sortkey) * direction;
-    }
-    items.sort(compare);
-
-    // Check if there are any changes in the order of the items
-    var isDirty = false;
-    for (var i = 0; i < items.length; i++) {
-      if (items[i].ordinal != i) {
-        isDirty = true;
-        break;
-      }
-    }
-
-    // If there are no changes then early return to avoid the perf impact
-    if (!isDirty)
-      return;
-
-    // Reorder the items by moving them to the top of the container
-    this.beginUpdateBatch();
-    for (i = 0; i < items.length; i++) {
-      ctr.RemoveElement(items[i].item, true);
-      ctr.InsertElementAt(items[i].item, i + 1, true);
-    }
-    this.endUpdateBatch();
-    this.Flush();
   },
 
   /**
@@ -8304,32 +7657,24 @@ ExtensionsDataSource.prototype = {
   },
 
   /**
-   * Gets an URL to a theme's image file
+   * Gets an URL to an item's image file
    * @param   item
    *          The RDF Resource representing the item
    * @param   fileName
    *          The file to locate a URL for
-   * @param   fallbackURL
-   *          If the location fails, supply this URL instead
    * @returns An RDF Resource to the URL discovered, or the fallback
    *          if the discovery failed.
    */
-  _getThemeImageURL: function EMDS__getThemeImageURL(item, fileName, fallbackURL) {
+  _getImageURL: function EMDS__getImageURL(item, fileName) {
     var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
     var installLocation = this._em.getInstallLocation(id);
     if (!installLocation)
-      return fallbackURL;
+      return null;
     var file = installLocation.getItemFile(id, fileName)
-    if (file.exists())
+    if (file && file.exists())
       return gRDF.GetResource(getURLSpecFromFile(file));
 
-    if (id == stripPrefix(RDFURI_DEFAULT_THEME, PREFIX_ITEM_URI)) {
-      var jarFile = getFile(KEY_APPDIR, [DIR_CHROME, FILE_DEFAULT_THEME_JAR]);
-      var url = "jar:" + getURLSpecFromFile(jarFile) + "!/" + fileName;
-      return gRDF.GetResource(url);
-    }
-
-    return fallbackURL ? gRDF.GetResource(fallbackURL) : null;
+    return null;
   },
 
   /**
@@ -8337,30 +7682,39 @@ ExtensionsDataSource.prototype = {
    */
   _rdfGet_iconURL: function EMDS__rdfGet_iconURL(item, property) {
     var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
+
+    var installLocation = this._em.getInstallLocation(id);
+    if (!this.isDownloadItem(id) && !installLocation)
+      return null;
+
+    // Try to pick an icon from the item's install folder
+    iconURL = this._getImageURL(item, "icon.png");
+    if (iconURL)
+      return iconURL;
+
     var type = this.getItemProperty(id, "type");
-    if (type & Ci.nsIUpdateItem.TYPE_THEME)
-      return this._getThemeImageURL(item, "icon.png", URI_GENERIC_ICON_THEME);
+    if (type == Ci.nsIUpdateItem.TYPE_THEME)
+      return gRDF.GetResource(URI_GENERIC_ICON_THEME);
 
-    if (inSafeMode())
-      return gRDF.GetResource(URI_GENERIC_ICON_XPINSTALL);
+    // Only look for an iconURL if the item is not disabled and safe mode isn't
+    // active
+    if (!inSafeMode() && this.getItemProperty(id, "isDisabled") != "true") {
+      var iconURL = stringData(this._inner.GetTarget(item, property, true));
+      if (iconURL) {
+        try {
+          var uri = newURI(iconURL);
+          var scheme = uri.scheme;
+          // Only allow chrome URIs normally. When an item is being installed
+          // allow http(s) URIs.
+          if (scheme == "chrome" || (scheme == "http" || scheme == "https") &&
+              this._inner.hasArcOut(item, EM_R("downloadURL")))
+            return null;
+        }
+        catch (e) {
+        }
+      }
+    }
 
-    var hasIconURL = this._inner.hasArcOut(item, property);
-    // If the addon doesn't have an IconURL property or it is disabled use the
-    // generic icon URL instead.
-    if (!hasIconURL || this.getItemProperty(id, "isDisabled") == "true")
-      return gRDF.GetResource(URI_GENERIC_ICON_XPINSTALL);
-    var iconURL = stringData(this._inner.GetTarget(item, property, true));
-    try {
-      var uri = newURI(iconURL);
-      var scheme = uri.scheme;
-      // Only allow chrome URIs or when installing http(s) URIs.
-      if (scheme == "chrome" || (scheme == "http" || scheme == "https") &&
-          this._inner.hasArcOut(item, EM_R("downloadURL")))
-        return null;
-    }
-    catch (e) {
-    }
-    // Use a generic icon URL for addons that have an invalid iconURL.
     return gRDF.GetResource(URI_GENERIC_ICON_XPINSTALL);
   },
 
@@ -8369,18 +7723,33 @@ ExtensionsDataSource.prototype = {
    */
   _rdfGet_previewImage: function EMDS__rdfGet_previewImage(item, property) {
     var type = this.getItemProperty(stripPrefix(item.Value, PREFIX_ITEM_URI), "type");
-    if (type != -1 && type & Ci.nsIUpdateItem.TYPE_THEME)
-      return this._getThemeImageURL(item, "preview.png", null);
+    if (type == Ci.nsIUpdateItem.TYPE_THEME)
+      return this._getImageURL(item, "preview.png");
     return null;
   },
 
   /**
    * If we're in safe mode, the item is disabled by the user or app, or the
-   * item is to be upgraded force the generic about dialog for the item.
+   * item is to not an extension then don't offer an options url.
+   */
+  _rdfGet_optionsURL: function EMDS__rdfGet_optionsURL(item, property) {
+    var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
+    if (inSafeMode() || this.getItemProperty(id, "isDisabled") == "true" ||
+        this.getItemProperty(id, "type") != Ci.nsIUpdateItem.TYPE_EXTENSION)
+      return EM_L("");
+
+    return null;
+  },
+
+  /**
+   * If we're in safe mode, the item is disabled by the user or app, the item
+   * is not an extension, or the item is to be upgraded force the generic about
+   * dialog for the item.
    */
   _rdfGet_aboutURL: function EMDS__rdfGet_aboutURL(item, property) {
     var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
     if (inSafeMode() || this.getItemProperty(id, "isDisabled") == "true" ||
+        this.getItemProperty(id, "type") != Ci.nsIUpdateItem.TYPE_EXTENSION ||
         this.getItemProperty(id, "opType") == OP_NEEDS_UPGRADE)
       return EM_L("");
 
@@ -8400,23 +7769,8 @@ ExtensionsDataSource.prototype = {
    * Get the em:compatible property (whether or not this item is compatible)
    */
   _rdfGet_compatible: function EMDS__rdfGet_compatible(item, property) {
-    var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
-    var targetAppInfo = this.getTargetApplicationInfo(id, this);
-    if (!targetAppInfo) {
-      // When installing a new addon targetAppInfo does not exist yet
-      if (this.getItemProperty(id, "opType") == OP_NEEDS_INSTALL)
-        return EM_L("true");
-      return EM_L("false");
-    }
-
-    getVersionChecker();
-    var appVersion = targetAppInfo.appID == TOOLKIT_ID ? gApp.platformVersion : gApp.version;
-    if (gVersionChecker.compare(targetAppInfo.maxVersion, appVersion) < 0 ||
-        gVersionChecker.compare(appVersion, targetAppInfo.minVersion) < 0) {
-      // OK, this item is incompatible.
-      return EM_L("false");
-    }
-    return EM_L("true");
+    var compatible = this.isCompatible(this, item, true);
+    return compatible ? EM_L("true") : EM_L("false");
   },
 
   /**
@@ -8493,18 +7847,6 @@ ExtensionsDataSource.prototype = {
     var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
     var locationKey = this.getItemProperty(id, "installLocation");
     if (locationKey != KEY_APP_GLOBAL)
-      return EM_L("false");
-    return null;
-  },
-
-  /**
-   * Get the em:hidden property. This prevents extensions from hiding
-   * extensions installed into locations other than restricted locations.
-   */
-  _rdfGet_hidden: function EMDS__rdfGet_hidden(item, property) {
-    var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
-    var installLocation = InstallLocations.get(this.getInstallLocationKey(id));
-    if (!installLocation || !installLocation.restricted)
       return EM_L("false");
     return null;
   },
@@ -8610,7 +7952,7 @@ ExtensionsDataSource.prototype = {
     var id = stripPrefix(item.Value, PREFIX_ITEM_URI);
     var uri = stringData(this._inner.GetTarget(item, EM_R("availableUpdateInfo"), true));
     if (uri) {
-      uri = escapeAddonURI(this.getItemForID(id), null, uri, this);
+      uri = escapeAddonURI(this.getItemForID(id), null, null, uri, this);
       return EM_L(uri);
     }
     return null;

@@ -1,4 +1,4 @@
-#!/Users/toddw/src/pyxpcomext/src/build/py_install/Python.framework/Versions/2.6/bin/python2.6
+#!/Users/toddw/src/pythonext/src/build/py_install/Python.framework/Versions/2.6/bin/python2.6
 from lib2to3.main import main
 import sys
 import os

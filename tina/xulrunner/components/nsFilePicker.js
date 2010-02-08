@@ -165,7 +165,7 @@ nsFilePicker.prototype = {
     }
     if (filterMask & nsIFilePicker.filterImages) {
       this.appendFilter(bundle.GetStringFromName("imageTitle"),
-                   bundle.GetStringFromName("imageFilter"));
+                   "*.jpg; *.jpeg; *.gif; *.png; *.bmp; *.ico"); // XXX 528755
     }
     if (filterMask & nsIFilePicker.filterXML) {
       this.appendFilter(bundle.GetStringFromName("xmlTitle"),
@@ -197,8 +197,7 @@ nsFilePicker.prototype = {
         iid.equals(nsISupports))
       return this;
 
-    Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
-    return null;
+    throw Components.results.NS_ERROR_NO_INTERFACE;
   },
 
   show: function() {
@@ -278,9 +277,9 @@ function (compMgr, fileSpec, location, type)
 
     compMgr.registerFactoryLocation(FILEPICKER_CID,
                                     "FilePicker JS Component",
-//@line 284 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/filepicker/src/nsFilePicker.js.in"
+//@line 283 "/home/jbilcke/Desktop/mozilla-1.9.2/toolkit/components/filepicker/src/nsFilePicker.js.in"
                                     "",
-//@line 286 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/filepicker/src/nsFilePicker.js.in"
+//@line 285 "/home/jbilcke/Desktop/mozilla-1.9.2/toolkit/components/filepicker/src/nsFilePicker.js.in"
                                     fileSpec,
                                     location,
                                     type);

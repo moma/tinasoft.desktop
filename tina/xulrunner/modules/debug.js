@@ -1,4 +1,4 @@
-//@line 44 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/content/debug.js"
+//@line 44 "/home/jbilcke/Desktop/mozilla-1.9.2/toolkit/content/debug.js"
 
 var EXPORTED_SYMBOLS = ["NS_ASSERT"];
 

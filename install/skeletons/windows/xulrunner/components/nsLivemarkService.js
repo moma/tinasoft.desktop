@@ -48,7 +48,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 
-//@line 36 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\components\url-classifier\content\moz\lang.js"
+//@line 36 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\components\url-classifier\content\moz\lang.js"
 
 
 /**
@@ -128,7 +128,7 @@ Function.prototype.inherits = function(parentCtor) {
   this.superClass_ = parentCtor.prototype;
   this.prototype = new tempCtor();
 }
-//@line 36 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\components\url-classifier\content\moz\observer.js"
+//@line 36 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\components\url-classifier\content\moz\observer.js"
 
 
 // A couple of classes to simplify creating observers. 
@@ -228,7 +228,7 @@ G_ObserverServiceObserver.prototype.observe_ = function(subject, topic, data) {
     this.unregister();
 }
 
-//@line 36 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\components\url-classifier\content\moz\alarm.js"
+//@line 36 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\components\url-classifier\content\moz\alarm.js"
 
 
 // An Alarm fires a callback after a certain amount of time, or at
@@ -374,7 +374,7 @@ G_ConditionalAlarm.prototype.notify = function(timer) {
     this.cancel();
   }
 }
-//@line 54 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\components\places\src\nsLivemarkService.js"
+//@line 54 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\components\places\src\nsLivemarkService.js"
 
 const LS_CLASSID = Components.ID("{dca61eb5-c7cd-4df1-b0fb-d0722baba251}");
 const LS_CLASSNAME = "Livemark Service";
@@ -418,33 +418,6 @@ const IDLE_TIMELIMIT = 1800000;
 // We should check for expiration _at least_ every hour
 // This cap is used only if the user sets a very high expiration time (>4h)
 const MAX_REFRESH_TIME = 3600000;
-
-/* We don't have strings, so this is currently not used.
-const PLACES_BUNDLE_URI = "chrome://places/locale/places.properties";
-
-function LOG(str) {
-  dump("*** " + str + "\n");
-}
-
-var gStringBundle;
-function GetString(name)
-{
-  try {
-    if (!gStringBundle) {
-      var bundleService = Cc[SB_CONTRACTID].getService();
-      bundleService = bundleService.QueryInterface(Ci.nsIStringBundleService);
-      gStringBundle = bundleService.createBundle(PLACES_BUNDLE_URI);
-    }
-
-    if (gStringBundle)
-      return gStringBundle.GetStringFromName(name);
-  } catch (ex) {
-    LOG("Exception loading string bundle: " + ex.message);
-  }
-
-  return null;
-}
-*/
 
 function MarkLivemarkLoadFailed(aFolderId) {
   var ans = Cc[AS_CONTRACTID].getService(Ci.nsIAnnotationService);
@@ -504,35 +477,35 @@ function LivemarkService() {
 LivemarkService.prototype = {
 
   get _bms() {
-    if (!this.__bms)
-      this.__bms = Cc[BMS_CONTRACTID].getService(Ci.nsINavBookmarksService);
-    return this.__bms;
+    var svc = Cc[BMS_CONTRACTID].getService(Ci.nsINavBookmarksService);
+    this.__defineGetter__("_bms", function() svc);
+    return this._bms;
   },
 
   get _history() {
-    if (!this.__history)
-      this.__history = Cc[NH_CONTRACTID].getService(Ci.nsINavHistoryService);
-    return this.__history;
+    var svc = Cc[NH_CONTRACTID].getService(Ci.nsINavHistoryService);
+    this.__defineGetter__("_history", function() svc);
+    return this._history;
   },
 
   get _ans() {
-    if (!this.__ans)
-      this.__ans = Cc[AS_CONTRACTID].getService(Ci.nsIAnnotationService);
-    return this.__ans;
+    var svc = Cc[AS_CONTRACTID].getService(Ci.nsIAnnotationService);
+    this.__defineGetter__("_ans", function() svc);
+    return this._ans;
   },
 
   get _ios() {
-    if (!this.__ios)
-      this.__ios = Cc[IO_CONTRACTID].getService(Ci.nsIIOService);
-    return this.__ios;
+    var svc = Cc[IO_CONTRACTID].getService(Ci.nsIIOService);
+    this.__defineGetter__("_ios", function() svc);
+    return this._ios;
   },
 
   get _idleService() {
-  if (!(IS_CONTRACTID in Cc))
-    return null;
-  if (!this.__idleService)
-    this.__idleService = Cc[IS_CONTRACTID].getService(Ci.nsIIdleService);
-  return this.__idleService;
+    if (!(IS_CONTRACTID in Cc))
+      return null;
+    var svc = Cc[IS_CONTRACTID].getService(Ci.nsIIdleService);
+    this.__defineGetter__("_idleService", function() svc);
+    return this._idleService;
   },
 
   _updateTimer: null,
@@ -736,7 +709,24 @@ LivemarkService.prototype = {
   isLivemark: function LS_isLivemark(aFolderId) {
     if (aFolderId < 1)
       throw Cr.NS_ERROR_INVALID_ARG;
-    return this._ans.itemHasAnnotation(aFolderId, LMANNO_FEEDURI);
+    try {
+      this._getLivemarkIndex(aFolderId);
+      return true;
+    }
+    catch (ex) {}
+    return false;
+  },
+
+  getLivemarkIdForFeedURI: function LS_getLivemarkIdForFeedURI(aFeedURI) {
+    if (!(aFeedURI instanceof Ci.nsIURI))
+      throw Cr.NS_ERROR_INVALID_ARG;
+
+    for (var i = 0; i < this._livemarks.length; ++i) {
+      if (this._livemarks[i].feedURI.equals(aFeedURI))
+        return this._livemarks[i].folderId;
+    }
+
+    return -1;
   },
 
   _ensureLivemark: function LS__ensureLivemark(aFolderId) {
@@ -821,8 +811,9 @@ LivemarkService.prototype = {
   onItemChanged: function() { },
   onItemVisited: function() { },
   onItemMoved: function() { },
+  onBeforeItemRemoved: function() { },
 
-  onItemRemoved: function(aItemId, aParentId, aIndex) {
+  onItemRemoved: function(aItemId, aParentId, aIndex, aItemType) {
     // we don't need to remove annotations since itemAnnotations
     // are already removed with the bookmark
     try {
@@ -853,7 +844,7 @@ LivemarkService.prototype = {
         aIID.equals(Ci.nsINavBookmarkObserver) ||
         aIID.equals(Ci.nsISupports))
       return this;
-    throw Cr.NS_ERROR_NOT_IMPLEMENTED;
+    throw Cr.NS_ERROR_NO_INTERFACE;
   }
 };
 
@@ -987,7 +978,12 @@ LivemarkLoadListener.prototype = {
     this._processor.listener = this;
     this._processor.parseAsync(null, channel.URI);
 
-    this._processor.onStartRequest(aRequest, aContext);
+    try {
+      this._processor.onStartRequest(aRequest, aContext);
+    }
+    catch (ex) {
+      Components.utils.reportError("Livemark Service: feed processor received an invalid channel for " + channel.URI.spec);
+    }
   },
 
   /**
@@ -995,11 +991,16 @@ LivemarkLoadListener.prototype = {
    */
   onStopRequest: function LLL_onStopRequest(aRequest, aContext, aStatus) {
     if (!Components.isSuccessCode(aStatus)) {
-      // Something went wrong, try to load again in a bit
-      this._setResourceTTL(ERROR_EXPIRATION);
       this._isAborted = true;
-      MarkLivemarkLoadFailed(this._livemark.folderId);
       this._livemark.locked = false;
+      var lmService = Cc[LS_CONTRACTID].getService(Ci.nsILivemarkService);
+      // One of the reasons we could abort a request is when a livemark is
+      // removed, in such a case the livemark itemId would already be invalid.
+      if (lmService.isLivemark(this._livemark.folderId)) {
+        // Something went wrong, try to load again in a bit
+        this._setResourceTTL(ERROR_EXPIRATION);
+        MarkLivemarkLoadFailed(this._livemark.folderId);
+      }
       return;
     }
     // Set an expiration on the livemark, for reloading the data

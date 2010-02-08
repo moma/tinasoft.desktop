@@ -63,7 +63,7 @@ CFLAGS=		$(BASECFLAGS) $(OPT) $(EXTRA_CFLAGS)
 # be able to build extension modules using the directories specified in the
 # environment variables
 CPPFLAGS=	-I. -IInclude -I$(srcdir)/Include 
-LDFLAGS=	 -Wl,-rpath,/home/komodo-build/as/ActivePython-devel/build/py2_6_1_fixed-linux-x86_64-komodosilo-mozpy/ExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIx/lib
+LDFLAGS=	 -Wl,-rpath,/home/komodo-build/as/activepython/build/py2_6_4-linux-x86_64-komodosilo/ExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIxExTAcTiVePyThOnPrEfIx/lib
 LDLAST=		
 SGI_ABI=	
 CCSHARED=	-fPIC
@@ -78,7 +78,7 @@ PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
 MACHDEP=	linux2
 
 # Install prefix for architecture-independent files
-prefix=		/home/komodo-build/as/ActivePython-devel/build/py2_6_1_fixed-linux-x86_64-komodosilo-mozpy/CoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIx
+prefix=		/home/komodo-build/as/activepython/build/py2_6_4-linux-x86_64-komodosilo/CoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIx
 
 # Install prefix for architecture-dependent files
 exec_prefix=	${prefix}
@@ -127,7 +127,7 @@ MACOSX_DEPLOYMENT_TARGET=
 OTHER_LIBTOOL_OPT=
 
 # Environment to run shared python without installed libraries
-RUNSHARED=       LD_LIBRARY_PATH=/home/komodo-build/as/ActivePython-devel/build/py2_6_1_fixed-linux-x86_64-komodosilo-mozpy/python:
+RUNSHARED=       LD_LIBRARY_PATH=/home/komodo-build/as/activepython/build/py2_6_4-linux-x86_64-komodosilo/python:
 
 # Modes for directories, executables and data files created by the
 # install process.  Default to user-only-writable for all file types.
@@ -136,7 +136,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 '--prefix=/home/komodo-build/as/ActivePython-devel/build/py2_6_1_fixed-linux-x86_64-komodosilo-mozpy/CoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIx' '--without-cxx' '--enable-shared'
+CONFIG_ARGS=	 '--prefix=/home/komodo-build/as/activepython/build/py2_6_4-linux-x86_64-komodosilo/CoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIxCoReAcTiVePyThOnPrEfIx' '--without-cxx' '--enable-shared'
 
 
 # Subdirectories with code
@@ -429,14 +429,18 @@ $(LIBRARY): $(LIBRARY_OBJS)
 
 libpython$(VERSION).so: $(LIBRARY_OBJS)
 	if test $(INSTSONAME) != $(LDLIBRARY); then \
-		$(LDSHARED) $(LDFLAGS) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
+		$(LDSHARED) $(LDFLAGS) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
 		$(LN) -f $(INSTSONAME) $@; \
-	else\
-		$(LDSHARED) $(LDFLAGS) -o $@ $(LIBRARY_OBJS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
+	else \
+		$(LDSHARED) $(LDFLAGS) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
 	fi
 
+libpython$(VERSION).dylib: $(LIBRARY_OBJS)
+	 $(CC) -dynamiclib -Wl,-single_module $(LDFLAGS) -undefined dynamic_lookup -Wl,-install_name,$(prefix)/lib/libpython$(VERSION).dylib -Wl,-compatibility_version,$(VERSION) -Wl,-current_version,$(VERSION) -o $@ $(LIBRARY_OBJS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
+		 
+
 libpython$(VERSION).sl: $(LIBRARY_OBJS)
-	$(LDSHARED) $(LDFLAGS) -o $@ $(LIBRARY_OBJS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST)
+	$(LDSHARED) $(LDFLAGS) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST)
 
 # This rule is here for OPENSTEP/Rhapsody/MacOSX. It builds a temporary
 # minimal framework (not including the Lib directory and such) in the current
@@ -514,7 +518,7 @@ Modules/getbuildinfo.o: $(PARSER_OBJS) \
 		$(SIGNAL_OBJS) \
 		$(MODOBJS) \
 		$(srcdir)/Modules/getbuildinfo.c
-	$(CC) -c $(PY_CFLAGS) -DSVNVERSION=\"`LC_ALL=C $(SVNVERSION)`\" -o $@ $(srcdir)/Modules/getbuildinfo.c
+	$(CC) -c $(PY_CFLAGS) -DSVNVERSION="\"`LC_ALL=C $(SVNVERSION)`\"" -o $@ $(srcdir)/Modules/getbuildinfo.c
 
 Modules/getpath.o: $(srcdir)/Modules/getpath.c Makefile
 	$(CC) -c $(PY_CFLAGS) -DPYTHONPATH='"$(PYTHONPATH)"' \
@@ -578,6 +582,9 @@ STRINGLIB_HEADERS= \
 Objects/unicodeobject.o: $(srcdir)/Objects/unicodeobject.c \
 				$(STRINGLIB_HEADERS)
 
+Objects/bytearrayobject.o: $(srcdir)/Objects/bytearrayobject.c \
+				$(STRINGLIB_HEADERS)
+
 Objects/stringobject.o: $(srcdir)/Objects/stringobject.c \
 				$(STRINGLIB_HEADERS)
 
@@ -598,6 +605,7 @@ PYTHON_HEADERS= \
 		Include/ast.h \
 		Include/bitset.h \
 		Include/boolobject.h \
+		Include/bytearrayobject.h \
 		Include/bytes_methods.h \
 		Include/bytesobject.h \
 		Include/bufferobject.h \
@@ -785,13 +793,13 @@ altbininstall:	$(BUILDPYTHON)
 		fi; \
 	done
 	$(INSTALL_PROGRAM) $(BUILDPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
-	if test -f libpython$(VERSION)$(SO); then \
-		if test "$(SO)" = .dll; then \
-			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(BINDIR); \
+	if test -f $(LDLIBRARY); then \
+		if test -n "$(DLLLIBRARY)" ; then \
+			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
 		else \
-			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(LIBDIR)/$(INSTSONAME); \
-			if test libpython$(VERSION)$(SO) != $(INSTSONAME); then \
-				(cd $(DESTDIR)$(LIBDIR); $(LN) -sf $(INSTSONAME) libpython$(VERSION)$(SO)); \
+			$(INSTALL_SHARED) $(LDLIBRARY) $(DESTDIR)$(LIBDIR)/$(INSTSONAME); \
+			if test $(LDLIBRARY) != $(INSTSONAME); then \
+				(cd $(DESTDIR)$(LIBDIR); $(LN) -sf $(INSTSONAME) $(LDLIBRARY)) \
 			fi \
 		fi; \
 	else	true; \
@@ -921,7 +929,7 @@ $(srcdir)/Lib/$(PLATDIR):
 	export PYTHONPATH; PYTHONPATH="`pwd`/Lib"; \
 	export DYLD_FRAMEWORK_PATH; DYLD_FRAMEWORK_PATH="`pwd`"; \
 	export EXE; EXE="$(BUILDEXE)"; \
-	cd $(srcdir)/Lib/$(PLATDIR); ./regen
+	cd $(srcdir)/Lib/$(PLATDIR); $(RUNSHARED) ./regen
 
 # Install the include files
 INCLDIRSTOMAKE=$(INCLUDEDIR) $(CONFINCLUDEDIR) $(INCLUDEPY) $(CONFINCLUDEPY)
@@ -1084,7 +1092,7 @@ frameworkaltinstallunixtools4way:
 # This installs the Demos and Tools into the applications directory.
 # It is not part of a normal frameworkinstall
 frameworkinstallextras:
-	cd Mac && Make installextras DESTDIR="$(DESTDIR)"
+	cd Mac && $(MAKE) installextras DESTDIR="$(DESTDIR)"
 
 # This installs a few of the useful scripts in Tools/scripts
 scriptsinstall:
@@ -1139,7 +1147,7 @@ TAGS::
 	for i in $(SRCDIRS); do etags -a $$i/*.[ch]; done
 
 # Sanitation targets -- clean leaves libraries, executables and tags
-# files, which clobber removes those as well
+# files, which clobber removes as well
 pycremoval:
 	find $(srcdir) -name '*.py[co]' -exec rm -f {} ';'
 
@@ -1148,6 +1156,7 @@ clean: pycremoval
 	find . -name '*.s[ol]' -exec rm -f {} ';'
 	find $(srcdir)/build -name 'fficonfig.h' -exec rm -f {} ';' || true
 	find $(srcdir)/build -name 'fficonfig.py' -exec rm -f {} ';' || true
+	-rm -f Lib/lib2to3/*Grammar*.pickle
 
 profile-removal:
 	find . -name '*.gc??' -exec rm -f {} ';'

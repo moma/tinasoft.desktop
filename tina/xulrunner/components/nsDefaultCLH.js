@@ -1,4 +1,4 @@
-//@line 38 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/nsDefaultCLH.js"
+//@line 38 "/home/jbilcke/Desktop/mozilla-1.9.2/toolkit/components/nsDefaultCLH.js"
 
 const nsISupports              = Components.interfaces.nsISupports;
 

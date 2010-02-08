@@ -57,13 +57,13 @@ MAKESETUP=      $(srcdir)/Modules/makesetup
 
 # Compiler options
 OPT=		-DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes
-BASECFLAGS=	-arch ppc -arch i386 -isysroot /Developer/SDKs/MacOSX10.4u.sdk  -fno-strict-aliasing -fno-common -dynamic
+BASECFLAGS=	 -fno-strict-aliasing -fno-common -dynamic
 CFLAGS=		$(BASECFLAGS) $(OPT) $(EXTRA_CFLAGS)
 # Both CPPFLAGS and LDFLAGS need to contain the shell's value for setup.py to
 # be able to build extension modules using the directories specified in the
 # environment variables
 CPPFLAGS=	-I. -IInclude -I$(srcdir)/Include 
-LDFLAGS=	-arch ppc -arch i386 -isysroot /Developer/SDKs/MacOSX10.4u.sdk 
+LDFLAGS=	
 LDLAST=		
 SGI_ABI=	
 CCSHARED=	
@@ -78,7 +78,7 @@ PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
 MACHDEP=	darwin
 
 # Install prefix for architecture-independent files
-prefix=		/Users/toddw/src/pyxpcomext/src/build/py_install/Python.framework/Versions/2.6
+prefix=		/Users/toddw/src/pythonext/src/build/py_install/Python.framework/Versions/2.6
 
 # Install prefix for architecture-dependent files
 exec_prefix=	${prefix}
@@ -112,22 +112,22 @@ EXE=
 BUILDEXE=	.exe
 
 # Short name and location for Mac OS X Python framework
-UNIVERSALSDK=/Developer/SDKs/MacOSX10.4u.sdk
+UNIVERSALSDK=
 PYTHONFRAMEWORK=	Python
 PYTHONFRAMEWORKDIR=	Python.framework
-PYTHONFRAMEWORKPREFIX=	/Users/toddw/src/pyxpcomext/src/build/py_install
-PYTHONFRAMEWORKINSTALLDIR= /Users/toddw/src/pyxpcomext/src/build/py_install/Python.framework
+PYTHONFRAMEWORKPREFIX=	/Users/toddw/src/pythonext/src/build/py_install
+PYTHONFRAMEWORKINSTALLDIR= /Users/toddw/src/pythonext/src/build/py_install/Python.framework
 # Deployment target selected during configure, to be checked
 # by distutils. The export statement is needed to ensure that the
 # deployment target is active during build.
-MACOSX_DEPLOYMENT_TARGET=10.3
+MACOSX_DEPLOYMENT_TARGET=10.4
 export MACOSX_DEPLOYMENT_TARGET
 
 # Options to enable prebinding (for fast startup prior to Mac OS X 10.3)
 OTHER_LIBTOOL_OPT=
 
 # Environment to run shared python without installed libraries
-RUNSHARED=       DYLD_FRAMEWORK_PATH=/Users/toddw/src/pyxpcomext/src/build/Python-2.6.2:
+RUNSHARED=       DYLD_FRAMEWORK_PATH=/Users/toddw/src/pythonext/src/build/Python-2.6.4:
 
 # Modes for directories, executables and data files created by the
 # install process.  Default to user-only-writable for all file types.
@@ -136,7 +136,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 '--enable-unicode=ucs2' '--prefix=/Users/toddw/src/pyxpcomext/src/build/py_install' '--enable-framework=/Users/toddw/src/pyxpcomext/src/build/py_install' '--enable-universalsdk'
+CONFIG_ARGS=	 '--enable-unicode=ucs2' '--prefix=/Users/toddw/src/pythonext/src/build/py_install' '--enable-framework=/Users/toddw/src/pythonext/src/build/py_install'
 
 
 # Subdirectories with code
@@ -450,7 +450,7 @@ $(PYTHONFRAMEWORKDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK): \
 		$(RESSRCDIR)/Info.plist
 	$(INSTALL) -d -m $(DIRMODE) $(PYTHONFRAMEWORKDIR)/Versions/$(VERSION)
 	if test "${UNIVERSALSDK}"; then \
-		$(CC) -o $(LDLIBRARY) -arch ppc -arch i386 -dynamiclib \
+		$(CC) -o $(LDLIBRARY)  -dynamiclib \
 			-isysroot "${UNIVERSALSDK}" \
 			-all_load $(LIBRARY) -Wl,-single_module \
 			-install_name $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK) \
@@ -517,7 +517,7 @@ Modules/getbuildinfo.o: $(PARSER_OBJS) \
 		$(SIGNAL_OBJS) \
 		$(MODOBJS) \
 		$(srcdir)/Modules/getbuildinfo.c
-	$(CC) -c $(PY_CFLAGS) -DSVNVERSION=\"`LC_ALL=C $(SVNVERSION)`\" -o $@ $(srcdir)/Modules/getbuildinfo.c
+	$(CC) -c $(PY_CFLAGS) -DSVNVERSION="\"`LC_ALL=C $(SVNVERSION)`\"" -o $@ $(srcdir)/Modules/getbuildinfo.c
 
 Modules/getpath.o: $(srcdir)/Modules/getpath.c Makefile
 	$(CC) -c $(PY_CFLAGS) -DPYTHONPATH='"$(PYTHONPATH)"' \
@@ -1147,7 +1147,7 @@ TAGS::
 	for i in $(SRCDIRS); do etags -a $$i/*.[ch]; done
 
 # Sanitation targets -- clean leaves libraries, executables and tags
-# files, which clobber removes those as well
+# files, which clobber removes as well
 pycremoval:
 	find $(srcdir) -name '*.py[co]' -exec rm -f {} ';'
 
@@ -1156,6 +1156,7 @@ clean: pycremoval
 	find . -name '*.s[ol]' -exec rm -f {} ';'
 	find $(srcdir)/build -name 'fficonfig.h' -exec rm -f {} ';' || true
 	find $(srcdir)/build -name 'fficonfig.py' -exec rm -f {} ';' || true
+	-rm -f Lib/lib2to3/*Grammar*.pickle
 
 profile-removal:
 	find . -name '*.gc??' -exec rm -f {} ';'

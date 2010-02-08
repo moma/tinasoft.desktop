@@ -15,6 +15,8 @@
 # undef SIZEOF_SIZE_T
 # undef SIZEOF_TIME_T
 # undef SIZEOF_VOID_P
+# undef SIZEOF__BOOL
+# undef WORDS_BIGENDIAN
 
 #    undef VA_LIST_IS_ARRAY
 #    if defined(__LP64__) && defined(__x86_64__)
@@ -28,12 +30,19 @@
 
 #    undef SIZEOF_LONG
 #    ifdef __LP64__
+#	 define SIZEOF__BOOL		1
+#        define SIZEOF__BOOL		1
 #        define SIZEOF_LONG 		8
 #        define SIZEOF_PTHREAD_T 	8
 #        define SIZEOF_SIZE_T 		8
 #        define SIZEOF_TIME_T 		8
 #        define SIZEOF_VOID_P 		8
 #    else
+#        ifdef __ppc__
+#	    define SIZEOF__BOOL		4
+#        else
+#	    define SIZEOF__BOOL		1
+#        endif
 #        define SIZEOF_LONG 		4
 #        define SIZEOF_PTHREAD_T 	4
 #        define SIZEOF_SIZE_T 		4
@@ -53,6 +62,23 @@
 #	undef SETPGRP_HAVE_ARG
 
 #    endif
+
+#ifdef __BIG_ENDIAN__
+#define WORDS_BIGENDIAN 1
+#endif /* __BIG_ENDIAN */
+
+	/* 
+	 * The definition in pyconfig.h is only valid on the OS release
+	 * where configure ran on and not necessarily for all systems where
+	 * the executable can be used on. 
+	 * 
+	 * Specifically: OSX 10.4 has limited supported for '%zd', while
+	 * 10.5 has full support for '%zd'. A binary built on 10.5 won't
+	 * work properly on 10.4 unless we surpress the definition
+	 * of PY_FORMAT_SIZE_T
+	 */
+#undef	PY_FORMAT_SIZE_T
+
 
 #endif /* defined(_APPLE__) */
 

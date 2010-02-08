@@ -48,6 +48,9 @@ var EXPORTED_SYMBOLS = ["PlacesUtils"];
 var Ci = Components.interfaces;
 var Cc = Components.classes;
 var Cr = Components.results;
+var Cu = Components.utils;
+
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 const EXCLUDE_FROM_BACKUP_ANNO = "places/excludeFromBackup";
 const POST_DATA_ANNO = "bookmarkProperties/POSTData";
@@ -65,10 +68,10 @@ const RESTORE_SUCCESS_NSIOBSERVER_TOPIC = "bookmarks-restore-success";
 const RESTORE_FAILED_NSIOBSERVER_TOPIC = "bookmarks-restore-failed";
 const RESTORE_NSIOBSERVER_DATA = "json";
 
-//@line 73 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\components\places\src\utils.js"
+//@line 76 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\components\places\src\utils.js"
 // On other platforms, the transferable system converts "\r\n" to "\n".
 const NEWLINE = "\r\n";
-//@line 76 "e:\builds\moz2_slave\mozilla-1.9.1-win32-xulrunner\build\toolkit\components\places\src\utils.js"
+//@line 79 "e:\builds\moz2_slave\mozilla-1.9.2-win32-xulrunner\build\toolkit\components\places\src\utils.js"
 
 function QI_node(aNode, aIID) {
   var result = null;
@@ -253,6 +256,61 @@ var PlacesUtils = {
   },
 
   /**
+   * Cache array of read-only item IDs.
+   *
+   * The first time this property is called:
+   * - the cache is filled with all ids with the RO annotation
+   * - an annotation observer is added
+   * - a shutdown observer is added
+   *
+   * When the annotation observer detects annotations added or
+   * removed that are the RO annotation name, it adds/removes
+   * the ids from the cache.
+   *
+   * At shutdown, the annotation and shutdown observers are removed.
+   */
+  get _readOnly() {
+    // add annotations observer
+    this.annotations.addObserver(this, false);
+
+    // observe shutdown, so we can remove the anno observer
+    const os = Cc["@mozilla.org/observer-service;1"].
+               getService(Ci.nsIObserverService);
+    os.addObserver(this, "xpcom-shutdown", false);
+
+    var readOnly = this.annotations.getItemsWithAnnotation(READ_ONLY_ANNO, {});
+    this.__defineGetter__("_readOnly", function() readOnly);
+    return this._readOnly;
+  },
+
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsIAnnotationObserver,
+                                         Ci.nsIObserver]),
+
+  // nsIObserver
+  observe: function PU_observe(aSubject, aTopic, aData) {
+    if (aTopic == "xpcom-shutdown") {
+      this.annotations.removeObserver(this);
+      const os = Cc["@mozilla.org/observer-service;1"].
+                 getService(Ci.nsIObserverService);
+      os.removeObserver(this, "xpcom-shutdown");
+    }
+  },
+
+  // nsIAnnotationObserver
+  onItemAnnotationSet: function(aItemId, aAnnotationName) {
+    if (aAnnotationName == READ_ONLY_ANNO &&
+        this._readOnly.indexOf(aItemId) == -1)
+      this._readOnly.push(aItemId);
+  },
+  onItemAnnotationRemoved: function(aItemId, aAnnotationName) {
+    var index = this._readOnly.indexOf(aItemId);
+    if (aAnnotationName == READ_ONLY_ANNO && index > -1)
+      delete this._readOnly[index];
+  },
+  onPageAnnotationSet: function(aUri, aAnnotationName) {},
+  onPageAnnotationRemoved: function(aUri, aAnnotationName) {},
+
+  /**
    * Determines if a node is read only (children cannot be inserted, sometimes
    * they cannot be removed depending on the circumstance)
    * @param   aNode
@@ -260,11 +318,13 @@ var PlacesUtils = {
    * @returns true if the node is readonly, false otherwise
    */
   nodeIsReadOnly: function PU_nodeIsReadOnly(aNode) {
-    if (this.nodeIsFolder(aNode) || this.nodeIsDynamicContainer(aNode))
-      return this.bookmarks.getFolderReadonly(this.getConcreteItemId(aNode));
-    if (this.nodeIsQuery(aNode) &&
-        asQuery(aNode).queryOptions.resultType !=
-          Ci.nsINavHistoryQueryOptions.RESULTS_AS_TAG_CONTENTS)
+    if (this.nodeIsFolder(aNode) || this.nodeIsDynamicContainer(aNode)) {
+      if (this._readOnly.indexOf(aNode.itemId) != -1)
+        return true;
+    }
+    else if (this.nodeIsQuery(aNode) &&
+             asQuery(aNode).queryOptions.resultType !=
+             Ci.nsINavHistoryQueryOptions.RESULTS_AS_TAG_CONTENTS)
       return aNode.childrenReadOnly;
     return false;
   },
@@ -355,18 +415,30 @@ var PlacesUtils = {
     return false;
   },
 
- /**
-  * Determines whether a result node is a remote container registered by the
-  * livemark service.
-  * @param aNode
-  *        A result Node
-  * @returns true if the node is a livemark container item
-  */
+  /**
+   * Determines if a container item id is a livemark.
+   * @param aItemId
+   *        The id of the potential livemark.
+   * @returns true if the item is a livemark.
+   */
+  itemIsLivemark: function PU_itemIsLivemark(aItemId) {
+    // If the Livemark service hasn't yet been initialized then
+    // use the annotations service directly to avoid instanciating
+    // it on startup. (bug 398300)
+    if (this.__lookupGetter__("livemarks"))
+      return this.annotations.itemHasAnnotation(aItemId, LMANNO_FEEDURI);
+    // If the livemark service has already been instanciated, use it.
+    return this.livemarks.isLivemark(aItemId);
+  },
+
+  /**
+   * Determines whether a result node is a livemark container.
+   * @param aNode
+   *        A result Node
+   * @returns true if the node is a livemark container item
+   */
   nodeIsLivemarkContainer: function PU_nodeIsLivemarkContainer(aNode) {
-    // Use the annotations service directly to avoid instantiating
-    // the Livemark service on startup. (bug 398300)
-    return this.nodeIsFolder(aNode) &&
-           this.annotations.itemHasAnnotation(aNode.itemId, LMANNO_FEEDURI);
+    return this.nodeIsFolder(aNode) && this.itemIsLivemark(aNode.itemId);
   },
 
  /**
@@ -475,7 +547,11 @@ var PlacesUtils = {
             this.value += aStr;
           }
         };
-        self.serializeNodeAsJSONToOutputStream(convertNode(aNode), writer, true, aForceCopy);
+        var node = convertNode(aNode);
+        self.serializeNodeAsJSONToOutputStream(node, writer, true, aForceCopy);
+        // Convert node could pass an open container node.
+        if (self.nodeIsContainer(node))
+          node.containerOpen = false;
         return writer.value;
       case this.TYPE_X_MOZ_URL:
         function gatherDataUrl(bNode) {
@@ -488,7 +564,13 @@ var PlacesUtils = {
           // ignore containers and separators - items without valid URIs
           return "";
         }
-        return gatherDataUrl(convertNode(aNode));
+        var node = convertNode(aNode);
+        var dataUrl = gatherDataUrl(node);
+        // Convert node could pass an open container node.
+        if (self.nodeIsContainer(node))
+          node.containerOpen = false;
+        return dataUrl;
+        
 
       case this.TYPE_HTML:
         function gatherDataHtml(bNode) {
@@ -529,7 +611,12 @@ var PlacesUtils = {
             return "<HR>" + NEWLINE;
           return "";
         }
-        return gatherDataHtml(convertNode(aNode));
+        var node = convertNode(aNode);
+        var dataHtml = gatherDataHtml(node);
+        // Convert node could pass an open container node.
+        if (self.nodeIsContainer(node))
+          node.containerOpen = false;
+        return dataHtml;
     }
     // case this.TYPE_UNICODE:
     function gatherDataText(bNode) {
@@ -558,7 +645,12 @@ var PlacesUtils = {
       return "";
     }
 
-    return gatherDataText(convertNode(aNode));
+    var node = convertNode(aNode);
+    var dataText = gatherDataText(node);
+    // Convert node could pass an open container node.
+    if (self.nodeIsContainer(node))
+      node.containerOpen = false;
+    return dataText;
   },
 
   /**
@@ -787,7 +879,9 @@ var PlacesUtils = {
     });
   },
 
-  // identifier getters for special folders
+  // Identifier getters for special folders.
+  // You should use these everywhere PlacesUtils is available to avoid XPCOM
+  // traversal just to get roots' ids.
   get placesRootId() {
     delete this.placesRootId;
     return this.placesRootId = this.bookmarks.placesRoot;
@@ -891,13 +985,13 @@ var PlacesUtils = {
 
     // filter the ids list
     return bmkIds.filter(function(aID) {
-      var parent = this.bookmarks.getFolderIdForItem(aID);
+      var parentId = this.bookmarks.getFolderIdForItem(aID);
       // Livemark child
-      if (this.annotations.itemHasAnnotation(parent, LMANNO_FEEDURI))
+      if (this.itemIsLivemark(parentId))
         return false;
-      var grandparent = this.bookmarks.getFolderIdForItem(parent);
+      var grandparentId = this.bookmarks.getFolderIdForItem(parentId);
       // item under a tag container
-      if (grandparent == this.tagsFolderId)
+      if (grandparentId == this.tagsFolderId)
         return false;
       return true;
     }, this);
@@ -905,35 +999,60 @@ var PlacesUtils = {
 
   /**
    * Get the most recently added/modified bookmark for a URL, excluding items
-   * under tag or livemark containers. -1 is returned if no item is found.
+   * under tag or livemark containers.
+   *
+   * @param aURI
+   *        nsIURI of the page we will look for.
+   * @returns itemId of the found bookmark, or -1 if nothing is found.
    */
   getMostRecentBookmarkForURI:
   function PU_getMostRecentBookmarkForURI(aURI) {
     var bmkIds = this.bookmarks.getBookmarkIdsForURI(aURI, {});
     for (var i = 0; i < bmkIds.length; i++) {
       // Find the first folder which isn't a tag container
-      var bk = bmkIds[i];
-      var parent = this.bookmarks.getFolderIdForItem(bk);
-      if (parent == this.unfiledBookmarksFolderId)
-        return bk;
+      var itemId = bmkIds[i];
+      var parentId = this.bookmarks.getFolderIdForItem(itemId);
+      // Optimization: if this is a direct child of a root we don't need to
+      // check if its grandparent is a tag.
+      if (parentId == this.unfiledBookmarksFolderId ||
+          parentId == this.toolbarFolderId ||
+          parentId == this.bookmarksMenuFolderId)
+        return itemId;
 
-      var grandparent = this.bookmarks.getFolderIdForItem(parent);
-      if (grandparent != this.tagsFolderId &&
-          !this.annotations.itemHasAnnotation(parent, LMANNO_FEEDURI))
-        return bk;
+      var grandparentId = this.bookmarks.getFolderIdForItem(parentId);
+      if (grandparentId != this.tagsFolderId &&
+          !this.itemIsLivemark(parentId))
+        return itemId;
     }
     return -1;
   },
 
+  /**
+   * Get the most recent folder item id for a feed URI.
+   *
+   * @param aURI
+   *        nsIURI of the feed we will look for.
+   * @returns folder item id of the found livemark, or -1 if nothing is found.
+   */
   getMostRecentFolderForFeedURI:
-  function PU_getMostRecentFolderForFeedURI(aURI) {
-    var feedSpec = aURI.spec
-    var annosvc = this.annotations;
-    var livemarks = annosvc.getItemsWithAnnotation(LMANNO_FEEDURI, {});
-    for (var i = 0; i < livemarks.length; i++) {
-      if (annosvc.getItemAnnotation(livemarks[i], LMANNO_FEEDURI) == feedSpec)
-        return livemarks[i];
+  function PU_getMostRecentFolderForFeedURI(aFeedURI) {
+    // If the Livemark service hasn't yet been initialized then
+    // use the annotations service directly to avoid instanciating
+    // it on startup. (bug 398300)
+    if (this.__lookupGetter__("livemarks")) {
+      var feedSpec = aFeedURI.spec
+      var annosvc = this.annotations;
+      var livemarks = annosvc.getItemsWithAnnotation(LMANNO_FEEDURI, {});
+      for (var i = 0; i < livemarks.length; i++) {
+        if (annosvc.getItemAnnotation(livemarks[i], LMANNO_FEEDURI) == feedSpec)
+          return livemarks[i];
+      }
     }
+    else {
+      // If the livemark service has already been instanciated, use it.
+      return this.livemarks.getLivemarkIdForFeedURI(aFeedURI);
+    }
+
     return -1;
   },
 
@@ -1149,41 +1268,15 @@ var PlacesUtils = {
           var childIds = [];
           for (var i = 0; i < root.childCount; i++) {
             var childId = root.getChild(i).itemId;
-            if (excludeItems.indexOf(childId) == -1)
+            if (excludeItems.indexOf(childId) == -1 &&
+                childId != this._utils.tagsFolderId)
               childIds.push(childId);
           }
           root.containerOpen = false;
 
           for (var i = 0; i < childIds.length; i++) {
             var rootItemId = childIds[i];
-            if (rootItemId == this._utils.tagsFolderId) {
-              // remove tags via the tagging service
-              var tags = this._utils.tagging.allTags;
-              var uris = [];
-              var bogusTagContainer = false;
-              for (let i in tags) {
-                var tagURIs = [];
-                // skip empty tags since getURIsForTag would throw
-                if (tags[i])
-                  tagURIs = this._utils.tagging.getURIsForTag(tags[i]);
-
-                if (!tagURIs.length) {
-                  // This is a bogus tag container, empty tags should be removed
-                  // automatically, but this does not work if they contain some
-                  // not-uri node, so we remove them manually.
-                  // XXX this is a temporary workaround until we implement
-                  // preventive database maintenance in bug 431558.
-                  bogusTagContainer = true;
-                }
-                for (let j in tagURIs)
-                  this._utils.tagging.untagURI(tagURIs[j], [tags[i]]);
-              }
-              if (bogusTagContainer)
-                this._utils.bookmarks.removeFolderChildren(rootItemId);
-            }
-            else if ([this._utils.toolbarFolderId,
-                      this._utils.unfiledBookmarksFolderId,
-                      this._utils.bookmarksMenuFolderId].indexOf(rootItemId) != -1)
+            if (this._utils.isRootItem(rootItemId))
               this._utils.bookmarks.removeFolderChildren(rootItemId);
             else
               this._utils.bookmarks.removeItem(rootItemId);
@@ -1263,7 +1356,7 @@ var PlacesUtils = {
     var id = -1;
     switch (aData.type) {
       case this.TYPE_X_MOZ_PLACE_CONTAINER:
-        if (aContainer == PlacesUtils.bookmarks.tagsFolder) {
+        if (aContainer == PlacesUtils.tagsFolderId) {
           // node is a tag
           if (aData.children) {
             aData.children.forEach(function(aChild) {
@@ -1321,7 +1414,8 @@ var PlacesUtils = {
         }
         break;
       case this.TYPE_X_MOZ_PLACE:
-        id = this.bookmarks.insertBookmark(aContainer, this._uri(aData.uri), aIndex, aData.title);
+        id = this.bookmarks.insertBookmark(aContainer, this._uri(aData.uri),
+                                           aIndex, aData.title);
         if (aData.keyword)
           this.bookmarks.setKeywordForBookmark(id, aData.keyword);
         if (aData.tags) {
@@ -1333,6 +1427,25 @@ var PlacesUtils = {
           this.history.setCharsetForURI(this._uri(aData.uri), aData.charset);
         if (aData.uri.substr(0, 6) == "place:")
           searchIds.push(id);
+        if (aData.icon) {
+          try {
+            // Create a fake faviconURI to use (FIXME: bug 523932)
+            let faviconURI = this._uri("fake-favicon-uri:" + aData.uri);
+            this.favicons.setFaviconUrlForPage(this._uri(aData.uri), faviconURI);
+            this.favicons.setFaviconDataFromDataURL(faviconURI, aData.icon, 0);
+          } catch (ex) {
+            Components.utils.reportError("Failed to import favicon data:"  + ex);
+          }
+        }
+        if (aData.iconUri) {
+          try {
+            this.favicons.setAndLoadFaviconForPage(this._uri(aData.uri),
+                                                   this._uri(aData.iconUri),
+                                                   false);
+          } catch (ex) {
+            Components.utils.reportError("Failed to import favicon URI:"  + ex);
+          }
+        }
         break;
       case this.TYPE_X_MOZ_PLACE_SEPARATOR:
         id = this.bookmarks.insertSeparator(aContainer, aIndex);
@@ -1399,10 +1512,8 @@ var PlacesUtils = {
     
     function addGenericProperties(aPlacesNode, aJSNode) {
       aJSNode.title = aPlacesNode.title;
-      var id = aPlacesNode.itemId;
-      if (id != -1) {
-        aJSNode.id = id;
-
+      aJSNode.id = aPlacesNode.itemId;
+      if (aJSNode.id != -1) {
         var parent = aPlacesNode.parent;
         if (parent)
           aJSNode.parent = parent.itemId;
@@ -1416,7 +1527,7 @@ var PlacesUtils = {
         // XXX need a hasAnnos api
         var annos = [];
         try {
-          annos = self.getAnnotationsForItem(id).filter(function(anno) {
+          annos = self.getAnnotationsForItem(aJSNode.id).filter(function(anno) {
             // XXX should whitelist this instead, w/ a pref for
             // backup/restore of non-whitelisted annos
             // XXX causes JSON encoding errors, so utf-8 encode
@@ -1464,32 +1575,37 @@ var PlacesUtils = {
     }
 
     function addContainerProperties(aPlacesNode, aJSNode) {
-      // saved queries
       var concreteId = PlacesUtils.getConcreteItemId(aPlacesNode);
-      if (aJSNode.id != -1 && (PlacesUtils.nodeIsQuery(aPlacesNode) ||
-          (concreteId != aPlacesNode.itemId && !aResolveShortcuts))) {
+      if (concreteId != -1) {
+        // This is a bookmark or a tag container.
+        if (PlacesUtils.nodeIsQuery(aPlacesNode) ||
+            (concreteId != aPlacesNode.itemId && !aResolveShortcuts)) {
+          aJSNode.type = self.TYPE_X_MOZ_PLACE;
+          aJSNode.uri = aPlacesNode.uri;
+          // folder shortcut
+          if (aIsUICommand)
+            aJSNode.concreteId = concreteId;
+        }
+        else { // Bookmark folder or a shortcut we should convert to folder.
+          aJSNode.type = self.TYPE_X_MOZ_PLACE_CONTAINER;
+
+          // Mark root folders.
+          if (aJSNode.id == self.placesRootId)
+            aJSNode.root = "placesRoot";
+          else if (aJSNode.id == self.bookmarksMenuFolderId)
+            aJSNode.root = "bookmarksMenuFolder";
+          else if (aJSNode.id == self.tagsFolderId)
+            aJSNode.root = "tagsFolder";
+          else if (aJSNode.id == self.unfiledBookmarksFolderId)
+            aJSNode.root = "unfiledBookmarksFolder";
+          else if (aJSNode.id == self.toolbarFolderId)
+            aJSNode.root = "toolbarFolder";
+        }
+      }
+      else {
+        // This is a grouped container query, generated on the fly.
         aJSNode.type = self.TYPE_X_MOZ_PLACE;
         aJSNode.uri = aPlacesNode.uri;
-        // folder shortcut
-        if (aIsUICommand)
-          aJSNode.concreteId = concreteId;
-        return;
-      }
-      else if (aJSNode.id != -1) { // bookmark folder
-        if (concreteId != aPlacesNode.itemId)
-        aJSNode.type = self.TYPE_X_MOZ_PLACE;
-        aJSNode.type = self.TYPE_X_MOZ_PLACE_CONTAINER;
-        // mark special folders
-        if (aJSNode.id == self.bookmarks.placesRoot)
-          aJSNode.root = "placesRoot";
-        else if (aJSNode.id == self.bookmarks.bookmarksMenuFolder)
-          aJSNode.root = "bookmarksMenuFolder";
-        else if (aJSNode.id == self.bookmarks.tagsFolder)
-          aJSNode.root = "tagsFolder";
-        else if (aJSNode.id == self.bookmarks.unfiledBookmarksFolder)
-          aJSNode.root = "unfiledBookmarksFolder";
-        else if (aJSNode.id == self.bookmarks.toolbarFolder)
-          aJSNode.root = "toolbarFolder";
       }
     }
 
@@ -1640,7 +1756,7 @@ var PlacesUtils = {
     var options = this.history.getNewQueryOptions();
     options.expandQueries = false;
     var query = this.history.getNewQuery();
-    query.setFolders([this.bookmarks.placesRoot], 1);
+    query.setFolders([this.placesRootId], 1);
     var result = this.history.executeQuery(query, options);
     result.root.containerOpen = true;
     // serialize as JSON, write to stream
