@@ -5,7 +5,7 @@ import simplejson
 import jsonpickle
 import nltk
 from bsddb3 import db
-import numpy
+#import numpy
 import yaml
 
 from xpcom import components, verbose, COMException, ServerException, nsError
@@ -16,4 +16,4 @@ class TinasoftDataRelational(TinaApp):
     _reg_contractid_ = "Python.Tinasoft"
 
     def __init__(self):
-        TinaApp.__init__()
+        TinaApp.__init__(self)
