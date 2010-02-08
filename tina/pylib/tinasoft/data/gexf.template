@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gephi.org/gexf" xmlns:viz="http://www.gephi.org/gexf/viz">
+  <meta lastmodifieddate="#{date}">
+    <description>${description}</description>
+  <?py for item in items: ?>
+    <creator>${creator}</creator>
+  <?py #end ?>
+  </meta>
+  <graph type="static">
+    
+  </graph>
+</gexf>
+
+
+
+DESCRIPTION_ = "    <description>"
+_DESCRIPTION = "</description>\n"
+_META = "  </meta>\n"
+GRAPH_ = "  <graph type=\"static\">\n"
+NODEATTRIBUTES_ = "    <attributes class=\"node\" type=\"static\">\n"
+EDGEATTRIBUTES_ = "    <attributes class=\"edge\" type=\"static\">\n"
+ATTRIBUTE_ = "      <attribute "
+_ATTRIBUTES = "    </attributes>\n"
+ATTVALUES_ = "        <attvalues>\n"
+ATTVALUE_ = "          <attvalue "
+_ATTVALUE = " />\n"
+_ATTVALUES = "        </attvalues>\n"
+NODES_ = "    <nodes>\n"
+NODE_ = "      <node>\n"
+NODE__ = "      <node "
+_NODE_" = >\n"
+PARENTS_ = "        <parents>\n"
+PARENT_ = "          <parent for=\""
+_PARENT = "\" />\n"
+_PARENTS = "        </parents>\n"
+__NODE = " />\n"
+_NODE = "      </node>\n"
+_NODES = "    </nodes>\n"
+EDGES_ = "    <edges>\n"
+EDGE_ = "      <edge>\n"
+EDGE__ = "      <edge "
+_EDGE_ = ">\n"
+__EDGE = " />\n"
+_EDGE = "      </edge>\n"
+_EDGES = "    </edges>\n"
+_GRAPH = "  </graph>\n"
+__GEXF = "</gexf>\n"
+
+def gexf(xml):
+    yield "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n"
+    for x in xml:
+        yield x
+    yield "</gexf>\n"
+   
+def meta(description, creators=[]):
+    yield "  <meta lastmodifieddate=\""+datetime.datetime.now().strftime("%Y-%m-%d")+"\">\n"
+    yield "    <description>%s</description\n" % description
+    for creator in creators:
+        yield "    <creator>%s</creator>\n" % creator
+    yield "  </meta>\n"

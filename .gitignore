@@ -9,6 +9,7 @@ src/*
 *~
 dist/*
 build/*
+*/build
 tinasoft-*.*
 dropboxize.sh
 viz/.*
