@@ -55,7 +55,7 @@ function goToDatas() {
 }
 
 function pytest(event) {
-    var cls = Cc["Python.TinasoftDataRelational"];
-    var ob = cls.createInstance(Ci.nsITinasoftDataRelational);
+    var cls = Cc["Python.Tinasoft"];
+    var ob = cls.createInstance(Ci.nsITinasoft);
     //ob.connect("");
 }
