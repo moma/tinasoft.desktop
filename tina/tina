@@ -1,4 +1,3 @@
-#!/usr/sh
+#!/bin/bash
 export LD_LIBRARY_PATH=`pwd`/platform/Linux_x86_64-gcc3/lib
-echo $LD_LIBRARY_PATH
-./xulrunner∕xulrunner-stub
+./tina-stub

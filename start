@@ -2,3 +2,4 @@ cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
 #cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
 cd tina
 ./tina
+echo $LD_LIBRARY_PATH
