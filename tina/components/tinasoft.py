@@ -23,7 +23,7 @@ pyver = sysconfig.get_config_var('VERSION')
 getvar = sysconfig.get_config_var
 
 if True:
- 
+
     print "prefix:",sysconfig.PREFIX
 
     print  "exec_prefix:",sysconfig.EXEC_PREFIX
@@ -48,15 +48,16 @@ import simplejson
 import jsonpickle
 import nltk
 from bsddb3 import db
-#import numpy
+import numpy
 import yaml
 
 from xpcom import components, verbose, COMException, ServerException, nsError
 
-class TinasoftDataRelational(TinaApp):
+class Tinasoft(TinaApp):
     _com_interfaces_ = components.interfaces.nsITinasoft
     _reg_clsid_ = "{4ff50853-96cb-4eca-b633-43be1833ae90}"
     _reg_contractid_ = "Python.Tinasoft"
 
     def __init__(self):
         TinaApp.__init__(self)
+        print self.storage.loadDocument('1')

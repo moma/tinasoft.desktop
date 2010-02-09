@@ -21,3 +21,6 @@ viz/*~
 tina/tmp/*
 tina/chrome/content/applet/tinaviz.jar
 tina/graph.pdf
+tina/log/*
+tina/db/*
+tina/index/*
