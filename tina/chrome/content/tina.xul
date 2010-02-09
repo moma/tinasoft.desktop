@@ -34,7 +34,7 @@
                   label="&session.menu.open.label;" accesskey="&session.menu.open.accesskey;"/>
         <menuitem id="menu-session-close" oncommand="sessionClose()" class="menuitem-iconic"
                   label="&session.menu.close.label;" accesskey="&session.menu.close.accesskey;"/>
-        
+
         <menuseperator/>
         <menuitem id="menu-session-export" oncommand="sessionExport()" class="menuitem-iconic"
                   label="&session.menu.export.label;" accesskey="&session.menu.export.accesskey;"/>
@@ -43,7 +43,7 @@
                   label="&session.menu.exit.label;" accesskey="&session.menu.exit.accesskey;"/>
       </menupopup>
     </menu>
-    
+
     <menu id="corpusMenu" label="&corpus.menu.label;" accesskey="&corpus.menu.accesskey;">
     </menu>
     <menu id="indexationMenu" label="&indexation.menu.label;" accesskey="&indexation.menu.accesskey;">
@@ -56,7 +56,7 @@
     </menu>
     <menu id="visualizationMenu" label="&visualization.menu.label;" accesskey="&visualization.menu.accesskey;">
     </menu>
-    
+
     <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
       <menupopup>
         <menuitem id="menu-addons" oncommand="openAddons()" class="menuitem-iconic"
@@ -75,7 +75,7 @@
                   oncommand="pyshell_launch();"/>
       </menupopup>
     </menu>
-    
+
     <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
       <menupopup onpopupshowing="buildHelpMenu();">
         <menuitem id="menu-help" oncommand="openHelp()" class="menuitem-iconic"
@@ -86,16 +86,16 @@
                   label="&about.label;" accesskey="&about.accesskey;"/>
       </menupopup>
     </menu>
-    
+
   </menubar>
 
     <iframe id="tabDisplay" flex="1" src="chrome://tina/content/home.xul"/>
 
-   <statusbar>
-	<statusbarpanel label="Parsing corpus.."/>
-	<!--<progressmeter mode="undetermined" />-->
-	<!--<progressmeter mode="determined" value="82"/>-->
-	<spacer flex="1"/>
+    <statusbar>
+        <statusbarpanel label="Status bar"/>
+        <!--<progressmeter mode="undetermined" />-->
+        <!--<progressmeter mode="determined" value="82"/>-->
+        <spacer flex="1"/>
     </statusbar>
 </window>
 

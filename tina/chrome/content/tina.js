@@ -1,39 +1,6 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is McCoy.
- *
- * The Initial Developer of the Original Code is
- * the Mozilla Foundation <http://www.mozilla.org/>.
- * Portions created by the Initial Developer are Copyright (C) 2008
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *   Dave Townsend <dtownsend@oxymoronical.com>
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** 
+ * GNU GPL 3
+ * ***** END LICENSE BLOCK *****
  * tina.js controller
  * here are the main functions */
 
@@ -65,17 +32,17 @@ function buildHelpMenu()
   var um = Cc["@mozilla.org/updates/update-manager;1"].
            getService(Ci.nsIUpdateManager);
 
-  // Disable the UI if the update enabled pref has been locked by the 
+  // Disable the UI if the update enabled pref has been locked by the
   // administrator or if we cannot update for some other reason
   var checkForUpdates = document.getElementById("menu-update");
   var canUpdate = updates.canUpdate;
   checkForUpdates.setAttribute("disabled", !canUpdate);
   if (!canUpdate)
-    return; 
+    return;
 
   var strings = document.getElementById("strings");
   var activeUpdate = um.activeUpdate;
-  
+
   // If there's an active update, substitute its name into the label
   // we show for this item, otherwise display a generic label.
   function getStringWithUpdateName(key) {
@@ -83,7 +50,7 @@ function buildHelpMenu()
       return strings.getFormattedString(key, [activeUpdate.name]);
     return strings.getString(key + "Fallback");
   }
-  
+
   // By default, show "Check for Updates..."
   var key = "default";
   if (activeUpdate) {
@@ -140,7 +107,7 @@ function openUpdates()
 
   // If there's an update ready to be applied, show the "Update Downloaded"
   // UI instead and let the user know they have to restart the browser for
-  // the changes to be applied. 
+  // the changes to be applied.
   if (um.activeUpdate && um.activeUpdate.state == "pending")
     prompter.showUpdateDownloaded(um.activeUpdate);
   else
@@ -159,3 +126,14 @@ function openHelp() {
 function pyshell_launch() {
     openWindowForType("python_shell_window", "chrome://pyshell/content/pyshell.xul", "all=no,width=500,height=400,scrollbars=yes,resizable=yes,dialog=no");
 }
+
+function TinasoftSingle( ) {
+    this.cls = Cc["Python.Tinasoft"];
+    this.i = cls.createInstance(Ci.nsITinasoft);
+}
+
+TinasoftSingle.prototype = {
+
+}
+
+var Tinasoft = new TinasoftSingle();

@@ -43,7 +43,7 @@ if True:
 from xpcom import components, verbose, COMException, ServerException, nsError
 
 class Tinasoft(TinaApp):
-    _com_interfaces_ = components.interfaces.nsITinasoft
+    _com_interfaces_ = components.interfaces.ITinasoft
     _reg_clsid_ = "{4ff50853-96cb-4eca-b633-43be1833ae90}"
     _reg_contractid_ = "Python.Tinasoft"
 

@@ -43,8 +43,10 @@ const Ci = Components.interfaces;
 const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
 const INTRO_URL         = "chrome://tina/content/intro.xul";
 
+document.location = "chrome://tina/content/main.html";
+
 // tina.xul functions
-//
+/*
 function goToSessions() {
    document.location = "chrome://tina/content/session.html";
 
@@ -56,9 +58,4 @@ function goToDatas() {
 function goToVisualization() {
     document.location = "chrome://tina/content/visualization.html";
 }
-
-function pytest(event) {
-    var cls = Cc["Python.TinasoftDataRelational"];
-    var ob = cls.createInstance(Ci.nsITinasoftDataRelational);
-    ob.connect("Test-tdr.sqlite");
-}
+*/

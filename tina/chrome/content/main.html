@@ -1,32 +1,37 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml"><head>
-	<title></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="description" content="xxx xxx">
-	<meta name="keywords" content="xxx xxx">
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="xxx xxx">
+    <meta name="keywords" content="xxx xxx">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <head>
 <!--[if IE]><script src="js/excanvas.compiled.js"></script><![endif]-->
 <script type="text/javascript" src="lib/js/jquery/jquery-1.3.2.min.js" language="javascript"></script>
 <script type="text/javascript" src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" language="javascript"></script>
-<script type="text/javascript" src="data.js" language="javascript"></script>
+<!--<script type="text/javascript" src="tina.js" language="javascript"></script>-->
+<script type="text/javascript" src="main.js" language="javascript"></script>
 
 <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
 </head>
 <body style="cursor: auto;">
 
     <script type="text/javascript">
-	$(function() {
-		$("#tabs").tabs();
-	});
-	</script>
+    $(function() {
+        $("#tabs").tabs();
+    });
+    </script>
     <div class="demo">
         <div id="tabs">
             <ul>
-                <li><a href="#tabs-1">Editor</a></li>
-                <li><a href="#tabs-2">Create</a></li>
+                <li><a href="#tabs-1">Data sets</a></li>
+                <li><a href="#tabs-2">Thematic fields</a></li>
+                <li><a href="#tabs-3">Graph viz</a></li>
             </ul>
             <div id="tabs-1">
+                <p>Create or import a new data set</p>
+            </div>
+            <div id="tabs-2">
                 <p>Edit or export your data sets</p>
                 <script type="text/javascript">
                     $(function() {
@@ -144,11 +149,10 @@
                 </div>
 
             </div>
-            <div id="tabs-2">
-                <p>Create or import a new data set</p>
+            <div id="tabs-3">
+                <iframe src="chrome://tina/content/visualization.html"/>
             </div>
         </div>
-
 </div>
 
 
