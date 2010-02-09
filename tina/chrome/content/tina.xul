@@ -19,9 +19,6 @@
         >
   <script src="chrome://global/content/globalOverlay.js"/>
   <script src="chrome://global/content/contentAreaUtils.js"/>
-  <script src="console.js"/>
-  <script src="prefman.js"/>
-  <script src="xmlhttprequester.js"/>
   <script src="tina.js"/>
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 

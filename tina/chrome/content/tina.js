@@ -8,7 +8,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
-const INTRO_URL         = "chrome://tina/content/home.xul";
+const INTRO_URL         = "chrome://tina/content/about.xul";
 
 // If a window with the type exists just focus it otherwise open a new window
 function openWindowForType(type, uri, features) {
@@ -126,14 +126,3 @@ function openHelp() {
 function pyshell_launch() {
     openWindowForType("python_shell_window", "chrome://pyshell/content/pyshell.xul", "all=no,width=500,height=400,scrollbars=yes,resizable=yes,dialog=no");
 }
-
-function TinasoftSingle( ) {
-    this.cls = Cc["Python.Tinasoft"];
-    this.i = cls.createInstance(Ci.nsITinasoft);
-}
-
-TinasoftSingle.prototype = {
-
-}
-
-var Tinasoft = new TinasoftSingle();

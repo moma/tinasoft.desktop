@@ -11,8 +11,12 @@
 <script type="text/javascript" src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" language="javascript"></script>
 <!--<script type="text/javascript" src="tina.js" language="javascript"></script>-->
 <script type="text/javascript" src="main.js" language="javascript"></script>
-
+<script type="text/javascript" src="console.js" language="javascript"></script>
+<script type="text/javascript" src="prefman.js" language="javascript"></script>
+<script type="text/javascript" src="xmlhttprequester.js" language="javascript"></script>
+<link type="text/css" rel="stylesheet" href="main.css"/>
 <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
+
 </head>
 <body style="cursor: auto;">
 
@@ -34,18 +38,22 @@
             <div id="tabs-2">
                 <p>Edit or export your data sets</p>
                 <script type="text/javascript">
-                    $(function() {
+                    function pytest() {
+                        console.log("test");
+                        alert(Tinasoft.i);
+                    };
+                    /*$(function() {
                         $("#accordion").accordion();
-                    });
+                    });*/
                 </script>
-                <div class="demo">
-                    <div id="accordion">
+                <div class="demo-1">
+                    <div id="accordion-1">
                         <h3><a href="#">Data set 1</a></h3>
                         <div>
                             <p>
                             <label>Name</label><input type="text" value="Algorithmics"></input>
                             </p>
-                            <p>Full text indexation<input type="button" id="tinastorageButton" value="launch or update" class="ui-widget ui-state-default" onclick="pytest()"/></p>
+                            <p>Full text indexation<input type="button" id="tinastorageButton" value="test Tinasoft XPCOM" class="ui-widget ui-state-default" onclick="pytest()"/></p>
                             <p>
                             Edit keyphrases :
                             </p>
@@ -150,7 +158,7 @@
 
             </div>
             <div id="tabs-3">
-                <iframe src="chrome://tina/content/visualization.html"/>
+                <iframe class="tabvizframe" src="chrome://tina/content/visualization.html"/>
             </div>
         </div>
 </div>

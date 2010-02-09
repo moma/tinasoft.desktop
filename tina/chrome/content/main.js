@@ -7,15 +7,15 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
-const INTRO_URL         = "chrome://tina/content/intro.xul";
+const INTRO_URL         = "chrome://tina/content/about.xul";
 
-// data.html javascript functions
-//
-function goToSessions() {
-   document.location = "chrome://tina/content/session.xul";
-
+/* Tinasoft SINGLETON */
+function TinasoftSingle( ) {
+    this.cls = Cc["Python.Tinasoft"];
+    this.i = cls.createInstance(Ci.ITinasoft);
 }
-function goToDatas() {
-   document.location = "chrome://tina/content/data.html";
 
+TinasoftSingle.prototype = {
 }
+
+var Tinasoft = new TinasoftSingle();
