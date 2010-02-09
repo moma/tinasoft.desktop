@@ -2,59 +2,53 @@
 <gexf xmlns="http://www.gephi.org/gexf" xmlns:viz="http://www.gephi.org/gexf/viz">
   <meta lastmodifieddate="#{date}">
     <description>${description}</description>
-  <?py for item in items: ?>
+<?py for creator in creators: ?>
     <creator>${creator}</creator>
-  <?py #end ?>
+<?py #end ?>
   </meta>
-  <graph type="static">
-    
+  <graph type="${type}">
+    <attributes class="node" type="${type}">
+<?py i = 0 ?>
+<?py for attr in attributes['nodes']: ?>
+<?py     i += 1 ?>
+      <attribute id="${i}" title="frog" type="boolean">
+        <default>true</default>
+      </attribute>
+<?py #endfor ?>
+    </attributes>
+    <attributes class="edge" type="${type}">
+<?py i = 0 ?>
+<?py for attr in attributes['nodes']: ?>
+<?py     i += 1 ?>
+      <attribute id="${i}" title="${attr.title}" type="boolean">
+        <default>true</default>
+      </attribute>
+<?py #endfor ?>
+    </attributes>
+    <nodes>
+    <?py for node in nodes: ?>
+      <node id="#{node.id}" label="#{node}">
+        <attvalues>
+          <attvalue id="0" value="" />
+          <attvalue id="1" value="" />
+        </attvalues>
+        <parents>
+        <?py for parent in node.parents: ?>
+          <parent for="#{parent.id}"/>
+        <?py #end ?>
+        </parents>
+      </node>
+<?py #endfor ?>
+    </nodes>
+    <edges>
+    <?py for edge in edges: ?>
+      <edge id="#{i+=1;"%s"%i}" weight="#{edge.weight}">
+        <attvalues>
+        </attvalues>
+      </edge>
+    <?py #end ?>
+    </edges>
   </graph>
 </gexf>
 
 
-
-DESCRIPTION_ = "    <description>"
-_DESCRIPTION = "</description>\n"
-_META = "  </meta>\n"
-GRAPH_ = "  <graph type=\"static\">\n"
-NODEATTRIBUTES_ = "    <attributes class=\"node\" type=\"static\">\n"
-EDGEATTRIBUTES_ = "    <attributes class=\"edge\" type=\"static\">\n"
-ATTRIBUTE_ = "      <attribute "
-_ATTRIBUTES = "    </attributes>\n"
-ATTVALUES_ = "        <attvalues>\n"
-ATTVALUE_ = "          <attvalue "
-_ATTVALUE = " />\n"
-_ATTVALUES = "        </attvalues>\n"
-NODES_ = "    <nodes>\n"
-NODE_ = "      <node>\n"
-NODE__ = "      <node "
-_NODE_" = >\n"
-PARENTS_ = "        <parents>\n"
-PARENT_ = "          <parent for=\""
-_PARENT = "\" />\n"
-_PARENTS = "        </parents>\n"
-__NODE = " />\n"
-_NODE = "      </node>\n"
-_NODES = "    </nodes>\n"
-EDGES_ = "    <edges>\n"
-EDGE_ = "      <edge>\n"
-EDGE__ = "      <edge "
-_EDGE_ = ">\n"
-__EDGE = " />\n"
-_EDGE = "      </edge>\n"
-_EDGES = "    </edges>\n"
-_GRAPH = "  </graph>\n"
-__GEXF = "</gexf>\n"
-
-def gexf(xml):
-    yield "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n"
-    for x in xml:
-        yield x
-    yield "</gexf>\n"
-   
-def meta(description, creators=[]):
-    yield "  <meta lastmodifieddate=\""+datetime.datetime.now().strftime("%Y-%m-%d")+"\">\n"
-    yield "    <description>%s</description\n" % description
-    for creator in creators:
-        yield "    <creator>%s</creator>\n" % creator
-    yield "  </meta>\n"

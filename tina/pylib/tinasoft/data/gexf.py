@@ -10,6 +10,18 @@ engine = tenjin.Engine()
 def render(**model):
     return engine.render('gexf.template', model)
 
+class Model:
+    def __init__(self, description='A test GEXF'):
+        self.date = datetime.datetime.now().strftime("%Y-%m-%d")
+        self.description = description
+        self.type = 'static'
+        self.creators = ['Julian bilcke', 'Elias Showk']
+        self.attr_nodes = { 'category' : 'string' }
+        self.attr_edges = { 'category' : 'string' }
+            
+        self.nodes = []
+        self.edges = []
+        
 # generic GEXF handler
 class GEXFHandler (Handler):
 
@@ -31,9 +43,6 @@ class Engine (GEXFHandler):
     Gexf Engine
     """
     def save(self, path):
-        render(
-           'date': datetime.datetime.now().strftime("%Y-%m-%d"), 
-           'description' : "A test GEXF",
-           'creator': ['Julian bilcke', 'Elias Showk'] 
-        )
+        model = Model("test gexf")
+        render(model)
 
