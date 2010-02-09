@@ -40,17 +40,6 @@ if True:
     libs.insert(0, '-L' + getvar('LIBPL'))
     print ' '.join(libs)
 
-
-
-
-
-import simplejson
-import jsonpickle
-import nltk
-from bsddb3 import db
-import numpy
-import yaml
-
 from xpcom import components, verbose, COMException, ServerException, nsError
 
 class Tinasoft(TinaApp):
@@ -60,4 +49,3 @@ class Tinasoft(TinaApp):
 
     def __init__(self):
         TinaApp.__init__(self)
-        print self.storage.loadDocument('1')
