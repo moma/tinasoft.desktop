@@ -30,6 +30,7 @@ import processing.xml.XMLElement;
 
 
 import javax.xml.xpath.XPathConstants;
+import tinaviz.FilterChannel;
 import tinaviz.Node;
 //import org.w3c.dom.*;
 
@@ -53,6 +54,19 @@ public class Session {
     public boolean zoomFrozen = false;
     public boolean showNodeDetails = false;
     public String selectedNodeID = "";
+
+    public class Showprojects {
+
+        public boolean neighbours = false;
+        public boolean all = false;
+    }
+
+    public class Showkeywords {
+
+        public boolean project = false;
+        public boolean batch = false;
+        public boolean worldwide = false;
+    }
 
     public class Metrics {
 
@@ -119,18 +133,7 @@ public class Session {
         }
     }
 
-    public class Showprojects {
 
-        public boolean neighbours = false;
-        public boolean all = false;
-    }
-
-    public class Showkeywords {
-
-        public boolean project = false;
-        public boolean batch = false;
-        public boolean worldwide = false;
-    }
     public Metrics metrics = new Metrics();
     public Showprojects showProjects = new Showprojects();
     public Showkeywords showKeywords = new Showkeywords();
@@ -138,13 +141,15 @@ public class Session {
     public int fontsize = 12;
     public int maxdeepness = 10;
     // DATA PROPERTIES
-    public List projects = new ArrayList<Project>();
-    public List keywords = new ArrayList<Keyword>();
+    public List<FilterChannel> channels = new ArrayList<FilterChannel>();
+
     public Map<String, tinaviz.Node> storedNodes = new HashMap<String, tinaviz.Node>();
     public Map<String, tinaviz.Node> filteredNodes = new HashMap<String, tinaviz.Node>();
+
     // public Map<String, tinaviz.Node> nodeMap = new HashMap<String, tinaviz.Node>();
     //public List<tinaviz.Node> nodeList = new ArrayList<tinaviz.Node>();
     // RUNTIME DATA, NOT SERIALIZED
+
     public float MAX_RADIUS = 0.0f;
     public AtomicBoolean isSynced = new AtomicBoolean(false);
 

@@ -5,7 +5,9 @@
 package tinaviz;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -27,6 +29,8 @@ public class Node {
     public boolean highlighted = false;
     public float genericity = 1.0f;
     public String category = "default";
+
+    public Map<String,Object> attributes = new HashMap<String,Object>();
 
     public Node(String uuid, String label,  float radius, float x, float y) {
         this.uuid = uuid;
@@ -61,6 +65,15 @@ public class Node {
 
     public void addNeighbour(Node neighbour) {
         neighbours.add(neighbour);
+    }
+
+    public void setAttribute(String key, Object value) {
+        attributes.put(key, value);
+    }
+
+
+    public Object getAttribute(String key) {
+        return attributes.get(key);
     }
 
     public void update(Node node) {
