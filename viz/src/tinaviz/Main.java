@@ -129,7 +129,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 engine = OPENGL;
 
             }
-            engine = OPENGL;
+            // engine = OPENGL;
             window = JSObject.getWindow(this);
             int w = screen.width;
             int h = screen.height;
@@ -590,37 +590,7 @@ public class Main extends PApplet implements MouseWheelListener {
             // node filter
             //
             
-            boolean mustSkip = false;
-            for (String k : session.filterKeepNodesWith.keySet()) {
 
-                Field f = null;
-                 String value = "";
-                /*
-                try {
-                    f = n.getClass().getField(k);
-                } catch (NoSuchFieldException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SecurityException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-               
-                try {
-                    value = (String) f.get(n);
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
-
-                  /*
-                if (!value.matches(session.keepNodesWith.get(k))) {
-                    mustSkip = true;
-                    break;
-                }
-                  */
-            }
-           
-            if (mustSkip) continue;
             
             
             //Field f = n.getClass().getField(nomChamp);
@@ -813,13 +783,57 @@ public class Main extends PApplet implements MouseWheelListener {
         return true;
     }
 
-    public boolean toggleNodeFilter(String attr, String value) {
-        if (session.filterKeepNodesWith.containsKey(attr)) {
-            session.filterKeepNodesWith.remove(attr);
-        } else {
-            session.filterKeepNodesWith.put(attr, value);
+    // addFilterRegexRange("myrange", "category", "NODE|EDGE?")
+    // setFilterRange("myrange", 0.3,0.99)
+
+    public boolean addFilterRegexRange(String name, String attribute, String mask) {
+
+        for (FilterChannel f : session.channels) {
+            if (f.hasName(name)) {
+                return false;
+            }
         }
+        FilterChannel nf = new FilterChannel(
+                name,
+                FilterChannel.AttributeType.STRING_REGEX,
+                FilterChannel.ChannelType.RANGE,
+                FilterChannel.FilterType.WITHIN,
+                attribute,
+                name);
+        session.channels.add(nf);
         return true;
+    }
+
+    public boolean setFilterRegexRange(String name, float min, float max) {
+
+        for (FilterChannel f : session.channels) {
+            if (f.hasName(name)) {
+                f.setRange(min, max);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean toggleFilterChannel(String name) {
+
+        for (FilterChannel f : session.channels) {
+            if (f.hasName(name)) {
+                return f.toggleEnabled();
+            }
+        }
+        return false;
+    }
+
+    public boolean enableFilterChannel(String name, boolean status) {
+
+        for (FilterChannel f : session.channels) {
+            if (f.hasName(name)) {
+                f.setEnabled(status);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean toggleLabels() {
@@ -977,7 +991,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-    void arrow(float x1, float y1, float x2, float y2, float radius) {
+    private void arrow(float x1, float y1, float x2, float y2, float radius) {
         pushMatrix();
         translate(x2, y2);
         float a = atan2(x1 - x2, y2 - y1);
@@ -987,7 +1001,7 @@ public class Main extends PApplet implements MouseWheelListener {
         popMatrix();
     }
 
-    void arrow(PGraphics pg, float x1, float y1, float x2, float y2, float radius) {
+    private void arrow(PGraphics pg, float x1, float y1, float x2, float y2, float radius) {
         pg.pushMatrix();
         pg.translate(x2, y2);
         float a = atan2(x1 - x2, y2 - y1);
@@ -997,11 +1011,11 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.popMatrix();
     }
 
-    float logify (float x) {
+    private float logify (float x) {
   if (abs(x) < 0.01f) return 0.0f;
   return (x>0) ?  log100((int)(abs(x)*100.0f)) : -log100((int)(abs(x)*100.0f));
 }
-float log100 (int x) {
+private float log100 (int x) {
   return (log(x) / ((float)log(100)));
 }
    
