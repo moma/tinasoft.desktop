@@ -1,12 +1,21 @@
+label, input[type="text"]{
+    float:left;
+    display:block;
+}
+
+label {
+    margin-right: 5px;
+}
+
+.field{
+    width:100%;
+    overflow:auto;
+    margin:5px 0px;
+}
+
 .tabvizframe {
-    /*position:absolute;
-    top:0px;
-    left:0px;*/
     top:0px;
     left:0px;
     width:100%;
     height:100%;
-    /*z-index:2;
-    background-color: #ffffff;
-    background: #ffffff;*/
 }

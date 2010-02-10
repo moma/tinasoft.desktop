@@ -9,6 +9,7 @@
 <!--[if IE]><script src="js/excanvas.compiled.js"></script><![endif]-->
 <script type="text/javascript" src="lib/js/jquery/jquery-1.3.2.min.js" language="javascript"></script>
 <script type="text/javascript" src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" language="javascript"></script>
+<!--<script type="text/javascript" src="lib/js/jquery/jquery.form.js"></script>-->
 <!--<script type="text/javascript" src="tina.js" language="javascript"></script>-->
 <script type="text/javascript" src="main.js" language="javascript"></script>
 <script type="text/javascript" src="console.js" language="javascript"></script>
@@ -21,9 +22,51 @@
 <body style="cursor: auto;">
 
     <script type="text/javascript">
-    $(function() {
-        $("#tabs").tabs();
-    });
+        $(function() {
+            $("#tabs").tabs();
+        });
+        // wait for the DOM to be loaded
+        $(document).ready(function() {
+            var max = 0;
+            $("label").each(function(){
+                if ($(this).width() > max)
+                    max = $(this).width();
+            });
+            $("label").width(max);
+            $('#importForm').submit(function() {
+                dataArray = $(this).serializeArray();
+                for (var i=0; i < dataArray.length; i++) {
+                    console.log( dataArray[i].value );
+                }
+                path = $("#csvfile").val();
+                config  = $("#configfile").val();
+                // TODO DEBUG
+                path = "/home/elishowk/code/Tinasoft/tests/pubmed_tina_test.csv";
+                config = "import.yaml";
+                if ( dataArray[0].value == '' ) {
+                    console.log( "missing the corpora field" );
+                    $("#corpora").addClass('ui-state-error');
+                    return false;
+                }
+                if ( path == "" ) {
+                    $("#csvfile").addClass('ui-state-error');
+                    console.log( "missing the path field" );
+                    return false;
+                }
+                if ( config == "" ) {
+                    $("#configfile").addClass('ui-state-error');
+                    console.log( "missing the config file field" );
+                    return false;
+                }
+                Tinasoft.importFile(
+                    path,
+                    config,
+                    dataArray[0].value
+                );
+                console.log( "end of submitting file " + path);
+                return true;
+            });
+        });
     </script>
     <div class="demo">
         <div id="tabs">
@@ -34,13 +77,23 @@
             </ul>
             <div id="tabs-1">
                 <p>Create or import a new data set</p>
+                <form id="importForm" action="" ENCTYPE="multipart/form-data" method="POST">
+                    <label>csv file</label>
+                    <input id="csvfile" class="field" type="file" name="csvfile"/><br/>
+                    <label>configuration yaml file</label>
+                    <input id="configfile" class="field" type="file" name="configfile"/><br/>
+                    <label>corpora name or new corpora</label>
+                    <input id="corpora" type="text" class="field" name="corpora" value='test corpora'/><br/>
+                    <!--<label>Index full-text</label>
+                    <input type="checkbox" name="Check3" /><br/>-->
+                    <input type="submit" class="field" value="Import & index" /><br/>
+                </form>
             </div>
             <div id="tabs-2">
                 <p>Edit or export your data sets</p>
                 <script type="text/javascript">
                     function pytest() {
-                        console.log("test");
-                        alert(Tinasoft.i);
+                        console.log(Tinasoft);
                     };
                     /*$(function() {
                         $("#accordion").accordion();
