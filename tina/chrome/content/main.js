@@ -10,12 +10,9 @@ const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePa
 const INTRO_URL         = "chrome://tina/content/about.xul";
 
 /* Tinasoft SINGLETON */
-function TinasoftSingle( ) {
-    this.cls = Cc["Python.Tinasoft"];
-    this.i = cls.createInstance(Ci.ITinasoft);
+
+if ( typeof(Tinasoft) == "undefined" ) {
+    cls = Cc["Python.Tinasoft"];
+    var Tinasoft = cls.createInstance(Ci.ITinasoft);
 }
 
-TinasoftSingle.prototype = {
-}
-
-var Tinasoft = new TinasoftSingle();
