@@ -30,8 +30,10 @@ import processing.xml.XMLElement;
 
 
 import javax.xml.xpath.XPathConstants;
-import tinaviz.FilterChannel;
+import tinaviz.FilterChain;
+import tinaviz.filters.FilterChannel;
 import tinaviz.Node;
+import tinaviz.filters.Channel;
 //import org.w3c.dom.*;
 
 /**
@@ -49,7 +51,7 @@ public class Session {
     public boolean showNodes = true;
     public boolean showLinks = true;
     public boolean showPosterOverlay = false;
-    public boolean animationPaused = true;
+    public boolean animationPaused = false;
     public boolean colorsDesaturated = false;
     public boolean zoomFrozen = false;
     public boolean showNodeDetails = false;
@@ -140,9 +142,7 @@ public class Session {
     public Color background = new Color(12, 12, 12);
     public int fontsize = 12;
     public int maxdeepness = 10;
-    // DATA PROPERTIES
-    public List<FilterChannel> channels = new ArrayList<FilterChannel>();
-
+    public FilterChain filters = new FilterChain();
     public Map<String, tinaviz.Node> storedNodes = new HashMap<String, tinaviz.Node>();
     public Map<String, tinaviz.Node> filteredNodes = new HashMap<String, tinaviz.Node>();
 
