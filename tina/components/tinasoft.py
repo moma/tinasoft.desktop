@@ -7,13 +7,17 @@ from distutils import sysconfig
 
 from xpcom import components, verbose, COMException, ServerException, nsError
 
-class Tinasoft(TinaApp):
+class tinasoft(TinaApp):
     _com_interfaces_ = components.interfaces.ITinasoft
     _reg_clsid_ = "{4ff50853-96cb-4eca-b633-43be1833ae90}"
     _reg_contractid_ = "Python.Tinasoft"
+    __name__ = 'Tinasoft'
 
     def __init__(self):
         TinaApp.__init__(self)
+
+    def __call__(self):
+        return self
 
     def pythonEnv(self):
         self.logger.debug( "python environment debug:" )
@@ -39,3 +43,5 @@ class Tinasoft(TinaApp):
         # shared library in prefix/lib/.
         libs.insert(0, '-L' + getvar('LIBPL'))
         self.logger.debug( ' '.join(libs) )
+
+Tinasoft=tinasoft()

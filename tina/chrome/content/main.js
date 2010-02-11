@@ -11,8 +11,38 @@ const INTRO_URL         = "chrome://tina/content/about.xul";
 
 /* Tinasoft SINGLETON */
 
-if ( typeof(Tinasoft) == "undefined" ) {
+if ( typeof(TinaService) == "undefined" ) {
     cls = Cc["Python.Tinasoft"];
-    var Tinasoft = cls.createInstance(Ci.ITinasoft);
+    var TinaService = cls.createInstance(Ci.ITinasoft);
 }
 
+var submitImportfile = function(event) {
+    corpora = $("#corpora")
+    path = $("#csvfile")
+    config  = $("#configfile")
+    // TODO DEBUG
+    path.val("/home/elishowk/code/Tinasoft/tests/pubmed_tina_test.csv");
+    config.val("import.yaml");
+    if ( corpora.val() == '' ) {
+        corpora.addClass('ui-state-error');
+        console.log( "missing the corpora field" );
+        return false;
+    }
+    if ( path.val() == "" ) {
+        path.addClass('ui-state-error');
+        console.log( "missing the path field" );
+        return false;
+    }
+    if ( config.val() == "" ) {
+        config.addClass('ui-state-error');
+        console.log( "missing the config file field" );
+        return false;
+    }
+    TinaService.importFile(
+        path.val(),
+        config.val(),
+        corpora.val()
+    );
+    console.log( "end of submitting file " + path);
+    return true;
+};

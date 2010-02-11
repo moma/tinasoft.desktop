@@ -29,7 +29,13 @@ import logging.handlers
 
 class TinaApp():
     """ base class for a tinasoft.pytextminer application"""
-    def __init__(self, configFile='config.yaml', storage=None, loc=None, stopw=None, index=None ):
+    def __init__(
+        self,
+        configFile='config.yaml',
+        storage=None,
+        loc=None,
+        stopw=None,
+        index=None):
         # Set up a specific logger with our desired output level
         self.logger = logging.getLogger('TinaAppLogger')
         self.logger.setLevel(logging.DEBUG)
@@ -38,7 +44,6 @@ class TinaApp():
         try:
             self.config = yaml.safe_load( file( configFile, 'rU' ) )
         except yaml.YAMLError, exc:
-            self.logger.error( "Unable to read the config.yaml file : " + exc)
             return
         LOG_FILENAME = self.config['log']
         # Add the log message handler to the logger
@@ -78,6 +83,8 @@ class TinaApp():
             self.index = indexer.TinaIndex(self.config['index'])
         else:
             self.index = indexer.TinaIndex(index)
+        self.logger.debug( "END OF TinaApp.__init__()")
+
 
     def importFile(self,
             path,
@@ -121,7 +128,7 @@ class TinaApp():
             # get the Corpus object and import
             corpus = fileReader.corpusDict[ corpusNum ]
             self.logger.debug(corpus)
-            # TODO _walkDocuments
+            # TODO _walkDocuments TODO TODO
             #fileReader.docDict = fileReader.importCorpus( corpus, \
             #    corpusNum, tokenizer.TreeBankWordTokenizer,\
             #    tagger.TreeBankPosTagger, self.stopwords,\
