@@ -85,6 +85,9 @@ function openErrorConsole() {
   openWindowForType("global:console", "chrome://global/content/console.xul");
 }
 
+// DEBUGGING
+openErrorConsole();
+
 function openConfig() {
   openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
 
@@ -115,14 +118,13 @@ function openUpdates()
 }
 
 function openAbout() {
-  openWindowForType("TinaSoft:About", "chrome://tina/content/about.xul",
-                    "chrome,dialog,centerscreen");
+    openWindowForType("TinaSoft:About", "chrome://tina/content/about.xul","chrome,dialog,centerscreen");
 }
 
 function openHelp() {
-  openURL(HELP_URL);
+    openURL(HELP_URL);
 }
 
 function pyshell_launch() {
-    openWindowForType("python_shell_window", "chrome://pyshell/content/pyshell.xul", "all=no,width=500,height=400,scrollbars=yes,resizable=yes,dialog=no");
+    openDialog("python_shell_window", "chrome://pyshell/content/pyshell.xul", "all=no,width=500,height=400,scrollbars=yes,resizable=yes,dialog=no");
 }
