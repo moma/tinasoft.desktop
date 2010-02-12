@@ -416,12 +416,12 @@ function updateViewFromURI(uri) {
 }
 
 function showNodeDetails(x,y,uuid,label) {
-      $('#nodedetails').css("top",""+y+"px");
-      $('#nodedetails').css("left",""+x+"px");
-      $('#nodedetailsiframe').css("top",""+y+"px");
-      $('#nodedetailsiframe').css("left",""+x+"px");
+    $('#nodedetails').css("top",""+y+"px");
+    $('#nodedetails').css("left",""+x+"px");
+    $('#nodedetailsiframe').css("top",""+y+"px");
+    $('#nodedetailsiframe').css("left",""+x+"px");
 
-      $('#nodedetails').html('<div>'+label+'</div>');
+    $('#nodedetails').html('<div>'+label+'</div>');
 
     $('#nodedetailsiframe').show();
     $('#nodedetails').show();

@@ -1,5 +1,6 @@
 package tinaviz;
 
+import tinaviz.filters.FilterChannel;
 import java.awt.Color;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -25,6 +26,11 @@ import netscape.javascript.*;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import tinaviz.filters.Channel;
+import tinaviz.filters.Filter;
+import tinaviz.filters.ForceVector;
+import tinaviz.filters.ParamChannel;
+import tinaviz.filters.RegexMatch;
 
 public class Main extends PApplet implements MouseWheelListener {
 
@@ -50,7 +56,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private RecordingFormat recordingMode = RecordingFormat.NONE;
     private String recordPath = "graph.pdf";
     private boolean mouseClick = false;
-    private int preSpatialize = 60;
+    private int preSpatialize = 10;
     private String currentTextSearch = "&&&&";
     private JSObject window = null;
     private int recordingWidth = 100;
@@ -452,6 +458,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
+
     public void drawAndSpatializeRealtime() {
 
         Node node_a, node_b, node;
@@ -521,6 +528,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     vx = n2.x - n1.x;
                     vy = n2.y - n1.y;
                     len = sqrt(sq(vx) + sq(vy));
+
                 }
 
                 if (n1.neighbours.contains(n2)) {
@@ -561,6 +569,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (cameraIsStopped() && len != 0) {
 
                     if (!session.animationPaused) {
+
                         // TODO fix this
                         n1.vx -= (vx / len) * LAYOUT_REPULSION;
                         n1.vy -= (vy / len) * LAYOUT_REPULSION;
@@ -783,58 +792,32 @@ public class Main extends PApplet implements MouseWheelListener {
         return true;
     }
 
-    // addFilterRegexRange("myrange", "category", "NODE|EDGE?")
-    // setFilterRange("myrange", 0.3,0.99)
 
-    public boolean addFilterRegexRange(String name, String attribute, String mask) {
 
-        for (FilterChannel f : session.channels) {
-            if (f.hasName(name)) {
-                return false;
-            }
+    // setParameter("key", min, max)
+    public boolean addFilter(String filterName, String model, String param) {
+
+        Filter f = null;
+        if (model.equals("RegexMatch")) {
+            f = new RegexMatch(param);
+        } else if (model.equals("ForceVector")) {
+            f = new ForceVector();
         }
-        FilterChannel nf = new FilterChannel(
-                name,
-                FilterChannel.AttributeType.STRING_REGEX,
-                FilterChannel.ChannelType.RANGE,
-                FilterChannel.FilterType.WITHIN,
-                attribute,
-                name);
-        session.channels.add(nf);
-        return true;
+      
+       session.filters.addFilter(filterName, f);
+       return true;
     }
 
-    public boolean setFilterRegexRange(String name, float min, float max) {
 
-        for (FilterChannel f : session.channels) {
-            if (f.hasName(name)) {
-                f.setRange(min, max);
-                return true;
-            }
-        }
-        return false;
+    public boolean setFilterValue(String filterName, String key, String value) {
+        return session.filters.getFilter(filterName).setField(key, value);
+       // return session.filters.get(filterName).setField(key, value);
+    }
+ 
+    public Object getFilterValue(String channel, String key) {
+        return session.filters.getFilter(filterName).getField(key);
     }
 
-    public boolean toggleFilterChannel(String name) {
-
-        for (FilterChannel f : session.channels) {
-            if (f.hasName(name)) {
-                return f.toggleEnabled();
-            }
-        }
-        return false;
-    }
-
-    public boolean enableFilterChannel(String name, boolean status) {
-
-        for (FilterChannel f : session.channels) {
-            if (f.hasName(name)) {
-                f.setEnabled(status);
-                return true;
-            }
-        }
-        return false;
-    }
 
     public boolean toggleLabels() {
         this.session.showLabels = !this.session.showLabels;
