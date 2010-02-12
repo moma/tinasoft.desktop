@@ -83,6 +83,7 @@ class TinaApp():
             self.index = indexer.TinaIndex(self.config['index'])
         else:
             self.index = indexer.TinaIndex(index)
+        self.logger.debug(self.index)
         self.logger.debug( "END OF TinaApp.__init__()")
 
 
@@ -90,7 +91,7 @@ class TinaApp():
             path,
             configFile,
             corpora_id,
-            #minSize=None,
+            overwrite=False,
             #maxSize=None,
             format= 'tina'):
         """tina file import method"""
@@ -111,26 +112,38 @@ class TinaApp():
             locale = self.config['locale'],
             fields = self.config['fields']
         )
-        self._walkFile( fileReader, corpora_id )
+        self._walkFile(fileReader, corpora_id, overwrite)
 
-    def _walkFile(self, fileReader, corpora_id):
+    def _walkFile(self, fileReader, corpora_id, overwrite):
         """gets importFile() results to insert contents into storage"""
+        self.logger.debug(self.index)
+        writer = self.index.getWriter()
         corps = self.storage.loadCorpora(corpora_id)
         if corps is None:
             corps = corpora.Corpora( corpora_id )
-        # parse the file
         self.logger.debug(corps)
         fileGenerator = fileReader.parseFile( corps )
         try:
             while 1:
                 document = fileGenerator.next()
-                self.logger.debug( document )
-                # TODO index document
+                res = self.index.write(document, writer, overwrite)
+                if res is not None:
+                    self.logger.debug(res)
+                #if overwrite is True:
+                    #self.index.write( document, writer )
+                #else:
+                    #res = self.index.searchDoc( document['id'], 'id' )
+                    #if len( res ) == 0:
+                    #    self.index.write( document, writer )
+                    #else:
+                    #    self.logger.debug( document )
 
         except StopIteration, stop:
+            # commit changes to indexer
+            writer.commit()
             # insert or updates corpora
             corps = fileReader.corpora
-            self.storage.insertCorpora( corps )
+            #self.storage.insertCorpora( corps )
             self.logger.debug("stored a new corpora : " + corps['id'])
             for corpusNum in corps['content']:
                 # get the Corpus object and import

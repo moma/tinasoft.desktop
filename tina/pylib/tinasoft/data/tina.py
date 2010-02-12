@@ -65,84 +65,22 @@ class Importer (basecsv.Importer):
             except Exception, exc:
                 _logger.debug("unable to parse opt field "+field+" in document " + str(docNum))
                 _logger.debug(exc)
-        #if 'dateField' in docArgs:
-        #    datestamp = docArgs[ 'dateField' ]
-        #else:
-        #    datestamp = None
+        if 'dateField' in docArgs:
+            datestamp = docArgs[ 'dateField' ]
+        else:
+            datestamp = None
 
         doc = document.Document(
             content,
             docNum,
             title,
-            #datestamp=datestamp,
+            datestamp=datestamp,
             #ngramMin=self.minSize,
             #ngramMax=self.maxSize,
             **docArgs
         )
-        #print document.ngramMin, document.ngramMax, document.docNum, document.rawContent
         #self.docDict[ docNum ] = doc
         return doc
-
-    def importDocument(self,
-        storage,
-        tokenizer,
-        tagger,
-        stopwords,
-        document,
-        documentNum,
-        corpusngrams,
-        corpusNum):
-        """"
-        Main function processing a document, ngramizer
-        applying NLP methods and inserting results into storage
-        TODO : indexation !
-        """
-        if storage( documentNum ) is None:
-            _logger.debug(tokenizer.__name__+" is working on document "+ documentNum)
-            sanitizedTarget = tokenizer.sanitize(
-                document['content'],
-                document['forbChars'],
-                document['ngramEmpty']
-            )
-            #document.targets.append( sanitizedTarget )
-            #print target.sanitizedTarget
-            sentenceTokens = tokenizer.tokenize(
-                text = sanitizedTarget,
-                emptyString = document['ngramEmpty'],
-            )
-            for sentence in sentenceTokens:
-                document['tokens'] += [tagger.posTag( sentence )]
-
-            docngrams = tokenizer.ngramize(
-                minSize = document['ngramMin'],
-                maxSize = document['ngramMax'],
-                tokens = document['tokens'],
-                emptyString = document['ngramEmpty'],
-                stopwords = stopwords,
-            )
-            assocDocIter = []
-            for ngid, ng in docngrams.iteritems():
-                # save doc occs and delete
-                docOccs = ng.occs
-                del ng.occs
-                assocDocIter += [( ng['id'], document['id'], docOccs )]
-                # update corpusngrams index, replacing occs with corpus occs
-                if ngid in corpusngrams:
-                    corpusngrams[ ngid ].occs += 1
-                else:
-                    ng.occs = 1
-                    corpusngrams[ ngid ] = ng
-            del docngrams
-            storage.insertmanyAssocNGramDocument( assocDocIter )
-            # clean full text before DB storage
-            document.content = ""
-            document.tokens = []
-            document.targets = []
-            storage.insertDocument( document.id, document.date, document )
-
-        # anyway, insert a new Doc-Corpus association
-        storage.insertAssocDocument( documentNum, corpusNum )
-        return corpusngrams
 
     """OBSOLETE"""
     def importCorpus(self,
@@ -154,6 +92,7 @@ class Importer (basecsv.Importer):
         stopwords,
         corpora,
         docDict):
+        """OBSOLETE"""
         """yields each document in a corpus"""
         corpusngrams = {}
         # Documents processing
