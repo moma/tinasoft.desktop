@@ -13,7 +13,7 @@ const INTRO_URL         = "chrome://tina/content/about.xul";
 
 if ( typeof(TinaService) == "undefined" ) {
     cls = Cc["Python.Tinasoft"];
-    var TinaService = cls.createInstance(Ci.ITinasoft);
+    var TinaService = cls.getService(Ci.ITinasoft);
 }
 
 var submitImportfile = function(event) {
@@ -38,10 +38,14 @@ var submitImportfile = function(event) {
         console.log( "missing the config file field" );
         return false;
     }
-    TinaService.importFile(
+    TinaService.runImportFile(
         path.val(),
         config.val(),
-        corpora.val()
+        corpora.val(),
+        false,
+        false,
+        true,
+        'tina'
     );
     console.log( "end of submitting file " + path);
     return true;

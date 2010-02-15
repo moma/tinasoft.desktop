@@ -43,7 +43,7 @@ import logging
 
 from xpcom import components, COMException, ServerException, nsError
 from xpcom.server import WrapObject, UnwrapObject
-from xpcom._xpcom import PROXY_SYNC, PROXY_ALWAYS, PROXY_ASYNC, getProxyForObject
+from xpcom._xpcom import NS_PROXY_SYNC, NS_PROXY_ALWAYS, NS_PROXY_ASYNC, getProxyForObject
 
 
 #---- globals
@@ -78,7 +78,7 @@ class koAsyncService(object):
         self._lock = threading.Lock()
         self._observerSvc = components.classes["@mozilla.org/observer-service;1"].\
             getService(components.interfaces.nsIObserverService)
-        self._observerProxy = getProxyForObject(1, components.interfaces.nsIObserverService, self._observerSvc, PROXY_SYNC | PROXY_ALWAYS)
+        self._observerProxy = getProxyForObject(1, components.interfaces.nsIObserverService, self._observerSvc, NS_PROXY_SYNC | NS_PROXY_ALWAYS)
         # The testing mode variable is used when running python tests from
         # the command line, as the getProxyForObject results in an object
         # that never actually calls the callback function.
@@ -110,7 +110,7 @@ class koAsyncService(object):
             # Run the operation
             if aOpCallback:
                 try:
-                    aOpCallback = getProxyForObject(1, components.interfaces.koIAsyncCallback, aOpCallback, PROXY_SYNC | PROXY_ALWAYS)
+                    aOpCallback = getProxyForObject(1, components.interfaces.koIAsyncCallback, aOpCallback, NS_PROXY_SYNC | NS_PROXY_ALWAYS)
                 except COMException:
                     pass
             try:

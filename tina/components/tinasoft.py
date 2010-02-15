@@ -6,18 +6,35 @@ import os
 from distutils import sysconfig
 
 from xpcom import components, verbose, COMException, ServerException, nsError
+from koAsyncOperationUtils import koAsyncOperationBase
 
-class tinasoft(TinaApp):
+class tinaAsync(koAsyncOperationBase):
+    def __call__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        return self.run()
+
+
+class Tinasoft(TinaApp):
     _com_interfaces_ = components.interfaces.ITinasoft
     _reg_clsid_ = "{4ff50853-96cb-4eca-b633-43be1833ae90}"
     _reg_contractid_ = "Python.Tinasoft"
     __name__ = 'Tinasoft'
 
-    def __init__(self):
-        TinaApp.__init__(self)
+    def __init__(self,*args, **kwargs):
+        TinaApp.__init__(self, *args, **kwargs)
 
-    def __call__(self):
-        return self
+    #def __call__(self):
+    #    return self
+
+    #@tinaAsync
+    def runImportFile(self, *args, **kwargs):
+        print self
+        print args
+        print kwargs
+        self.logger.debug(args)
+        async = koAsyncOperationBase(self.importFile, *args, **kwargs)
+        async.run()
 
     def pythonEnv(self):
         self.logger.debug( "python environment debug:" )
@@ -44,4 +61,5 @@ class tinasoft(TinaApp):
         libs.insert(0, '-L' + getvar('LIBPL'))
         self.logger.debug( ' '.join(libs) )
 
-Tinasoft=tinasoft()
+# Tinasoft singleton
+#Tinasoft=tinasoft()

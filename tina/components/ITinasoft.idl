@@ -2,16 +2,13 @@
 
 [scriptable, uuid(d90c75e0-e2e2-4e67-baf7-2553930f3ba7)]
 interface ITinasoft : nsISupports {
-    void importFile( in wstring path,
+    void runImportFile( in wstring path,
         in wstring configFile,
-        in wstring corpora_id
+        in wstring corpora_id,
+        in boolean overwrite,
+        in boolean index,
+        in boolean ngramize,
+        in wstring format
     );
-    void indexDocuments(  );
-    void extractNGrams();
-    void createCorpus();
-    void createCorpora();
-    void createDocument();
-    void createNGram();
-    void writeCooc();
     void pythonEnv();
 };
