@@ -44,7 +44,6 @@ var submitImportfile = function(event) {
         corpora.val(),
         false,
         false,
-        true,
         'tina'
     );
     console.log( "end of submitting file " + path);
