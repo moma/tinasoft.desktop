@@ -38,7 +38,7 @@ var submitImportfile = function(event) {
         console.log( "missing the config file field" );
         return false;
     }
-    TinaService.runImportFile(
+    exportPath = TinaService.runImportFile(
         path.val(),
         config.val(),
         corpora.val(),
@@ -46,6 +46,7 @@ var submitImportfile = function(event) {
         false,
         'tina'
     );
-    console.log( "end of submitting file " + path);
+    console.log( "end of submitting file " + path.val());
+    console.log( "export file " + exportPath);
     return true;
 };
