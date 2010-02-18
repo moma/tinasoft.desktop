@@ -6,13 +6,13 @@ import os
 from distutils import sysconfig
 
 from xpcom import components, verbose, COMException, ServerException, nsError
-from koAsyncOperationUtils import koAsyncOperationBase
+import threading
 
-class tinaAsync(koAsyncOperationBase):
-    def __call__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
-        return self.run()
+#class tinaAsync(koAsyncOperationBase):
+#    def __call__(self, *args, **kwargs):
+#        self.args = args
+#        self.kwargs = kwargs
+#        return self.run()
 
 
 class Tinasoft(TinaApp):
@@ -23,18 +23,27 @@ class Tinasoft(TinaApp):
 
     def __init__(self,*args, **kwargs):
         TinaApp.__init__(self, *args, **kwargs)
+        # Get a handle on the Komodo asnychronous operations service. Used for
+        # checking and displaying a in-progress image on the tree view.
+        #self._asyncOpSvc = components.classes['@activestate.com/koAsyncService;1'].\
+        #        getService(components.interfaces.koIAsyncService)
 
     #def __call__(self):
     #    return self
 
-    #@tinaAsync
+
+
     def runImportFile(self, *args, **kwargs):
-        print self
-        print args
-        print kwargs
-        self.logger.debug(args)
-        async = koAsyncOperationBase(self.importFile, *args, **kwargs)
-        async.run()
+        def importCallback():
+            self.logger.debug("End of runImportFile()")
+            return 1
+        self.logger.debug("Running asynchronous command")
+        t = threading.Thread(target=self.importFile,
+                             args=args, kwargs=kwargs)
+        t.setDaemon(True)
+        t.start()
+        self.logger.debug("running "+ str(t.getName()))
+        # TODO Callback and progress
 
     def pythonEnv(self):
         self.logger.debug( "python environment debug:" )

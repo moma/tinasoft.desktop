@@ -1,0 +1,30 @@
+Metadata-Version: 1.0
+Name: Tenjin
+Version: 0.8.1
+Summary: a fast and full-featured template engine based on embedded Python
+Home-page: http://www.kuwata-lab.com/tenjin/
+Author: makoto kuwata
+Author-email: kwa@kuwata-lab.com
+License: MIT License
+Download-URL: http://downloads.sourceforge.net/tenjin/Tenjin-0.8.1.tar.gz
+Description: pyTenjin is a very fast and full-featured template engine.
+        You can embed Python statements and expressions into your text file.
+        pyTenjin converts it into Python program and evaluate it.
+        In addition to high-performance, pyTenjin has many useful features
+        such as layout template, partial template, capturing, preprocessing, and so on.
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.3
+Classifier: Programming Language :: Python :: 2.4
+Classifier: Programming Language :: Python :: 2.5
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.0
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries
