@@ -4,6 +4,9 @@
  */
 package tinaviz;
 
+import java.security.KeyException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import tinaviz.filters.FilterChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,19 +65,31 @@ public class FilterChain {
     }
     public void enableFilter(String key) {
         if (filters.containsKey(key)) {
-            filters.get(key).setEnabled(true);
+            try {
+                filters.get(key).setField("enabled", true);
+            } catch (KeyException ex) {
+                Logger.getLogger(FilterChain.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     public void disableFilter(String key) {
         if (filters.containsKey(key)) {
-            filters.get(key).setEnabled(false);
+            try {
+                filters.get(key).setField("enabled", false);
+            } catch (KeyException ex) {
+                Logger.getLogger(FilterChain.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     public boolean toggleFilter(String key) {
         if (filters.containsKey(key)) {
-            return filters.get(key).toggleEnabled();
+            try {
+                filters.get(key).setField("enabled", !(Boolean)filters.get(key).getField("enabled"));
+            } catch (KeyException ex) {
+                Logger.getLogger(FilterChain.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return false;
     }

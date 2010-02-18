@@ -47,6 +47,7 @@ public class Session {
     public float zoom = 0.5f;
     public float upperThreshold = 1.0f;
     public float lowerThreshold = 0.0f;
+
     public boolean showLabels = true;
     public boolean showNodes = true;
     public boolean showLinks = true;
@@ -229,9 +230,11 @@ public class Session {
                     : uuid;
 
 
-            //org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
-            //org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
             /*
+            org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
+            org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
+
+
             Double posx = Double.parseDouble(
             position.getAttributes().getNamedItem("x").getNodeValue()
             );
@@ -262,12 +265,12 @@ public class Session {
 
             for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
                 org.w3c.dom.Node n = xmlnodeChildren.item(j);
-                if (n.getNodeName() == "attvalues") {
+                if (n.getNodeName().equals("attvalues")) {
                     // System.out.println("in attributes tag");
                     org.w3c.dom.NodeList xmlattribs = n.getChildNodes();
                     for (int k = 0; k < xmlattribs.getLength(); k++) {
                         org.w3c.dom.Node attr = xmlattribs.item(k);
-                        if (attr.getNodeName() == "attvalue") {
+                        if (attr.getNodeName().equals("attvalue")) {
                             // System.out.println("in attribute tag");
                             if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("0")) {
                                 node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
@@ -281,6 +284,8 @@ public class Session {
                         }
 
                     }
+                } else if (n.getNodeName() == "viz:position" || n.getNodeName().equals("position")) {
+
                 }
             }
 
@@ -312,8 +317,16 @@ public class Session {
 
             String source = edgeAttributes.getNamedItem("source").getNodeValue();
             String target = edgeAttributes.getNamedItem("target").getNodeValue();
+            String weight = edgeAttributes.getNamedItem("weight").getNodeValue();
+
             if (storedNodes.containsKey(source) && storedNodes.containsKey(target)) {
                 storedNodes.get(source).addNeighbour(storedNodes.get(target));
+                
+                // add the weight
+                storedNodes.get(source).weights.put(target,
+                        (weight != null)
+                        ? Float.parseFloat(weight)
+                        : 0.0f);
             }
 
         }

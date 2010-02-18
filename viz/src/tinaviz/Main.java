@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.security.KeyException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ import tinaviz.filters.Channel;
 import tinaviz.filters.Filter;
 import tinaviz.filters.ForceVector;
 import tinaviz.filters.ParamChannel;
-import tinaviz.filters.RegexMatch;
+import tinaviz.filters.AttributeFilter;
 
 public class Main extends PApplet implements MouseWheelListener {
 
@@ -139,13 +140,12 @@ public class Main extends PApplet implements MouseWheelListener {
             window = JSObject.getWindow(this);
             int w = screen.width;
             int h = screen.height;
+
             w = (Integer) window.call("getWidth", null);
             h = (Integer) window.call("getHeight", null);
-            window.eval("parent.registerApplet();");
-            window.eval("parent.resizeApplet(" + w + "," + h + ");");
+            window.eval("appletInitialized();");
             size(w, h, engine);
         } else {
-
             size(screen.width, screen.height, engine);
         }
 
@@ -223,6 +223,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void draw() {
 
+        if (!this.isEnabled()) return;
 
         if (!session.isSynced.getAndSet(true)) {
             if (!debugMode) {
@@ -795,11 +796,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
     // setParameter("key", min, max)
-    public boolean addFilter(String filterName, String model, String param) {
+    public boolean createFilter(String filterName, String model) {
 
         Filter f = null;
         if (model.equals("RegexMatch")) {
-            f = new RegexMatch(param);
+            f = new AttributeFilter();
         } else if (model.equals("ForceVector")) {
             f = new ForceVector();
         }
@@ -809,12 +810,29 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
 
-    public boolean setFilterValue(String filterName, String key, String value) {
-        return session.filters.getFilter(filterName).setField(key, value);
+    public boolean filterConfig(String filterName, String key, String value) throws KeyException {
+       session.filters.getFilter(filterName).setField(key, value);
+       return true;
        // return session.filters.get(filterName).setField(key, value);
     }
- 
-    public Object getFilterValue(String channel, String key) {
+
+     public boolean filterConfig(String filterName, String key, float value) throws KeyException {
+       session.filters.getFilter(filterName).setField(key, value);
+       return true;
+       // return session.filters.get(filterName).setField(key, value);
+    }
+    public boolean filterConfig(String filterName, String key, int value) throws KeyException {
+       session.filters.getFilter(filterName).setField(key, value);
+       return true;
+       // return session.filters.get(filterName).setField(key, value);
+    }
+        public boolean filterConfig(String filterName, String key, boolean value) throws KeyException {
+       session.filters.getFilter(filterName).setField(key, value);
+       return true;
+       // return session.filters.get(filterName).setField(key, value);
+    }
+
+    public Object filterConfig(String filterName, String key) throws KeyException {
         return session.filters.getFilter(filterName).getField(key);
     }
 

@@ -5,500 +5,35 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="robots" content="index, follow">
 
-    <!--<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/jquery-ui-1.7.2.custom.css" />-->
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css" />
 
-    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.selectmenu.css" />
+    <!-- ADDITIONNAL JQUERY UI STYLES -->
+    <!--<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.selectmenu.css" />-->
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.button.css" />
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.autocomplete.css" />
     <!--<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/customInput.jquery.css" />-->
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/jqtransform.tina.css" media="all" />
+    
+    <!-- TINASOFT-SPECIFIC STYLE-->
+    <link type="text/css" rel="stylesheet" href="visualization.css" />
+
+    <script src="console.js"                                      type="text/javascript" language="javascript"></script>
     <script src="lib/js/jquery/jquery-1.3.2.min.js"               type="text/javascript" language="javascript"></script>
     <script src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js"     type="text/javascript" language="javascript"></script>
-    <script src="lib/js/jquery/ui.selectmenu.js"                  type="text/javascript" language="javascript"></script>
+    <!--<script src="lib/js/jquery/ui.selectmenu.js"                  type="text/javascript" language="javascript"></script>-->
     <script src="lib/js/jquery/ui.button.js"                      type="text/javascript" language="javascript"></script>
     <script src="lib/js/jquery/ui.autocomplete.js"                type="text/javascript" language="javascript"></script>
     <!--<script src="lib/js/jquery/customInput.jquery.js"         type="text/javascript" language="javascript"></script>-->
-    <script src="console.js"                                      type="text/javascript" language="javascript"></script>
     <script src="lib/js/jquery/jquery.jqtransform.js"             type="text/javascript" language="javascript"></script>
     <script src="lib/jslib/jslib.js"                              type="text/javascript" language="javascript"></script>
-    <style type="text/css">
-
-     font-size: 12px;
-
-     .h3 {  font-size: 14px;  }
-     .p {  font-size: 11px;  }
-
-     .ui-widget { font-size: 12px; }
-    .fg-button { outline: 0; margin:0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
-    .fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
-
-    a.fg-button { float:left; }
-
-    /* remove extra button width in IE */
-    button.fg-button { width:auto; overflow:visible; }
-
-    .fg-button-icon-left { padding-left: 2.1em; }
-    .fg-button-icon-right { padding-right: 2.1em; }
-    .fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
-    .fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
-
-    .fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }     /* solo icon buttons must have block properties for the text-indent to work */
-
-    .fg-buttonset { float:left; }
-    .fg-buttonset .fg-button { float: left; }
-    .fg-buttonset-single .fg-button,
-    .fg-buttonset-multi .fg-button { margin-right: -1px;}
-
-    .fg-toolbar { padding: 8px; margin: 0;  }
-    .fg-toolbar .fg-buttonset { margin-right:12px; padding-left: 1px; }
-    .fg-toolbar .fg-button { font-size: 11px;  }
-
- /* VERTICAL TOOLBAR FOR TINA */
- .ui-widget-header { border: 1px solid #231d2b; background: #30273a url(images/ui-bg_highlight-soft_25_30273a_1x100.png) 50% 50% repeat-x; color: #ffffff;  }
-.ui-widget-vheader { border: 1px solid #231d2b; background: #30273a url(images/ui-bg_highlight-soft_25_30273a_1x100v.png) 50% 50% repeat-y; color: #ffffff; }
-.ui-widget-miniheader { border: 1px solid #231d2b; background: #30273a 50% 50% repeat-y; color: #ffffff; }
-
-.vizframe {
-   position:absolute;/*
-    top:0px;
-    left:0px;*/
-    top:0px;
-    left:0px;
-    width:100%;
-    height:100%;
-    z-index:2;
-    background-color: #ffffff;
-    background: #ffffff;
-
-}
-
-.sidebariframe {
-    position:absolute;
-    top:30px;
-    right:16px;
-    width:298px;
-    height:517px;
-    background-color: #ffffff;
-    background: #ffffff;
-    border:solid 0px;
-    z-index:1;
-}
-
-.sidebar {
-    position:absolute;
-    top:30px;
-    right:16px;
-    width: 280px;
-    height: 500px;
-    z-index:2;
-}
-
-
-.htoolbar {
-    position:absolute;
-    bottom:80px;
-    left:40px;
-}
-
-.htoolbariframe {
-    position:absolute;
-    bottom:80px;
-    left:40px;
-    width:969px;
-    height:45px;
-    background-color: #ffffff;
-    background: #ffffff;
-    border:solid 0px;
-    z-index:1;
-}
-
-.htoolbardiv {
-    z-index:2;
-}
-
-.nodedetailsiframe {
-    position:absolute;
-    top:80px;
-    left:40px;
-    width:97px;
-    height: 70px;
-    background-color: #000000;
-    background: #000000;
-    border:solid 0px;
-    z-index:1;
-}
-
-.nodedetails {
-    position:absolute;
-    top:80px;
-    left:40px;
-    width: 80px;
-    height: 55px;
-   /* background-color: #000000;
-    background: #000000;*/
-     border: solid 0px;
-    z-index: 2;
-}
-
-
-.vtoolbariframe {
-    position:absolute;
-    top:30px;
-    /*right: 325px;*/
-    left: 40px;
-    width: 47px;
-    height:462px;
-    background-color: #ffffff;
-    background: #ffffff;
-    border:solid 0px;
-    z-index:3;
-}
-
-.vtoolbar {
-    position:absolute;
-    top: 30px;
-    /*right: 317px;*/
-    left: 40px;
-    width: 45px;
-    height: 460px;
-    z-index:4;
-    margin: 0px;
-    padding: 0px;
-}
-.altslider {
-    position: relative;
-    left: 16px;
-    height: 400px;
-    top: 8px;
-}
-
-.thresholdInput {
-     position: relative;
-     border: solid 0px;
-     background: none;
-     color: #ffffff;
-     left: 8px;
-}
-.upperInput {
-     top: 5px;
-}
-.lowerInput {
-     bottom: 5px;
-}
-    </style>
-
-    <script type="text/javascript">
-
-    view = {};
-    $(function(){
-
-        // hide all the GUI until we loaded the applet
-        $("#gui").hide();
-
-        labels = [];
-
-        //all hover and click logic for buttons
-        $(".fg-button:not(.ui-state-disabled)")
-        .hover(
-            function(){
-                $(this).addClass("ui-state-hover");
-            },
-            function(){
-                $(this).removeClass("ui-state-hover");
-            }
-        )
-        .mousedown(function(){
-                $(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
-                if( $(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active') ){ $(this).removeClass("ui-state-active"); }
-                else { $(this).addClass("ui-state-active"); }
-        })
-        .mouseup(function(){
-            if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button, .fg-buttonset-multi .fg-button') ){
-                $(this).removeClass("ui-state-active");
-            }
-        });
-    });
-</script>
+    
+    <script src="visualization.js"                                type="text/javascript" language="javascript"></script>
 </head>
 <body>
-    <script type="text/javascript">
-
-
-
-$(function(){
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var appletPath;
-    if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
-    else { appletPath = path + "/content/applet/index.html" }
-    var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    appletFile.initWithPath(appletPath);
-    var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
-    $('#container').html('<iframe id="vizframe" class="vizframe" allowtransparency="true" scrolling="no" width="100%" height="900" frameborder="0" src="'+appletURL+'"></iframe>');
-                        // $('#vizframe').attr('src', 'http:LINK');
-});
-
-
-function resizeApplet(width, height) {
-    frame.contents().find('#tinaviz')[0].width = width;
-    frame.contents().find('#tinaviz')[0].height = height;
-
-    // update the new layout (recenter the toolbar)
-    $('.htoolbar').css('left', (  (width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
-
-    $('#gui').show();
-
-}
-
-$(document).ready(function() {
-
-    $("#searchfield").autocomplete({
-        data: labels,
-        extraSearch: function(term) {
-            frame.contents().find('#tinaviz')[0].getSubApplet().searchLabelDynamicFocus(term);
-        }
-    });
-    $("#altslider").slider({
-            orientation: "vertical",
-            range: true,
-            values: [1, 100],
-            slide: function(event, ui) {
-                //$("#amount").val('$' + ui.values[0] + ' - $' + ui.values[1]); // ui.values[1]
-                frame.contents().find('#tinaviz')[0].getSubApplet().setGenericityRange(ui.values[0],ui.values[1], 100);
-                $("#upperThresholdInput").val(ui.values[1]/100);
-                $("#lowerThresholdInput").val(ui.values[0]/100);
-            }
-    });
-
-
-    // wait for the applet to be ready
-    setTimeout("synchronize()",5000);
-
-    // wait for the applet to be ready
-    // setTimeout("addToolbar()",2000);
-});
-
-function synchronize() {
-    labels = applet.getLabels();
-    // updateAutocomplete();
-}
-
-function registerApplet() {
-    applet = $('#vizframe').contents().find('#tinaviz')[0];
-    viz = applet.getSubApplet();
-}
-
-function takePDFPicture() {
-    var outputFilePath = "graph.pdf";
-    var result;
-    try {
-        result = applet.takePDFPicture(outputFilePath);
-    } catch (e) {
-        //alert("Oops! Something bad just happened. Calling 911...");
-        $('#debugdiv').append('<br><b>exception='+e+'</b>');
-        console.log(e);
-        return;
-    }
-    $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
-    setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
-}
-
-function takePicture() {
-    var outputFilePath = "graph.png";
-    var result;
-    try {
-        result = applet.takePicture(outputFilePath);
-    } catch (e) {
-        //alert("Oops! Something bad just happened. Calling 911...");
-        $('#debugdiv').append('<br><b>exception='+e+'</b>');
-         console.log(e);
-         return;
-    }
-    $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
-    setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
-}
-
-function downloadFile(outputFilePath, timeout) {
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var downloadPath;
-    if (path.search(/\\/) != -1) { downloadPath = path + "\\..\\"+outputFilePath }
-    else { downloadPath = path + "/../"+outputFilePath  }
-    var downloadFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    downloadFile.initWithPath(downloadPath);
-    if (downloadFile.exists() && timeout < 0) {
-        window.location.href = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(downloadFile);
-        return true;
-   }
-    if (downloadFile.exists() && timeout > 0) {
-        setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 3000);
-        return true;
-    } else {
-        // $('#debugdiv').append('<br>waiting..</p>');
-        setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1500);
-        return true;
-    }
-    return false;
-}
-
-
-function updateView() {
-
-
-    var filename = "test2.gexf";
-
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var gexfPath;
-
-    // todo: find a better way to convert the path
-    if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
-    else { gexfPath = path + "/content/applet/data/"+filename  }
-
-    var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    file.initWithPath(gexfPath);
-
-    var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-    var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].createInstance(Components.interfaces.nsIConverterInputStream);
-
-    fstream.init(file, -1, 0, 0);
-    cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
-
-    var str = {};
-    cstream.readString(-1, str); // read the whole file and put it in str.value
-    cstream.close(); // this closes fstream
-
-    updateViewFromString(str.value);
-}
-
-function updateView2(filename) {
-
-    if (!filename) filename = "test2.gexf";
-
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var gexfPath;
-    if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
-    else { gexfPath = path + "/content/applet/data/"+filename  }
-
-    var gexfFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    gexfFile.initWithPath(gexfPath);
-
-    var uri = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(gexfFile);
-    updateViewFromURI(uri);
-}
-
-function updateViewFromString(str) {
-    //$('#debugdiv').append('<p>applet.updateViewFromURI("'+uri+'");');
-    var result;
-    try {
-        result = frame.contents().find('#tinaviz')[0].getSubApplet().updateViewFromString(str);
-        synchronize();
-    } catch (e) {
-        $('#debugdiv').append('<br><b>== exception '+e+'</b>');
-        console.log(e);
-    }
-    // $('#debugdiv').append('<br>== returned '+result+'</p>');
-}
-function updateViewFromURI(uri) {
-    //$('#debugdiv').append('<p>applet.updateViewFromURI("'+uri+'");');
-    var result;
-    try {
-        result = frame.contents().find('#tinaviz')[0].getSubApplet().updateViewFromURI(uri);
-        synchronize();
-    } catch (e) {
-        $('#debugdiv').append('<br><b>== exception '+e+'</b>');
-        console.log(e);
-    }
-    // $('#debugdiv').append('<br>== returned '+result+'</p>');
-}
-
-function showNodeDetails(x,y,uuid,label) {
-    $('#nodedetails').css("top",""+y+"px");
-    $('#nodedetails').css("left",""+x+"px");
-    $('#nodedetailsiframe').css("top",""+y+"px");
-    $('#nodedetailsiframe').css("left",""+x+"px");
-
-    $('#nodedetails').html('<div>'+label+'</div>');
-
-    $('#nodedetailsiframe').show();
-    $('#nodedetails').show();
-}
-function hideNodeDetails() {
-    $('#nodedetailsiframe').hide();
-    $('#nodedetails').hide();
-
-      //  $('#nodedetails').append('<br>== returned '+result+'</p>');
-       // $('#nodedetails').append('<br>== returned '+result+'</p>');
-}
-
-                /*
-function loadNewViz(url) {
-
-    // un seul import de composant xpcom
-    var tina = Cc["Python.TinasoftAPI"].createInstance(Ci.nsITinasoftAPI);
-
-    // key/value database ?
-    //var key = "users/my_user_id/sessions/my_cool_session_id";
-    //var key = "jbilcke_session124";
-    var key = "my_session_unique_id";
-    var session = tina.session(key);
-    if (!session) {
-       // TODO
-       // "session not found, aborting..";
-       // log the error
-       return -1;
-    }
-    // retourne un objet js/json de la forme:
-
-    // session.id = ID de la session
-    // session.name = nom de session lisible (affiché dans la barre de titre par exemple)
-    // session.owner = ID du propriétaire de la session
-    // session.corpus = ID du corpus
-    // session.bookmarks = ID de la collection de bookmarks
-    // session.network = ID du graphe
-
-    var user = tina.user(session.owner);
-    if (!user) {
-       // TODO
-       // "session not found, aborting..";
-       // log the error
-       return -1;
-    }
-
-    // user.id = user id, unique
-    // user.name = nom de l'utilisateur
-    //
-
-        // session.id = session id, unique
-    // session.name = nom de session lisible (affiché dans la barre de titre par exemple)
-    // session.owner = propriétaire de la session, sous forme de user_id
-    // session.corpus
-    var bookmarks = tina.bookmarks(session.bookmarks);
-    if (!bookmarks) {
-
-       // bookmarks est une liste de bookmark
-       // TODO
-       // "session not found, aborting..";
-       // log the error
-       return -1;
-    }
-
-    var bookmarks = tina.bookmarks("bookmarks");
-
-    // user.id = user id, unique
-    // user.name = nom de l'utilisateur
-    //
-}
-*/
-      </script>
       <div id="container">
       </div>
       <div id="gui">
           <div id="iframes">
-                <iframe id="htoolbariframe" class="htoolbar htoolbariframe"></iframe>
                 <iframe id="vtoolbariframe" class="vtoolbariframe"></iframe>
                 <iframe id="sidebariframe" class="sidebariframe"></iframe>
                 <!--<iframe id="nodedetailsiframe" class="nodedetailsiframe"></iframe>-->
@@ -506,42 +41,7 @@ function loadNewViz(url) {
           <div id="toolbars">
               <div id="nodedetails" class="fg-toolbar ui-widget-miniheader ui-corner-all ui-helper-clearfix nodedetails">
               </div>
-              <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix htoolbar htoolbardiv">
-
-                    <div class="fg-buttonset ui-helper-clearfix">
-                        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Open" onclick="updateView()"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
-                        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Save" onclick="save()"><span class="ui-icon ui-icon-disk"></span> Save</a>
-                        <!--<a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="snapshot" onclick="snapshot()"><span class="ui-icon ui-icon-disk"></span> Snapshot</a>-->
-                        <!--<a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a>-->
-                    </div>
-
-                    <div class="fg-buttonset ui-helper-clearfix">
-                        <a href="#" class="fg-button ui-state-default fg-button-icon-solo ui-corner-all" title="Reset view" onclick="view.center()"><span class="ui-icon ui-icon-circle-zoomout"></span>reset view</a>
-                    </div>
-
-                    <div class="fg-buttonset fg-buttonset-multi">
-                        <button class="fg-button ui-state-default ui-state-active ui-corner-left"   onclick="view.toggleLabels()">labels</button>
-                        <button class="fg-button ui-state-default ui-state-active"                  onclick="view.toggleNodes()">nodes</button>
-                        <button class="fg-button ui-state-default ui-state-active"                  onclick="view.toggleLinks()">links</button>
-                        <!--<button class="fg-button ui-state-default"                                  onclick="view.togglePosterOverlay()">overlay</button>-->
-                        <button class="fg-button ui-state-default ui-corner-right"                  onclick="view.togglePause()">pause</button>
-                    </div>
-
-                    <div class="fg-buttonset ui-helper-clearfix">
-                        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print" onclick="takePDFPicture()"><span class="ui-icon ui-icon-image"></span>Take Picture</a>
-                        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"onclick="takePicture()"><span class="ui-icon ui-icon-print"></span>Export PDF</a>
-                        <!--<a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
-                        <a href="#" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>-->
-                    </div>
-
-                    <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
-                        <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left" onclick="view.keepNodesWith('type','projects')">Projects</button>
-                        <button class="fg-button ui-state-default ui-state-active ui-priority-primary " onclick="view.keepNodesWith('type','projects')">"<>"</button>
-                        <button class="fg-button ui-state-default ui-priority-primary" onclick="view.keepNodesWith('type','fields')">Fields</button>
-                    </div>
-
-                </div>
-
+              
                 <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar">
                 <input id="upperThresholdInput" class="thresholdInput upperThreshold" value="1.0" />
                     <div id="altslider" class="altslider"></div>
@@ -552,17 +52,29 @@ function loadNewViz(url) {
 
                     <div class="search">
                         <label for="searchfield">Search:</label>
-                        <input id="searchfield" name="searchfield" />
+                        <input id="searchfield" name="searchfield" />    
                     </div>
-                        <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+                       <!--
+                    <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
                         <button class="fg-button ui-state-default ui-state-active ui-priority-primary ui-corner-left">project</button>
                         <button class="fg-button ui-state-default ui-priority-primary">batch</button>
                         <button class="fg-button ui-state-default ui-priority-primary ui-corner-right">worldwide</button>
                     </div>
+                    -->
 
                     <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
-                        <h3>Project details</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        <h3 id="nodedetailstitle" class="nodedetailsh3">Term</h3>
+                        <p id="selectioncontent" class="nodedetailsp">bla bla</p>
+                        <fieldset> 
+			                <label for="rate">Rate:</label> 
+			                <select name="rate" id="rate"> 
+				                <option value="5stars">*****</option> 
+				                <option value="4stars">****</option> 
+				                <option value="3stars" selected="selected">***</option> 
+				                <option value="2stars">**</option> 
+				                <option value="1stars">*</option> 
+			                </select>
+		                </fieldset> 
                     </div>
 
                     <div id="debugdiv">
@@ -572,7 +84,6 @@ function loadNewViz(url) {
 
             </div> <!-- TOOLBARS-->
         </div> <!-- GUI -->
-
 
     </body>
 </html>
