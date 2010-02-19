@@ -5,13 +5,18 @@ import java.awt.Color;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.KeyException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +42,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
-    List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
+    List<tinaviz.Node> screenBufferNodes = new ArrayList<tinaviz.Node>();
     List<tinaviz.Node> nodeBuffer = new ArrayList<tinaviz.Node>();
     PImage nodeIcon;
     PFont font;
@@ -64,6 +69,10 @@ public class Main extends PApplet implements MouseWheelListener {
     private int recordingHeight = 100;
     private boolean debugMode = true;
     private String DEFAULT_FONT = "ArialMT-150.vlw";
+    AtomicBoolean screenBufferUpdated = new AtomicBoolean(false);
+    AtomicBoolean screenBufferUpdating = new AtomicBoolean(false);
+    private int stepCounter = 0;
+    // Semaphore screenBufferLock = new Semaphore();
 
     private void showNodeDetails(Node n) {
         if (session.showNodeDetails) {
@@ -166,6 +175,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
 
+        boolean generateRandom = false;
+
+        if (generateRandom) {
         Node node;
         System.out.println("Generating random graph..");
         float rx = random(width);
@@ -179,37 +191,39 @@ public class Main extends PApplet implements MouseWheelListener {
             node = new Node("" + i, "node " + i, radius, random(width / 2), random(height / 2));
             node.genericity = random(1.0f);
             // System.out.println(node.genericity);
-            nodes.add(node);
+            screenBufferNodes.add(node);
         }
 
         Node a;
         Node b;
-        for (int i = 0; i < nodes.size(); i++) {
-            for (int j = 0; j < nodes.size() && i != j; j++) {
+        for (int i = 0; i < screenBufferNodes.size(); i++) {
+            for (int j = 0; j < screenBufferNodes.size() && i != j; j++) {
                 if (random(1.0f) < 0.009) { // link density : 0.02 = a lot, 0.0002 = a few
-                    nodes.get(i).addNeighbour(nodes.get(j));
+                    screenBufferNodes.get(i).addNeighbour(screenBufferNodes.get(j));
                 }
             }
         }
 
-
-        System.out.println("Starting visualization..");
-
-        /*
-        try {
-        updateViewFromURI("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/data/test2.gexf");
-        } catch (URISyntaxException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (XPathExpressionException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-         */
+        else {
+            try {
 
+            updateViewFromURI("file:///home/jbilcke/Checkouts/git/TINA"+
+                    "/tinasoft.desktop/tina/chrome/content/applet/data/" +
+                    "map_dopamine_2002_2007_g.gexf");
+             session.prespatialize = false;
+             session.animationPaused = true;
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (XPathExpressionException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
 
         // fill(255, 184);
         frameRate(60);
@@ -218,6 +232,9 @@ public class Main extends PApplet implements MouseWheelListener {
         textFont(font, 48);
 
         center();
+
+        System.out.println("Starting visualization..");
+
     }
 
     @Override
@@ -226,9 +243,11 @@ public class Main extends PApplet implements MouseWheelListener {
         if (!this.isEnabled()) return;
 
         if (!session.isSynced.getAndSet(true)) {
-            if (!debugMode) {
-                nodes = new ArrayList<Node>(session.storedNodes.values());
-            }
+             screenBufferNodes.clear();
+             screenBufferNodes.addAll(session.storedNodes.values());
+            //session.animationPaused = tmp; // TODO replace by a lock here
+            //preSpatialize = 60;
+            center();
         }
 
         // TODO put this in another thread
@@ -244,7 +263,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             recordingMode = RecordingFormat.NONE;
 
-        } else if (preSpatialize-- > 0) {
+        } else if (session.prespatialize && preSpatialize-- > 0) {
             drawLoading();
             spatialize();
         } else {
@@ -282,8 +301,8 @@ public class Main extends PApplet implements MouseWheelListener {
         float LAYOUT_REPULSION = 0.005f;
         float LAYOUT_ATTRACTION = 0.0001f;
 
-        for (Node n1 : nodes) {
-            for (Node n2 : nodes) {
+        for (Node n1 : screenBufferNodes) {
+            for (Node n2 : screenBufferNodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -311,7 +330,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } // FOR NODE B
         }   // FOr NODE A
 
-        for (Node n : nodes) {
+        for (Node n : screenBufferNodes) {
             n.x += n.vx;
             n.y += n.vy;
             n.vx = 0.0f;
@@ -401,8 +420,8 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.fill(120);
         pg.strokeWeight(1.0f);
 
-        for (Node n1 : nodes) {
-            for (Node n2 : nodes) {
+        for (Node n1 : screenBufferNodes) {
+            for (Node n2 : screenBufferNodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -437,7 +456,7 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.strokeWeight(1.2f);
 
 
-        for (Node n : nodes) {
+        for (Node n : screenBufferNodes) {
             if (!(n.genericity <= session.upperThreshold
                     && n.genericity >= session.lowerThreshold)) {
                 continue;
@@ -449,7 +468,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             pg.fill(120);
             //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
-            pg.textSize(n.radius);
+            pg.textSize(n.radius * 0.08f);
 
             pg.fill(150);//old: 110
             pg.text(n.label, n.x + n.radius,
@@ -462,6 +481,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void drawAndSpatializeRealtime() {
 
+        stepCounter++;
+        
         Node node_a, node_b, node;
 
         float len = 1f;
@@ -503,12 +524,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
         translate(vizx, vizy);
 
-        if (zoomRatio > 5f) {
-            zoomRatio = 5f;
+        if (zoomRatio > 10f) {
+            zoomRatio = 10f;
             inerZ = 0.0f;
         }
-        if (zoomRatio < 0.05f) {
-            zoomRatio = 0.05f;
+        if (zoomRatio < 0.1f) {
+            zoomRatio = 0.1f;
             inerZ = 0.0f;
         }
         scale( zoomRatio * (log(zoomRatio)));
@@ -519,8 +540,8 @@ public class Main extends PApplet implements MouseWheelListener {
             strokeWeight(3.0f);
         }
 
-        for (Node n1 : nodes) {
-            for (Node n2 : nodes) {
+        for (Node n1 : screenBufferNodes) {
+            for (Node n2 : screenBufferNodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -550,17 +571,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
                     if (this.session.showLinks) {
                         // old: 150
-                        stroke(rgb);
-                        if (cameraIsStopped()) {
-                            strokeWeight(((n1.radius + n2.radius) * 0.05f));
-                        }
-
-                        if ((n1.genericity <= session.upperThreshold
-                                && n1.genericity >= session.lowerThreshold)
-                                && (n2.genericity <= session.upperThreshold
-                                && n2.genericity >= session.lowerThreshold)) {
-                            line(n1.x, n1.y, n2.x, n2.y);
-                            if (cameraIsStopped()) arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
+                        
+                        if (cameraIsStopped() && stepCounter > 1) {
+                            stroke(rgb);
+                            strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
+                            line(n2.x, n2.y, n1.x, n1.y);
+                            arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
                         }
 
                     }
@@ -584,32 +600,18 @@ public class Main extends PApplet implements MouseWheelListener {
         }   // FOr NODE A
 
         stroke(20, 20, 20);
-        if (cameraIsStopped()) {
-            strokeWeight(1.2f);
+        if (cameraIsStopped() && stepCounter > 1) {
+            strokeWeight(1.0f);
         }
 
         // ITERATE OVER NODES
         // COMPUTE NODE DATA, DRAW NODE..
-        for (Node n : nodes) {
+        for (Node n : screenBufferNodes) {
 
             n.x += n.vx;
             n.y += n.vy;
             n.vx = 0.0f;
             n.vy = 0.0f;
-
-            // node filter
-            //
-            
-
-            
-            
-            //Field f = n.getClass().getField(nomChamp);
-            //f.set(o,val);
-
-            if (!(n.genericity <= session.upperThreshold
-                    && n.genericity >= session.lowerThreshold)) {
-                continue;
-            }
 
             int rgb = (int) ((255.0 / MAX_RADIUS) * n.radius);
 
@@ -625,25 +627,18 @@ public class Main extends PApplet implements MouseWheelListener {
                     if (mouseClick) {
                         mouseClick = false;
                         System.out.println("clicked on node " + n.uuid + " (selected node: " + session.selectedNodeID + ")");
-                        if (session.selectedNodeID.equals(n.uuid)) {
-                            session.selectedNodeID = "NULL";
-                            //n.selected = true;
-                            // showNodeDetails(n);
-
-                        } else {
-                            session.selectedNodeID = n.uuid;
-                            //n.selected = false;
-                        }
+                         n.selected = !n.selected;
                     }
                 }
 
 
+                /*
                 if (n.label.startsWith(currentTextSearch)) {
                     fill(200, 100, 100);
                     strokeWeight(1.8f);
-                } else {
+                } else {*/
 
-                    if (session.selectedNodeID.equals(n.uuid)) {
+                    if (n.selected) {
                         fill(200, 100, 100);
                         strokeWeight(1.8f);
                     } else {
@@ -651,7 +646,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         fill(218, 219, 220);
                         strokeWeight(1.2f);
                     }
-                }
+                //}
 
                 ellipse(n.x, n.y, n.radius, n.radius);
 
@@ -662,10 +657,10 @@ public class Main extends PApplet implements MouseWheelListener {
                 13, 426);
                  */
             }
-            if (this.session.showLabels && cameraIsStopped()) {
+            if (this.session.showLabels && cameraIsStopped() && stepCounter > 2) {
                 fill(120);
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
-                textSize(n.radius);
+                textSize(n.radius*0.2f);
 
                 if (n.label.startsWith(currentTextSearch)) {
                     fill(60);
@@ -687,6 +682,7 @@ public class Main extends PApplet implements MouseWheelListener {
             mouseClick = false;
         }
 
+
     }
 
     public float setZoomValue(float value) {
@@ -695,80 +691,10 @@ public class Main extends PApplet implements MouseWheelListener {
         return session.zoom;
     }
 
-    // slick label search engine
-    public int searchLabelDynamicFocus(String term) {
-
-        // Initialize
-        //pattern = Pattern.compile(regex);
-        currentTextSearch = term;
-
-        int m = 0;
-        for (Node n : nodes) {
-
-            //matcher = pattern.matcher(n.label);
-            //if (matcher.matches()) {
-            // System.out.println("lebel=\""+n.label+"\" regex=\""+term+"\"");
-            if (n.label.startsWith(term)) {
-                //n.selected = true;
-                // System.out.println("selected is true!");
-                m++;
-            } else {
-                //n.selected = false;
-            }
-        }
-
-
-        return m;
-
-        //return sliderZoomLevel;
-    }
-    // slick label search engine
-
-    public Object[] searchLabelDynamicFocusAndReturnList(String term) {
-
-        // Initialize
-        //pattern = Pattern.compile(regex);
-        currentTextSearch = term;
-
-        int m = 0;
-        List<Node> results = new ArrayList<Node>();
-        for (Node n : nodes) {
-
-            //matcher = pattern.matcher(n.label);
-            //if (matcher.matches()) {
-            // System.out.println("lebel=\""+n.label+"\" regex=\""+term+"\"");
-            if (n.label.startsWith(term)) {
-                //n.selected = true;
-                // System.out.println("selected is true!");
-                results.add(n);
-                m++;
-            } else {
-                //n.selected = false;
-            }
-
-        }
-
-
-        return results.toArray();
-
-        //return sliderZoomLevel;
-    }
-    // slick label search engine
-
-    public String[] getLabels() {
-
-        String[] results = new String[nodes.size()];
-        int i = 0;
-        for (Node n : nodes) {
-            results[i++] = n.label;
-        }
-        return results;
-    }
-
     public void centerOnNodeById(int id) {
         //return sliderZoomLevel;
     }
-    public boolean updateViewFromURI(String uri)
+    public synchronized boolean updateViewFromURI(String uri)
             throws
             URISyntaxException,
             MalformedURLException,
@@ -777,7 +703,7 @@ public class Main extends PApplet implements MouseWheelListener {
         session.updateFromURI(uri);
         return postUpdateView();
     }
-    public boolean updateViewFromString(String src)
+    public synchronized boolean updateViewFromString(String src)
             throws
             URISyntaxException,
             MalformedURLException,
@@ -786,17 +712,18 @@ public class Main extends PApplet implements MouseWheelListener {
         session.updateFromString(src);
         return postUpdateView();
     }
-    private boolean postUpdateView() {
+    private synchronized boolean postUpdateView() {
         // prepare the scene depending on graph metrics
-        preSpatialize = 60;
-        center();
+        //boolean tmp = session.animationPaused;
+        //session.animationPaused = true; // TODO replace by a lock here
+
         return true;
     }
 
 
 
     // setParameter("key", min, max)
-    public boolean createFilter(String filterName, String model) {
+    public synchronized boolean createFilter(String filterName, String model) {
 
         Filter f = null;
         if (model.equals("RegexMatch")) {
@@ -810,64 +737,64 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
 
-    public boolean filterConfig(String filterName, String key, String value) throws KeyException {
+    public synchronized boolean filterConfig(String filterName, String key, String value) throws KeyException {
        session.filters.getFilter(filterName).setField(key, value);
        return true;
        // return session.filters.get(filterName).setField(key, value);
     }
 
-     public boolean filterConfig(String filterName, String key, float value) throws KeyException {
+     public synchronized boolean filterConfig(String filterName, String key, float value) throws KeyException {
        session.filters.getFilter(filterName).setField(key, value);
        return true;
        // return session.filters.get(filterName).setField(key, value);
     }
-    public boolean filterConfig(String filterName, String key, int value) throws KeyException {
+    public synchronized boolean filterConfig(String filterName, String key, int value) throws KeyException {
        session.filters.getFilter(filterName).setField(key, value);
        return true;
        // return session.filters.get(filterName).setField(key, value);
     }
-        public boolean filterConfig(String filterName, String key, boolean value) throws KeyException {
+    public synchronized boolean filterConfig(String filterName, String key, boolean value) throws KeyException {
        session.filters.getFilter(filterName).setField(key, value);
        return true;
        // return session.filters.get(filterName).setField(key, value);
     }
 
-    public Object filterConfig(String filterName, String key) throws KeyException {
+    public synchronized Object filterConfig(String filterName, String key) throws KeyException {
         return session.filters.getFilter(filterName).getField(key);
     }
 
 
-    public boolean toggleLabels() {
+    public synchronized boolean toggleLabels() {
         this.session.showLabels = !this.session.showLabels;
         return this.session.showLabels;
     }
 
-    public boolean showLabels(boolean value) {
+    public synchronized boolean showLabels(boolean value) {
         this.session.showLabels = value;
         return this.session.showLabels;
     }
 
-    public boolean toggleNodes() {
+    public synchronized boolean toggleNodes() {
         this.session.showNodes = !this.session.showNodes;
         return this.session.showNodes;
     }
 
-    public boolean togglePosterOverlay() {
+    public synchronized boolean togglePosterOverlay() {
         this.session.showPosterOverlay = !this.session.showPosterOverlay;
         return this.session.showPosterOverlay;
     }
 
-    public boolean togglePause() {
+    public synchronized boolean togglePause() {
         this.session.animationPaused = !this.session.animationPaused;
         return this.session.animationPaused;
     }
 
-    public boolean showNodes(boolean value) {
+    public synchronized boolean showNodes(boolean value) {
         this.session.showNodes = value;
         return this.session.showNodes;
     }
 
-    public boolean takePicture(String path) {
+    public synchronized boolean takePicture(String path) {
         recordPath = path;
         recordingWidth = width;
         recordingHeight = height;
@@ -876,7 +803,7 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     /* create an HD picture (or a tiled picture?) */
-    public boolean takePicture(String path, int width, int height) {
+    public synchronized boolean takePicture(String path, int width, int height) {
         recordPath = path;
         recordingWidth = width;
         recordingHeight = height;
@@ -885,7 +812,7 @@ public class Main extends PApplet implements MouseWheelListener {
         return true;
     }
 
-    public boolean takePDFPicture(String path) {
+    public synchronized boolean takePDFPicture(String path) {
         recordPath = path;
         recordingWidth = width;
         recordingHeight = height;
@@ -893,37 +820,39 @@ public class Main extends PApplet implements MouseWheelListener {
         return true;
     }
 
-    public boolean toggleLinks() {
+    public synchronized boolean toggleLinks() {
         this.session.showLinks = !this.session.showLinks;
         return this.session.showLinks;
     }
 
-    public boolean showLinks(boolean value) {
+    public synchronized boolean showLinks(boolean value) {
         this.session.showLinks = value;
         return this.session.showLinks;
     }
 
-    public void center() {
+    public synchronized void center() {
         vizx = 0;
         vizy = 0;
-        //vizx += width - (session.metrics.maxX - session.metrics.minX);
-        //vizy += height - (session.metrics.maxY - session.metrics.minY);
+        //vizx = (float)width/2.0f;
+        //vizy = (float)height/2.0f;
+        //vizx += (session.metrics.maxX - session.metrics.minX);
+        //vizy +=  (session.metrics.maxY - session.metrics.minY);
         zoomRatio = 1.5f;
     }
 
-    public float setLowerThreshold(float threshold) {
+    public synchronized float setLowerThreshold(float threshold) {
         return session.lowerThreshold = threshold;
     }
 
-    public float getLowerThreshold() {
+    public synchronized float getLowerThreshold() {
         return session.lowerThreshold;
     }
 
-    public float setUpperThreshold(float threshold) {
+    public synchronized float setUpperThreshold(float threshold) {
         return session.upperThreshold = threshold;
     }
 
-    public float getUpperThreshold() {
+    public synchronized float getUpperThreshold() {
         return session.upperThreshold;
     }
 
@@ -956,6 +885,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
+    @Override
     public void mouseClicked() {
         // hideNodeDetails();
         mouseClick = true;
@@ -966,10 +896,22 @@ public class Main extends PApplet implements MouseWheelListener {
         // hideNodeDetails();
         mouseDragging = true;
         float dragSensibility = 3.0f;
+        
+        // OLD "INERTIAL" DRAG
+        
         inerX = ((float) mouseX - oldmouseX) / (zoomRatio * dragSensibility);
         inerY = ((float) mouseY - oldmouseY) / (zoomRatio * dragSensibility);
         vizx += inerX * 2.0f;
         vizy += inerY * 2.0f;
+         
+        
+        // NEW "DIRECT" DRAG
+        /*
+        if (zoomRatio != 0) {
+            vizx += ((float) mouseX - oldmouseX);
+            vizy += ((float) mouseY - oldmouseY);
+        }*/
+
         oldmouseX = mouseX;
         oldmouseY = mouseY;
     }
@@ -987,7 +929,10 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
         //System.out.println("new inerZ="+inerZ);
-        inerZ = -e.getWheelRotation() * 2;
+        //inerZ = -e.getWheelRotation() * 2;
+        //this.zoomRatio -= (float) e.getWheelRotation() * 0.7f / zoomRatio;
+        inerZ = - (float) e.getWheelRotation() /  (1.0f / zoomRatio);
+        stepCounter = 10;
         //System.out.println("new inerZ="+inerZ);
 
     }
@@ -1019,6 +964,42 @@ public class Main extends PApplet implements MouseWheelListener {
 private float log100 (int x) {
   return (log(x) / ((float)log(100)));
 }
+
+
+/**
+ * Given a Throwable, gets the full stack trace for the
+ * Exception or Error as a String.  Returns an empty string
+ * if something went wrong (so the caller won't fail with a
+ * null pointer exception later).
+ * @param t
+ * @return
+ * @author kolichko Mark Kolich
+ */
+public static String getStackTraceAsString ( Throwable t ) {
+
+    final StringWriter sw = new StringWriter();
+    final PrintWriter pw = new PrintWriter(sw, true);
+    String trace = new String();
+
+    try {
+      t.printStackTrace( pw );
+      pw.flush();
+      sw.flush();
+      trace = sw.toString();
+    }
+    catch ( Exception e ) { }
+    finally {
+      try {
+        sw.close();
+        pw.close();
+      }
+      catch ( Exception e ) { }
+    }
+
+    return trace;
+
+}
+
    
 }
 

@@ -3,7 +3,7 @@
     <graph type="static">
         <attributes class="node" type="dynamic">
             <attribute id="0" title="category" type="string"/>
-            <attribute id="1" title="genericity" type="float"/> 
+            <attribute id="1" title="proximity" type="float"/> 
         </attributes> 
 
             <!-- session parameters (saved within the URL) -->
@@ -12,12 +12,11 @@
                 <center mode="selection"/><!-- modes: selection, graph, coordinates -->
                 <zoom value="1.0" />
                 <threshold value="1.0" />
-                <showlabels value="true" />
-                <shownodes value="true" />
-                <showlinks value="true" />
+                <labels show="true" />
+                <nodes show="true" />
+                <links show="true" />
                 <background r="204" g="122" b="229" />
                 <fontsize size="13" />
-                <maxdeepness value="10" />
         </tina>
         <nodes>
             <node id="1" label="GEOLYS">
@@ -26,7 +25,7 @@
                 <viz:size value="3.8"/>
                 <attvalues>
                     <attvalue id="0" value="project"/>
-                    <attvalue id="1" value="0.001"/>     
+                    <attvalue id="1" value="0.1"/>     
                 </attvalues>
             </node>
             <node id="2" label="EOLIA">
@@ -35,7 +34,7 @@
                 <viz:size value="3.8"/>
                 <attvalues>
                     <attvalue id="0" value="project"/>
-                    <attvalue id="1" value="0.01"/>     
+                    <attvalue id="1" value="0.2"/>     
                 </attvalues>
             </node>
             <node id="3" label="genetic">
@@ -44,10 +43,10 @@
                 <viz:size value="3.8"/>
                 <attvalues>
                     <attvalue id="0" value="keyword"/>
-                    <attvalue id="1" value="0.1"/>
+                    <attvalue id="1" value="0.3"/>
                 </attvalues>
             </node>
-            <node id="3" label="bioengineering">
+            <node id="4" label="bioengineering">
                 <viz:color b="234" g="91" r="214"/>
                 <viz:position x="12.890304" y="62.777985" z="0.0"/>
                 <viz:size value="3.8"/>
@@ -56,7 +55,7 @@
                     <attvalue id="1" value="0.2"/>
                 </attvalues>
             </node>
-                        <node id="3" label="green energy">
+            <node id="5" label="green energy">
                 <viz:color b="234" g="91" r="214"/>
                 <viz:position x="12.890304" y="62.777985" z="0.0"/>
                 <viz:size value="3.8"/>
@@ -65,7 +64,7 @@
                     <attvalue id="1" value="0.3"/>
                 </attvalues>
             </node>
-            <node id="3" label="geothermy">
+            <node id="6" label="geothermy">
                 <viz:color b="234" g="91" r="214"/>
                 <viz:position x="12.890304" y="62.777985" z="0.0"/>
                 <viz:size value="3.8"/>
@@ -74,7 +73,7 @@
                     <attvalue id="1" value="0.4"/>
                 </attvalues>
             </node>
-            <node id="3" label="geoengineering">
+            <node id="7" label="geoengineering">
                 <viz:color b="234" g="91" r="214"/>
                 <viz:position x="12.890304" y="62.777985" z="0.0"/>
                 <viz:size value="3.8"/>
@@ -83,7 +82,7 @@
                     <attvalue id="1" value="0.05"/>
                 </attvalues>
             </node>
-            <node id="3" label="electroengineering">
+            <node id="8" label="electroengineering">
                 <viz:color b="234" g="91" r="214"/>
                 <viz:position x="12.890304" y="62.777985" z="0.0"/>
                 <viz:size value="3.8"/>
@@ -101,7 +100,7 @@
                     <attvalue id="1" value="0.7"/>
                 </attvalues>
             </node>
-            <node id="3" label="foo">
+            <node id="9" label="foo">
                 <viz:color b="234" g="91" r="214"/>
                 <viz:position x="12.890304" y="62.777985" z="0.0"/>
                 <viz:size value="3.8"/>

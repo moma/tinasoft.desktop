@@ -80,6 +80,138 @@ function Tinaviz() {
         if (applet == null) return;
         //applet.showTermGraph();
     },
+    
+    takePDFPicture: function () {
+        var outputFilePath = "graph.pdf";
+        var result;
+        try {
+            result = viz.takePDFPicture(outputFilePath);
+        } catch (e) {
+            //alert("Oops! Something bad just happened. Calling 911...");
+            $('#debugdiv').append('<br><b>exception='+e+'</b>');
+            console.log(e);
+            return;
+        }
+        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
+        setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
+    },
+
+    takePicture: function() {
+        var outputFilePath = "graph.png";
+        var result;
+        try {
+            result = viz.takePicture(outputFilePath);
+        } catch (e) {
+            //alert("Oops! Something bad just happened. Calling 911...");
+            $('#debugdiv').append('<br><b>exception='+e+'</b>');
+             console.log(e);
+             return;
+        }
+        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
+        setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
+    },
+
+    downloadFile: function(outputFilePath, timeout) {
+        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+        var downloadPath;
+        if (path.search(/\\/) != -1) { downloadPath = path + "\\..\\"+outputFilePath }
+        else { downloadPath = path + "/../"+outputFilePath  }
+        
+        var downloadFile = 
+            Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+                
+        downloadFile.initWithPath(downloadPath);
+        if (downloadFile.exists() && timeout < 0) {
+            window.location.href = 
+                Components.classes["@mozilla.org/network/protocol;1?name=file"]
+                   .createInstance(Components.interfaces.nsIFileProtocolHandler)
+                      .getURLSpecFromFile(downloadFile);
+            return true;
+       }
+        if (downloadFile.exists() && timeout > 0) {
+            setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 3000);
+            return true;
+        } else {
+            // $('#debugdiv').append('<br>waiting..</p>');
+            setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1500);
+            return true;
+        }
+        return false;
+    },
+
+    loadGexf: function(filename) {
+
+        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+        var gexfPath;
+
+        // todo: find a better way to convert the path
+        if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
+        else { gexfPath = path + "/content/applet/data/"+filename  }
+
+        var file = 
+            Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+                
+        file.initWithPath(gexfPath);
+
+        var fstream = 
+            Components.classes["@mozilla.org/network/file-input-stream;1"]
+                .createInstance(Components.interfaces.nsIFileInputStream);
+        var cstream = 
+            Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+                .createInstance(Components.interfaces.nsIConverterInputStream);
+
+        fstream.init(file, -1, 0, 0);
+        cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
+
+        var str = {};
+        cstream.readString(-1, str); // read the whole file and put it in str.value
+        cstream.close(); // this closes fstream
+
+        try {
+            result = applet.updateViewFromString(str.value);
+        } catch (e) {
+            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
+            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
+            console.log(e);
+        }
+    },
+
+    updateView2: function(filename) {
+
+        if (!filename) filename = "test2.gexf";
+
+        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+
+        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+        var gexfPath;
+        if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
+        else { gexfPath = path + "/content/applet/data/"+filename  }
+
+        var gexfFile = 
+            Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+                
+        gexfFile.initWithPath(gexfPath);
+
+        var uri = 
+            Components.classes["@mozilla.org/network/protocol;1?name=file"]
+                .createInstance(Components.interfaces.nsIFileProtocolHandler)
+                    .getURLSpecFromFile(gexfFile);
+                    
+        try {
+            result = applet.updateViewFromURI(uri);
+        } catch (e) {
+            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
+            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
+            console.log(e);
+        }
+    },
+
+    
     isEnabled: function() {
         if (applet == null) {
             return false;
@@ -201,129 +333,6 @@ function computeAppletHeight() {
     return parent.computeAppletHeight();
 }
 
-function takePDFPicture() {
-    var outputFilePath = "graph.pdf";
-    var result;
-    try {
-        result = viz.takePDFPicture(outputFilePath);
-    } catch (e) {
-        //alert("Oops! Something bad just happened. Calling 911...");
-        $('#debugdiv').append('<br><b>exception='+e+'</b>');
-        console.log(e);
-        return;
-    }
-    $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
-    setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
-}
-
-function takePicture() {
-    var outputFilePath = "graph.png";
-    var result;
-    try {
-        result = viz.takePicture(outputFilePath);
-    } catch (e) {
-        //alert("Oops! Something bad just happened. Calling 911...");
-        $('#debugdiv').append('<br><b>exception='+e+'</b>');
-         console.log(e);
-         return;
-    }
-    $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
-    setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
-}
-
-function downloadFile(outputFilePath, timeout) {
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var downloadPath;
-    if (path.search(/\\/) != -1) { downloadPath = path + "\\..\\"+outputFilePath }
-    else { downloadPath = path + "/../"+outputFilePath  }
-    var downloadFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    downloadFile.initWithPath(downloadPath);
-    if (downloadFile.exists() && timeout < 0) {
-        window.location.href = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(downloadFile);
-        return true;
-   }
-    if (downloadFile.exists() && timeout > 0) {
-        setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 3000);
-        return true;
-    } else {
-        // $('#debugdiv').append('<br>waiting..</p>');
-        setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1500);
-        return true;
-    }
-    return false;
-}
-
-
-function updateView() {
-
-
-    var filename = "test2.gexf";
-
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var gexfPath;
-
-    // todo: find a better way to convert the path
-    if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
-    else { gexfPath = path + "/content/applet/data/"+filename  }
-
-    var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    file.initWithPath(gexfPath);
-
-    var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-    var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].createInstance(Components.interfaces.nsIConverterInputStream);
-
-    fstream.init(file, -1, 0, 0);
-    cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
-
-    var str = {};
-    cstream.readString(-1, str); // read the whole file and put it in str.value
-    cstream.close(); // this closes fstream
-
-    updateViewFromString(str.value);
-}
-
-function updateView2(filename) {
-
-    if (!filename) filename = "test2.gexf";
-
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var gexfPath;
-    if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
-    else { gexfPath = path + "/content/applet/data/"+filename  }
-
-    var gexfFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    gexfFile.initWithPath(gexfPath);
-
-    var uri = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(gexfFile);
-    updateViewFromURI(uri);
-}
-
-function updateViewFromString(str) {
-    var result;
-    try {
-        result = viz.updateViewFromString(str);
-        synchronize();
-    } catch (e) {
-        $('#debugdiv').append('<br><b>== exception '+e+'</b>');
-        console.log(e);
-    }
-    // $('#debugdiv').append('<br>== returned '+result+'</p>');
-}
-function updateViewFromURI(uri) {
-    var result;
-    try {
-        result = viz.updateViewFromURI(uri);
-        synchronize();
-    } catch (e) {
-        $('#debugdiv').append('<br><b>== exception '+e+'</b>');
-        console.log(e);
-    }
-    // $('#debugdiv').append('<br>== returned '+result+'</p>');
-}
 
 function showNodeDetails(x,y,uuid,label) {
     $('#nodedetails').css("top",""+y+"px");

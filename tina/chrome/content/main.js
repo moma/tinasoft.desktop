@@ -103,7 +103,10 @@ $(document).ready(function() {
         if (!tabvizframe.tinaviz.isEnabled()) {
             tabvizframe.tinaviz.resized();
             tabvizframe.tinaviz.setEnabled(true);
-        }
+        } 
+        //var filename = "tina_0.9-0.9999_spatialized.gexf";
+        //tabvizframe.tinaviz.loadGexf(filename);
+
         //tabvizframe.tinaviz.setModeGlobal()
         //tabvizframe.tinaviz.loadGexf()
       } else if (ui.index == 3) {
@@ -112,8 +115,9 @@ $(document).ready(function() {
         $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
         tabvizframe.tinaviz.resized();
         tabvizframe.tinaviz.setEnabled(true);
-        //tabvizframe.tinaviz.setModeGlobal()
-        //tabvizframe.tinaviz.loadGexf()
+        //tabvizframe.tinaviz.setModeLocall()
+        
+
       } else {
         // hide the frame; magic!
         tabvizframe.tinaviz.setEnabled(false);
@@ -121,7 +125,8 @@ $(document).ready(function() {
         $('#tabvizframe').css("width","0px");
       }                
   });
-            
+    
+         
   var max = 0;
   $("label").each(function(){
     if ($(this).width() > max) 

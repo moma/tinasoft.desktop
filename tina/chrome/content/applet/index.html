@@ -35,6 +35,10 @@ function appletInitialized() {
    return parent.tinaviz.init();
 }
 
+function appletGetNeighborhood() {
+   return parent.database.getNeighborhood();
+}
+
 </script>
 	</head>
 	<body>
@@ -60,10 +64,9 @@ function appletInitialized() {
 					
 					<param name="subapplet.classname" value="tinaviz.Main" /> 
 					<param name="subapplet.displayname" value="TinaViz" />
-					
+
 					<param name="engine" value="software" />
 								
-					<param name="test_string" value="outer" />
 			<!--<![endif]-->
 				
 				<object id="tinaviz"
@@ -87,12 +90,10 @@ function appletInitialized() {
 					<param name="subapplet.displayname" value="TinaViz" />
 					
 					<param name="engine" value="software" />
-										
-					<param name="test_string" value="inner" />
-					
+
 					<p>
 						<strong>
-							You need to install "Java" in order to visualize network.
+							You need to install "Java" in order to visualize maps.
 							<br />
 							<a href="http://www.java.com/getjava" title="Download Java">
 								Get Java here.
