@@ -1,6 +1,8 @@
 .*
 *.pyc
 *.pyo
+.packaging
+install/libs
 install/libs/pyxpcomext/*
 install/libs/xulrunner/*
 src/*
