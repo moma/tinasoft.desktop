@@ -17,7 +17,7 @@ fi
 
 #install/scripts/build.x86_64.sh
 install/scripts/build.i686.sh
-#install/scripts/build.windows.sh
+#install/scripts/build.win.sh
 
 
 #mount -o loop -t hfs tinasoft.dmg /mnt/mydmg
