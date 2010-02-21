@@ -16,6 +16,10 @@ outpath="dist/$outfile"
 #pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
 #pyxpcomextdownfile="pythonext-2.6.1.20090330-Linux_x86_64-gcc3.xpi"
 
+if [ -e $outfile ]
+  then
+    rm $outfile
+fi
 
 echo " - copying xulrunner files to output distribution.."
 cp -R tina $outpath

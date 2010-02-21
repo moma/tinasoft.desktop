@@ -1,4 +1,10 @@
 #!/bin/bash
+
+echo "#############################"
+echo "# TINASOFT BUILD SCRIPT 1.0 #"
+echo "#############################"
+echo ""
+
 #cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
 applet="viz/dist/tinaviz.jar"    # /   (root directory)
 if [ -e "$applet" ]

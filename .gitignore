@@ -13,6 +13,8 @@ dist/*
 build/*
 */build
 tinasoft-*.*
+*.tar.gz
+*.zip
 dropboxize.sh
 viz/.*
 viz/dist/*

@@ -1,8 +1,8 @@
 #/bin/bash
 
-echo ########################################
-echo # BUILD TINASOFT FOR WINDOWS PLATFORMS #
-echo ########################################
+echo "########################################"
+echo "# BUILD TINASOFT FOR WINDOWS PLATFORMS #"
+echo "########################################"
 echo ""
 
 name="Tinasoft"
@@ -16,11 +16,17 @@ outpath="dist/$outfile"
 pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
 pyxpcomextdownfile="pythonext-2.6.0.20090330-WINNT_x86-msvc.xpi"
 
+if [ -e $outfile ]
+  then
+    rm $outfile
+fi
+
+
 if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
   then
-    echo " - $xulrunner for $arch is already downloaded. great!"
+    echo " - xulrunner found"
   else
-    echo " - downloading $xulrunner for $arch.."
+    echo " - xulrunner not found, downloading.."
     mkdir -p .packaging/$arch/$xulrunner
     wget $xulrunnerdownpath/$xulrunnerdownfile
     tar xjf $xulrunnerdownfile
@@ -30,9 +36,9 @@ fi
 
 if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
   then
-    echo " - pyxpcomext for $xulrunner, Python 2.6 and $arch is already downloaded! great!"
+    echo " - pyxpcomext found"
   else
-    echo " - downloading pyxpcom for $xulrunner, Python 2.6 and $arch.."
+    echo " - pyxpcomext not found, downloading.."
     wget $pyxpcomextdownpath/$pyxpcomextdownfile
     echo " - installing pyxpcom inside $xulrunner download cache.."
     mkdir .tmp
@@ -52,7 +58,7 @@ echo " - copying xulrunner files to output distribution.."
 cp -R tina $outpath
 rm -Rf $outpath/xulrunner
 cp install/skeletons/$arch/tina.bat $outpath
-cp -R .packaging/$arch/$xulrunner/ $outpath
+cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 
 echo " - creating release archive.."
 tar -cf $outfile.zip $outpath
