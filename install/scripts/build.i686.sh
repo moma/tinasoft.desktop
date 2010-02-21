@@ -56,6 +56,8 @@ fi
 echo " - copying xulrunner files to output distribution.."
 cp -R tina $outpath
 rm -Rf $outpath/xulrunner
+rm $outpath/tina
+rm $outpath/tina-stub
 cp install/skeletons/$arch/tina $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 cp $outpath/xulrunner/xulrunner-stub $outpath/xulrunner

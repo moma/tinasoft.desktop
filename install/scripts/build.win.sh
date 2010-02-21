@@ -28,10 +28,21 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
   else
     echo " - xulrunner not found, downloading.."
     mkdir -p .packaging/$arch/$xulrunner
-    wget $xulrunnerdownpath/$xulrunnerdownfile
-    tar xjf $xulrunnerdownfile
+    if [ -e $xulrunnerdownfile ]
+      then
+        echo " - seems to already be downloading, unpacking.."
+      else
+        wget $xulrunnerdownpath/$xulrunnerdownfile
+    fi
+    mkdir .tmp
+    mv $xulrunnerdownfile .tmp
+    cd .tmp
+    unzip $xulrunnerdownfile
     rm $xulrunnerdownfile
-    mv xulrunner .packaging/$arch/$xulrunner/
+    cd ..
+    mv .tmp/xulrunner .packaging/$arch/$xulrunner/
+    echo " - cleaning temporary download files.."
+    rm -Rf .tmp
 fi
 
 if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
@@ -42,7 +53,7 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
     wget $pyxpcomextdownpath/$pyxpcomextdownfile
     echo " - installing pyxpcom inside $xulrunner download cache.."
     mkdir .tmp
-    mv $pyxpcomextdownfile .tmp
+    mv $pyxpcomextdownfile .tmp/
     cd .tmp
     unzip $pyxpcomextdownfile
     rm  $pyxpcomextdownfile
@@ -57,10 +68,13 @@ fi
 echo " - copying xulrunner files to output distribution.."
 cp -R tina $outpath
 rm -Rf $outpath/xulrunner
+rm $outpath/tina
+rm $outpath/tina-stub
 cp install/skeletons/$arch/tina.bat $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
+cp $outpath/xulrunner/xulrunner-stub.exe $outpath
 
 echo " - creating release archive.."
-tar -cf $outfile.zip $outpath
+zip -r $outfile.zip $outpath
 
 # echo " - uploading to the tinasoft server.."

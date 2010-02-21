@@ -1,8 +1,0 @@
-cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
-rm -Rf dist/tinasoft-win
-cp -R tina dist/tinasoft-win
-rm -Rf dist/tinasoft-win/xulrunner
-rm dist/tinasoft-win/tina # remove the linux executable
-cp -R install/skeletons/windows/* dist/tinasoft-win/.
-cd dist/tinasoft-win/
-wine tina.exe

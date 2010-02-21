@@ -9,13 +9,13 @@ src/*
 *.swp
 *.swo
 *~
+dist
 dist/*
 build/*
 */build
 tinasoft-*.*
 *.tar.gz
 *.zip
-dropboxize.sh
 viz/.*
 viz/dist/*
 viz/build/*
