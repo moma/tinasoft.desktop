@@ -9,12 +9,21 @@ name="Tinasoft"
 version="0.1"
 arch="windows"
 xulrunner="xulrunner-1.9.1"
+
 xulrunnerdownfile="xulrunner-1.9.1.7.en-US.win32.zip"
 xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozilla/xulrunner/releases/1.9.1.7/runtimes"
+
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
+
+platform="WINNT_x86-msvc"
+
 pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
-pyxpcomextdownfile="pythonext-2.6.0.20090330-WINNT_x86-msvc.xpi"
+pyxpcomextdownfile="pythonext-2.6.0.20090330-$platform.xpi"
+
+platformdownpath="http://dl.dropbox.com/u/122451/static/tina/alpha/platforms"
+platformdownfile="$platform.zip"
+
 
 if [ -e $outfile ]
   then
@@ -65,14 +74,27 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
     rm -Rf .tmp
 fi
 
-echo " - copying xulrunner files to output distribution.."
+if [ -e ".packaging/$arch/$xulrunner/platform" ]
+  then 
+    echo " - platform-specific libraries found"
+  else
+    echo " - platform-specific libraries not dound, downloading.."
+    wget $platformdownpath/$platformdownfile
+    unzip $platformdownfile
+    mkdir -p .packaging/$arch/$xulrunner/platform
+    mv $platform .packaging/$arch/$xulrunner/platform/
+    rm $platformdownfile
+fi
+
+echo " - moving files around to create the windows build.."
 cp -R tina $outpath
 rm -Rf $outpath/xulrunner
+rm -Rf $outpath/platform
+cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
 cp install/skeletons/$arch/tina.bat $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
-cp $outpath/xulrunner/xulrunner-stub.exe $outpath
 
 echo " - creating release archive.."
 zip -r $outfile.zip $outpath
