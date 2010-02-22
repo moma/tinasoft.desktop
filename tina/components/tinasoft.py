@@ -4,10 +4,44 @@ from tinasoft import TinaApp, ThreadPool
 import sys
 import os
 from distutils import sysconfig
-from time import sleep
 
 from xpcom import components, verbose, COMException, ServerException, nsError
-import threading
+import nsdom
+
+class TinasoftCallback():
+    _com_interfaces_ = components.interfaces.koIAsyncCallback
+    _reg_clsid_ = "{19ea86a2-fb13-4eb3-8ce1-f62c27664ad9}"
+    _reg_contractid_ = "Python.TinasoftCallback"
+    __name__ = 'TinasoftCallback'
+
+    def callback(self, filename):
+        return filename
+        # get Desktop directory
+        file = components.classes["@mozilla.org/file/directory_service;1"].\
+            getService(components.interfaces.nsIProperties).\
+            get("Desk", components.interfaces.nsIFile)
+        #file.append(filename)
+        ios = components.classes["@mozilla.org/network/io-service;1"].\
+            getService(components.interfaces.nsIIOService)
+        URL = ios.newFileURI(filename)
+        _logger.debug(URL)
+        return URL
+
+        #nsIFilePicker = components.interfaces.nsIFilePicker
+        #fp = components.classes["@mozilla.org/filepicker;1"]\
+        #    .createInstance(nsIFilePicker)
+        #fp.init(window, "Save file", nsIFilePicker.modeOpen)
+        #fp.appendFilters(nsIFilePicker.filterAll)
+        #rv = fp.show()
+        #if (rv == nsIFilePicker.returnOK or rv == nsIFilePicker.returnReplace):
+        #    file = fp.file
+            #Get the path as string. Note that you usually won't
+            #need to work with the string paths.
+        #    path = fp.file.path
+        #    self.logger.debug(path)
+        #    file.append(URL)
+            #work with returned nsILocalFile...
+
 
 class Tinasoft(TinaApp, ThreadPool):
     _com_interfaces_ = components.interfaces.ITinasoft
@@ -20,10 +54,9 @@ class Tinasoft(TinaApp, ThreadPool):
         ThreadPool.__init__(self, 1)
 
     def runImportFile(self, *args, **kwargs):
-        def callback(returnValue):
-            self.logger.debug("end of thread runImportFile " + str(returnValue))
+        callback = TinasoftCallback()
         self.logger.debug("starting a thread")
-        self.queueTask(self.importFile, args, kwargs, callback)
+        self.queueTask(self.importFile, args, kwargs, callback.callback)
 
     #def runImportFile(self, *args, **kwargs):
     #    def importCallback():
@@ -63,4 +96,3 @@ class Tinasoft(TinaApp, ThreadPool):
         # shared library in prefix/lib/.
         libs.insert(0, '-L' + getvar('LIBPL'))
         self.logger.debug( ' '.join(libs) )
-

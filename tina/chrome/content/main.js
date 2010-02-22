@@ -6,10 +6,10 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
-const INTRO_URL         = "chrome://tina/content/about.xul";
+const HELP_URL = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
+const INTRO_URL = "chrome://tina/content/about.xul";
 
-/* Tinasoft SINGLETON */
+/* Tinasoft Service instance */
 
 if ( typeof(TinaService) == "undefined" ) {
     cls = Cc["Python.Tinasoft"];
@@ -20,6 +20,7 @@ var submitImportfile = function(event) {
     corpora = $("#corpora")
     path = $("#csvfile")
     config  = $("#configfile")
+    exportpath = $("#exportfile")
     // TODO DEBUG
     path.val("/home/elishowk/code/Tinasoft/tests/pubmed_tina_test.csv");
     config.val("import.yaml");
@@ -38,13 +39,19 @@ var submitImportfile = function(event) {
         console.log( "missing the config file field" );
         return false;
     }
+    if ( exportpath.val() == "" ) {
+        exportpath.addClass('ui-state-error');
+        console.log( "missing the export path file field" );
+        return false;
+    }
     TinaService.runImportFile(
         path.val(),
         config.val(),
         corpora.val(),
+        exportpath.val(),
         false,
         false,
         'tina'
     );
-    return true;
+
 };
