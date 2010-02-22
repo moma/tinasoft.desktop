@@ -10,7 +10,7 @@ from xpcom._xpcom import NS_PROXY_SYNC, NS_PROXY_ALWAYS, NS_PROXY_ASYNC, getProx
 
 _observerSvc = components.classes["@mozilla.org/observer-service;1"].\
             getService(components.interfaces.nsIObserverService)
-_observerProxy = getProxyForObject(1, components.interfaces.nsIObserverService, self._observerSvc, NS_PROXY_SYNC | NS_PROXY_ALWAYS)
+_observerProxy = getProxyForObject(1, components.interfaces.nsIObserverService, _observerSvc, NS_PROXY_SYNC | NS_PROXY_ALWAYS)
 
 class TinasoftCallback():
     _com_interfaces_ = components.interfaces.koIAsyncCallback
@@ -30,7 +30,7 @@ class TinasoftCallback():
         #    getService(components.interfaces.nsIIOService)
         #URL = ios.newFileURI(filename)
         #_logger.debug(URL)
-        return URL
+        #return URL
 
         #nsIFilePicker = components.interfaces.nsIFilePicker
         #fp = components.classes["@mozilla.org/filepicker;1"]\
@@ -61,7 +61,7 @@ class Tinasoft(TinaApp, ThreadPool):
         self.callback = cb.callback
 
     def runImportFile(self, *args, **kwargs):
-        _observerProxy.notifyObservers(None, 'tinasoft_finish_status', arg[3])
+        _observerProxy.notifyObservers(None, 'tinasoft_running_status', str(args[3]))
         self.queueTask(self.importFile, args, kwargs, self.callback)
 
     #def runImportFile(self, *args, **kwargs):

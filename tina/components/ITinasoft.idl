@@ -19,6 +19,7 @@ interface ITinasoft : nsISupports {
         in boolean index,
         in wstring format
     );
+    wstring listCorpora();
     // Debugging : logs details of the python env
     void pythonEnv();
 };

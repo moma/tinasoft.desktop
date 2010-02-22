@@ -21,12 +21,10 @@ var tinasoftTaskObserver = {
         // traitements en fonction du topic...
         if(topic == "tinasoft_finish_status"){
             alert("tinasoft_finish_status");
-            console.log(subject);
-            console.log(topic);
             console.log(data);
         }
         if (topic == "tinasoft_running_status") {
-            console.log(topic);
+            alert("tinasoft_running_status, please wait");
             console.log(data);
         }
     }
@@ -36,7 +34,8 @@ var tinasoftTaskObserver = {
 var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 // enregistrement
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_finish_status" , false );
-ObserverServ.addObserver ( myObserver , "tinasoft_running_status" , false );
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_running_status" , false );
+
 
 
 var submitImportfile = function(event) {
@@ -80,6 +79,13 @@ var submitImportfile = function(event) {
 
 };
 
+var getListCorpora = function(event) {
+    //corpora = $("#corpora-list");
+    outstring = TinaService.listCorpora();
+    console.log(outstring);
+    //corpora.val( outstring );
+};
+
 
 
 function getWidth() {
@@ -120,64 +126,66 @@ function computeAppletHeight() {
 
 // wait for the DOM to be loaded
 $(document).ready(function() {
-  $("#tabs").tabs();
-  $("#tabs").bind('tabsselect', function(event, ui) {
+    $("#tabs").tabs();
+    $("#tabs").bind('tabsselect', function(event, ui) {
 
-      // MAGIC TRICK FOR THE JAVA IFRAME
-      if (ui.index == 2) {
-        // we want to size the iframe very precisely (at the pixel)
-        $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
-        $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
+        // MAGIC TRICK FOR THE JAVA IFRAME
+        if (ui.index == 2) {
+            // we want to size the iframe very precisely (at the pixel)
+            $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
+            $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
 
-        if (!tabvizframe.tinaviz.isEnabled()) {
+            if (!tabvizframe.tinaviz.isEnabled()) {
+                tabvizframe.tinaviz.resized();
+                tabvizframe.tinaviz.setEnabled(true);
+            }
+            //var filename = "tina_0.9-0.9999_spatialized.gexf";
+            //tabvizframe.tinaviz.loadGexf(filename);
+
+            //tabvizframe.tinaviz.setModeGlobal()
+            //tabvizframe.tinaviz.loadGexf()
+        } else if (ui.index == 3) {
+            // we want to size the iframe very precisely (at the pixel)
+            $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
+            $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
             tabvizframe.tinaviz.resized();
             tabvizframe.tinaviz.setEnabled(true);
+            //tabvizframe.tinaviz.setModeLocall()
+
+
+        } else {
+            // hide the frame; magic!
+            tabvizframe.tinaviz.setEnabled(false);
+            $('#tabvizframe').css("height","0px");
+            $('#tabvizframe').css("width","0px");
         }
-        //var filename = "tina_0.9-0.9999_spatialized.gexf";
-        //tabvizframe.tinaviz.loadGexf(filename);
-
-        //tabvizframe.tinaviz.setModeGlobal()
-        //tabvizframe.tinaviz.loadGexf()
-      } else if (ui.index == 3) {
-        // we want to size the iframe very precisely (at the pixel)
-        $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
-        $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-        tabvizframe.tinaviz.resized();
-        tabvizframe.tinaviz.setEnabled(true);
-        //tabvizframe.tinaviz.setModeLocall()
-
-
-      } else {
-        // hide the frame; magic!
-        tabvizframe.tinaviz.setEnabled(false);
-        $('#tabvizframe').css("height","0px");
-        $('#tabvizframe').css("width","0px");
-      }
-  });
-
-
-  var max = 0;
-  $("label").each(function(){
+    });
+    var max = 0;
+    $("label").each(function(){
     if ($(this).width() > max)
-      max = $(this).width();
-  });
+        max = $(this).width();
+    });
+    $("label").width(max);
+    var buttons = $('#push button').button();
+    buttons.click(function(event) {
+        //var target = $(event.target);
+        submitImportfile(event);
+    });
+    var buttons = $('#cooc button').button();
+    buttons.click(function(event) {
+        getListCorpora(event);
+    });
+    /*$("#disable-widgets").toggle(function() {
+    buttons.button("disable");
+    }, function() {
+    buttons.button("enable");
+    });
+    $("#toggle-widgets").toggle(function() {
+    buttons.button();
+    }, function() {
+    buttons.button("destroy");
+    }).click();*/
 
-  $("label").width(max);
-  var buttons = $('#push button').button();
-  buttons.click(function(event) {
-    //var target = $(event.target);
-    submitImportfile(event);
-  });
-            /*$("#disable-widgets").toggle(function() {
-                buttons.button("disable");
-            }, function() {
-                buttons.button("enable");
-            });
-            $("#toggle-widgets").toggle(function() {
-                buttons.button();
-            }, function() {
-                buttons.button("destroy");
-            }).click();*/
 
     // TINASOFT WINDOW IS RESIZED
     $(window).bind('resize', function() {
