@@ -25,6 +25,7 @@ public class Node {
     public boolean s = false; // switch
     public int degree = 0;
     public List<Node> neighbours = new ArrayList<Node>();
+    public Map<String,Float> weights = new HashMap<String,Float>();
     public boolean selected = false;
     public boolean highlighted = false;
     public float genericity = 1.0f;
@@ -91,5 +92,8 @@ public class Node {
         this.selected = node.selected;
         this.highlighted = node.highlighted;
         this.category = node.category;
+        this.weights = node.weights;
     }
+
+
 }

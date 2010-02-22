@@ -56,6 +56,7 @@ public class Session {
     public boolean zoomFrozen = false;
     public boolean showNodeDetails = false;
     public String selectedNodeID = "";
+    public boolean prespatialize = true;
 
     public class Showprojects {
 
@@ -76,6 +77,8 @@ public class Session {
         public float minY = 0.0f;
         public float maxX = 1.0f;
         public float maxY = 1.0f;
+        public float minRadius = 0.0f;
+        public float maxRadius = 0.0f;
     }
 
     public class Filter {
@@ -134,8 +137,6 @@ public class Session {
 
         }
     }
-
-
     public Metrics metrics = new Metrics();
     public Showprojects showProjects = new Showprojects();
     public Showkeywords showKeywords = new Showkeywords();
@@ -145,11 +146,9 @@ public class Session {
     public FilterChain filters = new FilterChain();
     public Map<String, tinaviz.Node> storedNodes = new HashMap<String, tinaviz.Node>();
     public Map<String, tinaviz.Node> filteredNodes = new HashMap<String, tinaviz.Node>();
-
     // public Map<String, tinaviz.Node> nodeMap = new HashMap<String, tinaviz.Node>();
     //public List<tinaviz.Node> nodeList = new ArrayList<tinaviz.Node>();
     // RUNTIME DATA, NOT SERIALIZED
-
     public float MAX_RADIUS = 0.0f;
     public AtomicBoolean isSynced = new AtomicBoolean(false);
 
@@ -183,17 +182,23 @@ public class Session {
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
         this.zoom = zoomValue.floatValue();
         System.out.println("zoom: " + zoom);
-        Double thresholdValue = (Double) xml.read(meta + "threshold/@value", XPathConstants.NUMBER);
-        this.upperThreshold = thresholdValue.floatValue();
-        System.out.println("threshold: " + upperThreshold);
-        this.lowerThreshold = 0.0f;
 
-        this.selectedNodeID = (String) xml.read(meta + "preselect/@node", XPathConstants.STRING);
-        System.out.println("preselected: " + selectedNodeID);
+        Double thresholdValue = (Double) xml.read(meta + "threshold/@min", XPathConstants.NUMBER);
+        this.lowerThreshold = thresholdValue.floatValue();
+        thresholdValue = (Double) xml.read(meta + "threshold/@max", XPathConstants.NUMBER);
+        this.upperThreshold = thresholdValue.floatValue();
+
+        System.out.println("threshold: ["+lowerThreshold+","+upperThreshold+"]");
+        
+        this.selectedNodeID = (String) xml.read(meta + "select/@node", XPathConstants.STRING);
+        System.out.println("selected node: " + selectedNodeID);
 
         this.showLabels = (Boolean) xml.read(meta + "labels/@show", XPathConstants.BOOLEAN);
         this.showNodes = (Boolean) xml.read(meta + "nodes/@show", XPathConstants.BOOLEAN);
         this.showLinks = (Boolean) xml.read(meta + "links/@show", XPathConstants.BOOLEAN);
+
+        this.animationPaused = (Boolean) xml.read(meta + "layout/@show", XPathConstants.BOOLEAN);
+        this.prespatialize = (Boolean) xml.read(meta + "layout/@prespatialize", XPathConstants.BOOLEAN);
 
         // reset the graph metrics
         metrics.minX = 0.0f;
@@ -229,20 +234,10 @@ public class Session {
                     : uuid;
 
 
-            //org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
-            //org.w3c.dom.Node position = xmlnode.getChildNodes().item(0);
-            /*
-            Double posx = Double.parseDouble(
-            position.getAttributes().getNamedItem("x").getNodeValue()
-            );
-            Double posy = Double.parseDouble(
-            position.getAttributes().getNamedItem("y").getNodeValue()
-            );*/
 
             Node node = new Node(uuid, label, (float) Math.random() * 10f,
-                    (float) Math.random() * 400f,
-                    (float) Math.random() * 400f);//, posx, posy);
-
+                    0.0f,
+                    0.0f);//, posx, posy);
             // update the graph metrics
             if (node.x < metrics.minX) {
                 metrics.minX = node.x;
@@ -262,43 +257,78 @@ public class Session {
 
             for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
                 org.w3c.dom.Node n = xmlnodeChildren.item(j);
-                if (n.getNodeName() == "attvalues") {
+                if (n.getNodeName().equals("attvalues")) {
                     // System.out.println("in attributes tag");
                     org.w3c.dom.NodeList xmlattribs = n.getChildNodes();
                     for (int k = 0; k < xmlattribs.getLength(); k++) {
                         org.w3c.dom.Node attr = xmlattribs.item(k);
-                        if (attr.getNodeName() == "attvalue") {
+                        if (attr.getNodeName().equals("attvalue")) {
                             // System.out.println("in attribute tag");
-                            if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("0")) {
-                                node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
-                                // System.out.println(" - category: "+node.category);
+                            if (attr.getAttributes() != null) {
+                            if (attr.getAttributes().getNamedItem("id") != null) {
+                                if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("0")) {
+                                    node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
+                                    // System.out.println(" - category: "+node.category);
 
-                            } else if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("1")) {
-                                node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
-                                // System.out.println("  - genericity: "+node.genericity );
+                                } else if (attr.getAttributes().getNamedItem("id").getNodeValue().equals("1")) {
+                                    //node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                    // System.out.println("  - genericity: "+node.genericity );
 
+                                }
                             }
+                        }
                         }
 
                     }
+                } else if (n.getNodeName().equals("viz:position") || n.getNodeName().equals("position")) {
+                    org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
+                    if (xmlnodePositionAttributes.getNamedItem("size") != null)
+                        node.radius = Float.parseFloat( xmlnodePositionAttributes.getNamedItem("size").getNodeValue() ) * 1.0f;
+                    if (xmlnodePositionAttributes.getNamedItem("x") != null)
+                        node.x = Float.parseFloat( xmlnodePositionAttributes.getNamedItem("x").getNodeValue() );
+                    if (xmlnodePositionAttributes.getNamedItem("y") != null)
+                        node.y = Float.parseFloat( xmlnodePositionAttributes.getNamedItem("y").getNodeValue() );
                 }
+                            // update the graph metrics
+                if (node.x < metrics.minX) {
+                    metrics.minX = node.x;
+                }
+                if (node.x > metrics.maxX) {
+                    metrics.maxX = node.x;
+                }
+                if (node.y < metrics.minY) {
+                    metrics.minY = node.y;
+                }
+                if (node.y > metrics.maxY) {
+                    metrics.maxY = node.y;
+                }
+                if (node.radius < metrics.minRadius) {
+                    metrics.minRadius = node.radius;
+                }
+                if (node.radius > metrics.maxRadius) {
+                    metrics.maxRadius = node.radius;
+                }
+
             }
 
-            System.out.println("selectedNodeID: " + selectedNodeID);
-            System.out.println("node uuid: " + uuid);
+            //System.out.println("selectedNodeID: " + selectedNodeID);
+
             //if (selectedNodeID.equals(uuid)) {
             //    node.selected = true;
             //}
 
             if (storedNodes.containsKey(uuid)) {
+                //System.out.println("updating node " + uuid);
                 storedNodes.get(uuid).update(node);
             } else {
+                //System.out.println("adding node " + uuid);
                 storedNodes.put(uuid, node);
                 //nodeList.add(node);
             }
 
 
         }
+
 
         org.w3c.dom.NodeList edges = (org.w3c.dom.NodeList) xml.read("/gexf/graph/edges/edge",
                 XPathConstants.NODESET);
@@ -312,8 +342,15 @@ public class Session {
 
             String source = edgeAttributes.getNamedItem("source").getNodeValue();
             String target = edgeAttributes.getNamedItem("target").getNodeValue();
+            Float weight = (edgeAttributes.getNamedItem("weight") != null) ?
+                Float.parseFloat(edgeAttributes.getNamedItem("weight").getNodeValue())  : 1.0f;
+
             if (storedNodes.containsKey(source) && storedNodes.containsKey(target)) {
                 storedNodes.get(source).addNeighbour(storedNodes.get(target));
+
+                // add the weight
+                //System.out.println("adding edge "+i+" <"+source+","+target+">");
+                storedNodes.get(source).weights.put(target, weight);
             }
 
         }

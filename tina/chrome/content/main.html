@@ -2,61 +2,66 @@
 <html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml"><head>
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="description" content="xxx xxx">
-    <meta name="keywords" content="xxx xxx">
+    <meta name="description" content="">
+    <meta name="keywords" content="Tinasoft,CREA">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <head>
-<!--[if IE]><script src="js/excanvas.compiled.js"></script><![endif]-->
-<script type="text/javascript" src="lib/js/jquery/jquery-1.3.2.min.js" language="javascript"></script>
-<script type="text/javascript" src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" language="javascript"></script>
-<script src="lib/js/jquery/ui.button.js"                      type="text/javascript" language="javascript"></script>
-<!--<script type="text/javascript" src="lib/js/jquery/jquery.form.js"></script>-->
-<!--<script type="text/javascript" src="tina.js" language="javascript"></script>-->
-<script type="text/javascript" src="main.js" language="javascript"></script>
-<script type="text/javascript" src="console.js" language="javascript"></script>
-<script type="text/javascript" src="prefman.js" language="javascript"></script>
-<script type="text/javascript" src="xmlhttprequester.js" language="javascript"></script>
-<link type="text/css" rel="stylesheet" href="main.css"/>
-<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
-<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.button.css" />
-
-
+  <!--[if IE]><script src="js/excanvas.compiled.js"></script><![endif]-->
+  <script type="text/javascript" src="lib/js/jquery/jquery-1.3.2.min.js"           language="javascript"></script>
+  <script type="text/javascript" src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" language="javascript"></script>
+  <script type="text/javascript" src="lib/js/jquery/ui.button.js"                  language="javascript"></script>
+  <!--<script type="text/javascript" src="lib/js/jquery/jquery.form.js"></script>-->
+  <!--<script type="text/javascript" src="tina.js" language="javascript"></script>-->
+  <script type="text/javascript" src="lib/js/jquery/jquery.qtip-1.0.0.min.js"      language="javascript"></script>
+  <script type="text/javascript" src="main.js"                                     language="javascript"></script>
+  <script type="text/javascript" src="console.js"                                  language="javascript"></script>
+  <script type="text/javascript" src="prefman.js"                                  language="javascript"></script>
+  <script type="text/javascript" src="xmlhttprequester.js"                         language="javascript"></script>
+  <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
+  <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.button.css" />
+  <link type="text/css" rel="stylesheet" href="main.css"/>
 </head>
 <body style="cursor: auto;">
+   <script type="text/javascript" language="javascript">
 
-    <script type="text/javascript">
-        // wait for the DOM to be loaded
-        $(document).ready(function() {
-            $("#tabs").tabs();
-            var max = 0;
-            $("label").each(function(){
-                if ($(this).width() > max)
-                    max = $(this).width();
-            });
-            $("label").width(max);
-            var buttons = $('#push button').button();
-            buttons.click(function(event) {
-                //var target = $(event.target);
-                submitImportfile(event);
-            });
-            /*$("#disable-widgets").toggle(function() {
-                buttons.button("disable");
-            }, function() {
-                buttons.button("enable");
-            });
-            $("#toggle-widgets").toggle(function() {
-                buttons.button();
-            }, function() {
-                buttons.button("destroy");
-            }).click();*/
-        });
-    </script>
+   /*
+    $('a[title]').qtip({
+   style: {
+    name: 'cream',
+    tip: true,
+    border: {
+         width: 3,
+         radius: 8,
+         color: '#6699CC'
+      },
+     width: 200
+   }
+
+  });
+
+   $('#buttonlabel').qtip({
+   content: 'test',
+   style: {
+    name: 'cream',
+    //tip: true,
+    border: {
+         width: 3,
+         radius: 8,
+         color: '#6699CC'
+      },
+     width: 200
+   }
+  });
+  */
+
+  </script>
     <div class="demo">
-        <div id="tabs">
+        <div id="tabs" class="ui-corner-top">
             <ul>
-                <li><a href="#tabs-1">Data sets</a></li>
-                <li><a href="#tabs-2">Thematic fields</a></li>
-                <li><a href="#tabs-3">Graph viz</a></li>
+                <li><a title="configure input data sets" href="#tabs-1">Data sets</a></li>
+                <li><a title="configure the thematic fields" href="#tabs-2">Thematic fields</a></li>
+                <li><a title="see the global map" href="#tabs-3">Global map</a></li>
+                 <li><a title="explore the local neighborhood" href="#tabs-4">Local neighborhood</a></li>
             </ul>
             <div id="tabs-1">
                 <p>Create or import a new data set</p>
@@ -74,8 +79,8 @@
                     <input type="checkbox" name="Check3" /><br/>-->
                     <div id="push">
                         <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-                            <span class="ui-button-text">Import</span>
-                    </button>
+                            <span class="ui-button-text">Import and extract</span>
+                        </button>
                     </div>
                 </div>
                 <!--</form>-->
@@ -199,14 +204,44 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div id="tabs-3">
-                <iframe class="tabvizframe" src="chrome://tina/content/visualization.html"/>
+
+            <div id="tabs-3" class="ui-corner-bottom">
+                <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a id="buttonlabel" href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
+                    </div>
+                    <div class="fg-buttonset ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
+                    </div>
+                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo" title="projection"><span class="ui-icon ui-icon-projection"></span> projection</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a>
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-4" class="ui-corner-bottom">
+              <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
+                    </div>
+                    <div class="fg-buttonset ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
+                    </div>
+                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo" title="projection"><span class="ui-icon ui-icon-projection"></span> projection</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a>
+                   </div>
+                </div>
             </div>
         </div>
 </div>
-
-
+<iframe id="tabvizframe" name="tabvizframe" class="tabvizframe" src="chrome://tina/content/visualization.html"/>
 </body>
 </html>

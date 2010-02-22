@@ -5,6 +5,7 @@
 
 package tinaviz.filters;
 
+import java.security.KeyException;
 import java.util.List;
 import java.util.Map;
 import tinaviz.Node;
@@ -15,7 +16,12 @@ import tinaviz.Node;
  */
 public interface Filter {
   public List<Node> process(List<Node> input, Map<String, Channel> channels);
-  public void setEnabled(boolean enabled);
-  public boolean getEnabled();
-  public boolean toggleEnabled();
+
+  public void setField(String key, String value) throws KeyException;
+  public void setField(String key, float value) throws KeyException;
+  public void setField(String key, int value) throws KeyException;
+  public void setField(String key, boolean value) throws KeyException;
+
+  public Object getField(String key) throws KeyException;
+
 }

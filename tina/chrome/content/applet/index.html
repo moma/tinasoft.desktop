@@ -15,42 +15,29 @@
 		  font-weight: normal; 
 		  line-height: normal; 
 		}
-                .container {
-			border: dashed 2px;
+        .container {
+			/*border: dashed 2px;*/
+			
 		}
 		/* ]]> */
 		</style>
 <script type="text/javascript">
 
-
 function getWidth() {
-        var x = 0;
-        if (self.innerHeight) {
-                x = self.innerWidth;
-        }
-        else if (document.documentElement && document.documentElement.clientHeight) {
-                x = document.documentElement.clientWidth;
-        }
-        else if (document.body) {
-                x = document.body.clientWidth;
-        }
-        return x;
+    return parent.computeAppletWidth();
 }
- 
+         
 function getHeight() {
-        var y = 0;
-        if (self.innerHeight) {
-                y = self.innerHeight;
-        }
-        else if (document.documentElement && document.documentElement.clientHeight) {
-                y = document.documentElement.clientHeight; 
-	}
-        else if (document.body) {
-                y = document.body.clientHeight; 
-	}
-        return y;
+   return parent.computeAppletHeight();
 }
 
+function appletInitialized() {
+   return parent.tinaviz.init();
+}
+
+function appletGetNeighborhood() {
+   return parent.database.getNeighborhood();
+}
 
 </script>
 	</head>
@@ -77,10 +64,9 @@ function getHeight() {
 					
 					<param name="subapplet.classname" value="tinaviz.Main" /> 
 					<param name="subapplet.displayname" value="TinaViz" />
-					
+
 					<param name="engine" value="software" />
 								
-					<param name="test_string" value="outer" />
 			<!--<![endif]-->
 				
 				<object id="tinaviz"
@@ -104,12 +90,10 @@ function getHeight() {
 					<param name="subapplet.displayname" value="TinaViz" />
 					
 					<param name="engine" value="software" />
-										
-					<param name="test_string" value="inner" />
-					
+
 					<p>
 						<strong>
-							You need to install "Java" in order to visualize network.
+							You need to install "Java" in order to visualize maps.
 							<br />
 							<a href="http://www.java.com/getjava" title="Download Java">
 								Get Java here.

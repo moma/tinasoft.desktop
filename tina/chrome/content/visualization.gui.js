@@ -1,3 +1,4 @@
+/*
 gui = function() {}
 
 gui.updateAutocomplete = function (labels) {
@@ -6,3 +7,4 @@ gui.updateAutocomplete = function (labels) {
 	 });
 }
 
+*/
