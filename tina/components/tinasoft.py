@@ -6,7 +6,11 @@ import os
 from distutils import sysconfig
 
 from xpcom import components, verbose, COMException, ServerException, nsError
-import nsdom
+from xpcom._xpcom import NS_PROXY_SYNC, NS_PROXY_ALWAYS, NS_PROXY_ASYNC, getProxyForObject
+
+_observerSvc = components.classes["@mozilla.org/observer-service;1"].\
+            getService(components.interfaces.nsIObserverService)
+_observerProxy = getProxyForObject(1, components.interfaces.nsIObserverService, self._observerSvc, NS_PROXY_SYNC | NS_PROXY_ALWAYS)
 
 class TinasoftCallback():
     _com_interfaces_ = components.interfaces.koIAsyncCallback
@@ -15,16 +19,17 @@ class TinasoftCallback():
     __name__ = 'TinasoftCallback'
 
     def callback(self, filename):
+        _observerProxy.notifyObservers(None, 'tinasoft_finish_status', None)
         return filename
         # get Desktop directory
-        file = components.classes["@mozilla.org/file/directory_service;1"].\
-            getService(components.interfaces.nsIProperties).\
-            get("Desk", components.interfaces.nsIFile)
+        #file = components.classes["@mozilla.org/file/directory_service;1"].\
+        #    getService(components.interfaces.nsIProperties).\
+        #    get("Desk", components.interfaces.nsIFile)
         #file.append(filename)
-        ios = components.classes["@mozilla.org/network/io-service;1"].\
-            getService(components.interfaces.nsIIOService)
-        URL = ios.newFileURI(filename)
-        _logger.debug(URL)
+        #ios = components.classes["@mozilla.org/network/io-service;1"].\
+        #    getService(components.interfaces.nsIIOService)
+        #URL = ios.newFileURI(filename)
+        #_logger.debug(URL)
         return URL
 
         #nsIFilePicker = components.interfaces.nsIFilePicker
@@ -49,14 +54,15 @@ class Tinasoft(TinaApp, ThreadPool):
     _reg_contractid_ = "Python.Tinasoft"
     __name__ = 'Tinasoft'
 
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         TinaApp.__init__(self, *args, **kwargs)
         ThreadPool.__init__(self, 1)
+        cb = TinasoftCallback()
+        self.callback = cb.callback
 
     def runImportFile(self, *args, **kwargs):
-        callback = TinasoftCallback()
-        self.logger.debug("starting a thread")
-        self.queueTask(self.importFile, args, kwargs, callback.callback)
+        _observerProxy.notifyObservers(None, 'tinasoft_finish_status', arg[3])
+        self.queueTask(self.importFile, args, kwargs, self.callback)
 
     #def runImportFile(self, *args, **kwargs):
     #    def importCallback():

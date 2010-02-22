@@ -4,6 +4,12 @@
 
 [scriptable, uuid(d90c75e0-e2e2-4e67-baf7-2553930f3ba7)]
 interface ITinasoft : nsISupports {
+    // Running means the operation has started and is working to complete
+    // it's tasks.
+    const long STATUS_RUNNING = 0;
+    // status can be one of the states above
+    attribute long status;
+    // Extraction task
     void runImportFile(
         in wstring path,
         in wstring configFile,
@@ -13,6 +19,7 @@ interface ITinasoft : nsISupports {
         in boolean index,
         in wstring format
     );
+    // Debugging : logs details of the python env
     void pythonEnv();
 };
 

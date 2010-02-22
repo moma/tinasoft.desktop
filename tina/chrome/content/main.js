@@ -16,14 +16,38 @@ if ( typeof(TinaService) == "undefined" ) {
     var TinaService = cls.getService(Ci.ITinasoft);
 }
 
+var tinasoftTaskObserver = {
+    observe : function ( subject , topic , data ){
+        // traitements en fonction du topic...
+        if(topic == "tinasoft_finish_status"){
+            alert("tinasoft_finish_status");
+            console.log(subject);
+            console.log(topic);
+            console.log(data);
+        }
+        if (topic == "tinasoft_running_status") {
+            console.log(topic);
+            console.log(data);
+        }
+    }
+};
+
+// récupération du service d'observation
+var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
+// enregistrement
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_finish_status" , false );
+ObserverServ.addObserver ( myObserver , "tinasoft_running_status" , false );
+
+
 var submitImportfile = function(event) {
     corpora = $("#corpora")
     path = $("#csvfile")
     config  = $("#configfile")
     exportpath = $("#exportfile")
-    // TODO DEBUG
-    path.val("/home/elishowk/code/Tinasoft/tests/pubmed_tina_test.csv");
+    // DEBUG
+    path.val("pubmed_tina_test.csv");
     config.val("import.yaml");
+    exportpath.val("test-export.csv");
     if ( corpora.val() == '' ) {
         corpora.addClass('ui-state-error');
         console.log( "missing the corpora field" );
@@ -71,44 +95,44 @@ function getWidth() {
                 }
                 return x;
 }
-         
+
 function getHeight() {
                 var y = 0;
                 if (self.innerHeight) {
                         y = self.innerHeight;
                 }
                 else if (document.documentElement && document.documentElement.clientHeight) {
-                        y = document.documentElement.clientHeight; 
-	        }
+                        y = document.documentElement.clientHeight;
+            }
                 else if (document.body) {
-                        y = document.body.clientHeight; 
-	        }
+                        y = document.body.clientHeight;
+            }
                 return y;
 }
 
 function computeAppletWidth() {
     return getWidth() - 15;
 }
-         
+
 function computeAppletHeight() {
     return getHeight() - 130;
 }
-  
+
 // wait for the DOM to be loaded
 $(document).ready(function() {
   $("#tabs").tabs();
   $("#tabs").bind('tabsselect', function(event, ui) {
-  
+
       // MAGIC TRICK FOR THE JAVA IFRAME
       if (ui.index == 2) {
         // we want to size the iframe very precisely (at the pixel)
         $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
         $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-        
+
         if (!tabvizframe.tinaviz.isEnabled()) {
             tabvizframe.tinaviz.resized();
             tabvizframe.tinaviz.setEnabled(true);
-        } 
+        }
         //var filename = "tina_0.9-0.9999_spatialized.gexf";
         //tabvizframe.tinaviz.loadGexf(filename);
 
@@ -121,20 +145,20 @@ $(document).ready(function() {
         tabvizframe.tinaviz.resized();
         tabvizframe.tinaviz.setEnabled(true);
         //tabvizframe.tinaviz.setModeLocall()
-        
+
 
       } else {
         // hide the frame; magic!
         tabvizframe.tinaviz.setEnabled(false);
         $('#tabvizframe').css("height","0px");
         $('#tabvizframe').css("width","0px");
-      }                
+      }
   });
-    
-         
+
+
   var max = 0;
   $("label").each(function(){
-    if ($(this).width() > max) 
+    if ($(this).width() > max)
       max = $(this).width();
   });
 
@@ -154,7 +178,7 @@ $(document).ready(function() {
             }, function() {
                 buttons.button("destroy");
             }).click();*/
-            
+
     // TINASOFT WINDOW IS RESIZED
     $(window).bind('resize', function() {
         // check if the applet is ready
