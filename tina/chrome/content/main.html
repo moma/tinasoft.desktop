@@ -23,11 +23,11 @@
 </head>
 <body style="cursor: auto;">
    <script type="text/javascript" language="javascript">
-   
+
    /*
     $('a[title]').qtip({
-   style: { 
-    name: 'cream', 
+   style: {
+    name: 'cream',
     tip: true,
     border: {
          width: 3,
@@ -35,14 +35,14 @@
          color: '#6699CC'
       },
      width: 200
-   } 
-   
+   }
+
   });
-  
+
    $('#buttonlabel').qtip({
    content: 'test',
-   style: { 
-    name: 'cream', 
+   style: {
+    name: 'cream',
     //tip: true,
     border: {
          width: 3,
@@ -50,10 +50,10 @@
          color: '#6699CC'
       },
      width: 200
-   } 
+   }
   });
   */
-  
+
   </script>
     <div class="demo">
         <div id="tabs" class="ui-corner-top">
@@ -73,168 +73,60 @@
                     <input id="configfile" class="field" type="file" name="configfile"/><br/>
                     <label>corpora name or new corpora</label>
                     <input id="corpora" type="text" class="field" name="corpora" value='test corpora'/><br/>
+                    <label>export to file</label>
+                    <input id="exportfile" type="file" class="field" name="exportfile" value=''/><br/>
                     <!--<label>Index full-text</label>
                     <input type="checkbox" name="Check3" /><br/>-->
                     <div id="push">
-		      <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text">Import</span></button>
+                        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+                            <span class="ui-button-text">Extraction</span>
+                        </button>
                     </div>
                 </div>
                 <!--</form>-->
             </div>
             <div id="tabs-2">
-                <p>Edit or export your data sets</p>
-                <script type="text/javascript">
-                    function pytest() {
-                        console.log(Tinasoft);
-                    };
-                    /*$(function() {
-                        $("#accordion").accordion();
-                    });*/
-                </script>
-                <div class="demo-1">
-                    <div id="accordion-1">
-                        <h3><a href="#">Data set 1</a></h3>
-                        <div>
-                            <p>
-                            <label>Name</label><input type="text" value="Algorithmics"></input>
-                            </p>
-                            <p>Full text indexation<input type="button" id="tinastorageButton" value="test Tinasoft XPCOM" class="ui-widget ui-state-default" onclick="pytest()"/></p>
-                            <p>
-                            Edit keyphrases :
-                            </p>
-                            <style type="text/css">
-                                #feedback { font-size: 1.4em; }
-                                #selectable .ui-selecting { background: #FECA40; }
-                                #selectable .ui-selected { background: #F39814; color: white; }
-                                #selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-                                #selectable li { margin: 3px; padding: 0.4em; font-size: 1em; height: 15px; }
-                                </style>
-                                <script type="text/javascript">
-                                $(function() {
-                                    $("#selectable").selectable({
-                                        stop: function(){
-                                            var result = $("#select-result").empty();
-                                            $(".ui-selected", this).each(function(){
-                                                var index = $("#selectable li").index(this);
-                                                result.append(" #" + (index + 1));
-                                            });
-                                        }
-                                    });
-                                });
-                                </script>
+                <p>Import ngrams and create graph</p>
+                <div id="cooc">
+                        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+                            <span class="ui-button-text">Generate graphs</span>
+                        </button>
+                </div>
+            </div>
 
-
-                            <div class="demo">
-
-                            <p id="feedback">
-                            You will delete : <span id="select-result">none</span>.
-                            </p>
-
-                            <ol id="selectable">
-                                <li class="ui-widget-content">Genetic algorithms</li>
-                                <li class="ui-widget-content">Neural networks</li>
-                                <li class="ui-widget-content">Grid Computing</li>
-                                <li class="ui-widget-content">Distributed computing</li>
-                                <li class="ui-widget-content">Network Computing</li>
-                            </ol>
-
-                            </div>
-                            <p>
-                            Edit lemmas :
-                            </p>
-                            <style type="text/css">
-                                #sortable1, #sortable2, #sortable3 { list-style-type: none; margin: 0; padding: 0; float: left; margin-right: 10px; background: #eee; padding: 5px; width: 143px;}
-                                #sortable1 li, #sortable2 li, #sortable3 li { margin: 5px; padding: 5px; font-size: 1.2em; width: 120px; }
-                                </style>
-                                <script type="text/javascript">
-                                $(function() {
-                                    $("ul.droptrue").sortable({
-                                        connectWith: 'ul'
-                                    });
-
-                                    $("ul.dropfalse").sortable({
-                                        connectWith: 'ul',
-                                        dropOnEmpty: false
-                                    });
-
-                                    $("#sortable1, #sortable2, #sortable3").disableSelection();
-                                });
-                                </script>
-                                <div class="demo">
-
-                                <ul id="sortable1" class='droptrue'>
-                                    <li class="ui-state-default">genetic</li>
-                                    <li class="ui-state-default">genetics</li>
-                                </ul>
-
-                                <ul id="sortable2" class='droptrue'>
-                                    <li class="ui-state-default">algorithm</li>
-                                    <li class="ui-state-default">algorithms</li>
-                                </ul>
-
-                                <ul id="sortable3" class='droptrue'>
-                                    <li class="ui-state-default">networks</li>
-                                </ul>
-
-                                <br clear="both" />
-
-                                </div>
-                        </div>
-                        <h3><a href="#">Data set 2</a></h3>
-                        <div>
-                            <p>
-                            </p>
-                        </div>
-                        <h3><a href="#">Data set 3</a></h3>
-                        <div>
-                            <p>
-                            Data set 3
-                            </p>
-
-                        </div>
-                        <h3><a href="#">Data set 4</a></h3>
-                        <div>
-                            <p>
-                            Data set 4
-                            </p>
-                        </div>
+            <div id="tabs-3" class="ui-corner-bottom">
+                <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a id="buttonlabel" href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
+                    </div>
+                    <div class="fg-buttonset ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
+                    </div>
+                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo" title="projection"><span class="ui-icon ui-icon-projection"></span> projection</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a>
                     </div>
                 </div>
             </div>
-            
-            <div id="tabs-3" class="ui-corner-bottom">
-                <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">     
-		                <a id="buttonlabel" href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a> 
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
-		            </div>
-		            <div class="fg-buttonset ui-helper-clearfix">     
-		                <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a> 
-		            </div>
-		            <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">     
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a> 
-		                <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo" title="projection"><span class="ui-icon ui-icon-projection"></span> projection</a> 
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a> 
-	                </div>
-	            </div>
-            </div>
             <div id="tabs-4" class="ui-corner-bottom">
               <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-            	<div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">     
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a> 
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
-		            </div>
-		            <div class="fg-buttonset ui-helper-clearfix">     
-		                <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a> 
-		            </div>
-		            <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">     
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a> 
-		                <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo" title="projection"><span class="ui-icon ui-icon-projection"></span> projection</a> 
-		                <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a> 
-	               </div>
-	            </div>
+                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
+                    </div>
+                    <div class="fg-buttonset ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
+                    </div>
+                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo" title="projection"><span class="ui-icon ui-icon-projection"></span> projection</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a>
+                   </div>
+                </div>
             </div>
         </div>
 </div>

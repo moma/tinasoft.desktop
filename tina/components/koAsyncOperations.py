@@ -76,7 +76,7 @@ class koAsyncService(object):
         self._affectedUris = {}
         self._lockedUris = {}
         self._lock = threading.Lock()
-        self._observerSvc = components.classes["@mozilla.org/observer-service;1"].\
+        self.Svc = components.classes["@mozilla.org/observer-service;1"].\
             getService(components.interfaces.nsIObserverService)
         self._observerProxy = getProxyForObject(1, components.interfaces.nsIObserverService, self._observerSvc, NS_PROXY_SYNC | NS_PROXY_ALWAYS)
         # The testing mode variable is used when running python tests from
