@@ -1,21 +1,31 @@
+#!/bin/bash
+
+echo "#############################"
+echo "# TINASOFT BUILD SCRIPT 1.0 #"
+echo "#############################"
+echo ""
+
 #cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
-cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
+applet="viz/dist/tinaviz.jar"    # /   (root directory)
+if [ -e "$applet" ]
+then
+  echo "copying applet from $applet"
+  cp -R $applet tina/chrome/content/applet
+fi
 
-rm -Rf dist
-rm tinasoft-*.*
-mkdir dist
+if [ -e "dist" ]
+then
+  echo "cleaning old dist directory"
+  rm -Rf dist/*
+else
+  mkdir dist
+fi
 
-#install/scripts/build.linux64.sh
-#tar -cvf tinasoft-1.0-x86_64.tar.gz dist/tinasoft-x86_64
-
-#install/scripts/build.linux32.sh
-#tar -cvf tinasoft-1.0-i686.tar.gz dist/tinasoft-i686
-
+#install/scripts/build.x86_64.sh
+#install/scripts/build.i686.sh
 install/scripts/build.win.sh
-zip -r tinasoft-1.0-win.zip dist/tinasoft-win
 
-install/scripts/build.mac.sh
-zip -r tinasoft-1.0-mac.zip dist/tinasoft-mac
+
 #mount -o loop -t hfs tinasoft.dmg /mnt/mydmg
 #cp -R /mnt/mydmg/*  
 #unmount /mnt/mydmg

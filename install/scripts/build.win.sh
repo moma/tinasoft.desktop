@@ -1,5 +1,102 @@
-echo "Generating Windows distribution.."
-cp -R tina dist/tinasoft-win
-rm -Rf dist/tinasoft-win/xulrunner
-rm dist/tinasoft-win/tina # remove the linux executable
-cp -R install/skeletons/windows/* dist/tinasoft-win/.
+#/bin/bash
+
+echo "########################################"
+echo "# BUILD TINASOFT FOR WINDOWS PLATFORMS #"
+echo "########################################"
+echo ""
+
+name="Tinasoft"
+version="0.1"
+arch="windows"
+xulrunner="xulrunner-1.9.1"
+
+xulrunnerdownfile="xulrunner-1.9.1.7.en-US.win32.zip"
+xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozilla/xulrunner/releases/1.9.1.7/runtimes"
+
+outfile="$name-$version-$arch"
+outpath="dist/$outfile"
+
+platform="WINNT_x86-msvc"
+
+pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
+pyxpcomextdownfile="pythonext-2.6.0.20090330-$platform.xpi"
+
+platformdownpath="http://dl.dropbox.com/u/122451/static/tina/alpha/platforms"
+platformdownfile="$platform.zip"
+
+
+if [ -e $outfile ]
+  then
+    rm $outfile
+fi
+
+
+if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
+  then
+    echo " - xulrunner found"
+  else
+    echo " - xulrunner not found, downloading.."
+    mkdir -p .packaging/$arch/$xulrunner
+    if [ -e $xulrunnerdownfile ]
+      then
+        echo " - seems to already be downloading, unpacking.."
+      else
+        wget $xulrunnerdownpath/$xulrunnerdownfile
+    fi
+    mkdir .tmp
+    mv $xulrunnerdownfile .tmp
+    cd .tmp
+    unzip $xulrunnerdownfile
+    rm $xulrunnerdownfile
+    cd ..
+    mv .tmp/xulrunner .packaging/$arch/$xulrunner/
+    echo " - cleaning temporary download files.."
+    rm -Rf .tmp
+fi
+
+if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
+  then
+    echo " - pyxpcomext found"
+  else
+    echo " - pyxpcomext not found, downloading.."
+    wget $pyxpcomextdownpath/$pyxpcomextdownfile
+    echo " - installing pyxpcom inside $xulrunner download cache.."
+    mkdir .tmp
+    mv $pyxpcomextdownfile .tmp/
+    cd .tmp
+    unzip $pyxpcomextdownfile
+    rm  $pyxpcomextdownfile
+    cd ..
+    mv .tmp/python .packaging/$arch/$xulrunner/xulrunner/
+    mv .tmp/pylib .packaging/$arch/$xulrunner/xulrunner/
+    mv .tmp/components/* .packaging/$arch/$xulrunner/xulrunner/components/
+    echo " - cleaning temporary download files.."
+    rm -Rf .tmp
+fi
+
+if [ -e ".packaging/$arch/$xulrunner/platform" ]
+  then 
+    echo " - platform-specific libraries found"
+  else
+    echo " - platform-specific libraries not dound, downloading.."
+    wget $platformdownpath/$platformdownfile
+    unzip $platformdownfile
+    mkdir -p .packaging/$arch/$xulrunner/platform
+    mv $platform .packaging/$arch/$xulrunner/platform/
+    rm $platformdownfile
+fi
+
+echo " - moving files around to create the windows build.."
+cp -R tina $outpath
+rm -Rf $outpath/xulrunner
+rm -Rf $outpath/platform
+cp -R .packaging/$arch/$xulrunner/platform $outpath
+rm $outpath/tina
+rm $outpath/tina-stub
+cp install/skeletons/$arch/tina.bat $outpath
+cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
+
+echo " - creating release archive.."
+zip -r $outfile.zip $outpath
+
+# echo " - uploading to the tinasoft server.."
