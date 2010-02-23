@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.SwingUtilities;
-import tinaviz.Node;
+
 import tinaviz.filters.Channel;
 import tinaviz.filters.Filter;
 import tinaviz.filters.FilterChainListener;
@@ -23,6 +24,9 @@ import tinaviz.filters.FilterChainListener;
  * @author jbilcke
  */
 public class FilterChain {
+
+    public List<Node> filteredNodes = new ArrayList<Node>();
+    public AtomicBoolean filtered = new AtomicBoolean(true);
 
     private class FilterThread extends Thread {
 
@@ -42,7 +46,7 @@ public class FilterChain {
             for (Filter f : filters.values()) {
                 f.process(result, channels);
             }
-            chain.finished(result);
+            chain.end(result);
         }
     }
 
@@ -94,17 +98,25 @@ public class FilterChain {
         return false;
     }
 
-    public synchronized void finished(List<Node> result) {
+    public synchronized void end(List<Node> result) {
+        filteredNodes = result;
+        filtered.set(true);
+        /*
         final FilterChain me = this;
+
         final List<Node> output = result;
         Runnable doWorkRunnable = new Runnable() {
             public void run() {
-                for (FilterChainListener listener : listeners) {
-                    listener.filterChainOutput(output);
-                }
+                
+                //for (FilterChainListener listener : listeners) {
+                //    listener.filterChainOutput(output);
+                //}
+                me.filteredNodes = output;
+
             }
         };
         SwingUtilities.invokeLater(doWorkRunnable);
+        */
     }
 
     public void addFilterChainListener(FilterChainListener listener) {

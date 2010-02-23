@@ -42,8 +42,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
-    List<tinaviz.Node> screenBufferNodes = new ArrayList<tinaviz.Node>();
-    List<tinaviz.Node> nodeBuffer = new ArrayList<tinaviz.Node>();
+
     PImage nodeIcon;
     PFont font;
     float vizx = 0f;
@@ -73,6 +72,17 @@ public class Main extends PApplet implements MouseWheelListener {
     AtomicBoolean screenBufferUpdating = new AtomicBoolean(false);
     private int stepCounter = 0;
     // Semaphore screenBufferLock = new Semaphore();
+
+    private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
+    
+
+        private void nodeClicked(Node n) {
+            window.eval(
+                    "nodeClicked(" + screenX(n.x, n.y)
+                    + "," + screenY(n.x, n.y)
+                    + ",\"" + n.uuid + "\""
+                    + ",\"" + n.label + "\");");
+    }
 
     private void showNodeDetails(Node n) {
         if (session.showNodeDetails) {
@@ -191,15 +201,16 @@ public class Main extends PApplet implements MouseWheelListener {
             node = new Node("" + i, "node " + i, radius, random(width / 2), random(height / 2));
             node.genericity = random(1.0f);
             // System.out.println(node.genericity);
-            screenBufferNodes.add(node);
+            session.getNetwork().addNode(node);
+
         }
 
         Node a;
         Node b;
-        for (int i = 0; i < screenBufferNodes.size(); i++) {
-            for (int j = 0; j < screenBufferNodes.size() && i != j; j++) {
+        for (int i = 0; i < nodes.size(); i++) {
+            for (int j = 0; j < nodes.size() && i != j; j++) {
                 if (random(1.0f) < 0.009) { // link density : 0.02 = a lot, 0.0002 = a few
-                    screenBufferNodes.get(i).addNeighbour(screenBufferNodes.get(j));
+                    nodes.get(i).addNeighbour(nodes.get(j));
                 }
             }
         }
@@ -242,12 +253,15 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!this.isEnabled()) return;
 
-        if (!session.isSynced.getAndSet(true)) {
-             screenBufferNodes.clear();
-             screenBufferNodes.addAll(session.storedNodes.values());
+        if (!session.isSynced.get()) {
+            List<Node> n = session.getNodes();
+            if (n != null) {
+                nodes.clear();
+                nodes.addAll(n);
+            }
             //session.animationPaused = tmp; // TODO replace by a lock here
             //preSpatialize = 60;
-            center();
+            center(); // dynamic recenter
         }
 
         // TODO put this in another thread
@@ -301,8 +315,8 @@ public class Main extends PApplet implements MouseWheelListener {
         float LAYOUT_REPULSION = 0.005f;
         float LAYOUT_ATTRACTION = 0.0001f;
 
-        for (Node n1 : screenBufferNodes) {
-            for (Node n2 : screenBufferNodes) {
+        for (Node n1 : nodes) {
+            for (Node n2 : nodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -330,7 +344,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } // FOR NODE B
         }   // FOr NODE A
 
-        for (Node n : screenBufferNodes) {
+        for (Node n : nodes) {
             n.x += n.vx;
             n.y += n.vy;
             n.vx = 0.0f;
@@ -420,8 +434,8 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.fill(120);
         pg.strokeWeight(1.0f);
 
-        for (Node n1 : screenBufferNodes) {
-            for (Node n2 : screenBufferNodes) {
+        for (Node n1 : nodes) {
+            for (Node n2 : nodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -456,7 +470,7 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.strokeWeight(1.2f);
 
 
-        for (Node n : screenBufferNodes) {
+        for (Node n : nodes) {
             if (!(n.genericity <= session.upperThreshold
                     && n.genericity >= session.lowerThreshold)) {
                 continue;
@@ -540,8 +554,8 @@ public class Main extends PApplet implements MouseWheelListener {
             strokeWeight(3.0f);
         }
 
-        for (Node n1 : screenBufferNodes) {
-            for (Node n2 : screenBufferNodes) {
+        for (Node n1 : nodes) {
+            for (Node n2 : nodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -606,7 +620,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         // ITERATE OVER NODES
         // COMPUTE NODE DATA, DRAW NODE..
-        for (Node n : screenBufferNodes) {
+        for (Node n : nodes) {
 
             n.x += n.vx;
             n.y += n.vy;
@@ -694,6 +708,18 @@ public class Main extends PApplet implements MouseWheelListener {
     public void centerOnNodeById(int id) {
         //return sliderZoomLevel;
     }
+
+    public synchronized boolean clearView()
+            throws
+            URISyntaxException,
+            MalformedURLException,
+            IOException,
+            XPathExpressionException {
+        session.clear();
+
+        return postUpdateView();
+    }
+
     public synchronized boolean updateViewFromURI(String uri)
             throws
             URISyntaxException,
@@ -861,6 +887,19 @@ public class Main extends PApplet implements MouseWheelListener {
         setUpperThreshold(((float) to) / (float) precision);
     }
 
+    public String getExplorationMode() {
+        return (session.explorationMode == NetworkMode.LOCAL) 
+                ? "local" : "global";
+    }
+
+    public void switchToLocalExploration() {
+        session.switchToLocalExploration();
+    }
+
+    public void switchToGlobalExploration() {
+        session.switchToGlobalExploration();
+    }
+
     public boolean cameraIsMoving() {
         return !(abs(inerX + inerY + inerZ) == 0.0f);
     }
@@ -936,6 +975,7 @@ public class Main extends PApplet implements MouseWheelListener {
         //System.out.println("new inerZ="+inerZ);
 
     }
+
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {
         pushMatrix();

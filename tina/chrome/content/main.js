@@ -116,10 +116,12 @@ function getHeight() {
                 return y;
 }
 
+/* TODO replace by CSS query */
 function computeAppletWidth() {
     return getWidth() - 15;
 }
 
+/* TODO replace by CSS query */
 function computeAppletHeight() {
     return getHeight() - 130;
 }
@@ -139,6 +141,8 @@ $(document).ready(function() {
                 tabvizframe.tinaviz.resized();
                 tabvizframe.tinaviz.setEnabled(true);
             }
+            applet.switchToLocalExploration();
+
             //var filename = "tina_0.9-0.9999_spatialized.gexf";
             //tabvizframe.tinaviz.loadGexf(filename);
 
@@ -148,8 +152,12 @@ $(document).ready(function() {
             // we want to size the iframe very precisely (at the pixel)
             $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
             $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-            tabvizframe.tinaviz.resized();
-            tabvizframe.tinaviz.setEnabled(true);
+            if (!tabvizframe.tinaviz.isEnabled()) {
+                tabvizframe.tinaviz.resized();
+                tabvizframe.tinaviz.setEnabled(true);
+            }
+            applet.switchToGlobalExploration();
+            
             //tabvizframe.tinaviz.setModeLocall()
 
 

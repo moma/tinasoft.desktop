@@ -35,8 +35,8 @@ function appletInitialized() {
    return parent.tinaviz.init();
 }
 
-function appletGetNeighborhood() {
-   return parent.database.getNeighborhood();
+function nodeClicked(x,y,id,label) {
+   return parent.tinaviz.nodeClicked(x,y,id,label);
 }
 
 </script>

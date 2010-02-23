@@ -80,6 +80,43 @@ function Tinaviz() {
         if (applet == null) return;
         //applet.showTermGraph();
     },
+    nodeClicked: function(x,y,id,label) {
+        if (applet == null) return;
+        
+        
+        // CALL ELISHOWK API HERE
+        
+        var context = {
+         nodes: ['AAA','BBB','CCC'],
+         edges: ['AAA','BBB']
+        };
+
+        // a basic GEXF template (the applet isn't very strict regarding to the GEXf version)
+        var template = '<?xml version="1.0" encoding="UTF-8"?><gexf><graph>\n\
+        <attributes class="node">\n\
+        </attributes>\n\
+        <nodes>\n\
+        <?js for (var i = 0, n = items.length; i < n; i++) { ?>\n\
+          <node id="#{i}" label="voisin">\n\
+            <attvalues>\n\
+              <attvalue for="0" value="0" />\n\
+            </attvalues>\n\
+          </node>\n\
+        <?js } ?>\n\
+        </nodes>\n\
+        <edges>\n\
+        <?js for (var i = 0, n = items.length; i < n; i++) { ?>\n\
+          <edge id="#{i}" source="" target="" />\n\
+        <?js } ?>\n\
+        </edges>\n\
+        </graph><gexf>';
+
+        var output = Shotenjin.render(template, context);
+ 
+        // send to the applet
+        applet.updateViewFromString(output);
+    
+    },
     
     takePDFPicture: function () {
         var outputFilePath = "graph.pdf";
