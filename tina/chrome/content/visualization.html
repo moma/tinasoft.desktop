@@ -3,33 +3,53 @@
 <head>
     <title>Session</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="robots" content="index, follow">
+    <meta name="description" content="">
+    <meta name="keywords" content="Tinasoft,CREA">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        
+    <!-- JQUERY -->
+    <script type="text/javascript" src="lib/js/jquery/jquery-1.3.js"                 language="javascript"></script>
 
-    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css" />
-
-    <!-- ADDITIONNAL JQUERY UI STYLES -->
-    <!--<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.selectmenu.css" />-->
-    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.button.css" />
-    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.autocomplete.css" />
-    <!--<link type="text/css" rel="stylesheet" href="lib/js/jquery/css/customInput.jquery.css" />-->
-    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/jqtransform.tina.css" media="all" />
+    <!-- UTILITIES -->
+    <script type="text/javascript" src="console.js"                                  language="javascript"></script>
+    <script type="text/javascript" src="prefman.js"                                  language="javascript"></script>
+    <script type="text/javascript" src="xmlhttprequester.js"                         language="javascript"></script>
+    <script type="text/javascript" src="lib/js/tenjin/shotenjin.js"                  language="javascript"></script>
     
-    <!-- TINASOFT-SPECIFIC STYLE-->
-    <link type="text/css" rel="stylesheet" href="visualization.css" />
-
-    <script src="console.js"                                      type="text/javascript" language="javascript"></script>
-    <script src="lib/js/jquery/jquery-1.3.2.min.js"               type="text/javascript" language="javascript"></script>
-    <script src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js"     type="text/javascript" language="javascript"></script>
-    <!--<script src="lib/js/jquery/ui.selectmenu.js"                  type="text/javascript" language="javascript"></script>-->
-    <script src="lib/js/jquery/ui.button.js"                      type="text/javascript" language="javascript"></script>
-    <script src="lib/js/jquery/ui.autocomplete.js"                type="text/javascript" language="javascript"></script>
-    <!--<script src="lib/js/jquery/customInput.jquery.js"         type="text/javascript" language="javascript"></script>-->
-    <script src="lib/js/jquery/jquery.jqtransform.js"             type="text/javascript" language="javascript"></script>
-    <script src="lib/jslib/jslib.js"                              type="text/javascript" language="javascript"></script>
+    <!-- JQUERY UI -->
+    <script type="text/javascript" src="lib/js/jquery/jquery.ui.all.js"              language="javascript"></script>
+    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
     
-    <script src="visualization.js"                                type="text/javascript" language="javascript"></script>
+    <!-- TINASOFT APP -->
+    <script type="text/javascript" src="visualization.js"                            language="javascript"></script> 
+    <link type="text/css" rel="stylesheet" href="global.css"/>
+    <link type="text/css" rel="stylesheet" href="visualization.css"/>
 </head>
-<body>
+<body style="cursor: auto;">
+<script type="text/javascript"> 
+	$(function(){
+		//all hover and click logic for buttons
+		$(".fg-button:not(.ui-state-disabled)")
+		.hover(
+			function(){ 
+				$(this).addClass("ui-state-hover"); 
+			},
+			function(){ 
+				$(this).removeClass("ui-state-hover"); 
+			}
+		)
+		.mousedown(function(){
+				$(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
+				if( $(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active') ){ $(this).removeClass("ui-state-active"); }
+				else { $(this).addClass("ui-state-active"); }	
+		})
+		.mouseup(function(){
+			if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button,  .fg-buttonset-multi .fg-button') ){
+				$(this).removeClass("ui-state-active");
+			}
+		});
+	});
+</script> 
       <div id="container">
       </div>
       <div id="gui">
