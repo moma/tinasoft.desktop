@@ -63,30 +63,39 @@
                 <li><a title="see the global map" href="#tabs-3">Global map</a></li>
                  <li><a title="explore the local neighborhood" href="#tabs-4">Local neighborhood</a></li>
             </ul>
+            <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-1">
-                <p>Create or import a new data set</p>
-                <!--<form id="importForm" ENCTYPE="multipart/form-data" method="POST">-->
+                <h1>Create or import a new session</h1>
+
                 <div id="importForm">
-                    <label>csv file</label>
+                    <label>Corpora file (csv)</label>
                     <input id="csvfile" class="field" type="file" name="csvfile"/><br/>
-                    <label>configuration yaml file</label>
+                    <label>Extraction configuration file (yaml)</label>
                     <input id="configfile" class="field" type="file" name="configfile"/><br/>
-                    <label>corpora name or new corpora</label>
+                    <label>Session name (or new session)</label>
                     <input id="corpora" type="text" class="field" name="corpora" value='test corpora'/><br/>
-                    <label>export to file</label>
+                    <label>Extraction export file path (csv)</label>
                     <input id="exportfile" type="file" class="field" name="exportfile" value=''/><br/>
                     <!--<label>Index full-text</label>
                     <input type="checkbox" name="Check3" /><br/>-->
                     <div id="push">
                         <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-                            <span class="ui-button-text">Extraction</span>
+                            <span class="ui-button-text">Launch</span>
                         </button>
                     </div>
                 </div>
-                <!--</form>-->
             </div>
+            <!-- IMPORTING NGRAM WHITELIST AND CREATE GRAPH TABULATION -->
             <div id="tabs-2">
-                <p>Import ngrams and create graph</p>
+                <h1>Import ngrams and create graph</h1>
+                <div class="session_select">
+                    <label>Select sessions</label>
+                    <ol id="selectable_corpora" class="selectable">
+                        <!--<li class="ui-widget-content">Item 1</li>-->
+                    </ol>
+
+                    </div><!-- End demo -->
+
                 <div id="cooc">
                         <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
                             <span class="ui-button-text">Generate graphs</span>
