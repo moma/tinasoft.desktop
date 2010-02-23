@@ -35,10 +35,12 @@ function appletInitialized() {
    return parent.tinaviz.init();
 }
 
-function nodeClicked(x,y,id,label) {
-   return parent.tinaviz.nodeClicked(x,y,id,label);
+function globalNodeSelected(x,y,id,label) {
+   return parent.tinaviz.globalNodeSelected(x,y,id,label);
 }
-
+function localNodeSelected(x,y,id,label) {
+   return parent.tinaviz.localNodeSelected(x,y,id,label);
+}
 </script>
 	</head>
 	<body>

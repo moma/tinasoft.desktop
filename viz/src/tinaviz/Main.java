@@ -42,7 +42,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
-
     PImage nodeIcon;
     PFont font;
     float vizx = 0f;
@@ -60,7 +59,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private float inerZ = 0.0f;
     private RecordingFormat recordingMode = RecordingFormat.NONE;
     private String recordPath = "graph.pdf";
-    private boolean mouseClick = false;
+    AtomicBoolean mouseClick = new AtomicBoolean(false);
     private int preSpatialize = 10;
     private String currentTextSearch = "&&&&";
     private JSObject window = null;
@@ -70,50 +69,16 @@ public class Main extends PApplet implements MouseWheelListener {
     private String DEFAULT_FONT = "ArialMT-150.vlw";
     AtomicBoolean screenBufferUpdated = new AtomicBoolean(false);
     AtomicBoolean screenBufferUpdating = new AtomicBoolean(false);
+    AtomicBoolean resetSelection = new AtomicBoolean(false);
     private int stepCounter = 0;
     // Semaphore screenBufferLock = new Semaphore();
-
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
-    
 
-        private void nodeClicked(Node n) {
-            window.eval(
-                    "nodeClicked(" + screenX(n.x, n.y)
-                    + "," + screenY(n.x, n.y)
-                    + ",\"" + n.uuid + "\""
-                    + ",\"" + n.label + "\");");
-    }
-
-    private void showNodeDetails(Node n) {
-        if (session.showNodeDetails) {
-            return;
-        }
-        session.animationPaused = true;
-        //currentView.colorsDesaturated = true;
-        session.zoomFrozen = true;
-        session.showNodeDetails = true;
-
-        if (window != null) {
-            window.eval(
-                    "parent.showNodeDetails(" + screenX(n.x, n.y)
-                    + "," + screenY(n.x, n.y)
-                    + ",\"" + n.uuid + "\""
-                    + ",\"" + n.label + "\");");
-        }
-
-    }
-
-    private void hideNodeDetails() {
-        if (!session.showNodeDetails) {
-            return;
-        }
-        if (window != null) {
-            window.eval("parent.hideNodeDetails();");
-        }
-        //currentView.colorsDesaturated = false;
-        session.animationPaused = false;
-        session.zoomFrozen = false;
-        session.showNodeDetails = false;
+    private void nodeSelected(Node n) {
+        window.eval(session.getExplorationMode() + "NodeSelected("
+                + screenX(n.x, n.y) + ","
+                + screenY(n.x, n.y) + ",\""
+                + n.uuid + "\",\"" + n.label + "\");");
     }
 
     public enum RecordingFormat {
@@ -130,21 +95,13 @@ public class Main extends PApplet implements MouseWheelListener {
         SLOW // round corners
     }
 
-    /*
-    public static void main (String[] args){
-    }
-     */
     @Override
     public void setup() {
 
-        //String engine = (getParameter("engine")) ? getParameter("engine") : "P2D";
         font = loadFont(DEFAULT_FONT);
         //font = createFont("Arial", 96, true);
-
         //String[] fontList = PFont.list();
         //println(fontList);
-
-
 
         String engine = P2D;
         if (getParameter("engine") != null) {
@@ -175,56 +132,49 @@ public class Main extends PApplet implements MouseWheelListener {
         //noStroke();
         // current sketch's "data" directory to load successfully
 
-
-
         session = new Session();
 
         // currentView.showLabels = false;
         oldmouseX = mouseX;
         oldmouseY = mouseY;
 
-
-
         boolean generateRandom = false;
 
         if (generateRandom) {
-        Node node;
-        System.out.println("Generating random graph..");
-        float rx = random(width);
-        float ry = random(height);
-        float radius = 0.0f;
-        for (int i = 0; i < 200; i++) {
-            radius = random(3.0f, 10.0f);
-            if (radius > MAX_RADIUS) {
-                MAX_RADIUS = radius;
+            Node node;
+            System.out.println("Generating random graph..");
+            float rx = random(width);
+            float ry = random(height);
+            float radius = 0.0f;
+            for (int i = 0; i < 200; i++) {
+                radius = random(3.0f, 10.0f);
+                if (radius > MAX_RADIUS) {
+                    MAX_RADIUS = radius;
+                }
+                node = new Node("" + i, "node " + i, radius, random(width / 2), random(height / 2));
+                node.genericity = random(1.0f);
+                // System.out.println(node.genericity);
+                session.getNetwork().addNode(node);
             }
-            node = new Node("" + i, "node " + i, radius, random(width / 2), random(height / 2));
-            node.genericity = random(1.0f);
-            // System.out.println(node.genericity);
-            session.getNetwork().addNode(node);
 
-        }
-
-        Node a;
-        Node b;
-        for (int i = 0; i < nodes.size(); i++) {
-            for (int j = 0; j < nodes.size() && i != j; j++) {
-                if (random(1.0f) < 0.009) { // link density : 0.02 = a lot, 0.0002 = a few
-                    nodes.get(i).addNeighbour(nodes.get(j));
+            Node a;
+            Node b;
+            for (int i = 0; i < nodes.size(); i++) {
+                for (int j = 0; j < nodes.size() && i != j; j++) {
+                    if (random(1.0f) < 0.009) { // link density : 0.02 = a lot, 0.0002 = a few
+                        nodes.get(i).addNeighbour(nodes.get(j));
+                    }
                 }
             }
-        }
 
-        }
-
-        else {
+        } else {
             try {
 
-            updateViewFromURI("file:///home/jbilcke/Checkouts/git/TINA"+
-                    "/tinasoft.desktop/tina/chrome/content/applet/data/" +
-                    "map_dopamine_2002_2007_g.gexf");
-             session.prespatialize = false;
-             session.animationPaused = true;
+                session.updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
+                        + "/tinasoft.desktop/tina/chrome/content/applet/data/"
+                        + "map_dopamine_2002_2007_g.gexf");
+                session.prespatialize = false;
+                session.animationPaused = true;
             } catch (URISyntaxException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             } catch (MalformedURLException ex) {
@@ -234,10 +184,10 @@ public class Main extends PApplet implements MouseWheelListener {
             } catch (XPathExpressionException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-    }
+        }
 
         // fill(255, 184);
-        frameRate(60);
+        frameRate(30);
         smooth();
 
         textFont(font, 48);
@@ -251,18 +201,22 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void draw() {
 
-        if (!this.isEnabled()) return;
+        if (!this.isEnabled()) {
+            return;
+        }
 
-        if (!session.isSynced.get()) {
-            List<Node> n = session.getNodes();
-            if (n != null) {
-                nodes.clear();
-                nodes.addAll(n);
-            }
-            //session.animationPaused = tmp; // TODO replace by a lock here
-            //preSpatialize = 60;
+
+        List<Node> n = session.getNodes();
+        if (n != null) {
+            nodes.clear();
+            nodes.addAll(n);
             center(); // dynamic recenter
         }
+
+        //session.animationPaused = tmp; // TODO replace by a lock here
+        //preSpatialize = 60;
+
+
 
         // TODO put this in another thread
         if (recordingMode != RecordingFormat.NONE) {
@@ -355,7 +309,7 @@ public class Main extends PApplet implements MouseWheelListener {
     public void pdfDrawer(int w, int h) {
         PGraphicsPDF pdf = (PGraphicsPDF) createGraphics(w, h, PDF, "/tmp/out.pdf");
         pdf.beginDraw();
-        
+
         pdf.textMode(MODEL); // SHAPE : bigger file size, not searchable
 
         // doesn't work.. yet.
@@ -492,11 +446,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-
     public void drawAndSpatializeRealtime() {
 
         stepCounter++;
-        
+
         Node node_a, node_b, node;
 
         float len = 1f;
@@ -505,6 +458,8 @@ public class Main extends PApplet implements MouseWheelListener {
         float LAYOUT_REPULSION = 0.01f;
         float LAYOUT_ATTRACTION = 0.0001f;
 
+        boolean _resetSelection = this.resetSelection.getAndSet(false);
+        boolean _mouseClick = this.mouseClick.getAndSet(false);
 
         background(255);
         stroke(0);
@@ -546,7 +501,7 @@ public class Main extends PApplet implements MouseWheelListener {
             zoomRatio = 0.1f;
             inerZ = 0.0f;
         }
-        scale( zoomRatio * (log(zoomRatio)));
+        scale(zoomRatio * (log(zoomRatio)));
 
         stroke(150, 150, 150);
 
@@ -555,6 +510,12 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
         for (Node n1 : nodes) {
+            // reset the selection on the node if needed
+
+            if (_resetSelection) {
+                n1.selected = false;
+            }
+
             for (Node n2 : nodes) {
                 if (n1 == n2) {
                     continue;
@@ -585,7 +546,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                     if (this.session.showLinks) {
                         // old: 150
-                        
+
                         if (cameraIsStopped() && stepCounter > 1) {
                             stroke(rgb);
                             strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
@@ -636,30 +597,39 @@ public class Main extends PApplet implements MouseWheelListener {
                     mouseY);
 
             if (this.session.showNodes) {
-                if (distance <= (n.radius) * zoomRatio) {
-                    // fill(200);
-                    if (mouseClick) {
-                        mouseClick = false;
+
+                if (_mouseClick) {
+                    if (distance <= (n.radius) * zoomRatio) {
+                        // fill(200);
+
+                        // mouseClick = false;
                         System.out.println("clicked on node " + n.uuid + " (selected node: " + session.selectedNodeID + ")");
-                         n.selected = !n.selected;
+                        n.selected = !n.selected;
+
+                        // only call this once
+                        if (n.selected) {
+                            nodeSelected(n);
+                        }
+
                     }
+
                 }
 
 
                 /*
                 if (n.label.startsWith(currentTextSearch)) {
-                    fill(200, 100, 100);
-                    strokeWeight(1.8f);
+                fill(200, 100, 100);
+                strokeWeight(1.8f);
                 } else {*/
 
-                    if (n.selected) {
-                        fill(200, 100, 100);
-                        strokeWeight(1.8f);
-                    } else {
-                        // fill(200, 200, 200);
-                        fill(218, 219, 220);
-                        strokeWeight(1.2f);
-                    }
+                if (n.selected) {
+                    fill(200, 100, 100);
+                    strokeWeight(1.8f);
+                } else {
+                    // fill(200, 200, 200);
+                    fill(218, 219, 220);
+                    strokeWeight(1.2f);
+                }
                 //}
 
                 ellipse(n.x, n.y, n.radius, n.radius);
@@ -674,7 +644,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (this.session.showLabels && cameraIsStopped() && stepCounter > 2) {
                 fill(120);
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
-                textSize(n.radius*0.2f);
+                textSize(n.radius * 0.2f);
 
                 if (n.label.startsWith(currentTextSearch)) {
                     fill(60);
@@ -690,11 +660,6 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
         }
-        if (mouseClick) {
-            // the event was not catched.. so we assume we clicked somewhere else
-            session.selectedNodeID = "";
-            mouseClick = false;
-        }
 
 
     }
@@ -709,116 +674,44 @@ public class Main extends PApplet implements MouseWheelListener {
         //return sliderZoomLevel;
     }
 
-    public synchronized boolean clearView()
-            throws
-            URISyntaxException,
-            MalformedURLException,
-            IOException,
-            XPathExpressionException {
-        session.clear();
-
-        return postUpdateView();
-    }
-
-    public synchronized boolean updateViewFromURI(String uri)
-            throws
-            URISyntaxException,
-            MalformedURLException,
-            IOException,
-            XPathExpressionException {
-        session.updateFromURI(uri);
-        return postUpdateView();
-    }
-    public synchronized boolean updateViewFromString(String src)
-            throws
-            URISyntaxException,
-            MalformedURLException,
-            IOException,
-            XPathExpressionException {
-        session.updateFromString(src);
-        return postUpdateView();
-    }
-    private synchronized boolean postUpdateView() {
-        // prepare the scene depending on graph metrics
-        //boolean tmp = session.animationPaused;
-        //session.animationPaused = true; // TODO replace by a lock here
-
-        return true;
-    }
 
 
-
-    // setParameter("key", min, max)
     public synchronized boolean createFilter(String filterName, String model) {
-
         Filter f = null;
         if (model.equals("RegexMatch")) {
             f = new AttributeFilter();
         } else if (model.equals("ForceVector")) {
             f = new ForceVector();
         }
-      
-       session.filters.addFilter(filterName, f);
-       return true;
-    }
 
+        session.filters.addFilter(filterName, f);
+        return true;
+    }
 
     public synchronized boolean filterConfig(String filterName, String key, String value) throws KeyException {
-       session.filters.getFilter(filterName).setField(key, value);
-       return true;
-       // return session.filters.get(filterName).setField(key, value);
+        session.filters.getFilter(filterName).setField(key, value);
+        return true;
     }
 
-     public synchronized boolean filterConfig(String filterName, String key, float value) throws KeyException {
-       session.filters.getFilter(filterName).setField(key, value);
-       return true;
-       // return session.filters.get(filterName).setField(key, value);
+    public synchronized boolean filterConfig(String filterName, String key, float value) throws KeyException {
+        session.filters.getFilter(filterName).setField(key, value);
+        return true;
     }
+
     public synchronized boolean filterConfig(String filterName, String key, int value) throws KeyException {
-       session.filters.getFilter(filterName).setField(key, value);
-       return true;
-       // return session.filters.get(filterName).setField(key, value);
+        session.filters.getFilter(filterName).setField(key, value);
+        return true;
     }
+
     public synchronized boolean filterConfig(String filterName, String key, boolean value) throws KeyException {
-       session.filters.getFilter(filterName).setField(key, value);
-       return true;
-       // return session.filters.get(filterName).setField(key, value);
+        session.filters.getFilter(filterName).setField(key, value);
+        return true;
     }
 
     public synchronized Object filterConfig(String filterName, String key) throws KeyException {
         return session.filters.getFilter(filterName).getField(key);
     }
 
-
-    public synchronized boolean toggleLabels() {
-        this.session.showLabels = !this.session.showLabels;
-        return this.session.showLabels;
-    }
-
-    public synchronized boolean showLabels(boolean value) {
-        this.session.showLabels = value;
-        return this.session.showLabels;
-    }
-
-    public synchronized boolean toggleNodes() {
-        this.session.showNodes = !this.session.showNodes;
-        return this.session.showNodes;
-    }
-
-    public synchronized boolean togglePosterOverlay() {
-        this.session.showPosterOverlay = !this.session.showPosterOverlay;
-        return this.session.showPosterOverlay;
-    }
-
-    public synchronized boolean togglePause() {
-        this.session.animationPaused = !this.session.animationPaused;
-        return this.session.animationPaused;
-    }
-
-    public synchronized boolean showNodes(boolean value) {
-        this.session.showNodes = value;
-        return this.session.showNodes;
-    }
 
     public synchronized boolean takePicture(String path) {
         recordPath = path;
@@ -846,16 +739,10 @@ public class Main extends PApplet implements MouseWheelListener {
         return true;
     }
 
-    public synchronized boolean toggleLinks() {
-        this.session.showLinks = !this.session.showLinks;
-        return this.session.showLinks;
+    public Session getSession() {
+        return session;
     }
-
-    public synchronized boolean showLinks(boolean value) {
-        this.session.showLinks = value;
-        return this.session.showLinks;
-    }
-
+    
     public synchronized void center() {
         vizx = 0;
         vizy = 0;
@@ -866,38 +753,9 @@ public class Main extends PApplet implements MouseWheelListener {
         zoomRatio = 3.0f;
     }
 
-    public synchronized float setLowerThreshold(float threshold) {
-        return session.lowerThreshold = threshold;
-    }
 
-    public synchronized float getLowerThreshold() {
-        return session.lowerThreshold;
-    }
-
-    public synchronized float setUpperThreshold(float threshold) {
-        return session.upperThreshold = threshold;
-    }
-
-    public synchronized float getUpperThreshold() {
-        return session.upperThreshold;
-    }
-
-    public void setGenericityRange(int from, int to, int precision) {
-        setLowerThreshold(((float) from) / (float) precision);
-        setUpperThreshold(((float) to) / (float) precision);
-    }
-
-    public String getExplorationMode() {
-        return (session.explorationMode == NetworkMode.LOCAL) 
-                ? "local" : "global";
-    }
-
-    public void switchToLocalExploration() {
-        session.switchToLocalExploration();
-    }
-
-    public void switchToGlobalExploration() {
-        session.switchToGlobalExploration();
+    public void unselect() {
+        resetSelection.set(true);
     }
 
     public boolean cameraIsMoving() {
@@ -927,7 +785,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseClicked() {
         // hideNodeDetails();
-        mouseClick = true;
+        mouseClick.set(true);
     }
 
     @Override
@@ -935,20 +793,20 @@ public class Main extends PApplet implements MouseWheelListener {
         // hideNodeDetails();
         mouseDragging = true;
         float dragSensibility = 3.0f;
-        
+
         // OLD "INERTIAL" DRAG
-        
+
         inerX = ((float) mouseX - oldmouseX) / (zoomRatio * dragSensibility);
         inerY = ((float) mouseY - oldmouseY) / (zoomRatio * dragSensibility);
         vizx += inerX * 2.0f;
         vizy += inerY * 2.0f;
-         
-        
+
+
         // NEW "DIRECT" DRAG
         /*
         if (zoomRatio != 0) {
-            vizx += ((float) mouseX - oldmouseX);
-            vizy += ((float) mouseY - oldmouseY);
+        vizx += ((float) mouseX - oldmouseX);
+        vizy += ((float) mouseY - oldmouseY);
         }*/
 
         oldmouseX = mouseX;
@@ -970,12 +828,11 @@ public class Main extends PApplet implements MouseWheelListener {
         //System.out.println("new inerZ="+inerZ);
         //inerZ = -e.getWheelRotation() * 2;
         //this.zoomRatio -= (float) e.getWheelRotation() * 0.7f / zoomRatio;
-        inerZ = - (float) e.getWheelRotation() /  (1.0f / zoomRatio);
+        inerZ = -(float) e.getWheelRotation() / (1.0f / zoomRatio);
         stepCounter = 10;
         //System.out.println("new inerZ="+inerZ);
 
     }
-
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {
         pushMatrix();
@@ -997,50 +854,47 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.popMatrix();
     }
 
-    private float logify (float x) {
-  if (abs(x) < 0.01f) return 0.0f;
-  return (x>0) ?  log100((int)(abs(x)*100.0f)) : -log100((int)(abs(x)*100.0f));
-}
-private float log100 (int x) {
-  return (log(x) / ((float)log(100)));
-}
-
-
-/**
- * Given a Throwable, gets the full stack trace for the
- * Exception or Error as a String.  Returns an empty string
- * if something went wrong (so the caller won't fail with a
- * null pointer exception later).
- * @param t
- * @return
- * @author kolichko Mark Kolich
- */
-public static String getStackTraceAsString ( Throwable t ) {
-
-    final StringWriter sw = new StringWriter();
-    final PrintWriter pw = new PrintWriter(sw, true);
-    String trace = new String();
-
-    try {
-      t.printStackTrace( pw );
-      pw.flush();
-      sw.flush();
-      trace = sw.toString();
-    }
-    catch ( Exception e ) { }
-    finally {
-      try {
-        sw.close();
-        pw.close();
-      }
-      catch ( Exception e ) { }
+    private float logify(float x) {
+        if (abs(x) < 0.01f) {
+            return 0.0f;
+        }
+        return (x > 0) ? log100((int) (abs(x) * 100.0f)) : -log100((int) (abs(x) * 100.0f));
     }
 
-    return trace;
+    private float log100(int x) {
+        return (log(x) / ((float) log(100)));
+    }
 
+    /**
+     * Given a Throwable, gets the full stack trace for the
+     * Exception or Error as a String.  Returns an empty string
+     * if something went wrong (so the caller won't fail with a
+     * null pointer exception later).
+     * @param t
+     * @return
+     * @author kolichko Mark Kolich
+     */
+    public static String getStackTraceAsString(Throwable t) {
+
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw, true);
+        String trace = new String();
+
+        try {
+            t.printStackTrace(pw);
+            pw.flush();
+            sw.flush();
+            trace = sw.toString();
+        } catch (Exception e) {
+        } finally {
+            try {
+                sw.close();
+                pw.close();
+            } catch (Exception e) {
+            }
+        }
+
+        return trace;
+
+    }
 }
-
-   
-}
-
-

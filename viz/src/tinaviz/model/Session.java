@@ -72,7 +72,7 @@ public class Session {
 
     // RUNTIME DATA, NOT SERIALIZED
     public float MAX_RADIUS = 0.0f;
-    public AtomicBoolean isSynced = new AtomicBoolean(false);
+    public AtomicBoolean hasBeenRead = new AtomicBoolean(false);
 
     public Session() {
     }
@@ -313,7 +313,7 @@ public class Session {
 
         }
 
-        isSynced.set(false);
+        hasBeenRead.set(false);
         //traverseNodes(thirdProject);
         return true;
     }
@@ -326,7 +326,7 @@ public class Session {
             return new ArrayList(getStoredNodes().values());
         } else {
             if (filters.filtered.get()) {
-                isSynced.set(true);
+                hasBeenRead.set(true);
                 return filters.filteredNodes;
             } else {
                 // filter still not ready, drawer will have to wait a bit more
@@ -364,16 +364,47 @@ public class Session {
     public void clear() {
         local.clear();
         global.clear();
-        isSynced.set(false);
+        hasBeenRead.set(false);
     }
 
     public void switchToLocalExploration() {
         explorationMode = NetworkMode.LOCAL;
-        isSynced.set(false);
+        hasBeenRead.set(false);
     }
 
     public void switchToGlobalExploration() {
         explorationMode = NetworkMode.GLOBAL;
-        isSynced.set(false);
+        hasBeenRead.set(false);
     }
+
+        public String getExplorationMode() {
+        return (explorationMode == NetworkMode.LOCAL)
+                ? "local" : "global";
+    }
+
+    public synchronized boolean toggleLinks() {
+       showLinks = !showLinks;
+        return showLinks;
+    }
+
+   public synchronized boolean toggleLabels() {
+        showLabels = !showLabels;
+        return showLabels;
+    }
+
+    public synchronized boolean toggleNodes() {
+        showNodes = !showNodes;
+        return showNodes;
+    }
+
+    public synchronized boolean togglePosterOverlay() {
+        showPosterOverlay = !showPosterOverlay;
+        return showPosterOverlay;
+    }
+
+    public synchronized boolean togglePause() {
+        animationPaused = !animationPaused;
+        return animationPaused;
+    }
+
 }

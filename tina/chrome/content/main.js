@@ -145,7 +145,7 @@ function computeAppletWidth() {
 
 /* TODO replace by CSS query */
 function computeAppletHeight() {
-    return getHeight() - 130;
+    return getHeight() - 150;
 }
 
 // wait for the DOM to be loaded
