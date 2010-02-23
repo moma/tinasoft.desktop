@@ -1,4 +1,3 @@
-
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: GNU GPL 3
  * ***** END LICENSE BLOCK ***** */
@@ -9,12 +8,14 @@ const Ci = Components.interfaces;
 const HELP_URL = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
 const INTRO_URL = "chrome://tina/content/about.xul";
 
-/* Tinasoft Service instance */
+/* Tinasoft XPCOM Service instance */
 
 if ( typeof(TinaService) == "undefined" ) {
     cls = Cc["Python.Tinasoft"];
     var TinaService = cls.getService(Ci.ITinasoft);
 }
+
+/* Tinasoft observers handler */
 
 var tinasoftTaskObserver = {
     observe : function ( subject , topic , data ){
@@ -30,13 +31,14 @@ var tinasoftTaskObserver = {
     }
 };
 
-// récupération du service d'observation
+/* Setting Tinasoft observers */
+
 var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 // enregistrement
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_running_status" , false );
 
-
+/* Tinasoft corpora importing tool */
 
 var submitImportfile = function(event) {
     corpora = $("#corpora")
@@ -79,41 +81,60 @@ var submitImportfile = function(event) {
 
 };
 
-var getListCorpora = function(event) {
-    //corpora = $("#corpora-list");
-    outstring = TinaService.listCorpora();
-    console.log(outstring);
-    //corpora.val( outstring );
+/* Tinasoft storage read acces */
+
+var listCorpora = function() {
+    json=TinaService.listCorpora();
+    return( JSON.parse(json) );
 };
 
+var getCorpus = function(corpusid) {
+    return( JSON.parse( TinaService.getCorpus(corpusid) ) );
+};
+var getDocument = function(documentid) {
+    return( JSON.parse( TinaService.getDocument(documentid) ) );
+};
+var getCorpora = function(corporaid) {
+    return( JSON.parse( TinaService.getCorpora(corporaid) ) );
+};
+var getNGram = function(ngramid) {
+    return( JSON.parse( TinaService.getNGram(ngramid) ) );
+};
 
+var displayListCorpora = function(oldivid) {
+    var ol = $("#"+oldivid).empty();
+    var json = listCorpora();
+    for ( var i=0, len=json.length; i<len; ++i ){
+        ol.append("<li id='"+json[i]['id']+"' class='ui-widget-content'>"+json[i]['label']+"</li>\n");
+    }
+}
 
 function getWidth() {
-                var x = 0;
-                if (self.innerHeight) {
-                        x = self.innerWidth;
-                }
-                else if (document.documentElement && document.documentElement.clientHeight) {
-                        x = document.documentElement.clientWidth;
-                }
-                else if (document.body) {
-                        x = document.body.clientWidth;
-                }
-                return x;
+    var x = 0;
+    if (self.innerHeight) {
+            x = self.innerWidth;
+    }
+    else if (document.documentElement && document.documentElement.clientHeight) {
+            x = document.documentElement.clientWidth;
+    }
+    else if (document.body) {
+            x = document.body.clientWidth;
+    }
+    return x;
 }
 
 function getHeight() {
-                var y = 0;
-                if (self.innerHeight) {
-                        y = self.innerHeight;
-                }
-                else if (document.documentElement && document.documentElement.clientHeight) {
-                        y = document.documentElement.clientHeight;
-            }
-                else if (document.body) {
-                        y = document.body.clientHeight;
-            }
-                return y;
+    var y = 0;
+    if (self.innerHeight) {
+        y = self.innerHeight;
+    }
+    else if (document.documentElement && document.documentElement.clientHeight) {
+        y = document.documentElement.clientHeight;
+    }
+    else if (document.body) {
+        y = document.body.clientHeight;
+    }
+    return y;
 }
 
 /* TODO replace by CSS query */
@@ -181,7 +202,8 @@ $(document).ready(function() {
     });
     var buttons = $('#cooc button').button();
     buttons.click(function(event) {
-        getListCorpora(event);
+        console.error("not implemented yet");
+        //runProcessCooc(event);
     });
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");
@@ -193,6 +215,30 @@ $(document).ready(function() {
     }, function() {
     buttons.button("destroy");
     }).click();*/
+    $("#selectable_corpora").selectable({
+        stop: function(){
+            //var result = ""
+            $(this).each(function(){
+                li = $("#selectable li");
+                if (li.hasClass("ui-selected")) {
+                    var index = li.index(this) + 1;
+                    li.removeClass("ui-state-default");
+                    li.addClass("ui-state-active");
+                }
+                else {
+                    li.removeClass("ui-state-active");
+                    li.addClass("ui-state-default");
+                }
+
+            });
+        },
+        selected: function(event, ui) {
+            console.log(ui);
+        },
+        unselected: function(event, ui){
+        },
+    });
+    displayListCorpora( "selectable_corpora" );
 
 
     // TINASOFT WINDOW IS RESIZED
