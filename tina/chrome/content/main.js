@@ -46,9 +46,9 @@ var submitImportfile = function(event) {
     config  = $("#configfile")
     exportpath = $("#exportfile")
     // DEBUG
-    path.val("pubmed_tina_test.csv");
+    //path.val("pubmed_tina_test.csv");
     config.val("import.yaml");
-    exportpath.val("test-export.csv");
+    //exportpath.val("test-export.csv");
     if ( corpora.val() == '' ) {
         corpora.addClass('ui-state-error');
         console.log( "missing the corpora field" );
