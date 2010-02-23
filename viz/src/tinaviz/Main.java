@@ -863,7 +863,7 @@ public class Main extends PApplet implements MouseWheelListener {
         //vizy = (float)height/2.0f;
         //vizx += (session.metrics.maxX - session.metrics.minX);
         //vizy +=  (session.metrics.maxY - session.metrics.minY);
-        zoomRatio = 1.5f;
+        zoomRatio = 3.0f;
     }
 
     public synchronized float setLowerThreshold(float threshold) {

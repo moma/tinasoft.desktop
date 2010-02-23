@@ -1,33 +1,44 @@
 
-     .ui-widget { font-size: 12px; }
-    .fg-button { outline: 0; margin:0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
-    .fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
-
-    a.fg-button { float:left; }
-
-    /* remove extra button width in IE */
-    button.fg-button { width:auto; overflow:visible; }
-
-    .fg-button-icon-left { padding-left: 2.1em; }
-    .fg-button-icon-right { padding-right: 2.1em; }
-    .fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
-    .fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
-
-    .fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }     /* solo icon buttons must have block properties for the text-indent to work */
-
-    .fg-buttonset { float:left; }
-    .fg-buttonset .fg-button { float: left; }
-    .fg-buttonset-single .fg-button,
-    .fg-buttonset-multi .fg-button { margin-right: -1px;}
-
-    .fg-toolbar { padding: 8px; margin: 0;  }
-    .fg-toolbar .fg-buttonset { margin-right:12px; padding-left: 1px; }
-    .fg-toolbar .fg-button { font-size: 11px;  }
+    .ui-widget { font-size: 12px; }
+	.fg-button { outline: 0; margin:0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
+	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
+	
+	a.fg-button { float:left; }
+	
+	/* remove extra button width in IE */
+	button.fg-button { width:auto; overflow:visible; }
+	
+	.fg-button-icon-left { padding-left: 2.1em; }
+	.fg-button-icon-right { padding-right: 2.1em; }
+	.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
+	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
+	
+	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */	
+	
+	.fg-buttonset { float:left; }
+	.fg-buttonset .fg-button { float: left; }
+	.fg-buttonset-single .fg-button, 
+	.fg-buttonset-multi .fg-button { margin-right: -1px;}
+	
+	.fg-toolbar { padding: .5em; margin: 0;  }
+	.fg-toolbar .fg-buttonset { margin-right:1.5em; padding-left: 1px; }
+	.fg-toolbar .fg-button { font-size: 1em;  }
+ 
 
  /* VERTICAL TOOLBAR FOR TINA */
- .ui-widget-header { border: 1px solid #231d2b; background: #30273a url(images/ui-bg_highlight-soft_25_30273a_1x100.png) 50% 50% repeat-x; color: #ffffff;  }
-.ui-widget-vheader { border: 1px solid #231d2b; background: #30273a url(images/ui-bg_highlight-soft_25_30273a_1x100v.png) 50% 50% repeat-y; color: #ffffff; }
+ .ui-widget-header { border: 1px solid #231d2b; background: #30273a url(lib/js/jquery/css/eggplant/images/ui-bg_highlight-soft_25_30273a_1x100.png) 50% 50% repeat-x; color: #ffffff;  }
+.ui-widget-vheader { border: 1px solid #231d2b; background: #30273a url(lib/js/jquery/css/eggplant/images/ui-bg_highlight-soft_25_30273a_1x100v.png) 50% 50% repeat-y; color: #ffffff; }
 .ui-widget-miniheader { border: 1px solid #231d2b; background: #30273a 50% 50% repeat-y; color: #ffffff; }
+
+
+.ui-icon-projects { background-position: -192px -144px; }
+.ui-icon-terms { background-position: -208px -144px; }
+.ui-icon-label { background-position: -208px -80px; }
+.ui-icon-edges { background-position: -144px -176px; }
+.ui-icon-nodes { background-position: -128px -80px; }
+.ui-icon-pin { background-position: -208px -176px; }
+.ui-icon-projection { background-position: -208px -160px; }
+
 
 .vizframe {
    position:absolute;/*
@@ -48,7 +59,7 @@
     top:30px;
     right:16px;
     width:298px;
-    height:517px;
+    height:432px;
     background-color: #ffffff;
     background: #ffffff;
     border:solid 0px;
@@ -60,7 +71,7 @@
     top:30px;
     right:16px;
     width: 280px;
-    height: 500px;
+    height: 400px;
     z-index:2;
 }
 
@@ -171,11 +182,4 @@ fieldset {
     border:0;  
     margin-bottom: 40px;
 }	
-.ui-icon-projects { background-position: -192px -144px; }
-.ui-icon-terms { background-position: -208px -144px; }
-.ui-icon-label { background-position: -208px -80px; }
-.ui-icon-edges { background-position: -144px -176px; }
-.ui-icon-nodes { background-position: -128px -80px; }
-.ui-icon-pin { background-position: -208px -176px; }
-.ui-icon-projection { background-position: -208px -160px; }
 

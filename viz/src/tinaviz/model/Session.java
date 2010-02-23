@@ -101,26 +101,60 @@ public class Session {
 
     private boolean parseXML(XPathReader xml) throws XPathExpressionException {
         String meta = "/gexf/graph/tina/";
+
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
-        this.zoom = zoomValue.floatValue();
-        System.out.println("zoom: " + zoom);
+        if (zoomValue != null) {
+            System.out.println("zoom: " + zoom);
+            this.zoom = zoomValue.floatValue();
+        }
+
 
         Double thresholdValue = (Double) xml.read(meta + "threshold/@min", XPathConstants.NUMBER);
-        this.lowerThreshold = thresholdValue.floatValue();
-        thresholdValue = (Double) xml.read(meta + "threshold/@max", XPathConstants.NUMBER);
-        this.upperThreshold = thresholdValue.floatValue();
+        if (thresholdValue != null)
+            lowerThreshold = thresholdValue.floatValue();
+
+         thresholdValue = (Double) xml.read(meta + "threshold/@max", XPathConstants.NUMBER);
+         if (thresholdValue != null)
+             upperThreshold = thresholdValue.floatValue();
 
         System.out.println("threshold: [" + lowerThreshold + "," + upperThreshold + "]");
 
-        this.selectedNodeID = (String) xml.read(meta + "select/@node", XPathConstants.STRING);
-        System.out.println("selected node: " + selectedNodeID);
 
-        this.showLabels = (Boolean) xml.read(meta + "labels/@show", XPathConstants.BOOLEAN);
-        this.showNodes = (Boolean) xml.read(meta + "nodes/@show", XPathConstants.BOOLEAN);
-        this.showLinks = (Boolean) xml.read(meta + "links/@show", XPathConstants.BOOLEAN);
+        String selected = (String) xml.read(meta + "select/@node", XPathConstants.STRING);
+        if (selected != null) {
+            selectedNodeID = selected;
+            System.out.println("selected node: " + selectedNodeID);
+        }
 
-        this.animationPaused = (Boolean) xml.read(meta + "layout/@show", XPathConstants.BOOLEAN);
-        this.prespatialize = (Boolean) xml.read(meta + "layout/@prespatialize", XPathConstants.BOOLEAN);
+        Boolean cond = (Boolean) xml.read(meta + "labels/@show", XPathConstants.BOOLEAN);
+        if (cond != null) {
+            showLabels = cond;
+            System.out.println("showLabels: " + showLabels);
+        }
+
+        cond = (Boolean) xml.read(meta + "nodes/@show", XPathConstants.BOOLEAN);
+        if (cond != null) {
+            showNodes = cond;
+            System.out.println("showNodes: " + showNodes);
+        }
+
+        cond = (Boolean) xml.read(meta + "links/@show", XPathConstants.BOOLEAN);
+        if (cond != null) {
+            showLinks = cond;
+            System.out.println("showLinks: " + showLinks);
+        }
+
+         cond = (Boolean) xml.read(meta + "layout/@show", XPathConstants.BOOLEAN);
+        if (cond != null) {
+            animationPaused = cond;
+            System.out.println("animationPaused: " + animationPaused);
+        }
+
+         cond = (Boolean) xml.read(meta + "layout/@prespatialize", XPathConstants.BOOLEAN);
+        if (cond != null) {
+            prespatialize = cond;
+            System.out.println("prespatialize: " + prespatialize);
+        }
 
         Network net = getNetwork();
 
@@ -131,9 +165,6 @@ public class Session {
         net.metrics.maxX = 0.0f;
         net.metrics.maxY = 0.0f;
 
-        System.out.println("showLabels: " + showLabels + "\n");
-        System.out.println("showNodes: " + showNodes + "\n");
-        System.out.println("showLinks: " + showLinks + "\n");
 
         org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
                 XPathConstants.NODESET);
@@ -338,9 +369,11 @@ public class Session {
 
     public void switchToLocalExploration() {
         explorationMode = NetworkMode.LOCAL;
+        isSynced.set(false);
     }
 
     public void switchToGlobalExploration() {
         explorationMode = NetworkMode.GLOBAL;
+        isSynced.set(false);
     }
 }

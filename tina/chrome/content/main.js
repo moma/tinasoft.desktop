@@ -85,6 +85,7 @@ var submitImportfile = function(event) {
 
 var listCorpora = function() {
     json=TinaService.listCorpora();
+    console.log(json);
     return( JSON.parse(json) );
 };
 
@@ -154,15 +155,15 @@ $(document).ready(function() {
 
         // MAGIC TRICK FOR THE JAVA IFRAME
         if (ui.index == 2) {
-            // we want to size the iframe very precisely (at the pixel)
-            $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
-            $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
 
             if (!tabvizframe.tinaviz.isEnabled()) {
+                // we want to size the iframe very precisely (at the pixel)
+                $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
+                $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
                 tabvizframe.tinaviz.resized();
                 tabvizframe.tinaviz.setEnabled(true);
             }
-            applet.switchToLocalExploration();
+            tabvizframe.tinaviz.switchToGlobalExploration();
 
             //var filename = "tina_0.9-0.9999_spatialized.gexf";
             //tabvizframe.tinaviz.loadGexf(filename);
@@ -170,16 +171,16 @@ $(document).ready(function() {
             //tabvizframe.tinaviz.setModeGlobal()
             //tabvizframe.tinaviz.loadGexf()
         } else if (ui.index == 3) {
-            // we want to size the iframe very precisely (at the pixel)
-            $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
-            $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
+
             if (!tabvizframe.tinaviz.isEnabled()) {
+                // we want to size the iframe very precisely (at the pixel)
+                $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
+                $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
                 tabvizframe.tinaviz.resized();
                 tabvizframe.tinaviz.setEnabled(true);
             }
-            applet.switchToGlobalExploration();
-            
-            //tabvizframe.tinaviz.setModeLocall()
+            tabvizframe.tinaviz.switchToLocalExploration();
+
 
 
         } else {
@@ -195,13 +196,11 @@ $(document).ready(function() {
         max = $(this).width();
     });
     $("label").width(max);
-    var buttons = $('#push button').button();
-    buttons.click(function(event) {
+   $('#push button').click(function(event) {
         //var target = $(event.target);
         submitImportfile(event);
     });
-    var buttons = $('#cooc button').button();
-    buttons.click(function(event) {
+    $('#cooc button').click(function(event) {
         console.error("not implemented yet");
         //runProcessCooc(event);
     });

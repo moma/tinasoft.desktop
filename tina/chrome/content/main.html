@@ -1,67 +1,61 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml"><head>
-    <title></title>
+<html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Tinasoft</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="description" content="">
     <meta name="keywords" content="Tinasoft,CREA">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-<head>
-  <!--[if IE]><script src="js/excanvas.compiled.js"></script><![endif]-->
-  <script type="text/javascript" src="lib/js/jquery/jquery-1.3.2.min.js"           language="javascript"></script>
-  <script type="text/javascript" src="lib/js/jquery/jquery-ui-1.7.2.custom.min.js" language="javascript"></script>
-  <script type="text/javascript" src="lib/js/jquery/ui.button.js"                  language="javascript"></script>
-  <!--<script type="text/javascript" src="lib/js/jquery/jquery.form.js"></script>-->
-  <!--<script type="text/javascript" src="tina.js" language="javascript"></script>-->
-  <script type="text/javascript" src="lib/js/jquery/jquery.qtip-1.0.0.min.js"      language="javascript"></script>
-  <script type="text/javascript" src="main.js"                                     language="javascript"></script>
-  <script type="text/javascript" src="console.js"                                  language="javascript"></script>
-  <script type="text/javascript" src="prefman.js"                                  language="javascript"></script>
-  <script type="text/javascript" src="xmlhttprequester.js"                         language="javascript"></script>
-  <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
-  <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/ui.button.css" />
-  <link type="text/css" rel="stylesheet" href="main.css"/>
+    
+    <!-- JQUERY -->
+    <script type="text/javascript" src="lib/js/jquery/jquery-1.3.js"                 language="javascript"></script>
+
+    <!-- UTILITIES -->
+    <script type="text/javascript" src="console.js"                                  language="javascript"></script>
+    <script type="text/javascript" src="prefman.js"                                  language="javascript"></script>
+    <script type="text/javascript" src="xmlhttprequester.js"                         language="javascript"></script>
+
+
+    <!-- JQUERY UI -->
+    <script type="text/javascript" src="lib/js/jquery/jquery.ui.all.js"              language="javascript"></script>
+    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
+    
+    <!-- TINASOFT APP -->
+    <script type="text/javascript" src="main.js"                                     language="javascript"></script> 
+    <link type="text/css" rel="stylesheet" href="main.css"/>   
 </head>
 <body style="cursor: auto;">
-   <script type="text/javascript" language="javascript">
-
-   /*
-    $('a[title]').qtip({
-   style: {
-    name: 'cream',
-    tip: true,
-    border: {
-         width: 3,
-         radius: 8,
-         color: '#6699CC'
-      },
-     width: 200
-   }
-
-  });
-
-   $('#buttonlabel').qtip({
-   content: 'test',
-   style: {
-    name: 'cream',
-    //tip: true,
-    border: {
-         width: 3,
-         radius: 8,
-         color: '#6699CC'
-      },
-     width: 200
-   }
-  });
-  */
-
-  </script>
+<script type="text/javascript"> 
+	$(function(){
+		//all hover and click logic for buttons
+		$(".fg-button:not(.ui-state-disabled)")
+		.hover(
+			function(){ 
+				$(this).addClass("ui-state-hover"); 
+			},
+			function(){ 
+				$(this).removeClass("ui-state-hover"); 
+			}
+		)
+		.mousedown(function(){
+				$(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
+				if( $(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active') ){ $(this).removeClass("ui-state-active"); }
+				else { $(this).addClass("ui-state-active"); }	
+		})
+		.mouseup(function(){
+			if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button,  .fg-buttonset-multi .fg-button') ){
+				$(this).removeClass("ui-state-active");
+			}
+		});
+	});
+</script> 
     <div class="demo">
         <div id="tabs" class="ui-corner-top">
             <ul>
                 <li><a title="configure input data sets" href="#tabs-1">Data sets</a></li>
                 <li><a title="configure the thematic fields" href="#tabs-2">Thematic fields</a></li>
                 <li><a title="see the global map" href="#tabs-3">Global map</a></li>
-                 <li><a title="explore the local neighborhood" href="#tabs-4">Local neighborhood</a></li>
+                <li><a title="explore the local neighborhood" href="#tabs-4">Local neighborhood</a></li>
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-1">
@@ -79,9 +73,7 @@
                     <!--<label>Index full-text</label>
                     <input type="checkbox" name="Check3" /><br/>-->
                     <div id="push">
-                        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-                            <span class="ui-button-text">Launch</span>
-                        </button>
+                        <button class="ui-state-default ui-corner-all" >Launch</button>
                     </div>
                 </div>
             </div>
@@ -93,13 +85,9 @@
                     <ol id="selectable_corpora" class="selectable">
                         <!--<li class="ui-widget-content">Item 1</li>-->
                     </ol>
-
-                    </div><!-- End demo -->
-
+                </div><!-- End demo -->
                 <div id="cooc">
-                        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
-                            <span class="ui-button-text">Generate graphs</span>
-                        </button>
+                    <button class="ui-state-default ui-corner-all" >Generate graphs</button>
                 </div>
             </div>
 
@@ -110,11 +98,12 @@
                         <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
                         <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
                     </div>
-                    <div class="fg-buttonset ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
+                          
+                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
                     </div>
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>
                         <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo" title="projection"><span class="ui-icon ui-icon-projection"></span> projection</a>
                         <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a>
                     </div>
@@ -127,8 +116,8 @@
                         <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
                         <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
                     </div>
-                    <div class="fg-buttonset ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
+                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
                     </div>
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>

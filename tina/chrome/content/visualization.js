@@ -72,14 +72,21 @@ function Tinaviz() {
         if (applet == null) return;
         //applet.reproject();
     },
-    showProjectGraph: function() {
+    switchTermProjects: function() {
         if (applet == null) return;
+        // change the filter!
         //applet.showProjectGraph();
     },
-    showTermGraph: function() {
-        if (applet == null) return;
-        //applet.showTermGraph();
+
+    
+    switchToLocalExploration: function() {
+        applet.switchToLocalExploration();
     },
+    
+    switchToGlobalExploration: function() {
+        applet.switchToGlobalExploration();
+    },
+    
     nodeClicked: function(x,y,id,label) {
         if (applet == null) return;
         
