@@ -1,7 +1,7 @@
 # tinasoft.TinaApp configuration (YAML format)
 ---
 # TinaApp main params
-locale: ''
+locale: 'en_US.UTF-8'
 storage: "tinabsddb://test.bsddb"
 index: 'index/'
 dbenv: 'db/'

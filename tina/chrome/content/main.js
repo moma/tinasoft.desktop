@@ -145,7 +145,7 @@ function computeAppletWidth() {
 
 /* TODO replace by CSS query */
 function computeAppletHeight() {
-    return getHeight() - 150;
+    return getHeight() - 140;
 }
 
 // wait for the DOM to be loaded
@@ -160,8 +160,8 @@ $(document).ready(function() {
                 // we want to size the iframe very precisely (at the pixel)
                 $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
                 $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-                tabvizframe.tinaviz.resized();
                 tabvizframe.tinaviz.setEnabled(true);
+                tabvizframe.tinaviz.resized();
             }
             tabvizframe.tinaviz.switchToGlobalExploration();
 
@@ -176,8 +176,8 @@ $(document).ready(function() {
                 // we want to size the iframe very precisely (at the pixel)
                 $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
                 $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-                tabvizframe.tinaviz.resized();
                 tabvizframe.tinaviz.setEnabled(true);
+                tabvizframe.tinaviz.resized();
             }
             tabvizframe.tinaviz.switchToLocalExploration();
 

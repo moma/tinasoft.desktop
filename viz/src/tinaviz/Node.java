@@ -30,6 +30,9 @@ public class Node {
     public boolean highlighted = false;
     public float genericity = 1.0f;
     public String category = "none";
+    public float r = 150f;
+    public float g = 150f;
+    public float b = 150f;
 
     public Map<String,Object> attributes = new HashMap<String,Object>();
 

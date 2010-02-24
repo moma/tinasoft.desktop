@@ -2,7 +2,7 @@
 <gexf xmlns="http://www.gephi.org/gexf" xmlns:viz="http://www.gephi.org/gexf/viz"> 
 <meta lastmodifieddate="19-Feb-2010"><description>Generic Map/2002-2007</description></meta><graph type="static"> 
 <attributes class="node" type="static"> 
-<attribute id="0" title="id_label" type="string"/> 
+<attribute id="0" title="category" type="string"/> 
 <attribute id="1" title="date" type="float"/> 
 <attribute id="2" title="label" type="string"/> 
 <attribute id="3" title="url" type="string"/> 
@@ -18,15 +18,11 @@
 </attributes> 
 <tina>
     <select node="1" />
-
     <zoom value="1.0" />
-    
     <threshold min="0.00" max="1.00" />
-    
     <labels show="true" />
     <nodes show="true" />
     <links show="true" />
-    
     <layout pause="false" prespatialize="false"/>
 </tina>
 <nodes> 
@@ -34,997 +30,997 @@
 <viz:color b="0" g="247"  r="255"/> 
 <viz:position x="42.6484" y="23.3516" z="0"/>   
 <viz:size value="1.7436"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="nucleus accumbens/accumbens shell"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="627"/><attvalue id="5" value="389"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="nucleus accumbens/accumbens shell"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="627"/><attvalue for="5" value="389"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="2" label="dopamine reuptake/nucleus accumbens shell">  
 <viz:color b="0" g="231"  r="255"/> 
 <viz:position x="40.313" y="36.0404" z="0"/>   
 <viz:size value="1.7268"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine reuptake/nucleus accumbens shell"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="154"/><attvalue id="5" value="422"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine reuptake/nucleus accumbens shell"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="154"/><attvalue for="5" value="422"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="3" label="acetylchonine/nicotinic acetylcholine receptor">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="88.0402" y="89.6993" z="0"/>   
 <viz:size value="1.7157"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="acetylchonine/nicotinic acetylcholine receptor"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="122"/><attvalue id="5" value="108"/><attvalue id="6" value="5"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="1551"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="acetylchonine/nicotinic acetylcholine receptor"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="122"/><attvalue for="5" value="108"/><attvalue for="6" value="5"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="1551"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="4" label="adrenergic receptor/receptor kinase">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="85.8586" y="30.8871" z="0"/>   
 <viz:size value="1.7042"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="adrenergic receptor/receptor kinase"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="48"/><attvalue id="5" value="128"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="adrenergic receptor/receptor kinase"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="48"/><attvalue for="5" value="128"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="5" label="receptor affinity/binding affinity">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="31.5363" y="6.4029" z="0"/>   
 <viz:size value="1.6874"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="receptor affinity/binding affinity"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="179"/><attvalue id="5" value="66"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="receptor affinity/binding affinity"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="179"/><attvalue for="5" value="66"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="6" label="dopamine dysregulation syndrome/deep brain stimulation">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="91.0197" y="79.7549" z="0"/>   
 <viz:size value="1.7105"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine dysregulation syndrome/deep brain stimulation"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="287"/><attvalue id="5" value="446"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="26"/><attvalue id="12" value="22"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine dysregulation syndrome/deep brain stimulation"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="287"/><attvalue for="5" value="446"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="26"/><attvalue for="12" value="22"/></attvalues>  
 </node> 
 <node id="7" label="common marmosets/l dopa treatment">  
 <viz:color b="0" g="210"  r="255"/> 
 <viz:position x="20.1888" y="74.097" z="0"/>   
 <viz:size value="1.7118"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="common marmosets/l dopa treatment"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="249"/><attvalue id="5" value="417"/><attvalue id="6" value="0"/><attvalue id="7" value="28"/><attvalue id="8" value="0"/><attvalue id="9" value="2"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="common marmosets/l dopa treatment"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="249"/><attvalue for="5" value="417"/><attvalue for="6" value="0"/><attvalue for="7" value="28"/><attvalue for="8" value="0"/><attvalue for="9" value="2"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="8" label="dependent patients/alcohol dependence">  
 <viz:color b="0" g="233"  r="255"/> 
 <viz:position x="85.1837" y="69.6393" z="0"/>   
 <viz:size value="1.7089"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dependent patients/alcohol dependence"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="75"/><attvalue id="5" value="96"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dependent patients/alcohol dependence"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="75"/><attvalue for="5" value="96"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="9" label="dopamine synthesis capacity/dopa decarboxylase">  
 <viz:color b="0" g="255"  r="254"/> 
 <viz:position x="93.32" y="25.1605" z="0"/>   
 <viz:size value="1.6995"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine synthesis capacity/dopa decarboxylase"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="322"/><attvalue id="5" value="312"/><attvalue id="6" value="0"/><attvalue id="7" value="6"/><attvalue id="8" value="0"/><attvalue id="9" value="8"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine synthesis capacity/dopa decarboxylase"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="322"/><attvalue for="5" value="312"/><attvalue for="6" value="0"/><attvalue for="7" value="6"/><attvalue for="8" value="0"/><attvalue for="9" value="8"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="10" label="dopamine synthesis capacity/amino acid decarboxylase">  
 <viz:color b="0" g="255"  r="247"/> 
 <viz:position x="67.4109" y="60.8577" z="0"/>   
 <viz:size value="1.7177"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine synthesis capacity/amino acid decarboxylase"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="114"/><attvalue id="5" value="340"/><attvalue id="6" value="0"/><attvalue id="7" value="11"/><attvalue id="8" value="0"/><attvalue id="9" value="7"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine synthesis capacity/amino acid decarboxylase"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="114"/><attvalue for="5" value="340"/><attvalue for="6" value="0"/><attvalue for="7" value="11"/><attvalue for="8" value="0"/><attvalue for="9" value="7"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="11" label="dopamine transporter activity/striatal dopamine transporter">  
 <viz:color b="0" g="255"  r="219"/> 
 <viz:position x="71.4701" y="82.2626" z="0"/>   
 <viz:size value="1.6901"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine transporter activity/striatal dopamine transporter"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="280"/><attvalue id="5" value="292"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine transporter activity/striatal dopamine transporter"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="280"/><attvalue for="5" value="292"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="12" label="dopaminergic stimulation/induced motor complications">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="56.3456" y="30.0588" z="0"/>   
 <viz:size value="1.7126"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopaminergic stimulation/induced motor complications"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="290"/><attvalue id="5" value="526"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="14"/><attvalue id="12" value="14"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopaminergic stimulation/induced motor complications"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="290"/><attvalue for="5" value="526"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="14"/><attvalue for="12" value="14"/></attvalues>  
 </node> 
 <node id="13" label="gria2/gria1">  
 <viz:color b="0" g="127"  r="255"/> 
 <viz:position x="40.6784" y="57.6141" z="0"/>   
 <viz:size value="1.7123"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="gria2/gria1"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="225"/><attvalue id="5" value="301"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="15"/><attvalue id="12" value="27"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="gria2/gria1"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="225"/><attvalue for="5" value="301"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="15"/><attvalue for="12" value="27"/></attvalues>  
 </node> 
 <node id="14" label="gabaa receptor/gamma aminobutyric acid">  
 <viz:color b="0" g="255"  r="251"/> 
 <viz:position x="70.8204" y="49.2914" z="0"/>   
 <viz:size value="2.3807"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="gabaa receptor/gamma aminobutyric acid"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="133"/><attvalue id="5" value="133"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="20"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="gabaa receptor/gamma aminobutyric acid"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="133"/><attvalue for="5" value="133"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="20"/></attvalues>  
 </node> 
 <node id="15" label="basal ganglia/nigra pars reticulata">  
 <viz:color b="0" g="251"  r="255"/> 
 <viz:position x="93.4459" y="12.3333" z="0"/>   
 <viz:size value="1.7337"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="basal ganglia/nigra pars reticulata"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="570"/><attvalue id="5" value="343"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="basal ganglia/nigra pars reticulata"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="570"/><attvalue for="5" value="343"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="16" label="d receptor gene/gene polymorphism">  
 <viz:color b="0" g="255"  r="219"/> 
 <viz:position x="85.4935" y="11.421" z="0"/>   
 <viz:size value="1.6943"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="d receptor gene/gene polymorphism"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="262"/><attvalue id="5" value="155"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="d receptor gene/gene polymorphism"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="262"/><attvalue for="5" value="155"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="17" label="polymorphism/serotonin transporter promoter">  
 <viz:color b="0" g="247"  r="255"/> 
 <viz:position x="60.6435" y="90.7857" z="0"/>   
 <viz:size value="1.6934"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="polymorphism/serotonin transporter promoter"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="289"/><attvalue id="5" value="217"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="polymorphism/serotonin transporter promoter"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="289"/><attvalue for="5" value="217"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="18" label="gene therapy/gene transfer">  
 <viz:color b="0" g="255"  r="251"/> 
 <viz:position x="37.5108" y="10.7968" z="0"/>   
 <viz:size value="1.7239"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="gene therapy/gene transfer"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="80"/><attvalue id="5" value="148"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="gene therapy/gene transfer"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="80"/><attvalue for="5" value="148"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="19" label="ampa receptor/receptor subunit">  
 <viz:color b="0" g="255"  r="182"/> 
 <viz:position x="47.927" y="15.6531" z="0"/>   
 <viz:size value="1.6885"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="ampa receptor/receptor subunit"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="398"/><attvalue id="5" value="235"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="ampa receptor/receptor subunit"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="398"/><attvalue for="5" value="235"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="20" label="ampa receptor/glur1">  
 <viz:color b="0" g="208"  r="255"/> 
 <viz:position x="25.507" y="8.4582" z="0"/>   
 <viz:size value="1.6908"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="ampa receptor/glur1"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="387"/><attvalue id="5" value="444"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="21"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="ampa receptor/glur1"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="387"/><attvalue for="5" value="444"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="21"/></attvalues>  
 </node> 
 <node id="21" label="ampa receptor/glura">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="70.7956" y="12.3458" z="0"/>   
 <viz:size value="1.7155"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="ampa receptor/glura"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="305"/><attvalue id="5" value="483"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="ampa receptor/glura"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="305"/><attvalue for="5" value="483"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="22" label="glur1/grin2b">  
 <viz:color b="0" g="255"  r="241"/> 
 <viz:position x="7.4856" y="13.428" z="0"/>   
 <viz:size value="1.7029"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="glur1/grin2b"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="233"/><attvalue id="5" value="415"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="28"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="glur1/grin2b"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="233"/><attvalue for="5" value="415"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="28"/></attvalues>  
 </node> 
 <node id="23" label="nigrostriatal dopamine neurons/chronic haloperidol treatment">  
 <viz:color b="0" g="243"  r="255"/> 
 <viz:position x="36.4584" y="89.1264" z="0"/>   
 <viz:size value="1.6974"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="nigrostriatal dopamine neurons/chronic haloperidol treatment"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="106"/><attvalue id="5" value="360"/><attvalue id="6" value="0"/><attvalue id="7" value="41"/><attvalue id="8" value="0"/><attvalue id="9" value="6"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="nigrostriatal dopamine neurons/chronic haloperidol treatment"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="106"/><attvalue for="5" value="360"/><attvalue for="6" value="0"/><attvalue for="7" value="41"/><attvalue for="8" value="0"/><attvalue for="9" value="6"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="24" label="homovanillic acid/pyruvoyl tetrahydropterin synthase">  
 <viz:color b="0" g="233"  r="255"/> 
 <viz:position x="27.4883" y="48.8997" z="0"/>   
 <viz:size value="1.7074"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="homovanillic acid/pyruvoyl tetrahydropterin synthase"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="23"/><attvalue id="5" value="103"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="5"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="homovanillic acid/pyruvoyl tetrahydropterin synthase"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="23"/><attvalue for="5" value="103"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="5"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="25" label="spiny neurons/huntingtons disease">  
 <viz:color b="0" g="204"  r="255"/> 
 <viz:position x="66.2739" y="99.8876" z="0"/>   
 <viz:size value="1.696"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="spiny neurons/huntingtons disease"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="62"/><attvalue id="5" value="138"/><attvalue id="6" value="0"/><attvalue id="7" value="21"/><attvalue id="8" value="0"/><attvalue id="9" value="11"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="spiny neurons/huntingtons disease"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="62"/><attvalue for="5" value="138"/><attvalue for="6" value="0"/><attvalue for="7" value="21"/><attvalue for="8" value="0"/><attvalue for="9" value="11"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="26" label="neuropeptide y receptor/food restriction">  
 <viz:color b="0" g="246"  r="255"/> 
 <viz:position x="89.3579" y="74.274" z="0"/>   
 <viz:size value="1.6945"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="neuropeptide y receptor/food restriction"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="58"/><attvalue id="5" value="115"/><attvalue id="6" value="0"/><attvalue id="7" value="19"/><attvalue id="8" value="0"/><attvalue id="9" value="6"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="neuropeptide y receptor/food restriction"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="58"/><attvalue for="5" value="115"/><attvalue for="6" value="0"/><attvalue for="7" value="19"/><attvalue for="8" value="0"/><attvalue for="9" value="6"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="27" label="induced neurotoxicity/hydroxydopamine induced neurotoxicity">  
 <viz:color b="0" g="209"  r="255"/> 
 <viz:position x="51.7207" y="21.9609" z="0"/>   
 <viz:size value="1.6958"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="induced neurotoxicity/hydroxydopamine induced neurotoxicity"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="309"/><attvalue id="5" value="328"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="18"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="induced neurotoxicity/hydroxydopamine induced neurotoxicity"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="309"/><attvalue for="5" value="328"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="18"/></attvalues>  
 </node> 
 <node id="28" label="lipid peroxidation/induced oxidative stress">  
 <viz:color b="0" g="227"  r="255"/> 
 <viz:position x="60.3973" y="53.3428" z="0"/>   
 <viz:size value="1.6886"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="lipid peroxidation/induced oxidative stress"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="298"/><attvalue id="5" value="252"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="lipid peroxidation/induced oxidative stress"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="298"/><attvalue for="5" value="252"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="29" label="ventral tegmental area/accumbens shell">  
 <viz:color b="0" g="254"  r="255"/> 
 <viz:position x="28.9052" y="46.9285" z="0"/>   
 <viz:size value="1.7378"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="ventral tegmental area/accumbens shell"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="357"/><attvalue id="5" value="341"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="ventral tegmental area/accumbens shell"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="357"/><attvalue for="5" value="341"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="30" label="dependent protein kinase/protein kinase ii">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="40.4979" y="81.3884" z="0"/>   
 <viz:size value="1.7313"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dependent protein kinase/protein kinase ii"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="485"/><attvalue id="5" value="115"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dependent protein kinase/protein kinase ii"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="485"/><attvalue for="5" value="115"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="31" label="dopamine neuron activity/midbrain dopamine">  
 <viz:color b="0" g="188"  r="255"/> 
 <viz:position x="71.5941" y="32.7518" z="0"/>   
 <viz:size value="1.7003"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine neuron activity/midbrain dopamine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="68"/><attvalue id="5" value="226"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="20"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine neuron activity/midbrain dopamine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="68"/><attvalue for="5" value="226"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="20"/></attvalues>  
 </node> 
 <node id="32" label="movement disorder/dysregulation syndrome">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="56.4631" y="37.6627" z="0"/>   
 <viz:size value="1.7322"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="movement disorder/dysregulation syndrome"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="284"/><attvalue id="5" value="362"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="18"/><attvalue id="12" value="25"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="movement disorder/dysregulation syndrome"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="284"/><attvalue for="5" value="362"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="18"/><attvalue for="12" value="25"/></attvalues>  
 </node> 
 <node id="33" label="muscarinic acetylcholine receptor/h receptor">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="54.3234" y="71.0579" z="0"/>   
 <viz:size value="1.7043"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="muscarinic acetylcholine receptor/h receptor"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="24"/><attvalue id="5" value="59"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="muscarinic acetylcholine receptor/h receptor"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="24"/><attvalue for="5" value="59"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="34" label="neuronal differentiation/neurite outgrowth">  
 <viz:color b="0" g="246"  r="255"/> 
 <viz:position x="70.3342" y="96.548" z="0"/>   
 <viz:size value="1.6845"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="neuronal differentiation/neurite outgrowth"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="38"/><attvalue id="5" value="75"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="1"/><attvalue id="11" value="9"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="neuronal differentiation/neurite outgrowth"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="38"/><attvalue for="5" value="75"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="1"/><attvalue for="11" value="9"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="35" label="neurotransmission/dopamine norepinephrine">  
 <viz:color b="0" g="52"  r="255"/> 
 <viz:position x="18.3116" y="37.1475" z="0"/>   
 <viz:size value="1.6968"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="neurotransmission/dopamine norepinephrine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="274"/><attvalue id="5" value="278"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="16"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="neurotransmission/dopamine norepinephrine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="274"/><attvalue for="5" value="278"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="16"/></attvalues>  
 </node> 
 <node id="36" label="nigra pars/pars compacta">  
 <viz:color b="0" g="243"  r="255"/> 
 <viz:position x="8.9502" y="26.9291" z="0"/>   
 <viz:size value="2.8355"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="nigra pars/pars compacta"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="284"/><attvalue id="5" value="269"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="nigra pars/pars compacta"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="284"/><attvalue for="5" value="269"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="37" label="oxidative stress/hydroxylase mrna expression">  
 <viz:color b="0" g="223"  r="255"/> 
 <viz:position x="66.4719" y="60.8371" z="0"/>   
 <viz:size value="1.6844"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="oxidative stress/hydroxylase mrna expression"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="189"/><attvalue id="5" value="118"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="16"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="oxidative stress/hydroxylase mrna expression"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="189"/><attvalue for="5" value="118"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="16"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="38" label="neuropeptide y receptor/food intake">  
 <viz:color b="0" g="234"  r="255"/> 
 <viz:position x="48.3347" y="71.4039" z="0"/>   
 <viz:size value="1.6802"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="neuropeptide y receptor/food intake"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="107"/><attvalue id="5" value="72"/><attvalue id="6" value="1"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="8"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="14"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="neuropeptide y receptor/food intake"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="107"/><attvalue for="5" value="72"/><attvalue for="6" value="1"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="8"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="14"/></attvalues>  
 </node> 
 <node id="39" label="quantitative trait loci/beta hydroxylase activity">  
 <viz:color b="0" g="255"  r="237"/> 
 <viz:position x="18.5709" y="56.8306" z="0"/>   
 <viz:size value="1.6991"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="quantitative trait loci/beta hydroxylase activity"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="7"/><attvalue id="5" value="88"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="18"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="quantitative trait loci/beta hydroxylase activity"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="7"/><attvalue for="5" value="88"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="18"/></attvalues>  
 </node> 
 <node id="40" label="gabra6/schizophrenia patients">  
 <viz:color b="0" g="228"  r="255"/> 
 <viz:position x="6.2561" y="60.9662" z="0"/>   
 <viz:size value="1.6931"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="gabra6/schizophrenia patients"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="335"/><attvalue id="5" value="211"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="15"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="gabra6/schizophrenia patients"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="335"/><attvalue for="5" value="211"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="15"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="41" label="agonist cabergoline/somatostatin receptor subtypes">  
 <viz:color b="0" g="248"  r="255"/> 
 <viz:position x="0.098177" y="25.4673" z="0"/>   
 <viz:size value="1.7244"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="agonist cabergoline/somatostatin receptor subtypes"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="74"/><attvalue id="5" value="149"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="29"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="agonist cabergoline/somatostatin receptor subtypes"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="74"/><attvalue for="5" value="149"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="29"/></attvalues>  
 </node> 
 <node id="42" label="dopamine dhigh/striatal dopamine">  
 <viz:color b="0" g="255"  r="241"/> 
 <viz:position x="91.4794" y="7.033" z="0"/>   
 <viz:size value="1.7047"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine dhigh/striatal dopamine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="310"/><attvalue id="5" value="255"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="10"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine dhigh/striatal dopamine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="310"/><attvalue for="5" value="255"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="10"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="43" label="transporter gene/repeat allele">  
 <viz:color b="0" g="243"  r="255"/> 
 <viz:position x="52.5932" y="90.6342" z="0"/>   
 <viz:size value="1.6951"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="transporter gene/repeat allele"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="91"/><attvalue id="5" value="232"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="transporter gene/repeat allele"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="91"/><attvalue for="5" value="232"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="44" label="receptor agonist/agonist quinpirole">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="56.782" y="71.059" z="0"/>   
 <viz:size value="1.7143"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="receptor agonist/agonist quinpirole"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="638"/><attvalue id="5" value="158"/><attvalue id="6" value="2"/><attvalue id="7" value="14"/><attvalue id="8" value="0"/><attvalue id="9" value="12"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="17"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="receptor agonist/agonist quinpirole"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="638"/><attvalue for="5" value="158"/><attvalue for="6" value="2"/><attvalue for="7" value="14"/><attvalue for="8" value="0"/><attvalue for="9" value="12"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="17"/></attvalues>  
 </node> 
 <node id="45" label="angiotensin converting enzyme/angiotensin">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="74.1034" y="97.1619" z="0"/>   
 <viz:size value="2.425"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="angiotensin converting enzyme/angiotensin"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="123"/><attvalue id="5" value="115"/><attvalue id="6" value="0"/><attvalue id="7" value="38"/><attvalue id="8" value="0"/><attvalue id="9" value="7"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="6"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="angiotensin converting enzyme/angiotensin"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="123"/><attvalue for="5" value="115"/><attvalue for="6" value="0"/><attvalue for="7" value="38"/><attvalue for="8" value="0"/><attvalue for="9" value="7"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="6"/></attvalues>  
 </node> 
 <node id="46" label="serotonin transporter availability/transporter binding">  
 <viz:color b="0" g="246"  r="255"/> 
 <viz:position x="60.4444" y="6.4499" z="0"/>   
 <viz:size value="1.7135"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="serotonin transporter availability/transporter binding"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="97"/><attvalue id="5" value="221"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="serotonin transporter availability/transporter binding"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="97"/><attvalue for="5" value="221"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="47" label="anandamide/fatty acid amide">  
 <viz:color b="0" g="251"  r="255"/> 
 <viz:position x="15.9466" y="91.7031" z="0"/>   
 <viz:size value="2.4136"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="anandamide/fatty acid amide"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="0"/><attvalue id="5" value="40"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="anandamide/fatty acid amide"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="0"/><attvalue for="5" value="40"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="48" label="angiotensin converting enzyme/angiotensin ii">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="67.0402" y="50.182" z="0"/>   
 <viz:size value="1.7392"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="angiotensin converting enzyme/angiotensin ii"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="136"/><attvalue id="5" value="116"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="16"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="angiotensin converting enzyme/angiotensin ii"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="136"/><attvalue for="5" value="116"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="16"/></attvalues>  
 </node> 
 <node id="49" label="dysregulation syndrome/behavioral sensitization">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="29.0557" y="78.0206" z="0"/>   
 <viz:size value="1.7161"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dysregulation syndrome/behavioral sensitization"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="125"/><attvalue id="5" value="304"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dysregulation syndrome/behavioral sensitization"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="125"/><attvalue for="5" value="304"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="50" label="deep brain/brain stimulation">  
 <viz:color b="0" g="240"  r="255"/> 
 <viz:position x="41.6573" y="55.3112" z="0"/>   
 <viz:size value="2.4376"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="deep brain/brain stimulation"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="464"/><attvalue id="5" value="314"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="20"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="deep brain/brain stimulation"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="464"/><attvalue for="5" value="314"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="20"/></attvalues>  
 </node> 
 <node id="51" label="neuron loss/human alpha synuclein">  
 <viz:color b="0" g="139"  r="255"/> 
 <viz:position x="2.7704" y="79.2285" z="0"/>   
 <viz:size value="1.6953"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="neuron loss/human alpha synuclein"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="52"/><attvalue id="5" value="173"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="20"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="neuron loss/human alpha synuclein"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="52"/><attvalue for="5" value="173"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="20"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="52" label="self administration/induced reinstatement">  
 <viz:color b="0" g="157"  r="255"/> 
 <viz:position x="5.28" y="87.8307" z="0"/>   
 <viz:size value="2.397"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="self administration/induced reinstatement"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="260"/><attvalue id="5" value="320"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="14"/><attvalue id="12" value="24"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="self administration/induced reinstatement"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="260"/><attvalue for="5" value="320"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="14"/><attvalue for="12" value="24"/></attvalues>  
 </node> 
 <node id="53" label="seeking behavior/induced reinstatement">  
 <viz:color b="0" g="225"  r="255"/> 
 <viz:position x="38.0681" y="86.0416" z="0"/>   
 <viz:size value="1.7216"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="seeking behavior/induced reinstatement"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="193"/><attvalue id="5" value="349"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="22"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="seeking behavior/induced reinstatement"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="193"/><attvalue for="5" value="349"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="22"/></attvalues>  
 </node> 
 <node id="54" label="lipid peroxidation/orofacial dyskinesia">  
 <viz:color b="0" g="199"  r="255"/> 
 <viz:position x="5.468" y="72.8367" z="0"/>   
 <viz:size value="1.7119"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="lipid peroxidation/orofacial dyskinesia"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="152"/><attvalue id="5" value="296"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="15"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="lipid peroxidation/orofacial dyskinesia"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="152"/><attvalue for="5" value="296"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="15"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="55" label="basal ganglia/globus pallidus">  
 <viz:color b="0" g="247"  r="255"/> 
 <viz:position x="50.3076" y="92.1606" z="0"/>   
 <viz:size value="1.7073"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="basal ganglia/globus pallidus"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="439"/><attvalue id="5" value="239"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="basal ganglia/globus pallidus"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="439"/><attvalue for="5" value="239"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="56" label="comt gene/gene polymorphism">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="21.8634" y="27.965" z="0"/>   
 <viz:size value="1.7048"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="comt gene/gene polymorphism"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="220"/><attvalue id="5" value="150"/><attvalue id="6" value="0"/><attvalue id="7" value="18"/><attvalue id="8" value="0"/><attvalue id="9" value="34"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="comt gene/gene polymorphism"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="220"/><attvalue for="5" value="150"/><attvalue for="6" value="0"/><attvalue for="7" value="18"/><attvalue for="8" value="0"/><attvalue for="9" value="34"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="57" label="food intake/leptin">  
 <viz:color b="0" g="229"  r="255"/> 
 <viz:position x="41.5741" y="75.4887" z="0"/>   
 <viz:size value="1.6824"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="food intake/leptin"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="99"/><attvalue id="5" value="97"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="16"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="food intake/leptin"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="99"/><attvalue for="5" value="97"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="16"/></attvalues>  
 </node> 
 <node id="58" label="ampa receptor/glur2">  
 <viz:color b="0" g="255"  r="237"/> 
 <viz:position x="19.2618" y="4.3357" z="0"/>   
 <viz:size value="1.7084"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="ampa receptor/glur2"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="377"/><attvalue id="5" value="379"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="ampa receptor/glur2"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="377"/><attvalue for="5" value="379"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="59" label="metabotropic glutamate/group iii">  
 <viz:color b="0" g="255"  r="249"/> 
 <viz:position x="49.3325" y="88.1266" z="0"/>   
 <viz:size value="1.7055"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="metabotropic glutamate/group iii"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="67"/><attvalue id="5" value="98"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="metabotropic glutamate/group iii"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="67"/><attvalue for="5" value="98"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="60" label="catecholamine synthesis/hydroxylase activity">  
 <viz:color b="0" g="255"  r="246"/> 
 <viz:position x="68.3111" y="71.8279" z="0"/>   
 <viz:size value="1.6816"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="catecholamine synthesis/hydroxylase activity"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="229"/><attvalue id="5" value="146"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="catecholamine synthesis/hydroxylase activity"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="229"/><attvalue for="5" value="146"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="61" label="dopaminergic sh/induced cell death">  
 <viz:color b="0" g="229"  r="255"/> 
 <viz:position x="6.5199" y="12.4322" z="0"/>   
 <viz:size value="1.7123"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopaminergic sh/induced cell death"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="253"/><attvalue id="5" value="228"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopaminergic sh/induced cell death"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="253"/><attvalue for="5" value="228"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="62" label="kainate/glur2">  
 <viz:color b="0" g="255"  r="227"/> 
 <viz:position x="19.13" y="9.8231" z="0"/>   
 <viz:size value="1.7012"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="kainate/glur2"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="259"/><attvalue id="5" value="392"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="kainate/glur2"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="259"/><attvalue for="5" value="392"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="63" label="monoamine oxidase/transporter ligand">  
 <viz:color b="0" g="255"  r="246"/> 
 <viz:position x="70.3835" y="77.4628" z="0"/>   
 <viz:size value="1.7175"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="monoamine oxidase/transporter ligand"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="90"/><attvalue id="5" value="210"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="6"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="monoamine oxidase/transporter ligand"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="90"/><attvalue for="5" value="210"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="6"/></attvalues>  
 </node> 
 <node id="64" label="motor complications/levodopa therapy">  
 <viz:color b="0" g="247"  r="255"/> 
 <viz:position x="38.7936" y="4.239" z="0"/>   
 <viz:size value="1.7296"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="motor complications/levodopa therapy"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="555"/><attvalue id="5" value="521"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="motor complications/levodopa therapy"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="555"/><attvalue for="5" value="521"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="65" label="levodopa/motor complications">  
 <viz:color b="0" g="246"  r="255"/> 
 <viz:position x="55.4056" y="66.1252" z="0"/>   
 <viz:size value="2.8028"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="levodopa/motor complications"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="441"/><attvalue id="5" value="405"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="levodopa/motor complications"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="441"/><attvalue for="5" value="405"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="66" label="long acting dopamine/methyl phenyl tetrahydropyridine">  
 <viz:color b="0" g="255"  r="230"/> 
 <viz:position x="89.111" y="29.2523" z="0"/>   
 <viz:size value="1.7209"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="long acting dopamine/methyl phenyl tetrahydropyridine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="169"/><attvalue id="5" value="489"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="long acting dopamine/methyl phenyl tetrahydropyridine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="169"/><attvalue for="5" value="489"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="67" label="methamphetamine/induced neurotoxicity">  
 <viz:color b="0" g="255"  r="247"/> 
 <viz:position x="37.5363" y="11.4836" z="0"/>   
 <viz:size value="1.7054"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="methamphetamine/induced neurotoxicity"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="114"/><attvalue id="5" value="183"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="14"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="methamphetamine/induced neurotoxicity"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="114"/><attvalue for="5" value="183"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="14"/></attvalues>  
 </node> 
 <node id="68" label="mitochondrial dysfunction/dopaminergic sh">  
 <viz:color b="0" g="255"  r="205"/> 
 <viz:position x="43.1645" y="25.1622" z="0"/>   
 <viz:size value="1.7025"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="mitochondrial dysfunction/dopaminergic sh"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="150"/><attvalue id="5" value="354"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="mitochondrial dysfunction/dopaminergic sh"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="150"/><attvalue for="5" value="354"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="69" label="neural precursor/neural precursor cells">  
 <viz:color b="0" g="253"  r="255"/> 
 <viz:position x="98.318" y="95.9407" z="0"/>   
 <viz:size value="1.7168"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="neural precursor/neural precursor cells"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="22"/><attvalue id="5" value="81"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="17"/><attvalue id="12" value="20"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="neural precursor/neural precursor cells"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="22"/><attvalue for="5" value="81"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="17"/><attvalue for="12" value="20"/></attvalues>  
 </node> 
 <node id="70" label="glua1/neurotrophic factor">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="63.7197" y="79.2165" z="0"/>   
 <viz:size value="1.7389"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="glua1/neurotrophic factor"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="219"/><attvalue id="5" value="398"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="glua1/neurotrophic factor"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="219"/><attvalue for="5" value="398"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="71" label="dopamine reuptake/chronic nicotine">  
 <viz:color b="0" g="208"  r="255"/> 
 <viz:position x="58.8686" y="68.7773" z="0"/>   
 <viz:size value="1.7071"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine reuptake/chronic nicotine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="73"/><attvalue id="5" value="224"/><attvalue id="6" value="0"/><attvalue id="7" value="57"/><attvalue id="8" value="0"/><attvalue id="9" value="35"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine reuptake/chronic nicotine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="73"/><attvalue for="5" value="224"/><attvalue for="6" value="0"/><attvalue for="7" value="57"/><attvalue for="8" value="0"/><attvalue for="9" value="35"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="72" label="nucleus stimulation/subthalamic nucleus stimulation">  
 <viz:color b="0" g="241"  r="255"/> 
 <viz:position x="55.5001" y="66.2706" z="0"/>   
 <viz:size value="1.7289"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="nucleus stimulation/subthalamic nucleus stimulation"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="313"/><attvalue id="5" value="549"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="131"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="nucleus stimulation/subthalamic nucleus stimulation"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="313"/><attvalue for="5" value="549"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="131"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="73" label="vacuous chewing movements/lipid peroxidation">  
 <viz:color b="0" g="157"  r="255"/> 
 <viz:position x="53.1786" y="19.1288" z="0"/>   
 <viz:size value="2.4112"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="vacuous chewing movements/lipid peroxidation"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="188"/><attvalue id="5" value="306"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="26"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="vacuous chewing movements/lipid peroxidation"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="188"/><attvalue for="5" value="306"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="26"/></attvalues>  
 </node> 
 <node id="74" label="paradoxical sleep/receptor supersensitivity">  
 <viz:color b="0" g="207"  r="255"/> 
 <viz:position x="73.1825" y="13.0711" z="0"/>   
 <viz:size value="1.709"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="paradoxical sleep/receptor supersensitivity"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="6"/><attvalue id="5" value="95"/><attvalue id="6" value="0"/><attvalue id="7" value="69"/><attvalue id="8" value="0"/><attvalue id="9" value="6"/><attvalue id="10" value="0"/><attvalue id="11" value="15"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="paradoxical sleep/receptor supersensitivity"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="6"/><attvalue for="5" value="95"/><attvalue for="6" value="0"/><attvalue for="7" value="69"/><attvalue for="8" value="0"/><attvalue for="9" value="6"/><attvalue for="10" value="0"/><attvalue for="11" value="15"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="75" label="motor complications/methyl phenyl tetrahydropyridine">  
 <viz:color b="0" g="255"  r="230"/> 
 <viz:position x="91.188" y="32.3351" z="0"/>   
 <viz:size value="1.7179"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="motor complications/methyl phenyl tetrahydropyridine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="299"/><attvalue id="5" value="628"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="15"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="motor complications/methyl phenyl tetrahydropyridine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="299"/><attvalue for="5" value="628"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="15"/></attvalues>  
 </node> 
 <node id="76" label="motor complications/dopamine replacement therapy">  
 <viz:color b="0" g="208"  r="255"/> 
 <viz:position x="84.3167" y="60.1833" z="0"/>   
 <viz:size value="1.708"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="motor complications/dopamine replacement therapy"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="269"/><attvalue id="5" value="420"/><attvalue id="6" value="0"/><attvalue id="7" value="18"/><attvalue id="8" value="0"/><attvalue id="9" value="14"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="21"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="motor complications/dopamine replacement therapy"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="269"/><attvalue for="5" value="420"/><attvalue for="6" value="0"/><attvalue for="7" value="18"/><attvalue for="8" value="0"/><attvalue for="9" value="14"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="21"/></attvalues>  
 </node> 
 <node id="77" label="protein coupled receptor/g protein coupling">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="7.9549" y="47.1828" z="0"/>   
 <viz:size value="1.7144"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="protein coupled receptor/g protein coupling"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="49"/><attvalue id="5" value="109"/><attvalue id="6" value="0"/><attvalue id="7" value="11"/><attvalue id="8" value="0"/><attvalue id="9" value="8"/><attvalue id="10" value="0"/><attvalue id="11" value="15"/><attvalue id="12" value="17"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="protein coupled receptor/g protein coupling"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="49"/><attvalue for="5" value="109"/><attvalue for="6" value="0"/><attvalue for="7" value="11"/><attvalue for="8" value="0"/><attvalue for="9" value="8"/><attvalue for="10" value="0"/><attvalue for="11" value="15"/><attvalue for="12" value="17"/></attvalues>  
 </node> 
 <node id="78" label="corticotropin receptor/corticotropin releasing hormone">  
 <viz:color b="0" g="242"  r="255"/> 
 <viz:position x="82.593" y="2.0668" z="0"/>   
 <viz:size value="1.7331"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="corticotropin receptor/corticotropin releasing hormone"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="92"/><attvalue id="5" value="89"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="corticotropin receptor/corticotropin releasing hormone"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="92"/><attvalue for="5" value="89"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="79" label="schizophrenia/sensorimotor gating">  
 <viz:color b="0" g="241"  r="255"/> 
 <viz:position x="90.5245" y="19.5711" z="0"/>   
 <viz:size value="1.6993"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="schizophrenia/sensorimotor gating"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="303"/><attvalue id="5" value="177"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="10"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="schizophrenia/sensorimotor gating"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="303"/><attvalue for="5" value="177"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="10"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="80" label="cyclase activating polypeptide/pituitary adenylate">  
 <viz:color b="0" g="253"  r="255"/> 
 <viz:position x="46.0482" y="87.6304" z="0"/>   
 <viz:size value="1.7379"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="cyclase activating polypeptide/pituitary adenylate"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="17"/><attvalue id="5" value="55"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="10"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="cyclase activating polypeptide/pituitary adenylate"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="17"/><attvalue for="5" value="55"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="10"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="81" label="subthalamic nucleus/induced motor complications">  
 <viz:color b="0" g="251"  r="255"/> 
 <viz:position x="71.7516" y="9.1179" z="0"/>   
 <viz:size value="1.7236"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="subthalamic nucleus/induced motor complications"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="303"/><attvalue id="5" value="471"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="14"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="subthalamic nucleus/induced motor complications"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="303"/><attvalue for="5" value="471"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="14"/></attvalues>  
 </node> 
 <node id="82" label="striatal dopamine release/striatal dopamine neurotransmission">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="33.7" y="83.964" z="0"/>   
 <viz:size value="1.6805"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="striatal dopamine release/striatal dopamine neurotransmission"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="61"/><attvalue id="5" value="296"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="striatal dopamine release/striatal dopamine neurotransmission"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="61"/><attvalue for="5" value="296"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="83" label="dysregulation syndrome/discriminative stimulus">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="84.4868" y="82.015" z="0"/>   
 <viz:size value="1.726"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dysregulation syndrome/discriminative stimulus"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="120"/><attvalue id="5" value="287"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dysregulation syndrome/discriminative stimulus"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="120"/><attvalue for="5" value="287"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="84" label="deep brain stimulation/subthalamic nucleus">  
 <viz:color b="0" g="248"  r="255"/> 
 <viz:position x="34.1615" y="23.9456" z="0"/>   
 <viz:size value="2.4222"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="deep brain stimulation/subthalamic nucleus"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="354"/><attvalue id="5" value="413"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="deep brain stimulation/subthalamic nucleus"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="354"/><attvalue for="5" value="413"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="85" label="long term potentiation/synaptic plasticity">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="76.0544" y="23.3357" z="0"/>   
 <viz:size value="1.7202"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="long term potentiation/synaptic plasticity"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="340"/><attvalue id="5" value="269"/><attvalue id="6" value="0"/><attvalue id="7" value="82"/><attvalue id="8" value="0"/><attvalue id="9" value="13"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="18"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="long term potentiation/synaptic plasticity"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="340"/><attvalue for="5" value="269"/><attvalue for="6" value="0"/><attvalue for="7" value="82"/><attvalue for="8" value="0"/><attvalue for="9" value="13"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="18"/></attvalues>  
 </node> 
 <node id="86" label="smoking cessation/bupropion">  
 <viz:color b="0" g="233"  r="255"/> 
 <viz:position x="40.4934" y="36.2562" z="0"/>   
 <viz:size value="1.6927"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="smoking cessation/bupropion"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="82"/><attvalue id="5" value="89"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="18"/><attvalue id="12" value="17"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="smoking cessation/bupropion"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="82"/><attvalue for="5" value="89"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="18"/><attvalue for="12" value="17"/></attvalues>  
 </node> 
 <node id="87" label="subthalamic nucleus/parkinson">  
 <viz:color b="0" g="245"  r="255"/> 
 <viz:position x="74.2759" y="94.7895" z="0"/>   
 <viz:size value="1.707"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="subthalamic nucleus/parkinson"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="384"/><attvalue id="5" value="511"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="16"/><attvalue id="12" value="18"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="subthalamic nucleus/parkinson"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="384"/><attvalue for="5" value="511"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="16"/><attvalue for="12" value="18"/></attvalues>  
 </node> 
 <node id="88" label="parkinsonian/dysregulation syndrome">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="46.4703" y="66.7217" z="0"/>   
 <viz:size value="1.7192"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="parkinsonian/dysregulation syndrome"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="394"/><attvalue id="5" value="490"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="parkinsonian/dysregulation syndrome"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="394"/><attvalue for="5" value="490"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="89" label="parkinsonian/induced dyskinesia">  
 <viz:color b="0" g="236"  r="255"/> 
 <viz:position x="28.0401" y="83.2563" z="0"/>   
 <viz:size value="1.7007"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="parkinsonian/induced dyskinesia"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="344"/><attvalue id="5" value="455"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="15"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="parkinsonian/induced dyskinesia"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="344"/><attvalue for="5" value="455"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="15"/></attvalues>  
 </node> 
 <node id="90" label="single photon emission/spect">  
 <viz:color b="0" g="250"  r="255"/> 
 <viz:position x="66.8263" y="10.5423" z="0"/>   
 <viz:size value="1.739"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="single photon emission/spect"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="175"/><attvalue id="5" value="111"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="235"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="16"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="single photon emission/spect"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="175"/><attvalue for="5" value="111"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="235"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="16"/></attvalues>  
 </node> 
 <node id="91" label="positron emission/emission tomography">  
 <viz:color b="0" g="252"  r="255"/> 
 <viz:position x="85.4013" y="36.4133" z="0"/>   
 <viz:size value="2.4328"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="positron emission/emission tomography"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="455"/><attvalue id="5" value="102"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="20"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="positron emission/emission tomography"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="455"/><attvalue for="5" value="102"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="20"/></attvalues>  
 </node> 
 <node id="92" label="seeking behavior/cocaine self administration">  
 <viz:color b="0" g="214"  r="255"/> 
 <viz:position x="29.7028" y="90.4764" z="0"/>   
 <viz:size value="1.6996"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="seeking behavior/cocaine self administration"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="210"/><attvalue id="5" value="294"/><attvalue id="6" value="2"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="8"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="seeking behavior/cocaine self administration"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="210"/><attvalue for="5" value="294"/><attvalue for="6" value="2"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="8"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="93" label="orphanin fq/kappa opioid">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="95.6381" y="46.2303" z="0"/>   
 <viz:size value="1.7259"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="orphanin fq/kappa opioid"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="51"/><attvalue id="5" value="102"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="18"/><attvalue id="12" value="27"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="orphanin fq/kappa opioid"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="51"/><attvalue for="5" value="102"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="18"/><attvalue for="12" value="27"/></attvalues>  
 </node> 
 <node id="94" label="self administration/reinforcing effects">  
 <viz:color b="0" g="249"  r="255"/> 
 <viz:position x="71.007" y="18.0556" z="0"/>   
 <viz:size value="2.3869"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="self administration/reinforcing effects"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="209"/><attvalue id="5" value="251"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="self administration/reinforcing effects"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="209"/><attvalue for="5" value="251"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="95" label="gamma aminobutyric acid/gabaa receptor">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="17.765" y="24.7691" z="0"/>   
 <viz:size value="2.3893"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="gamma aminobutyric acid/gabaa receptor"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="170"/><attvalue id="5" value="149"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="gamma aminobutyric acid/gabaa receptor"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="170"/><attvalue for="5" value="149"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="96" label="gas chromatography mass/chromatography mass spectrometry">  
 <viz:color b="0" g="255"  r="253"/> 
 <viz:position x="97.7018" y="49.5775" z="0"/>   
 <viz:size value="1.7037"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="gas chromatography mass/chromatography mass spectrometry"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="30"/><attvalue id="5" value="211"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="gas chromatography mass/chromatography mass spectrometry"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="30"/><attvalue for="5" value="211"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="97" label="grin2b/grin2a">  
 <viz:color b="0" g="255"  r="249"/> 
 <viz:position x="0.29216" y="0.55892" z="0"/>   
 <viz:size value="1.6963"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="grin2b/grin2a"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="59"/><attvalue id="5" value="270"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="15"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="grin2b/grin2a"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="59"/><attvalue for="5" value="270"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="15"/></attvalues>  
 </node> 
 <node id="98" label="glur6/kainate receptor">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="19.725" y="78.2495" z="0"/>   
 <viz:size value="1.7168"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="glur6/kainate receptor"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="222"/><attvalue id="5" value="346"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="4"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="glur6/kainate receptor"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="222"/><attvalue for="5" value="346"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="4"/></attvalues>  
 </node> 
 <node id="99" label="grin2a/grin2b">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="47.7059" y="88.0126" z="0"/>   
 <viz:size value="1.6969"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="grin2a/grin2b"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="72"/><attvalue id="5" value="302"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="14"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="grin2a/grin2b"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="72"/><attvalue for="5" value="302"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="14"/></attvalues>  
 </node> 
 <node id="100" label="follicle stimulating hormone/luteinizing hormone secretion">  
 <viz:color b="0" g="255"  r="253"/> 
 <viz:position x="44.992" y="98.8226" z="0"/>   
 <viz:size value="1.6962"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="follicle stimulating hormone/luteinizing hormone secretion"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="55"/><attvalue id="5" value="30"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="follicle stimulating hormone/luteinizing hormone secretion"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="55"/><attvalue for="5" value="30"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="101" label="ohda/hydroxydopamine">  
 <viz:color b="0" g="253"  r="255"/> 
 <viz:position x="52.597" y="79.7796" z="0"/>   
 <viz:size value="1.72"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="ohda/hydroxydopamine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="470"/><attvalue id="5" value="331"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="ohda/hydroxydopamine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="470"/><attvalue for="5" value="331"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="102" label="involuntary movements/induced dyskinesia">  
 <viz:color b="0" g="178"  r="255"/> 
 <viz:position x="96.2693" y="23.3806" z="0"/>   
 <viz:size value="1.7036"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="involuntary movements/induced dyskinesia"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="211"/><attvalue id="5" value="481"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="involuntary movements/induced dyskinesia"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="211"/><attvalue for="5" value="481"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="103" label="levodopa/dyskinesia">  
 <viz:color b="0" g="229"  r="255"/> 
 <viz:position x="30.024" y="41.8953" z="0"/>   
 <viz:size value="2.4037"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="levodopa/dyskinesia"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="606"/><attvalue id="5" value="441"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="19"/><attvalue id="12" value="31"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="levodopa/dyskinesia"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="606"/><attvalue for="5" value="441"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="19"/><attvalue for="12" value="31"/></attvalues>  
 </node> 
 <node id="104" label="levodopa/dopamine replacement therapy">  
 <viz:color b="0" g="222"  r="255"/> 
 <viz:position x="23.676" y="24.8932" z="0"/>   
 <viz:size value="1.715"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="levodopa/dopamine replacement therapy"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="601"/><attvalue id="5" value="405"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="levodopa/dopamine replacement therapy"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="601"/><attvalue for="5" value="405"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="105" label="methyl phenyl tetrahydropyridine/tetrahydropyridine mptp">  
 <viz:color b="0" g="248"  r="255"/> 
 <viz:position x="0.80684" y="33.7011" z="0"/>   
 <viz:size value="1.7274"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="methyl phenyl tetrahydropyridine/tetrahydropyridine mptp"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="379"/><attvalue id="5" value="469"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="44"/><attvalue id="12" value="37"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="methyl phenyl tetrahydropyridine/tetrahydropyridine mptp"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="379"/><attvalue for="5" value="469"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="44"/><attvalue for="12" value="37"/></attvalues>  
 </node> 
 <node id="106" label="neuronal cell/human dopaminergic neuroblastoma">  
 <viz:color b="0" g="255"  r="217"/> 
 <viz:position x="98.5696" y="3.7942" z="0"/>   
 <viz:size value="1.6992"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="neuronal cell/human dopaminergic neuroblastoma"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="138"/><attvalue id="5" value="364"/><attvalue id="6" value="0"/><attvalue id="7" value="28"/><attvalue id="8" value="0"/><attvalue id="9" value="39"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="neuronal cell/human dopaminergic neuroblastoma"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="138"/><attvalue for="5" value="364"/><attvalue for="6" value="0"/><attvalue for="7" value="28"/><attvalue for="8" value="0"/><attvalue for="9" value="39"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="107" label="transporter dat/dopamine transporter density">  
 <viz:color b="0" g="255"  r="247"/> 
 <viz:position x="37.5261" y="43.8397" z="0"/>   
 <viz:size value="2.4117"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="transporter dat/dopamine transporter density"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="157"/><attvalue id="5" value="256"/><attvalue id="6" value="2"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="46"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="transporter dat/dopamine transporter density"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="157"/><attvalue for="5" value="256"/><attvalue for="6" value="2"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="46"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="108" label="substantia nigra/nigra pars">  
 <viz:color b="0" g="255"  r="248"/> 
 <viz:position x="59.2819" y="3.5039" z="0"/>   
 <viz:size value="1.7264"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="substantia nigra/nigra pars"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="487"/><attvalue id="5" value="347"/><attvalue id="6" value="0"/><attvalue id="7" value="12"/><attvalue id="8" value="0"/><attvalue id="9" value="4"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="substantia nigra/nigra pars"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="487"/><attvalue for="5" value="347"/><attvalue for="6" value="0"/><attvalue for="7" value="12"/><attvalue for="8" value="0"/><attvalue for="9" value="4"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="109" label="rat nucleus accumbens/nucleus accumbens shell">  
 <viz:color b="0" g="247"  r="255"/> 
 <viz:position x="11.5902" y="76.7668" z="0"/>   
 <viz:size value="1.7166"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="rat nucleus accumbens/nucleus accumbens shell"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="461"/><attvalue id="5" value="317"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="rat nucleus accumbens/nucleus accumbens shell"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="461"/><attvalue for="5" value="317"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="110" label="arcuate nucleus/paraventricular nucleus">  
 <viz:color b="0" g="254"  r="255"/> 
 <viz:position x="55.2029" y="21.1839" z="0"/>   
 <viz:size value="1.676"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="arcuate nucleus/paraventricular nucleus"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="23"/><attvalue id="5" value="81"/><attvalue id="6" value="0"/><attvalue id="7" value="32"/><attvalue id="8" value="0"/><attvalue id="9" value="9"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="arcuate nucleus/paraventricular nucleus"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="23"/><attvalue for="5" value="81"/><attvalue for="6" value="0"/><attvalue for="7" value="32"/><attvalue for="8" value="0"/><attvalue for="9" value="9"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="111" label="striatal dopamine release/evoked striatal dopamine">  
 <viz:color b="0" g="240"  r="255"/> 
 <viz:position x="0.49678" y="18.0456" z="0"/>   
 <viz:size value="1.6917"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="striatal dopamine release/evoked striatal dopamine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="225"/><attvalue id="5" value="261"/><attvalue id="6" value="0"/><attvalue id="7" value="15"/><attvalue id="8" value="0"/><attvalue id="9" value="6"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="striatal dopamine release/evoked striatal dopamine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="225"/><attvalue for="5" value="261"/><attvalue for="6" value="0"/><attvalue for="7" value="15"/><attvalue for="8" value="0"/><attvalue for="9" value="6"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="112" label="transporter gene/serotonin transporter availability">  
 <viz:color b="0" g="255"  r="251"/> 
 <viz:position x="83.3645" y="89.1276" z="0"/>   
 <viz:size value="1.7139"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="transporter gene/serotonin transporter availability"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="125"/><attvalue id="5" value="307"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="transporter gene/serotonin transporter availability"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="125"/><attvalue for="5" value="307"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="113" label="uptake inhibitor/dopamine uptake inhibition">  
 <viz:color b="0" g="230"  r="255"/> 
 <viz:position x="59.0192" y="18.3316" z="0"/>   
 <viz:size value="1.6922"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="uptake inhibitor/dopamine uptake inhibition"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="185"/><attvalue id="5" value="187"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="uptake inhibitor/dopamine uptake inhibition"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="185"/><attvalue for="5" value="187"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="114" label="deficit hyperactivity disorder/disorder adhd">  
 <viz:color b="0" g="255"  r="245"/> 
 <viz:position x="6.9895" y="40.7674" z="0"/>   
 <viz:size value="1.719"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="deficit hyperactivity disorder/disorder adhd"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="124"/><attvalue id="5" value="259"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="675"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="19"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="deficit hyperactivity disorder/disorder adhd"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="124"/><attvalue for="5" value="259"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="675"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="19"/></attvalues>  
 </node> 
 <node id="115" label="alcohol/ethanol consumption">  
 <viz:color b="0" g="247"  r="255"/> 
 <viz:position x="17.5674" y="69.6655" z="0"/>   
 <viz:size value="1.6967"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="alcohol/ethanol consumption"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="130"/><attvalue id="5" value="69"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="alcohol/ethanol consumption"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="130"/><attvalue for="5" value="69"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="116" label="testosterone/follicle stimulating hormone">  
 <viz:color b="0" g="255"  r="249"/> 
 <viz:position x="25.1674" y="86.8248" z="0"/>   
 <viz:size value="1.6948"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="testosterone/follicle stimulating hormone"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="56"/><attvalue id="5" value="28"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="testosterone/follicle stimulating hormone"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="56"/><attvalue for="5" value="28"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="117" label="antidepressant/swimming test">  
 <viz:color b="0" g="246"  r="255"/> 
 <viz:position x="99.9212" y="5.0731" z="0"/>   
 <viz:size value="1.7158"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="antidepressant/swimming test"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="70"/><attvalue id="5" value="79"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="antidepressant/swimming test"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="70"/><attvalue for="5" value="79"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="118" label="apoptosis/cell death">  
 <viz:color b="0" g="255"  r="236"/> 
 <viz:position x="84.8718" y="95.5298" z="0"/>   
 <viz:size value="1.6957"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="apoptosis/cell death"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="257"/><attvalue id="5" value="114"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="apoptosis/cell death"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="257"/><attvalue for="5" value="114"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="119" label="cocaine dependence/cocaine self administration">  
 <viz:color b="0" g="230"  r="255"/> 
 <viz:position x="23.6173" y="86.1662" z="0"/>   
 <viz:size value="1.6941"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="cocaine dependence/cocaine self administration"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="262"/><attvalue id="5" value="201"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="cocaine dependence/cocaine self administration"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="262"/><attvalue for="5" value="201"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="120" label="oxidative stress/oxygen species">  
 <viz:color b="0" g="248"  r="255"/> 
 <viz:position x="10.7102" y="52.1048" z="0"/>   
 <viz:size value="1.6845"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="oxidative stress/oxygen species"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="211"/><attvalue id="5" value="56"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="oxidative stress/oxygen species"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="211"/><attvalue for="5" value="56"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="121" label="norepinephrine transporter/dopamine beta monooxygenase">  
 <viz:color b="0" g="255"  r="245"/> 
 <viz:position x="70.8727" y="18.7654" z="0"/>   
 <viz:size value="1.6827"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="norepinephrine transporter/dopamine beta monooxygenase"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="159"/><attvalue id="5" value="90"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="14"/><attvalue id="12" value="16"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="norepinephrine transporter/dopamine beta monooxygenase"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="159"/><attvalue for="5" value="90"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="14"/><attvalue for="12" value="16"/></attvalues>  
 </node> 
 <node id="122" label="chrna5/chrna9">  
 <viz:color b="0" g="127"  r="255"/> 
 <viz:position x="38.7248" y="95.0944" z="0"/>   
 <viz:size value="1.7129"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="chrna5/chrna9"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="36"/><attvalue id="5" value="117"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="chrna5/chrna9"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="36"/><attvalue for="5" value="117"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="123" label="haloperidol/vacuous chewing movements">  
 <viz:color b="0" g="218"  r="255"/> 
 <viz:position x="52.1281" y="35.0267" z="0"/>   
 <viz:size value="1.7159"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="haloperidol/vacuous chewing movements"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="206"/><attvalue id="5" value="335"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="haloperidol/vacuous chewing movements"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="206"/><attvalue for="5" value="335"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="124" label="restless legs syndrome/agonist cabergoline">  
 <viz:color b="0" g="255"  r="252"/> 
 <viz:position x="59.4464" y="86.9801" z="0"/>   
 <viz:size value="1.7223"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="restless legs syndrome/agonist cabergoline"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="98"/><attvalue id="5" value="152"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="restless legs syndrome/agonist cabergoline"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="98"/><attvalue for="5" value="152"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="125" label="kainate receptor/glur5">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="88.4639" y="83.4153" z="0"/>   
 <viz:size value="1.7047"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="kainate receptor/glur5"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="194"/><attvalue id="5" value="379"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="10"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="kainate receptor/glur5"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="194"/><attvalue for="5" value="379"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="10"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="126" label="kainate/ionotropic glutamate">  
 <viz:color b="0" g="255"  r="238"/> 
 <viz:position x="29.3411" y="25.8787" z="0"/>   
 <viz:size value="1.6975"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="kainate/ionotropic glutamate"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="251"/><attvalue id="5" value="350"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="kainate/ionotropic glutamate"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="251"/><attvalue for="5" value="350"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="127" label="magnetic resonance imaging/anterior cingulate">  
 <viz:color b="0" g="223"  r="255"/> 
 <viz:position x="87.9659" y="4.872" z="0"/>   
 <viz:size value="1.7244"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="magnetic resonance imaging/anterior cingulate"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="190"/><attvalue id="5" value="110"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="15"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="magnetic resonance imaging/anterior cingulate"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="190"/><attvalue for="5" value="110"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="15"/></attvalues>  
 </node> 
 <node id="128" label="nmda r2b/nmda r1">  
 <viz:color b="0" g="255"  r="223"/> 
 <viz:position x="1.0791" y="94.2512" z="0"/>   
 <viz:size value="1.7081"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="nmda r2b/nmda r1"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="345"/><attvalue id="5" value="324"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="1642"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="nmda r2b/nmda r1"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="345"/><attvalue for="5" value="324"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="1642"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="129" label="parkinsonian/supranuclear palsy">  
 <viz:color b="0" g="254"  r="255"/> 
 <viz:position x="9.5409" y="85.6905" z="0"/>   
 <viz:size value="1.7078"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="parkinsonian/supranuclear palsy"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="158"/><attvalue id="5" value="107"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="parkinsonian/supranuclear palsy"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="158"/><attvalue for="5" value="107"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="130" label="pars reticulata/nigra pars reticulata">  
 <viz:color b="0" g="255"  r="248"/> 
 <viz:position x="78.9768" y="24.3575" z="0"/>   
 <viz:size value="1.7158"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="pars reticulata/nigra pars reticulata"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="180"/><attvalue id="5" value="384"/><attvalue id="6" value="0"/><attvalue id="7" value="14"/><attvalue id="8" value="0"/><attvalue id="9" value="16"/><attvalue id="10" value="0"/><attvalue id="11" value="14"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="pars reticulata/nigra pars reticulata"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="180"/><attvalue for="5" value="384"/><attvalue for="6" value="0"/><attvalue for="7" value="14"/><attvalue for="8" value="0"/><attvalue for="9" value="16"/><attvalue for="10" value="0"/><attvalue for="11" value="14"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="131" label="prepulse inhibition/schizophrenia">  
 <viz:color b="0" g="250"  r="255"/> 
 <viz:position x="54.3782" y="81.6391" z="0"/>   
 <viz:size value="1.7001"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="prepulse inhibition/schizophrenia"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="235"/><attvalue id="5" value="165"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="6"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="prepulse inhibition/schizophrenia"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="235"/><attvalue for="5" value="165"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="6"/></attvalues>  
 </node> 
 <node id="132" label="cocaine self administration/drug seeking behavior">  
 <viz:color b="0" g="187"  r="255"/> 
 <viz:position x="57.9116" y="38.5827" z="0"/>   
 <viz:size value="1.7025"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="cocaine self administration/drug seeking behavior"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="150"/><attvalue id="5" value="345"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="15"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="cocaine self administration/drug seeking behavior"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="150"/><attvalue for="5" value="345"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="15"/></attvalues>  
 </node> 
 <node id="133" label="acute/myocardial infarction">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="5.9326" y="63.2592" z="0"/>   
 <viz:size value="1.7189"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="acute/myocardial infarction"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="216"/><attvalue id="5" value="0"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="24"/><attvalue id="12" value="22"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="acute/myocardial infarction"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="216"/><attvalue for="5" value="0"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="24"/><attvalue for="12" value="22"/></attvalues>  
 </node> 
 <node id="134" label="p2x2/p2x1">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="3.7224" y="50.9093" z="0"/>   
 <viz:size value="1.7118"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="p2x2/p2x1"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="56"/><attvalue id="5" value="52"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="p2x2/p2x1"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="56"/><attvalue for="5" value="52"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="135" label="adhd/attention deficit hyperactivity">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="62.572" y="81.0482" z="0"/>   
 <viz:size value="1.736"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="adhd/attention deficit hyperactivity"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="269"/><attvalue id="5" value="111"/><attvalue id="6" value="0"/><attvalue id="7" value="37"/><attvalue id="8" value="0"/><attvalue id="9" value="35"/><attvalue id="10" value="0"/><attvalue id="11" value="16"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="adhd/attention deficit hyperactivity"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="269"/><attvalue for="5" value="111"/><attvalue for="6" value="0"/><attvalue for="7" value="37"/><attvalue for="8" value="0"/><attvalue for="9" value="35"/><attvalue for="10" value="0"/><attvalue for="11" value="16"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="136" label="nicotine dependence/cigarette smoking">  
 <viz:color b="0" g="0"  r="255"/> 
 <viz:position x="92.2885" y="20.5056" z="0"/>   
 <viz:size value="1.6914"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="nicotine dependence/cigarette smoking"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="62"/><attvalue id="5" value="110"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="nicotine dependence/cigarette smoking"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="62"/><attvalue for="5" value="110"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="137" label="dopamine transporter activity/transporter dat">  
 <viz:color b="0" g="242"  r="255"/> 
 <viz:position x="33.878" y="32.2374" z="0"/>   
 <viz:size value="2.4061"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine transporter activity/transporter dat"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="260"/><attvalue id="5" value="280"/><attvalue id="6" value="0"/><attvalue id="7" value="11"/><attvalue id="8" value="0"/><attvalue id="9" value="7"/><attvalue id="10" value="0"/><attvalue id="11" value="6"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine transporter activity/transporter dat"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="260"/><attvalue for="5" value="280"/><attvalue for="6" value="0"/><attvalue for="7" value="11"/><attvalue for="8" value="0"/><attvalue for="9" value="7"/><attvalue for="10" value="0"/><attvalue for="11" value="6"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="138" label="sleep disorders/rem sleep behavior">  
 <viz:color b="0" g="255"  r="251"/> 
 <viz:position x="81.5521" y="40.5049" z="0"/>   
 <viz:size value="1.7217"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="sleep disorders/rem sleep behavior"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="54"/><attvalue id="5" value="95"/><attvalue id="6" value="1"/><attvalue id="7" value="12"/><attvalue id="8" value="0"/><attvalue id="9" value="10"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="16"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="sleep disorders/rem sleep behavior"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="54"/><attvalue for="5" value="95"/><attvalue for="6" value="1"/><attvalue for="7" value="12"/><attvalue for="8" value="0"/><attvalue for="9" value="10"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="16"/></attvalues>  
 </node> 
 <node id="139" label="self administration behavior/cocaine self administration">  
 <viz:color b="0" g="213"  r="255"/> 
 <viz:position x="46.4513" y="72.7806" z="0"/>   
 <viz:size value="1.7027"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="self administration behavior/cocaine self administration"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="228"/><attvalue id="5" value="298"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="self administration behavior/cocaine self administration"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="228"/><attvalue for="5" value="298"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="140" label="hydroxydopamine/ohda lesion">  
 <viz:color b="0" g="253"  r="255"/> 
 <viz:position x="59.6113" y="44.7395" z="0"/>   
 <viz:size value="2.4034"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="hydroxydopamine/ohda lesion"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="170"/><attvalue id="5" value="270"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="22"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="hydroxydopamine/ohda lesion"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="170"/><attvalue for="5" value="270"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="22"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="141" label="cortical dopamine/medial prefrontal cortex">  
 <viz:color b="0" g="246"  r="255"/> 
 <viz:position x="70.6633" y="94.4476" z="0"/>   
 <viz:size value="1.6909"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="cortical dopamine/medial prefrontal cortex"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="101"/><attvalue id="5" value="208"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="7"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="cortical dopamine/medial prefrontal cortex"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="101"/><attvalue for="5" value="208"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="7"/></attvalues>  
 </node> 
 <node id="142" label="chronic nicotine/nicotinic acetylcholine">  
 <viz:color b="0" g="255"  r="247"/> 
 <viz:position x="9.3576" y="11.3741" z="0"/>   
 <viz:size value="1.7057"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="chronic nicotine/nicotinic acetylcholine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="109"/><attvalue id="5" value="127"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="13"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="chronic nicotine/nicotinic acetylcholine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="109"/><attvalue for="5" value="127"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="13"/></attvalues>  
 </node> 
 <node id="143" label="nmda receptor/methyl d aspartate">  
 <viz:color b="0" g="255"  r="237"/> 
 <viz:position x="96.7293" y="50.0564" z="0"/>   
 <viz:size value="1.7134"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="nmda receptor/methyl d aspartate"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="405"/><attvalue id="5" value="244"/><attvalue id="6" value="1"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="10"/><attvalue id="10" value="0"/><attvalue id="11" value="14"/><attvalue id="12" value="24"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="nmda receptor/methyl d aspartate"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="405"/><attvalue for="5" value="244"/><attvalue for="6" value="1"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="10"/><attvalue for="10" value="0"/><attvalue for="11" value="14"/><attvalue for="12" value="24"/></attvalues>  
 </node> 
 <node id="144" label="novelty seeking/personality traits">  
 <viz:color b="0" g="114"  r="255"/> 
 <viz:position x="58.018" y="39.5059" z="0"/>   
 <viz:size value="1.7076"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="novelty seeking/personality traits"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="40"/><attvalue id="5" value="229"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="9"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="novelty seeking/personality traits"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="40"/><attvalue for="5" value="229"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="9"/></attvalues>  
 </node> 
 <node id="145" label="methyl phenyl tetrahydropyridine/long acting dopamine">  
 <viz:color b="0" g="230"  r="255"/> 
 <viz:position x="58.3919" y="5.2734" z="0"/>   
 <viz:size value="1.7131"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="methyl phenyl tetrahydropyridine/long acting dopamine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="141"/><attvalue id="5" value="442"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="methyl phenyl tetrahydropyridine/long acting dopamine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="141"/><attvalue for="5" value="442"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="146" label="restless legs syndrome/periodic limb movement">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="41.3968" y="40.3457" z="0"/>   
 <viz:size value="1.7196"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="restless legs syndrome/periodic limb movement"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="109"/><attvalue id="5" value="180"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="14"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="14"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="restless legs syndrome/periodic limb movement"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="109"/><attvalue for="5" value="180"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="14"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="14"/></attvalues>  
 </node> 
 <node id="147" label="smoking cessation/nicotine">  
 <viz:color b="0" g="240"  r="255"/> 
 <viz:position x="95.7529" y="50.9439" z="0"/>   
 <viz:size value="1.6916"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="smoking cessation/nicotine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="131"/><attvalue id="5" value="123"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="16"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="smoking cessation/nicotine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="131"/><attvalue for="5" value="123"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="16"/></attvalues>  
 </node> 
 <node id="148" label="human alpha synuclein/alpha synuclein gene">  
 <viz:color b="0" g="255"  r="240"/> 
 <viz:position x="24.6374" y="24.4221" z="0"/>   
 <viz:size value="1.705"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="human alpha synuclein/alpha synuclein gene"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="95"/><attvalue id="5" value="109"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="human alpha synuclein/alpha synuclein gene"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="95"/><attvalue for="5" value="109"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="149" label="prefrontal cortex/anterior cingulate">  
 <viz:color b="0" g="225"  r="255"/> 
 <viz:position x="73.807" y="76.7478" z="0"/>   
 <viz:size value="1.7122"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="prefrontal cortex/anterior cingulate"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="172"/><attvalue id="5" value="152"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="prefrontal cortex/anterior cingulate"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="172"/><attvalue for="5" value="152"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="150" label="antipsychotics/risperidone">  
 <viz:color b="0" g="245"  r="255"/> 
 <viz:position x="70.6019" y="56.2575" z="0"/>   
 <viz:size value="2.3914"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="antipsychotics/risperidone"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="105"/><attvalue id="5" value="101"/><attvalue id="6" value="0"/><attvalue id="7" value="20"/><attvalue id="8" value="0"/><attvalue id="9" value="7"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="20"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="antipsychotics/risperidone"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="105"/><attvalue for="5" value="101"/><attvalue for="6" value="0"/><attvalue for="7" value="20"/><attvalue for="8" value="0"/><attvalue for="9" value="7"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="20"/></attvalues>  
 </node> 
 <node id="151" label="cocaine administration/chronic cocaine">  
 <viz:color b="0" g="215"  r="255"/> 
 <viz:position x="22.2715" y="19.7297" z="0"/>   
 <viz:size value="1.6843"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="cocaine administration/chronic cocaine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="62"/><attvalue id="5" value="200"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="cocaine administration/chronic cocaine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="62"/><attvalue for="5" value="200"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="152" label="dopamine beta monooxygenase/dopamine beta hydroxylase">  
 <viz:color b="0" g="247"  r="255"/> 
 <viz:position x="6.0367" y="56.5026" z="0"/>   
 <viz:size value="1.7164"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="dopamine beta monooxygenase/dopamine beta hydroxylase"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="42"/><attvalue id="5" value="158"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="dopamine beta monooxygenase/dopamine beta hydroxylase"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="42"/><attvalue for="5" value="158"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="153" label="glur1/glur2">  
 <viz:color b="0" g="255"  r="227"/> 
 <viz:position x="46.9434" y="73.2019" z="0"/>   
 <viz:size value="1.7018"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="glur1/glur2"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="330"/><attvalue id="5" value="383"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="8"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="glur1/glur2"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="330"/><attvalue for="5" value="383"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="8"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="154" label="antipsychotics/clozapine">  
 <viz:color b="0" g="251"  r="255"/> 
 <viz:position x="70.6026" y="22.1891" z="0"/>   
 <viz:size value="1.6999"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="antipsychotics/clozapine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="106"/><attvalue id="5" value="109"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="14"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="antipsychotics/clozapine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="106"/><attvalue for="5" value="109"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="14"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="155" label="locomotor activity/induced locomotor">  
 <viz:color b="0" g="255"  r="251"/> 
 <viz:position x="40.6742" y="97.7909" z="0"/>   
 <viz:size value="1.7028"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="locomotor activity/induced locomotor"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="174"/><attvalue id="5" value="152"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="locomotor activity/induced locomotor"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="174"/><attvalue for="5" value="152"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="156" label="antidepressant/major depressive">  
 <viz:color b="0" g="237"  r="255"/> 
 <viz:position x="48.4177" y="36.8471" z="0"/>   
 <viz:size value="1.719"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="antidepressant/major depressive"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="90"/><attvalue id="5" value="92"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="3"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="8"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="antidepressant/major depressive"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="90"/><attvalue for="5" value="92"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="3"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="8"/></attvalues>  
 </node> 
 <node id="157" label="mao b/monoamine oxidase">  
 <viz:color b="0" g="255"  r="245"/> 
 <viz:position x="44.5419" y="43.8347" z="0"/>   
 <viz:size value="1.7187"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="mao b/monoamine oxidase"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="128"/><attvalue id="5" value="151"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="15"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="mao b/monoamine oxidase"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="128"/><attvalue for="5" value="151"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="15"/></attvalues>  
 </node> 
 <node id="158" label="kinase/tyrosine">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="58.6126" y="26.2868" z="0"/>   
 <viz:size value="1.7217"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="kinase/tyrosine"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="363"/><attvalue id="5" value="168"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="0"/><attvalue id="9" value="75"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="kinase/tyrosine"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="363"/><attvalue for="5" value="168"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="0"/><attvalue for="9" value="75"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="159" label="amino acid decarboxylase/l amino acid">  
 <viz:color b="0" g="255"  r="245"/> 
 <viz:position x="44.6188" y="50.4062" z="0"/>   
 <viz:size value="1.7008"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="amino acid decarboxylase/l amino acid"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="35"/><attvalue id="5" value="129"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="7"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="amino acid decarboxylase/l amino acid"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="35"/><attvalue for="5" value="129"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="7"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="160" label="methyl d aspartate/d aspartate receptor">  
 <viz:color b="0" g="255"  r="247"/> 
 <viz:position x="47.9443" y="32.197" z="0"/>   
 <viz:size value="1.719"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="methyl d aspartate/d aspartate receptor"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="285"/><attvalue id="5" value="250"/><attvalue id="6" value="0"/><attvalue id="7" value="17"/><attvalue id="8" value="0"/><attvalue id="9" value="6"/><attvalue id="10" value="0"/><attvalue id="11" value="13"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="methyl d aspartate/d aspartate receptor"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="285"/><attvalue for="5" value="250"/><attvalue for="6" value="0"/><attvalue for="7" value="17"/><attvalue for="8" value="0"/><attvalue for="9" value="6"/><attvalue for="10" value="0"/><attvalue for="11" value="13"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="161" label="delta opioid/mu opioid receptor">  
 <viz:color b="0" g="255"  r="251"/> 
 <viz:position x="72.5065" y="67.2403" z="0"/>   
 <viz:size value="2.4037"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="delta opioid/mu opioid receptor"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="49"/><attvalue id="5" value="96"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="12"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="delta opioid/mu opioid receptor"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="49"/><attvalue for="5" value="96"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="12"/></attvalues>  
 </node> 
 <node id="162" label="human dopaminergic neuroblastoma/neuroblastoma sh">  
 <viz:color b="0" g="255"  r="230"/> 
 <viz:position x="14.1402" y="84.2263" z="0"/>   
 <viz:size value="1.712"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="human dopaminergic neuroblastoma/neuroblastoma sh"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="115"/><attvalue id="5" value="280"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="12"/><attvalue id="12" value="11"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="human dopaminergic neuroblastoma/neuroblastoma sh"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="115"/><attvalue for="5" value="280"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="12"/><attvalue for="12" value="11"/></attvalues>  
 </node> 
 <node id="163" label="emission tomography/positron emission">  
 <viz:color b="0" g="255"  r="255"/> 
 <viz:position x="32.9719" y="69.6957" z="0"/>   
 <viz:size value="1.715"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="emission tomography/positron emission"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="179"/><attvalue id="5" value="172"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="16"/><attvalue id="12" value="18"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="emission tomography/positron emission"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="179"/><attvalue for="5" value="172"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="16"/><attvalue for="12" value="18"/></attvalues>  
 </node> 
 <node id="164" label="sleep disorders/restless legs syndrome">  
 <viz:color b="0" g="255"  r="253"/> 
 <viz:position x="57.7871" y="11.289" z="0"/>   
 <viz:size value="1.7186"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="sleep disorders/restless legs syndrome"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="168"/><attvalue id="5" value="127"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="17"/><attvalue id="12" value="17"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="sleep disorders/restless legs syndrome"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="168"/><attvalue for="5" value="127"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="17"/><attvalue for="12" value="17"/></attvalues>  
 </node> 
 <node id="165" label="human neuroblastoma/neuroblastoma sh">  
 <viz:color b="0" g="255"  r="236"/> 
 <viz:position x="15.7568" y="39.2184" z="0"/>   
 <viz:size value="1.7048"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="human neuroblastoma/neuroblastoma sh"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="106"/><attvalue id="5" value="243"/><attvalue id="6" value="0"/><attvalue id="7" value="5"/><attvalue id="8" value="0"/><attvalue id="9" value="3"/><attvalue id="10" value="0"/><attvalue id="11" value="11"/><attvalue id="12" value="10"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="human neuroblastoma/neuroblastoma sh"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="106"/><attvalue for="5" value="243"/><attvalue for="6" value="0"/><attvalue for="7" value="5"/><attvalue for="8" value="0"/><attvalue for="9" value="3"/><attvalue for="10" value="0"/><attvalue for="11" value="11"/><attvalue for="12" value="10"/></attvalues>  
 </node> 
 <node id="166" label="ohda rat/ohda lesion">  
 <viz:color b="0" g="243"  r="255"/> 
 <viz:position x="72.888" y="56.1621" z="0"/>   
 <viz:size value="1.7074"/>  
-<attvalues><attvalue id="0" value="411"/><attvalue id="1" value="2007"/> <attvalue id="2" value="ohda rat/ohda lesion"/> <attvalue id="3" value="http://sciencemapping.com"/> <attvalue id="4" value="104"/><attvalue id="5" value="259"/><attvalue id="6" value="0"/><attvalue id="7" value="10"/><attvalue id="8" value="NaN"/><attvalue id="9" value="NaN"/><attvalue id="10" value="0"/><attvalue id="11" value="9"/><attvalue id="12" value="14"/></attvalues>  
+<attvalues><attvalue for="0" value="term"/><attvalue for="1" value="2007"/> <attvalue for="2" value="ohda rat/ohda lesion"/> <attvalue for="3" value="http://sciencemapping.com"/> <attvalue for="4" value="104"/><attvalue for="5" value="259"/><attvalue for="6" value="0"/><attvalue for="7" value="10"/><attvalue for="8" value="NaN"/><attvalue for="9" value="NaN"/><attvalue for="10" value="0"/><attvalue for="11" value="9"/><attvalue for="12" value="14"/></attvalues>  
 </node> 
 </nodes><edges> 
 <edge id="2" source="1" target="2" cardinal="0.84343"/>  
