@@ -13,6 +13,112 @@ function Tinaviz() {
     //name += " Changed";
   };
 
+  var selectGlobalProject = function(x,y,id,label) {
+        if (applet == null) return;
+
+        // TODO pass the ID to the elishowk API
+        
+        // TODO update the DIV with data from the database
+         
+  };
+
+  var selectGlobalTerm = function(x,y,id,label) {
+        if (applet == null) return;
+
+        // TODO pass the ID to the elishowk API
+        
+        // TODO update the DIV with data from the database
+         
+  };
+
+
+  var selectLocalTerm = function(x,y,id,label) {
+
+  };
+
+  var selectLocalProject = function(x,y,id,label) {
+     if (applet == null) return;
+        
+	/*
+	var getCorpus = function(corpusid) {
+	    return( JSON.parse( TinaService.getCorpus(corpusid) ) );
+	};
+	var getDocument = function(documentid) {
+	    return( JSON.parse( TinaService.getDocument(documentid) ) );
+	};
+	var getCorpora = function(corporaid) {
+	    return( JSON.parse( TinaService.getCorpora(corporaid) ) );
+	};
+	var getNGram = function(ngramid) {
+	    return( JSON.parse( TinaService.getNGram(ngramid) ) );
+	};
+	   */
+	       
+       var doc = parent.getDocument( id );     
+
+
+         // update the HTML form
+        $('#nodedetailstitle').html("Project: "+"(none)");
+        $('#abstract').html("Document abstract");
+
+
+        // TODO pass the ID to the elishowk API
+        var context = {
+         root:  {
+            uuid: id,
+         },
+         neighborhood: [
+            {
+             uuid: '432561326751248',
+             label: 'this is an ngram',
+             category: 'term'
+             },
+            {
+             uuid: '715643267560489',
+             label: 'TINA PROJECT',
+             category: 'project'
+             },
+         ]
+        };
+
+        // a basic GEXF template (the applet isn't very strict regarding to the GEXf version)
+        var template = '<?xml version="1.0" encoding="UTF-8"?><gexf><graph>\n\
+        <attributes class="node">\n\
+        </attributes>\n\
+        <nodes>\n\
+<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
+          <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
+            <attvalues>\n\
+              <attvalue for="0" value="#{neighborhood[i].category}" />\n\
+            </attvalues>\n\
+          </node>\n\
+<?js } ?>\
+        </nodes>\n\
+        <edges>\n\
+<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
+          <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
+<?js } ?>\
+        </edges>\n\
+        </graph><gexf>';
+        
+  
+        /* call the template engine (tenjin is really fast!)*/
+        var output = Shotenjin.render(template, context);
+        
+        console.log(output);
+       
+        try {
+            result = applet.getSession().updateFromString(output);
+        } catch (e) {
+            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
+            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
+            console.log(e);
+        }
+        
+        // TODO update the DIV with data from the database
+  };
+
+
   return {
     init: function() {
         wrapper = $('#vizframe').contents().find('#tinaviz')[0];
@@ -99,74 +205,26 @@ function Tinaviz() {
         if (applet == null) return;
         applet.getSession().clear();
     },
-    globalNodeSelected: function(x,y,id,label) {
-        if (applet == null) return;
 
-        // TODO pass the ID to the elishowk API
-        
-        // TODO update the DIV with data from the database
-         
-    },
-    localNodeSelected: function(x,y,id,label) {
-        if (applet == null) return;
-        
-        
-        // TODO pass the ID to the elishowk API
-        var context = {
-         root:  {
-            uuid: id,
-         },
-         neighborhood: [
-            {
-             uuid: '432561326751248',
-             label: 'this is an ngram',
-             category: 'term'
-             },
-            {
-             uuid: '715643267560489',
-             label: 'TINA PROJECT',
-             category: 'project'
-             },
-         ]
-        };
 
-        // a basic GEXF template (the applet isn't very strict regarding to the GEXf version)
-        var template = '<?xml version="1.0" encoding="UTF-8"?><gexf><graph>\n\
-        <attributes class="node">\n\
-        </attributes>\n\
-        <nodes>\n\
-<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-          <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
-            <attvalues>\n\
-              <attvalue for="0" value="#{neighborhood[i].category}" />\n\
-            </attvalues>\n\
-          </node>\n\
-<?js } ?>\
-        </nodes>\n\
-        <edges>\n\
-<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-          <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
-<?js } ?>\
-        </edges>\n\
-        </graph><gexf>';
-        
-  
-        /* call the template engine (tenjin is really fast!)*/
-        var output = Shotenjin.render(template, context);
-        
-        console.log(output);
-       
-        try {
-            result = applet.getSession().updateFromString(output);
-        } catch (e) {
-            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
-            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
-            console.log(e);
-        }
-        
-        // TODO update the DIV with data from the database
+    globalNodeSelected: function(x,y,id,label,tags) {
+        if (applet == null) return;
+        if (tags=="project") {
+            selectGlobalProject(x,y,id,label);
+        } else if (tags=="term") {
+            selectGlobalTerm(x,y,id,label);
+	}
     },
-    
+
+    localNodeSelected: function(x,y,id,label,tags) {
+        if (applet == null) return;
+        if (tags=="project") {
+            selectLocalProject(x,y,id,label);
+        } else if (tags=="term") {
+            selectLocalTerm(x,y,id,label);
+	}
+    },
+
     takePDFPicture: function () {
         var outputFilePath = "graph.pdf";
         var result;

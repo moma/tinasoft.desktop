@@ -29,7 +29,7 @@ public class Node {
     public boolean selected = false;
     public boolean highlighted = false;
     public float genericity = 1.0f;
-    public String category = "default";
+    public String category = "none";
 
     public Map<String,Object> attributes = new HashMap<String,Object>();
 

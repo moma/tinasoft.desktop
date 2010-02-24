@@ -64,7 +64,7 @@ public class Main extends PApplet implements MouseWheelListener {
         window.eval(session.getExplorationMode() + "NodeSelected("
                 + screenX(n.x, n.y) + ","
                 + screenY(n.x, n.y) + ",\""
-                + n.uuid + "\",\"" + n.label + "\");");
+                + n.uuid + "\",\"" + n.label + "\", \""+n.category+"\");");
     }
 
     public enum RecordingFormat {
