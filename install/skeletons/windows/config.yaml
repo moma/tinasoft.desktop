@@ -1,0 +1,9 @@
+# tinasoft.TinaApp configuration (YAML format)
+---
+# TinaApp main params
+locale: ''
+storage: "tinabsddb://test.bsddb"
+index: 'index/'
+dbenv: 'db/'
+log: 'log/tinasoft.log'
+stopwords: 'shared/stopwords/en.txt'
