@@ -8,8 +8,6 @@ package tinaviz.model;
  *
  * @author jbilcke
  */
-public enum NetworkMode {
-
-    LOCAL,
-    GLOBAL
-} ;
+public enum ViewLevel {
+    MACRO, MESO, MICRO;
+};

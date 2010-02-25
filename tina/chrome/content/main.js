@@ -84,6 +84,7 @@ var submitImportfile = function(event) {
 /* Tinasoft storage read acces */
 
 var listCorpora = function() {
+    console.log("inside listCorpora()");
     json=TinaService.listCorpora();
     console.log(json);
     return( JSON.parse(json) );
@@ -93,6 +94,8 @@ var getCorpus = function(corpusid) {
     return( JSON.parse( TinaService.getCorpus(corpusid) ) );
 };
 var getDocument = function(documentid) {
+    console.log("doc id="+documentid);
+    
     return( JSON.parse( TinaService.getDocument(documentid) ) );
 };
 var getCorpora = function(corporaid) {
@@ -102,7 +105,7 @@ var getNGram = function(ngramid) {
     return( JSON.parse( TinaService.getNGram(ngramid) ) );
 };
 
-var displayListCorpora = function(oldivid) {
+function displayListCorpora(oldivid) {
     var ol = $("#"+oldivid).empty();
     var json = listCorpora();
     for ( var i=0, len=json.length; i<len; ++i ){
@@ -148,41 +151,52 @@ function computeAppletHeight() {
     return getHeight() - 140;
 }
 
+function appletReady() {
+  $("#tabs").data('disabled.tabs', [4]);
+}
+
+function selectMacro() {
+    $("#tabs").tabs( 'select' , 2 );
+}
+function selectMeso() {
+    $("#tabs").tabs( 'select' , 3 );
+}
+function selectMicro() {
+    $("#tabs").tabs( 'select' , [4] );
+}
+
 // wait for the DOM to be loaded
 $(document).ready(function() {
     $("#tabs").tabs();
+    $("#tabs").data('disabled.tabs', [2, 3, 4]);
+
     $("#tabs").bind('tabsselect', function(event, ui) {
 
         // MAGIC TRICK FOR THE JAVA IFRAME
         if (ui.index == 2) {
-
             if (!tabvizframe.tinaviz.isEnabled()) {
-                // we want to size the iframe very precisely (at the pixel)
                 $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
                 $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-                tabvizframe.tinaviz.setEnabled(true);
                 tabvizframe.tinaviz.resized();
+                tabvizframe.tinaviz.setEnabled(true);
             }
-            tabvizframe.tinaviz.switchToGlobalExploration();
-
-            //var filename = "tina_0.9-0.9999_spatialized.gexf";
-            //tabvizframe.tinaviz.loadGexf(filename);
-
-            //tabvizframe.tinaviz.setModeGlobal()
-            //tabvizframe.tinaviz.loadGexf()
+            tabvizframe.tinaviz.selectToMacro();
         } else if (ui.index == 3) {
-
             if (!tabvizframe.tinaviz.isEnabled()) {
-                // we want to size the iframe very precisely (at the pixel)
                 $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
                 $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-                tabvizframe.tinaviz.setEnabled(true);
                 tabvizframe.tinaviz.resized();
+                tabvizframe.tinaviz.setEnabled(true);
             }
-            tabvizframe.tinaviz.switchToLocalExploration();
-
-
-
+            tabvizframe.tinaviz.selectToMeso();
+        } else if (ui.index == 4) {
+            if (!tabvizframe.tinaviz.isEnabled()) {
+                $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
+                $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
+                tabvizframe.tinaviz.resized();
+                tabvizframe.tinaviz.setEnabled(true);
+            }
+            tabvizframe.tinaviz.selectToMicro();
         } else {
             // hide the frame; magic!
             tabvizframe.tinaviz.setEnabled(false);
@@ -204,6 +218,21 @@ $(document).ready(function() {
         console.error("not implemented yet");
         //runProcessCooc(event);
     });
+    
+    $.extend($.ui.slider.defaults, {
+			range: "min",
+			animate: true,
+			orientation: "vertical"
+	});
+		// setup master volume
+	$("#localrepulsion").slider({
+			value: 100,
+			orientation: "horizontal"
+	});
+	$("#globalrepulsion").slider({
+			value: 100,
+			orientation: "horizontal"
+	});
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");
     }, function() {

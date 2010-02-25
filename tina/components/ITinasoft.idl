@@ -20,10 +20,10 @@ interface ITinasoft : nsISupports {
         in wstring format
     );
     wstring listCorpora();
-    wstring getCorpora();
-    wstring getCorpus();
-    wstring getDocument();
-    wstring getNGram();
+    wstring getCorpora(in wstring str);
+    wstring getCorpus(in wstring str);
+    wstring getDocument(in wstring str);
+    wstring getNGram(in wstring str);
     // Debugging : logs details of the python env
     void pythonEnv();
 };

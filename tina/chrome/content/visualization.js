@@ -13,39 +13,60 @@ function Tinaviz() {
     //name += " Changed";
   };
 
-  var selectGlobalProject = function(x,y,id,label) {
+  var selectMacroProject = function(x,y,id,label) {
      if (applet == null) return;
-     console.log("selectGlobalProject called!");
+     console.log("selectMacroProject called!");
 
  
-    applet.getSession().getLocal().selectNodeById(id);
+    applet.getSession().getMeso().selectNodeById(id);
         // TODO pass the ID to the elishowk API
         
         // TODO update the DIV with data from the database
-         
+       console.log("selectMacroProject called for ID "+id); 
+       var doc = parent.getDocument( id );     
+       console.log("doc= "+doc); 
+
+         // update the HTML form
+      if (doc != null) {
+        $('#nodedetailstitle').html("Project: "+ label);
+        $('#abstract').html("Document abstract");
+      }
+
   };
 
-  var selectGlobalTerm = function(x,y,id,label) {
+  var selectMacroTerm = function(x,y,id,label) {
      if (applet == null) return;
-     console.log("selectGlobalTerm called!");
-     applet.getSession().getLocal().selectNodeById(id);
+     console.log("selectMacrolTerm called!");
+     applet.getSession().getMeso().selectNodeById(id);
         // TODO pass the ID to the elishowk API
         
         // TODO update the DIV with data from the database
-         
+       console.log("selectMacroTerm called for ID "+id);  
+       var doc = parent.getDocument( id );     
+       console.log("doc= "+doc); 
+
+         // update the HTML form
+       if (doc != null) {
+        $('#nodedetailstitle').html("Term: "+label);
+        $('#abstract').html("");
+       }
+ 
+ 
   };
 
 
-  var selectLocalTerm = function(x,y,id,label) {
+  var selectMesoTerm = function(x,y,id,label) {
      if (applet == null) return;
-     console.log("selectLocalTerm called!");
-     applet.getSession().getGlobal().selectNodeById(id);
+     console.log("selectMesoTerm called!");
+     applet.getSession().getMacro().selectNodeById(id);
   };
 
-  var selectLocalProject = function(x,y,id,label) {
+  var selectMesoProject = function(x,y,id,label) {
      if (applet == null) return;
-     console.log("selectLocalProject called!");
-     applet.getSession().getGlobal().selectNodeById(id);
+       console.log("selectMesoProject called!"); 
+       console.log("ID= "+id+" "); 
+       console.log(" applet.getSession().getMacro().selectNodeById(id) "); 
+     // applet.getSession().getMacro().selectNodeById(id);
 	/*
 	var getCorpus = function(corpusid) {
 	    return( JSON.parse( TinaService.getCorpus(corpusid) ) );
@@ -60,7 +81,8 @@ function Tinaviz() {
 	    return( JSON.parse( TinaService.getNGram(ngramid) ) );
 	};
 	   */
-       console.log("selectLocalProject called!"); 
+
+       console.log("parent.getDocument( "+id+" )"); 
        var doc = parent.getDocument( id );     
 
 
@@ -116,13 +138,9 @@ function Tinaviz() {
         
         console.log(output);
        
-        try {
-            result = applet.getSession().updateFromString(output);
-        } catch (e) {
-            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
-            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
-            console.log(e);
-        }
+ 
+        result = applet.getSession().getMeso().updateFromString(output);
+        if (!result) console.error(e);
         
         // TODO update the DIV with data from the database
   };
@@ -130,26 +148,97 @@ function Tinaviz() {
 
   return {
     init: function() {
+        if (wrapper != null || applet != null) return;
         wrapper = $('#vizframe').contents().find('#tinaviz')[0];
         applet = wrapper.getSubApplet();
         
-
-        // configure the global graph
-        console.log("calling applet switchToGlobalExploration()..");
-        applet.getSession().switchToGlobalExploration();
+        this.toMacro();
+        //this.loadGraph("examples/map_dopamine_2002_2007_g.gexf");
         
-        console.log("going to load the gexf..");
-        //this.loadGexf("map_dopamine_2002_2007_g.gexf");
-        /*
-        applet.getSession().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
-                        + "/tinasoft.desktop/tina/chrome/content/applet/data/"
-                        + "map_dopamine_2002_2007_g.gexf");*/
-            
-        console.log("resizing..");            
-        // this.resized();
-        applet.setEnabled(false);
-
+        //this.setup();  
+   
+        // disable the applet when on another tab (to save CPU)
+        this.setEnabled(false);
+        
+        // we can already prepare the control layout
         $('#gui').show();
+        
+        // finally, once the gexf is loaded, we light the tab!
+        console.log("enabling applet tab..");
+        parent.appletReady();
+
+    },
+    
+    setup: function() {
+    
+            // configure the global graph
+
+       
+        
+        var corpus = parent.getCorpus("2"); 
+        if (corpus == null) {
+          console.log("get corpus failed"); 
+          return;
+        }
+       jQuery.each(corpus, function(i, val) {
+          console.log( i );
+       });
+               
+
+
+         // update the HTML form
+        $('#nodedetailstitle').html("Project: "+"(none)");
+        $('#abstract').html("Document abstract");
+
+
+        // TODO pass the ID to the elishowk API
+        var context = {
+         root:  {
+            uuid: id,
+         },
+         neighborhood: [
+            {
+             uuid: '432561326751248',
+             label: 'this is an ngram',
+             category: 'term'
+             },
+            {
+             uuid: '715643267560489',
+             label: 'TINA PROJECT',
+             category: 'project'
+             },
+         ]
+        };
+
+        // a basic GEXF template (the applet isn't very strict regarding to the GEXf version)
+        var template = '<?xml version="1.0" encoding="UTF-8"?><gexf><graph>\n\
+        <attributes class="node">\n\
+        </attributes>\n\
+        <tina>\n\
+        </tina>\n\
+        <nodes>\n\
+<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
+          <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
+            <attvalues>\n\
+              <attvalue for="0" value="#{neighborhood[i].category}" />\n\
+            </attvalues>\n\
+          </node>\n\
+<?js } ?>\
+        </nodes>\n\
+        <edges>\n\
+<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
+          <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
+<?js } ?>\
+        </edges>\n\
+        </graph><gexf>';
+        
+  
+        /* call the template engine (tenjin is really fast!)*/
+        var output = Shotenjin.render(template, context);
+        
+        console.log(output);
+       
+
     },
     
     resized: function() {
@@ -163,43 +252,32 @@ function Tinaviz() {
     // Public methods
     loadFromURI: function(uri) {
         if (applet == null) return;
-        
-        try {
-            applet.getNetwork().updateFromURI(uri);
-        } catch (e) {
-            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
-            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
-            console.log(e);
-        }
+        applet.getView().updateFromURI(uri);
     },
     loadFromString: function(gexf) {
-        try {
-            applet.getNetwork().updateFromString(uri);
-        } catch (e) {
-            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
-            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
-            console.log(e);
-        }
+        if (applet == null) return;
+        applet.getView().updateFromString(gexf);
     },
+    
     setGenericityRange: function(from,to) {
         if (applet == null) return;
         //applet.updateViewFromString(gexf);
     },
     toggleLabels: function() {
         if (applet == null) return;
-        applet.getNetwork().toggleLabels(); 
+        applet.getView().toggleLabels(); 
     },
     toggleNodes: function() {
         if (applet == null) return;
-        applet.getNetwork().toggleNodes();
+        applet.getView().toggleNodes();
     },
     toggleEdges: function() {
         if (applet == null) return;
-        applet.getNetwork().toggleLinks();
+        applet.getView().toggleLinks();
     },
     togglePause: function() {
         if (applet == null) return;
-        applet.getNetwork().togglePause();
+        applet.getView().togglePause();
     },
     
     toggleProjects: function() {
@@ -220,15 +298,41 @@ function Tinaviz() {
         applet.filterConfig(categoryFilter, "mask", "term");
     },
     
-    switchToLocalExploration: function() {
+    
+    // TODO FIXME EVIL HACK
+    toMacro: function() {
         if (applet == null) return;
-        applet.getSession().switchToLocalExploration();
+        parent.selectMacro();
     },
     
-    switchToGlobalExploration: function() {
+    toMeso: function() {
         if (applet == null) return;
-        applet.getSession().switchToGlobalExploration();
+        parent.selectMeso();
     },
+    
+    toMicro: function() {
+        if (applet == null) return;
+        parent.selectMicro();
+    },
+       
+       
+    // TODO FIXME EVIL HACK   
+    selectToMacro: function() {
+        if (applet == null) return;
+        applet.getSession().toMacroLevel();
+    },
+    
+    selectToMeso: function() {
+        if (applet == null) return;
+        applet.getSession().toMesoLevel();
+    },
+    
+    selectToMicro: function() {
+        if (applet == null) return;
+        applet.getSession().toMicroLevel();
+    },
+    
+    
     
     unselect: function() {
         if (applet == null) return;
@@ -240,24 +344,24 @@ function Tinaviz() {
     },
 
 
-    globalNodeSelected: function(x,y,id,label,tags) {
+    macroNodeSelected: function(x,y,id,label,tags) {
         if (applet == null) return;
-        console.log("globalNodeSelected called! tags: '"+tags+"'");
+        console.log("macroNodeSelected called! tags: '"+tags+"'");
         if (tags=="project") {
-            selectGlobalProject(x,y,id,label);
+            selectMacroProject(x,y,id,label);
         } else if (tags=="term") {
-            selectGlobalTerm(x,y,id,label);
+            selectMacroTerm(x,y,id,label);
 	    }
     },
 
-    localNodeSelected: function(x,y,id,label,tags) {
+    mesoNodeSelected: function(x,y,id,label,tags) {
         if (applet == null) return;
-        console.log("localNodeSelected called! tags: "+tags+"'");
+        console.log("mesoNodeSelected called! tags: "+tags+"'");
         if (tags=="project") {
-            selectLocalProject(x,y,id,label);
+            selectMesoProject(x,y,id,label);
         } else if (tags=="term") {
-            selectLocalTerm(x,y,id,label);
-	}
+            selectMesoTerm(x,y,id,label);
+	    }
     },
 
     takePDFPicture: function () {
@@ -266,12 +370,10 @@ function Tinaviz() {
         try {
             result = viz.takePDFPicture(outputFilePath);
         } catch (e) {
-            //alert("Oops! Something bad just happened. Calling 911...");
-            $('#debugdiv').append('<br><b>exception='+e+'</b>');
             console.log(e);
             return;
         }
-        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
+        console.log('Saving to '+outputFilePath+'</p>');
         setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
     },
 
@@ -281,12 +383,10 @@ function Tinaviz() {
         try {
             result = viz.takePicture(outputFilePath);
         } catch (e) {
-            //alert("Oops! Something bad just happened. Calling 911...");
-            $('#debugdiv').append('<br><b>exception='+e+'</b>');
              console.log(e);
              return;
         }
-        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
+        console.log('Saving to '+outputFilePath+'</p>');
         setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
     },
 
@@ -320,7 +420,9 @@ function Tinaviz() {
         return false;
     },
 
-    loadGexf: function(filename) {
+    // BROKEN, REPLACE BY HTML5 FILE API //
+    /*
+    loadGexfWithStringMethod: function(filename) {
 
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
@@ -333,7 +435,7 @@ function Tinaviz() {
         var file = 
             Components.classes["@mozilla.org/file/local;1"]
                 .createInstance(Components.interfaces.nsILocalFile);
-                
+        console.log("initWithPath ");      
         file.initWithPath(gexfPath);
 
         var fstream = 
@@ -349,35 +451,28 @@ function Tinaviz() {
         var str = {};
         cstream.readString(-1, str); // read the whole file and put it in str.value
         cstream.close(); // this closes fstream
-
+        console.log("calling this.loadFromString(..)");      
         result = this.loadFromString(str.value);
 
     },
+    */
 
-    updateView2: function(filename) {
-
-        if (!filename) filename = "test2.gexf";
-
+    loadGraph: function(filename) {
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-
         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
         var gexfPath;
-        if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\applet\\data\\"+filename }
-        else { gexfPath = path + "/content/applet/data/"+filename  }
-
+        if (path.search(/\\/) != -1) { gexfPath = path + "\\data\\graph\\"+filename }
+        else { gexfPath = path + "/data/graph/"+filename  }
         var gexfFile = 
             Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-                
+                .createInstance(Components.interfaces.nsILocalFile);    
         gexfFile.initWithPath(gexfPath);
-
         var uri = 
             Components.classes["@mozilla.org/network/protocol;1?name=file"]
                 .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                    .getURLSpecFromFile(gexfFile);
-                    
+                    .getURLSpecFromFile(gexfFile);   
+        console.log("loading graph: "+gexfPath);
         result = this.loadFromURI(uri);
-  
     },
 
     
@@ -415,6 +510,7 @@ $(document).ready(function() {
     $("#altslider").slider({
             orientation: "vertical",
             range: true,
+            animate: true,
             values: [1, 100],
             slide: function(event, ui) {
 

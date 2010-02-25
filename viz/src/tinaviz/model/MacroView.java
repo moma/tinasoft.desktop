@@ -11,8 +11,8 @@ import java.util.HashMap;
  *
  * @author jbilcke
  */
-public class GlobalNetwork extends Network {
-    public GlobalNetwork () {
+public class MacroView extends View {
+    public MacroView () {
         storedNodes = new HashMap<String, tinaviz.Node>();
         metrics = new Metrics();
     }

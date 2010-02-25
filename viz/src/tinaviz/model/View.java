@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import tinaviz.Console;
 import tinaviz.FilterChain;
 import tinaviz.Node;
 import tinaviz.filters.AttributeFilter;
@@ -25,10 +26,9 @@ import tinaviz.filters.ForceVector;
  *
  * @author jbilcke
  */
-public class Network {
-    
-    public static final String NS = "tina";
+public class View {
 
+    public static final String NS = "tina";
     public boolean showLabels = true;
     public boolean showNodes = true;
     public boolean showLinks = true;
@@ -36,35 +36,90 @@ public class Network {
     public boolean animationPaused = false;
     public boolean colorsDesaturated = false;
     public boolean zoomFrozen = false;
-
     public int selection = 0;
     public float zoom = 0.5f;
-
     public String selectedNodeID = "";
     public boolean prespatialize = true;
     public FilterChain filters = new FilterChain();
-
     public Map<String, tinaviz.Node> storedNodes;
     public Metrics metrics;
-
     public AtomicBoolean hasBeenRead = new AtomicBoolean(false);
 
-     public boolean updateFromURI(String uri) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
-        XPathReader xml = new XPathReader();
-        xml.parseFromURI(uri);
-        return parseXML(xml);
+    /*
+    public boolean updateFromURI(String uri) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
+    XPathReader xml = new XPathReader();
+    xml.parseFromURI(uri);
+    return parseXML(xml);
     }
 
     public boolean updateFromString(String str) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
-        XPathReader xml = new XPathReader();
-        xml.parseFromString(str);
-        return parseXML(xml);
+    XPathReader xml = new XPathReader();
+    xml.parseFromString(str);
+    return parseXML(xml);
     }
 
     public boolean updateFromInputStream(InputStream inputStream) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
-        XPathReader xml = new XPathReader();
-        xml.parseFromStream(inputStream);
-        return parseXML(xml);
+    XPathReader xml = new XPathReader();
+    xml.parseFromStream(inputStream);
+    return parseXML(xml);
+    }
+     */
+    public boolean updateFromURI(String uri) {
+
+        //Console.log("<applet> got updateFromURI(" + uri + ") from " + this);
+        try {
+            XPathReader xml = new XPathReader();
+            xml.parseFromURI(uri);
+            return parseXML(xml);
+        } catch (XPathExpressionException ex) {
+            Console.log(ex.toString());
+        } catch (URISyntaxException ex) {
+            Console.log(ex.toString());
+        } catch (MalformedURLException ex) {
+            Console.log(ex.toString());
+        } catch (IOException ex) {
+            Console.log(ex.toString());
+        }
+        return false;
+    }
+
+    public boolean updateFromString(String str) {
+        //Console.log("<applet> got updateFromString(..) from " + this);
+        try {
+            XPathReader xml = new XPathReader();
+
+            xml.parseFromString(str);
+
+            //Console.log("<applet> calling parse XML on "+str);
+            return parseXML(xml);
+
+        } catch (URISyntaxException ex) {
+            Console.log(ex.toString());
+        } catch (MalformedURLException ex) {
+            Console.log(ex.toString());
+        } catch (IOException ex) {
+            Console.log(ex.toString());
+        } catch (XPathExpressionException ex) {
+            Console.log(ex.toString());
+        }
+        return false;
+    }
+
+    public boolean updateFromInputStream(InputStream inputStream) {
+        try {
+            XPathReader xml = new XPathReader();
+            xml.parseFromStream(inputStream);
+            return parseXML(xml);
+        } catch (XPathExpressionException ex) {
+            Console.log(ex.toString());
+        } catch (URISyntaxException ex) {
+            Console.log(ex.toString());
+        } catch (MalformedURLException ex) {
+            Console.log(ex.toString());
+        } catch (IOException ex) {
+            Console.log(ex.toString());
+        }
+        return false;
     }
 
     public boolean updateFromNodeList(List<Node> nodes) {
@@ -74,13 +129,14 @@ public class Network {
 
     private boolean parseXML(XPathReader xml) throws XPathExpressionException {
         String meta = "/gexf/graph/tina/";
+            Console.log("<applet> parsing XML..");
 
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
+
         if (zoomValue != null) {
             System.out.println("zoom: " + zoom);
             this.zoom = zoomValue.floatValue();
         }
-
 
         Double thresholdValue = (Double) xml.read(meta + "threshold/@min", XPathConstants.NUMBER);
         if (thresholdValue != null) {
@@ -137,8 +193,10 @@ public class Network {
         metrics.minY = 0.0f;
         metrics.maxX = 0.0f;
         metrics.maxY = 0.0f;
+        metrics.minRadius = 0.0f;
+        metrics.maxRadius = 0.0f;
 
-
+            Console.log("<applet> parsing XML: reading nodes..");
         org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
                 XPathConstants.NODESET);
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -166,8 +224,11 @@ public class Network {
 
 
             Node node = new Node(uuid, label, (float) Math.random() * 10f,
-                    0.0f,
-                    0.0f);//, posx, posy);
+                    (float) Math.random() * 100f,
+                    (float) Math.random() * 100f);//, posx, posy);
+
+            node.category = "term";
+            
             // update the graph metrics
             if (node.x < metrics.minX) {
                 metrics.minX = node.x;
@@ -181,7 +242,12 @@ public class Network {
             if (node.y > metrics.maxY) {
                 metrics.maxY = node.y;
             }
-
+            if (node.radius < metrics.minRadius) {
+                    metrics.minRadius = node.radius;
+           }
+            if (node.radius > metrics.maxRadius) {
+                    metrics.maxRadius = node.radius;
+            }
 
             org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
 
@@ -223,13 +289,15 @@ public class Network {
                         // FIXME normalize radius by a max radius, so it is not too big
                         node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.7f;
                     }
-                }else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
+                } else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("r") != null) {
                         node.r = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("r").getNodeValue());
-                    }                    if (xmlnodePositionAttributes.getNamedItem("g") != null) {
+                    }
+                    if (xmlnodePositionAttributes.getNamedItem("g") != null) {
                         node.g = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("g").getNodeValue());
-                    }                    if (xmlnodePositionAttributes.getNamedItem("b") != null) {
+                    }
+                    if (xmlnodePositionAttributes.getNamedItem("b") != null) {
                         node.b = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("b").getNodeValue());
                     }
 
@@ -305,8 +373,6 @@ public class Network {
         return true;
     }
 
-
-
     // call by the drawer when isSynced is false
     public synchronized List<tinaviz.Node> getNodes() {
 
@@ -332,13 +398,15 @@ public class Network {
     }
 
     public void addNode(tinaviz.Node node) {
-        if (!storedNodes.containsKey(node.uuid))
+        if (!storedNodes.containsKey(node.uuid)) {
             storedNodes.put(node.uuid, node);
+        }
     }
 
     public void updateNode(tinaviz.Node node) {
-        if (storedNodes.containsKey(node.uuid))
+        if (storedNodes.containsKey(node.uuid)) {
             storedNodes.get(node.uuid).update(node);
+        }
     }
 
     public void addNeighbour(tinaviz.Node node1, tinaviz.Node node2) {
@@ -352,8 +420,9 @@ public class Network {
     }
 
     public void addNodes(List<tinaviz.Node> nodes) {
-        for (tinaviz.Node node : nodes)
+        for (tinaviz.Node node : nodes) {
             addNode(node);
+        }
     }
 
     public int size() {
@@ -368,7 +437,7 @@ public class Network {
         storedNodes.clear();
     }
 
-       public synchronized boolean toggleLinks() {
+    public synchronized boolean toggleLinks() {
         showLinks = !showLinks;
         return showLinks;
     }
@@ -393,8 +462,7 @@ public class Network {
         return animationPaused;
     }
 
-
-      public synchronized boolean createFilter(String filterName, String model) {
+    public synchronized boolean createFilter(String filterName, String model) {
         Filter f = null;
         if (model.equals("RegexMatch")) {
             f = new AttributeFilter();
@@ -409,25 +477,29 @@ public class Network {
         filters.getFilter(filterName).setField(key, value);
         return true;
     }
+
     public synchronized boolean filterConfig(String filterName, String key, float value) throws KeyException {
         filters.getFilter(filterName).setField(key, value);
         return true;
     }
+
     public synchronized boolean filterConfig(String filterName, String key, int value) throws KeyException {
         filters.getFilter(filterName).setField(key, value);
         return true;
     }
+
     public synchronized boolean filterConfig(String filterName, String key, boolean value) throws KeyException {
         filters.getFilter(filterName).setField(key, value);
         return true;
     }
+
     public synchronized Object filterConfig(String filterName, String key) throws KeyException {
         return filters.getFilter(filterName).getField(key);
     }
 
     public void selectNodeById(String id) {
-       for (Node n : storedNodes.values()) {
-           n.selected = true;
-       }
-   }
+        for (Node n : storedNodes.values()) {
+            n.selected = true;
+        }
+    }
 }

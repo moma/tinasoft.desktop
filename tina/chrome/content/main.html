@@ -53,24 +53,25 @@
     <div class="demo">
         <div id="tabs" class="ui-corner-top">
             <ul>
-                <li><a title="configure input data sets" href="#tabs-1">Data sets</a></li>
-                <li><a title="configure the thematic fields" href="#tabs-2">Thematic fields</a></li>
-                <li><a title="see the global map" href="#tabs-3">Global map</a></li>
-                <li><a title="explore the local neighborhood" href="#tabs-4">Local neighborhood</a></li>
+                <li><a title="configure input data sets" href="#tabs-0">Data sets</a></li>
+                <li><a title="configure the thematic fields" href="#tabs-1">Thematic fields</a></li>
+                <li><a title="" href="#tabs-2">Macro level</a></li>
+                <li><a title="" href="#tabs-3">Meso level</a></li>
+                <li><a title="" href="#tabs-4">Micro Level</a></li>
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
-            <div id="tabs-1">
+            <div id="tabs-0">
                 <h1>Create or import a new session</h1>
 
                 <div id="importForm">
                     <label>Corpora file (csv)</label>
-                    <input id="csvfile" class="field" type="file" name="csvfile"/><br/>
+                    <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
                     <label>Extraction configuration file (yaml)</label>
-                    <input id="configfile" class="field" type="file" name="configfile" value='import.yaml'/><br/>
+                    <input id="configfile" class="field" type="file" name="configfile" value='import.yaml' /><br/>
                     <label>Session name (or new session)</label>
-                    <input id="corpora" type="text" class="field" name="corpora" value='test corpora'/><br/>
+                    <input id="corpora" type="text" class="field" name="corpora" value='test corpora' /><br/>
                     <label>Extraction export file path (csv)</label>
-                    <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv'/><br/>
+                    <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv' /><br/>
                     <!--<label>Index full-text</label>
                     <input type="checkbox" name="Check3" /><br/>-->
                     <div id="push">
@@ -79,7 +80,7 @@
                 </div>
             </div>
             <!-- IMPORTING NGRAM WHITELIST AND CREATE GRAPH TABULATION -->
-            <div id="tabs-2">
+            <div id="tabs-1">
                 <h1>Import ngrams and create graph</h1>
                 <div class="session_select">
                     <label>Select sessions</label>
@@ -92,8 +93,11 @@
                 </div>
             </div>
 
-            <div id="tabs-3" class="ui-corner-bottom">
+            <div id="tabs-2" class="ui-corner-bottom">
                 <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
+                   <a href="#" onclick="tabvizframe.tinaviz.openGraphBrowser()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-folder-open"></span> open</a>
+                </div>
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a id="buttonlabel" href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a>
                         <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
@@ -104,7 +108,7 @@
                         <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
                     </div>
                     
-                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                    <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                         <a href="#" onclick="tabvizframe.tinaviz.unselect()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> unselect</a>
                     </div>
                     
@@ -114,9 +118,20 @@
                         <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a>
                     </div>
                 </div>
+                <!--<div id="globalrepulsion" style="width:150px; height:12px; margin:15px;"></div>-->
+                <div class="search">
+                        <label for="searchfield">Search:</label>
+                        <input id="searchfield" name="searchfield" />    
+                </div>
             </div>
-            <div id="tabs-4" class="ui-corner-bottom">
+            
+            
+            
+            <div id="tabs-3" class="ui-corner-bottom">
               <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
+                   <a href="#" onclick="tabvizframe.tinaviz.openGraphBrowser()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-folder-open"></span> open</a>
+                </div>
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a>
                         <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
@@ -126,16 +141,24 @@
                         <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
                     </div>
                     
-                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                    <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                         <a href="#" onclick="tabvizframe.tinaviz.unselect()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> unselect</a>
                     </div>
                     
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>
+
                         <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo" title="projection"><span class="ui-icon ui-icon-projection"></span> projection</a>
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a>
+
                    </div>
                 </div>
+                <!--<div id="localrepulsion" style="width:150px; height:12px; margin:15px;"></div>-->
+                <div class="search"">
+                        <label for="searchfield">Search:</label>
+                        <input id="searchfield" name="searchfield" />    
+                </div>
+            </div>
+            <div id="tabs-4" class="ui-corner-bottom">
+                Micro Level (Not Implemented)
             </div>
         </div>
 </div>

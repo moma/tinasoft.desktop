@@ -36,8 +36,8 @@ public class Main extends PApplet implements MouseWheelListener {
     float oldmouseY = 0f;
     XMLElement xml;
     Session session = new Session();
-    float MAX_ZOOM = 5f;
-    float MIN_ZOOM = 0.02f;
+    float MAX_ZOOM = 2.0f;
+    float MIN_ZOOM = 10.0f;
     private boolean mouseDragging = false;
     private float inerX = 0.0f;
     private float inerY = 0.0f;
@@ -47,7 +47,7 @@ public class Main extends PApplet implements MouseWheelListener {
     AtomicBoolean mouseClick = new AtomicBoolean(false);
     private int preSpatialize = 10;
     private String currentTextSearch = "&&&&";
-    private JSObject window = null;
+    public static JSObject window = null;
     private int recordingWidth = 100;
     private int recordingHeight = 100;
     private boolean debugMode = true;
@@ -59,14 +59,52 @@ public class Main extends PApplet implements MouseWheelListener {
     // Semaphore screenBufferLock = new Semaphore();
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
 
-    private void nodeSelected(Node n) {
+    private void jsNodeSelected(Node n) {
         if (window == null) {
             return; // in debug mode
         }
-        window.eval(session.getExplorationMode() + "NodeSelected("
+        window.eval(session.getLevel() + "NodeSelected("
                 + screenX(n.x, n.y) + ","
                 + screenY(n.x, n.y) + ",\""
                 + n.uuid + "\",\"" + n.label + "\", \"" + n.category + "\");");
+    }
+
+    private void jsSwitchToMacro() {
+        if (window == null) {
+            return; // in debug mode
+        }
+        window.call("switchToMacro",null);
+    }
+    private void jsSwitchToMeso() {
+        if (window == null) {
+            return; // in debug mode
+        }
+        window.call("switchToMeso",null);
+    }
+     private void jsSwitchToMicro() {
+        if (window == null) {
+            return; // in debug mode
+        }
+        window.call("switchToMicro",null);
+    }
+    private void jsSwitchToUpper() {
+        if (session.currentLevel == ViewLevel.MACRO) {
+            // nothing to do..
+        } else if (session.currentLevel == ViewLevel.MESO) {
+            jsSwitchToMacro();
+        } else {
+            jsSwitchToMeso();
+        }
+    }
+
+    private void jsSwitchToLower() {
+        if (session.currentLevel == ViewLevel.MACRO) {
+            jsSwitchToMeso();
+        } else if (session.currentLevel == ViewLevel.MESO) {
+            jsSwitchToMicro();
+        } else {
+            // nothing to do
+        }
     }
 
     public enum RecordingFormat {
@@ -107,7 +145,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
             w = (Integer) window.call("getWidth", null);
             h = (Integer) window.call("getHeight", null);
-            window.eval("appletInitialized();");
             size(w, h, engine);
         } else {
             size(screen.width, screen.height, engine);
@@ -116,11 +153,11 @@ public class Main extends PApplet implements MouseWheelListener {
         textFont(font);
         smooth();
 
+
         addMouseWheelListener(this);
         //noStroke();
         // current sketch's "data" directory to load successfully
 
-        session = new Session();
 
         // currentView.showLabels = false;
         oldmouseX = mouseX;
@@ -130,7 +167,7 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean loadDefaultGlobalGraph = true;
 
         if (generateRandomLocalGraph) {
-            session.switchToLocalExploration();
+            session.toMesoLevel();
 
             List<Node> tmp = new ArrayList<Node>();
             Node node;
@@ -156,27 +193,21 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             // session.updateFromNodeList(tmp);
 
-            session.getNetwork().prespatialize = false;
+            session.getView().prespatialize = false;
             //session.animationPaused = true;
         }
 
         if (loadDefaultGlobalGraph) {
-            session.switchToGlobalExploration();
-            try {
-                session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
+            session.toMacroLevel();
+             if(session.getView().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"))
+
+      
+               /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
                         + "/tinasoft.desktop/tina/chrome/content/applet/data/"
-                        + "map_dopamine_2002_2007_g.gexf");
-                session.getNetwork().prespatialize = false;
+                        + "map_dopamine_2002_2007_g.gexf"))*/
+                session.getView().prespatialize = false;
                 //session.animationPaused = true;
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (XPathExpressionException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+
         }
         // fill(255, 184);
         frameRate(30);
@@ -184,6 +215,7 @@ public class Main extends PApplet implements MouseWheelListener {
         textFont(font, 48);
         center();
         System.out.println("Starting visualization..");
+        if (window != null) window.eval("appletInitialized();");
     }
 
     @Override
@@ -193,7 +225,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
         // todo replace by get network
-        Network net = session.getNetwork();
+        View net = session.getView();
 
         List<Node> n = net.getNodes();
         if (n != null) {
@@ -226,7 +258,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
-    public void drawLoading(Network net) {
+    public void drawLoading(View net) {
         background(255);
         fill(200 - 3 * preSpatialize);
         textSize(40);
@@ -248,7 +280,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
-    public void spatialize(Network net) {
+    public void spatialize(View net) {
         float len = 1f;
         float vx = 0f;
         float vy = 0f;
@@ -290,7 +322,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
-    public void pdfDrawer(Network net, int w, int h) {
+    public void pdfDrawer(View net, int w, int h) {
         PGraphicsPDF pdf = (PGraphicsPDF) createGraphics(w, h, PDF, "/tmp/out.pdf");
         pdf.beginDraw();
 
@@ -320,7 +352,7 @@ public class Main extends PApplet implements MouseWheelListener {
         pdf.endDraw();
     }
 
-    public void pictureDrawer(Network net, int w, int h) {
+    public void pictureDrawer(View net, int w, int h) {
         // todo: we can create a tilling system right here ;)
         PGraphics pg = createGraphics(w, h, JAVA2D);
         //PFont f = createFont("Arial", 96, true);
@@ -345,9 +377,8 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.save(recordPath);
     }
 
-    public void genericDrawer(Network net, PGraphics pg, int w, int h, float vizx, float vizy) {
+    public void genericDrawer(View net, PGraphics pg, int w, int h, float vizx, float vizy) {
 
-        float MAX_RADIUS = net.metrics.maxRadius;
 
         //////////// POSITION ////////////////////////////////
         pg.translate(vizx, vizy);
@@ -366,7 +397,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n1.neighbours.contains(n2)) {
                     // AFFICHAGE LIEN (A CHANGER)
                     float rpond = ((n1.radius + n2.radius) * 0.5f);
-                    int rgb = (int) ((255.0f / MAX_RADIUS) * rpond);
+                    int rgb = (int) ((255.0f / (net.metrics.maxRadius-net.metrics.minRadius)) * rpond);
                     // old: 150
                     pg.stroke(rgb);
                     pg.strokeWeight(((n1.radius + n2.radius) * 0.05f));
@@ -385,8 +416,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
         for (Node n : nodes) {
 
-            int rgb = (int) ((255.0 / MAX_RADIUS) * n.radius);
-
             pg.ellipse(n.x, n.y, n.radius, n.radius);
 
             pg.fill(120);
@@ -400,7 +429,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-    public void drawAndSpatializeRealtime(Network net) {
+    public void drawAndSpatializeRealtime(View net) {
 
         stepCounter++;
 
@@ -415,8 +444,7 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean _resetSelection = this.resetSelection.getAndSet(false);
         boolean _mouseClick = this.mouseClick.getAndSet(false);
 
-        float MAX_RADIUS = session.getNetwork().metrics.maxRadius;
-
+     
         background(255);
         stroke(0);
         fill(120);
@@ -435,9 +463,9 @@ public class Main extends PApplet implements MouseWheelListener {
         //if (!mouseDragging) {
             // todo: make it proportionnal to the zoom level ?
             //  0.01 = sticky, 0.001 smoothie
-            inerX = (abs(inerX) <= 0.09) ? 0.0f : inerX * 0.9f;
-            inerY = (abs(inerY) <= 0.09) ? 0.0f : inerY * 0.9f;
-            inerZ = (abs(inerZ) <= 0.06) ? 0.0f : inerZ * 0.9f;
+            inerX = (abs(inerX) <= 0.15) ? 0.0f : inerX * 0.9f;
+            inerY = (abs(inerY) <= 0.15) ? 0.0f : inerY * 0.9f;
+            inerZ = (abs(inerZ) <= 0.15) ? 0.0f : inerZ * 0.9f;
             vizx += inerX * 2.0f;
             vizy += inerY * 2.0f;
             zoomRatio += inerZ * 0.015f;
@@ -489,19 +517,10 @@ public class Main extends PApplet implements MouseWheelListener {
                         }
                     //}
                     // AFFICHAGE LIEN (A CHANGER)
-                    float rpond = ((n1.radius + n2.radius) * 0.5f);
-                    int rgb = (int) ((800.0f / MAX_RADIUS) * rpond);
-                    if (rgb > 255) {
-                        rgb = 255;
-                    }
-                    if (rgb < 0) {
-                        rgb = 0;
-                    }
-
 
                     if (net.showLinks) {
                         if (stepCounter > 1) {
-                            stroke(rgb);
+                            stroke(200);
 
                             if (net.animationPaused) {
                                 strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
@@ -536,7 +555,7 @@ public class Main extends PApplet implements MouseWheelListener {
             n.y += n.vy;
             n.vx = 0.0f;
             n.vy = 0.0f;
-            int rgb = (int) ((255.0 / MAX_RADIUS) * n.radius);
+            int rgb = (int) ((  n.radius / (net.metrics.maxRadius-net.metrics.minRadius)  ) * 255.0f);
             float distance = dist(
                     screenX(n.x, n.y),
                     screenY(n.x, n.y),
@@ -551,7 +570,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         n.selected = !n.selected;
                         // only call this once
                         if (n.selected) {
-                            nodeSelected(n);
+                            jsNodeSelected(n);
                         }
                     }
                 }
@@ -588,21 +607,15 @@ public class Main extends PApplet implements MouseWheelListener {
                 13, 426);
                  */
             }
-            if (net.showLabels && cameraIsStopped() && stepCounter > 2) {
-                fill(120);
+            fill(70);
+            if (net.showLabels && stepCounter > 2) {
+
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
                 textSize(n.radius);
 
-                if (n.label.startsWith(currentTextSearch)) {
-                    fill(60);
-                    text(n.label, n.x + n.radius,
+                 text(n.label, n.x + n.radius,
                             n.y + (n.radius / 2.50f));
-                } else {
-
-                    fill(150);//old: 110
-                    text(n.label, n.x + n.radius,
-                            n.y + (n.radius / 2.50f));
-                }
+            
             }
         }
     }
@@ -633,11 +646,13 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public Session getSession() {
+        //Console.log("<applet> returning session " + session);
         return session;
     }
 
-    public Network getNetwork() {
-        return session.getNetwork();
+    public View getView() {
+        //Console.log("<applet> returning network " + session.getNetwork());
+        return session.getView();
     }
 
     public synchronized void center() {
@@ -671,8 +686,8 @@ public class Main extends PApplet implements MouseWheelListener {
         oldmouseY = mouseY;
 
         // mouse "brake"
-        if (mouseButton == RIGHT) {
-            inerZ *= 0.01; // smooth brake
+        if (mouseButton == LEFT) {
+            inerZ = 0; // smooth brake
         }
     }
 
@@ -685,6 +700,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseDragged() {
         // hideNodeDetails();
+        if (mouseButton == RIGHT) {
         mouseDragging = true;
         float dragSensibility = 0.1f;
         // OLD "INERTIAL" DRAG
@@ -695,13 +711,16 @@ public class Main extends PApplet implements MouseWheelListener {
         vizx += inerX * 2.0f;
         vizy += inerY * 2.0f;
 
+        }
         oldmouseX = mouseX;
         oldmouseY = mouseY;
     }
 
     @Override
     public void mouseReleased() {
+        if (mouseButton == RIGHT) {
         mouseDragging = false;
+        }
         oldmouseX = mouseX;
         oldmouseY = mouseY;
     }
@@ -715,15 +734,17 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
         if (e.getWheelRotation() > 0) {
-            if (zoomRatio >= 2.0f) {
-
+            if (zoomRatio >= MAX_ZOOM) {
                 inerX -= (width * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
                 inerY -= (height * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
+                jsSwitchToUpper();
             }
         } else {
-            if (zoomRatio <= 10.0f) {
+            if (zoomRatio <= MIN_ZOOM) {
                 inerX += (width * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
                 inerY += (height * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
+            } else {
+                jsSwitchToLower();
             }
         }
 
@@ -779,12 +800,4 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-    /**
-     * Given a Throwable, gets the full stack trace for the
-     * Exception or Error as a String. 
-     */
-    public static String getStackTraceAsString(Throwable t) {
-        return Utilities.getStackTraceAsString(t);
-
-    }
 }
