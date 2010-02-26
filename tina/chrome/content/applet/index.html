@@ -35,11 +35,33 @@ function appletInitialized() {
    return parent.tinaviz.init();
 }
 
-function globalNodeSelected(x,y,id,label) {
-   return parent.tinaviz.globalNodeSelected(x,y,id,label);
+
+function switchToMacro() {
+   return parent.parent.selectMacro();
 }
-function localNodeSelected(x,y,id,label) {
-   return parent.tinaviz.localNodeSelected(x,y,id,label);
+function switchToMeso() {
+   return parent.parent.selectMeso();
+}
+function switchToMicro() {
+   return parent.parent.selectMicro();
+}
+function consoleLog(msg) {
+    parent.console.log(msg);
+}
+function consoleError(msg) {
+    parent.console.error(msg);
+}
+function consoleDebug(msg) {
+    parent.console.debug(msg);
+}
+function macroNodeSelected(x,y,id,label,tags) {
+   return parent.tinaviz.macroNodeSelected(x,y,id,label,tags);
+}
+function mesoNodeSelected(x,y,id,label,tags) {
+   return parent.tinaviz.mesoNodeSelected(x,y,id,label,tags);
+}
+function microNodeSelected(x,y,id,label,tags) {
+   return parent.tinaviz.microNodeSelected(x,y,id,label,tags);
 }
 </script>
 	</head>

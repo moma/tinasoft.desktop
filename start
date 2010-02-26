@@ -1,6 +1,7 @@
 cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
 cp -R ../Tinasoft*/tinasoft tina/pylib/
 cp ../Tinasoft*/*.yaml tina/
+cp ../Tinasoft*/*.yaml install/skeletons/windows/
 touch tina/.autoreg
 echo $LD_LIBRARY_PATH
 cd tina

@@ -1,22 +1,14 @@
 package tinaviz;
 
-import tinaviz.filters.FilterChannel;
 import java.awt.Color;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.KeyException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,16 +18,10 @@ import processing.opengl.*;
 import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
-// import netscape.javascript.*;
-//import netscape.javascript.JSObject ;
 import netscape.javascript.*;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import tinaviz.filters.Channel;
 import tinaviz.filters.Filter;
 import tinaviz.filters.ForceVector;
-import tinaviz.filters.ParamChannel;
 import tinaviz.filters.AttributeFilter;
 
 public class Main extends PApplet implements MouseWheelListener {
@@ -48,11 +34,10 @@ public class Main extends PApplet implements MouseWheelListener {
     float vizy = 0f;
     float oldmouseX = 0f;
     float oldmouseY = 0f;
-    float MAX_RADIUS = 0f;
     XMLElement xml;
     Session session = new Session();
-    float MAX_ZOOM = 5f;
-    float MIN_ZOOM = 0.02f;
+    float MAX_ZOOM = 2.0f;
+    float MIN_ZOOM = 10.0f;
     private boolean mouseDragging = false;
     private float inerX = 0.0f;
     private float inerY = 0.0f;
@@ -62,7 +47,7 @@ public class Main extends PApplet implements MouseWheelListener {
     AtomicBoolean mouseClick = new AtomicBoolean(false);
     private int preSpatialize = 10;
     private String currentTextSearch = "&&&&";
-    private JSObject window = null;
+    public static JSObject window = null;
     private int recordingWidth = 100;
     private int recordingHeight = 100;
     private boolean debugMode = true;
@@ -74,11 +59,52 @@ public class Main extends PApplet implements MouseWheelListener {
     // Semaphore screenBufferLock = new Semaphore();
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
 
-    private void nodeSelected(Node n) {
-        window.eval(session.getExplorationMode() + "NodeSelected("
+    private void jsNodeSelected(Node n) {
+        if (window == null) {
+            return; // in debug mode
+        }
+        window.eval(session.getLevel() + "NodeSelected("
                 + screenX(n.x, n.y) + ","
                 + screenY(n.x, n.y) + ",\""
-                + n.uuid + "\",\"" + n.label + "\");");
+                + n.uuid + "\",\"" + n.label + "\", \"" + n.category + "\");");
+    }
+
+    private void jsSwitchToMacro() {
+        if (window == null) {
+            return; // in debug mode
+        }
+        window.call("switchToMacro",null);
+    }
+    private void jsSwitchToMeso() {
+        if (window == null) {
+            return; // in debug mode
+        }
+        window.call("switchToMeso",null);
+    }
+     private void jsSwitchToMicro() {
+        if (window == null) {
+            return; // in debug mode
+        }
+        window.call("switchToMicro",null);
+    }
+    private void jsSwitchToUpper() {
+        if (session.currentLevel == ViewLevel.MACRO) {
+            // nothing to do..
+        } else if (session.currentLevel == ViewLevel.MESO) {
+            jsSwitchToMacro();
+        } else {
+            jsSwitchToMeso();
+        }
+    }
+
+    private void jsSwitchToLower() {
+        if (session.currentLevel == ViewLevel.MACRO) {
+            jsSwitchToMeso();
+        } else if (session.currentLevel == ViewLevel.MESO) {
+            jsSwitchToMicro();
+        } else {
+            // nothing to do
+        }
     }
 
     public enum RecordingFormat {
@@ -119,7 +145,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
             w = (Integer) window.call("getWidth", null);
             h = (Integer) window.call("getHeight", null);
-            window.eval("appletInitialized();");
             size(w, h, engine);
         } else {
             size(screen.width, screen.height, engine);
@@ -128,19 +153,23 @@ public class Main extends PApplet implements MouseWheelListener {
         textFont(font);
         smooth();
 
+
         addMouseWheelListener(this);
         //noStroke();
         // current sketch's "data" directory to load successfully
 
-        session = new Session();
 
         // currentView.showLabels = false;
         oldmouseX = mouseX;
         oldmouseY = mouseY;
 
-        boolean generateRandom = false;
+        boolean generateRandomLocalGraph = false;
+        boolean loadDefaultGlobalGraph = true;
 
-        if (generateRandom) {
+        if (generateRandomLocalGraph) {
+            session.toMesoLevel();
+
+            List<Node> tmp = new ArrayList<Node>();
             Node node;
             System.out.println("Generating random graph..");
             float rx = random(width);
@@ -148,98 +177,88 @@ public class Main extends PApplet implements MouseWheelListener {
             float radius = 0.0f;
             for (int i = 0; i < 200; i++) {
                 radius = random(3.0f, 10.0f);
-                if (radius > MAX_RADIUS) {
-                    MAX_RADIUS = radius;
-                }
+
                 node = new Node("" + i, "node " + i, radius, random(width / 2), random(height / 2));
                 node.genericity = random(1.0f);
-                // System.out.println(node.genericity);
-                session.getNetwork().addNode(node);
+                node.category = (random(1.0f) > 0.5f) ? "project" : "term";
+                tmp.add(node);
             }
 
-            Node a;
-            Node b;
-            for (int i = 0; i < nodes.size(); i++) {
-                for (int j = 0; j < nodes.size() && i != j; j++) {
+            for (int i = 0; i < tmp.size(); i++) {
+                for (int j = 0; j < tmp.size() && i != j; j++) {
                     if (random(1.0f) < 0.009) { // link density : 0.02 = a lot, 0.0002 = a few
-                        nodes.get(i).addNeighbour(nodes.get(j));
+                        tmp.get(i).addNeighbour(tmp.get(j));
                     }
                 }
             }
+            // session.updateFromNodeList(tmp);
 
-        } else {
-            try {
-
-                session.updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
-                        + "/tinasoft.desktop/tina/chrome/content/applet/data/"
-                        + "map_dopamine_2002_2007_g.gexf");
-                session.prespatialize = false;
-                session.animationPaused = true;
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (XPathExpressionException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            session.getView().prespatialize = false;
+            //session.animationPaused = true;
         }
 
+        if (loadDefaultGlobalGraph) {
+            session.toMacroLevel();
+             if(session.getView().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"))
+
+      
+               /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
+                        + "/tinasoft.desktop/tina/chrome/content/applet/data/"
+                        + "map_dopamine_2002_2007_g.gexf"))*/
+                session.getView().prespatialize = false;
+                //session.animationPaused = true;
+
+        }
         // fill(255, 184);
         frameRate(30);
         smooth();
-
         textFont(font, 48);
-
         center();
-
         System.out.println("Starting visualization..");
-
+        if (window != null) window.eval("appletInitialized();");
     }
 
     @Override
     public void draw() {
-
         if (!this.isEnabled()) {
             return;
         }
 
+        // todo replace by get network
+        View net = session.getView();
 
-        List<Node> n = session.getNodes();
+        List<Node> n = net.getNodes();
         if (n != null) {
             nodes.clear();
             nodes.addAll(n);
-            center(); // dynamic recenter
+            //center(); // uncomment this later
         }
 
         //session.animationPaused = tmp; // TODO replace by a lock here
         //preSpatialize = 60;
 
-
-
         // TODO put this in another thread
         if (recordingMode != RecordingFormat.NONE) {
 
             if (recordingMode == RecordingFormat.PDF) {
-                pdfDrawer(width, height);
+                pdfDrawer(net, width, height);
             } else if (recordingMode == RecordingFormat.CURRENT_PICTURE) {
-                pictureDrawer(width, height);
+                pictureDrawer(net, width, height);
                 //save(recordPath);
             } else if (recordingMode == RecordingFormat.BIG_PICTURE) {
-                pictureDrawer(recordingWidth, recordingHeight);
+                pictureDrawer(net, recordingWidth, recordingHeight);
             }
             recordingMode = RecordingFormat.NONE;
 
-        } else if (session.prespatialize && preSpatialize-- > 0) {
-            drawLoading();
-            spatialize();
+        } else if (net.prespatialize && preSpatialize-- > 0) {
+            drawLoading(net);
+            spatialize(net);
         } else {
-            drawAndSpatializeRealtime();
+            drawAndSpatializeRealtime(net);
         }
     }
 
-    public void drawLoading() {
+    public void drawLoading(View net) {
         background(255);
         fill(200 - 3 * preSpatialize);
         textSize(40);
@@ -261,8 +280,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
-    public void spatialize() {
-
+    public void spatialize(View net) {
         float len = 1f;
         float vx = 0f;
         float vy = 0f;
@@ -287,13 +305,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
 
                 if (len != 0) {
-
                     // TODO fix this
                     n1.vx -= (vx / len) * LAYOUT_REPULSION;
                     n1.vy -= (vy / len) * LAYOUT_REPULSION;
                     n2.vx += (vx / len) * LAYOUT_REPULSION;
                     n2.vy += (vy / len) * LAYOUT_REPULSION;
-
                 }
             } // FOR NODE B
         }   // FOr NODE A
@@ -306,7 +322,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
-    public void pdfDrawer(int w, int h) {
+    public void pdfDrawer(View net, int w, int h) {
         PGraphicsPDF pdf = (PGraphicsPDF) createGraphics(w, h, PDF, "/tmp/out.pdf");
         pdf.beginDraw();
 
@@ -318,37 +334,25 @@ public class Main extends PApplet implements MouseWheelListener {
 
         pdf.hint(ENABLE_NATIVE_FONTS);
 
-
         //beginRecord(pdf);
-
-
         pdf.smooth();
-
         println(pdf.listFonts());
         //pdf.textMode(MODEL); // TODO: try "MODEL"
-
-
-
         pdf.background(255);
-
         pdf.fill(30);
         pdf.textSize(40);
-
         pdf.text("TinaSoft", 15f, 50f);
-
         pdf.fill(80);
         pdf.textSize(18);
         pdf.text("A cool project subtitle", 18f, 70f);
         pdf.fill(120);
 
-        genericDrawer(pdf, w, h, vizx, vizy);
+        genericDrawer(net, pdf, w, h, vizx, vizy);
         pdf.dispose();
         pdf.endDraw();
-
-
     }
 
-    public void pictureDrawer(int w, int h) {
+    public void pictureDrawer(View net, int w, int h) {
         // todo: we can create a tilling system right here ;)
         PGraphics pg = createGraphics(w, h, JAVA2D);
         //PFont f = createFont("Arial", 96, true);
@@ -357,27 +361,23 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.textMode(MODEL);
         pg.smooth();
         pg.textFont(font);
-
         pg.background(255);
 
         pg.fill(30);
-
-
         pg.textSize(40);
         pg.text("TinaSoft", 15f, 50f);
 
         pg.fill(80);
-
         pg.textSize(18);
         pg.text("A cool project subtitle", 18f, 70f);
         pg.fill(120);
 
-        genericDrawer(pg, w, h, vizx, vizy);
+        genericDrawer(net, pg, w, h, vizx, vizy);
         pg.endDraw();
         pg.save(recordPath);
     }
 
-    public void genericDrawer(PGraphics pg, int w, int h, float vizx, float vizy) {
+    public void genericDrawer(View net, PGraphics pg, int w, int h, float vizx, float vizy) {
 
 
         //////////// POSITION ////////////////////////////////
@@ -395,42 +395,26 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
 
                 if (n1.neighbours.contains(n2)) {
-
                     // AFFICHAGE LIEN (A CHANGER)
                     float rpond = ((n1.radius + n2.radius) * 0.5f);
-                    int rgb = (int) ((255.0f / MAX_RADIUS) * rpond);
-
+                    int rgb = (int) ((255.0f / (net.metrics.maxRadius-net.metrics.minRadius)) * rpond);
                     // old: 150
                     pg.stroke(rgb);
-
                     pg.strokeWeight(((n1.radius + n2.radius) * 0.05f));
 
+                    pg.line(n1.x, n1.y, n2.x, n2.y);
+                    arrow(pg, n2.x, n2.y, n1.x, n1.y, n1.radius);
 
-                    if ((n1.genericity <= session.upperThreshold
-                            && n1.genericity >= session.lowerThreshold)
-                            && (n2.genericity <= session.upperThreshold
-                            && n2.genericity >= session.lowerThreshold)) {
-                        pg.line(n1.x, n1.y, n2.x, n2.y);
-                        arrow(pg, n2.x, n2.y, n1.x, n1.y, n1.radius);
-                    }
                 }
 
             } // FOR NODE B
         }   // FOr NODE A
 
         pg.stroke(20, 20, 20);
-        // fill(200, 200, 200);
         pg.fill(218, 219, 220);
         pg.strokeWeight(1.2f);
 
-
         for (Node n : nodes) {
-            if (!(n.genericity <= session.upperThreshold
-                    && n.genericity >= session.lowerThreshold)) {
-                continue;
-            }
-
-            int rgb = (int) ((255.0 / MAX_RADIUS) * n.radius);
 
             pg.ellipse(n.x, n.y, n.radius, n.radius);
 
@@ -441,12 +425,11 @@ public class Main extends PApplet implements MouseWheelListener {
             pg.fill(150);//old: 110
             pg.text(n.label, n.x + n.radius,
                     n.y + (n.radius / 2.50f));
-
         }
 
     }
 
-    public void drawAndSpatializeRealtime() {
+    public void drawAndSpatializeRealtime(View net) {
 
         stepCounter++;
 
@@ -461,12 +444,12 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean _resetSelection = this.resetSelection.getAndSet(false);
         boolean _mouseClick = this.mouseClick.getAndSet(false);
 
+     
         background(255);
         stroke(0);
         fill(120);
 
-
-        if (session.showPosterOverlay) {
+        if (net.showPosterOverlay) {
             fill(30);
             textSize(40);
             text("TinaSoft", 15f, 50f);
@@ -477,41 +460,36 @@ public class Main extends PApplet implements MouseWheelListener {
             fill(120);
         }
 
-        if (!mouseDragging) {
-
+        //if (!mouseDragging) {
             // todo: make it proportionnal to the zoom level ?
-
-
             //  0.01 = sticky, 0.001 smoothie
-            inerX = (abs(inerX) <= 0.09) ? 0.0f : inerX * 0.9f;
-            inerY = (abs(inerY) <= 0.09) ? 0.0f : inerY * 0.9f;
-            inerZ = (abs(inerZ) <= 0.06) ? 0.0f : inerZ * 0.9f;
+            inerX = (abs(inerX) <= 0.15) ? 0.0f : inerX * 0.9f;
+            inerY = (abs(inerY) <= 0.15) ? 0.0f : inerY * 0.9f;
+            inerZ = (abs(inerZ) <= 0.15) ? 0.0f : inerZ * 0.9f;
             vizx += inerX * 2.0f;
             vizy += inerY * 2.0f;
             zoomRatio += inerZ * 0.015f;
-        }
+        //}
 
         translate(vizx, vizy);
 
-        if (zoomRatio > 10f) {
-            zoomRatio = 10f;
-            inerZ = 0.0f;
+        if (zoomRatio > 10.0f) {
+            zoomRatio = 10.0f;
+            //inerZ = 0.0f;
         }
-        if (zoomRatio < 0.1f) {
-            zoomRatio = 0.1f;
-            inerZ = 0.0f;
+        if (zoomRatio < 3.0f) {
+            zoomRatio = 3.0f;
+            //inerZ = 0.0f;
         }
         scale(zoomRatio * (log(zoomRatio)));
-
         stroke(150, 150, 150);
 
-        if (cameraIsStopped()) {
-            strokeWeight(3.0f);
-        }
+        //if (cameraIsStopped()) {
+        //strokeWeight(3.0f);
+        //}
+        strokeWeight(1);
 
         for (Node n1 : nodes) {
-            // reset the selection on the node if needed
-
             if (_resetSelection) {
                 n1.selected = false;
             }
@@ -525,96 +503,77 @@ public class Main extends PApplet implements MouseWheelListener {
                     vx = n2.x - n1.x;
                     vy = n2.y - n1.y;
                     len = sqrt(sq(vx) + sq(vy));
-
                 }
 
                 if (n1.neighbours.contains(n2)) {
 
                     // ATTRACTION
-                    if (!mouseDragging) {
-                        if (!session.animationPaused) {
+                    //if (!mouseDragging) {
+                        if (!net.animationPaused) {
                             n1.vx += (vx * len) * LAYOUT_ATTRACTION;
                             n1.vy += (vy * len) * LAYOUT_ATTRACTION;
                             n2.vx -= (vx * len) * LAYOUT_ATTRACTION;
                             n2.vy -= (vy * len) * LAYOUT_ATTRACTION;
                         }
-                    }
+                    //}
                     // AFFICHAGE LIEN (A CHANGER)
 
-                    float rpond = ((n1.radius + n2.radius) * 0.5f);
-                    int rgb = (int) ((255.0f / MAX_RADIUS) * rpond);
+                    if (net.showLinks) {
+                        if (stepCounter > 1) {
+                            stroke(200);
 
-                    if (this.session.showLinks) {
-                        // old: 150
+                            if (net.animationPaused) {
+                                strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
+                            }
 
-                        if (cameraIsStopped() && stepCounter > 1) {
-                            stroke(rgb);
-                            strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
                             line(n2.x, n2.y, n1.x, n1.y);
-                            arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
+                            if (cameraIsStopped()) {
+                                arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
+                            }
                         }
-
                     }
-
                 }
                 // REPULSION
                 if (cameraIsStopped() && len != 0) {
-
-                    if (!session.animationPaused) {
-
-                        // TODO fix this
+                    if (!net.animationPaused) {
                         n1.vx -= (vx / len) * LAYOUT_REPULSION;
                         n1.vy -= (vy / len) * LAYOUT_REPULSION;
-
                         n2.vx += (vx / len) * LAYOUT_REPULSION;
                         n2.vy += (vy / len) * LAYOUT_REPULSION;
                     }
-
                 }
             } // FOR NODE B
         }   // FOr NODE A
 
         stroke(20, 20, 20);
-        if (cameraIsStopped() && stepCounter > 1) {
-            strokeWeight(1.0f);
-        }
+        //if (cameraIsStopped() && stepCounter > 1) {
+        strokeWeight(1.0f);
+        //}
 
-        // ITERATE OVER NODES
-        // COMPUTE NODE DATA, DRAW NODE..
         for (Node n : nodes) {
-
             n.x += n.vx;
             n.y += n.vy;
             n.vx = 0.0f;
             n.vy = 0.0f;
-
-            int rgb = (int) ((255.0 / MAX_RADIUS) * n.radius);
-
+            int rgb = (int) ((  n.radius / (net.metrics.maxRadius-net.metrics.minRadius)  ) * 255.0f);
             float distance = dist(
                     screenX(n.x, n.y),
                     screenY(n.x, n.y),
                     mouseX,
                     mouseY);
-
-            if (this.session.showNodes) {
-
+            if (net.showNodes) {
                 if (_mouseClick) {
                     if (distance <= (n.radius) * zoomRatio) {
                         // fill(200);
-
                         // mouseClick = false;
-                        System.out.println("clicked on node " + n.uuid + " (selected node: " + session.selectedNodeID + ")");
+                        System.out.println("clicked on node " + n.uuid);
                         n.selected = !n.selected;
-
                         // only call this once
                         if (n.selected) {
-                            nodeSelected(n);
+                            jsNodeSelected(n);
                         }
-
                     }
-
                 }
-
 
                 /*
                 if (n.label.startsWith(currentTextSearch)) {
@@ -622,13 +581,20 @@ public class Main extends PApplet implements MouseWheelListener {
                 strokeWeight(1.8f);
                 } else {*/
 
+                strokeWeight(1.0f);
+
                 if (n.selected) {
                     fill(200, 100, 100);
-                    strokeWeight(1.8f);
+                    if (net.animationPaused) {
+                        strokeWeight(1.8f);
+                    }
                 } else {
                     // fill(200, 200, 200);
-                    fill(218, 219, 220);
-                    strokeWeight(1.2f);
+                    //fill(218, 219, 220);
+                    fill(n.r, n.g, n.b);
+                    if (net.animationPaused) {
+                        strokeWeight(1.2f);
+                    }
                 }
                 //}
 
@@ -641,77 +607,18 @@ public class Main extends PApplet implements MouseWheelListener {
                 13, 426);
                  */
             }
-            if (this.session.showLabels && cameraIsStopped() && stepCounter > 2) {
-                fill(120);
+            fill(70);
+            if (net.showLabels && stepCounter > 2) {
+
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
-                textSize(n.radius * 0.2f);
+                textSize(n.radius);
 
-                if (n.label.startsWith(currentTextSearch)) {
-                    fill(60);
-                    text(n.label, n.x + n.radius,
+                 text(n.label, n.x + n.radius,
                             n.y + (n.radius / 2.50f));
-
-                } else {
-
-                    fill(150);//old: 110
-                    text(n.label, n.x + n.radius,
-                            n.y + (n.radius / 2.50f));
-                }
+            
             }
-
         }
-
-
     }
-
-    public float setZoomValue(float value) {
-
-        session.zoom = value;
-        return session.zoom;
-    }
-
-    public void centerOnNodeById(int id) {
-        //return sliderZoomLevel;
-    }
-
-
-
-    public synchronized boolean createFilter(String filterName, String model) {
-        Filter f = null;
-        if (model.equals("RegexMatch")) {
-            f = new AttributeFilter();
-        } else if (model.equals("ForceVector")) {
-            f = new ForceVector();
-        }
-
-        session.filters.addFilter(filterName, f);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, String value) throws KeyException {
-        session.filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, float value) throws KeyException {
-        session.filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, int value) throws KeyException {
-        session.filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, boolean value) throws KeyException {
-        session.filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized Object filterConfig(String filterName, String key) throws KeyException {
-        return session.filters.getFilter(filterName).getField(key);
-    }
-
 
     public synchronized boolean takePicture(String path) {
         recordPath = path;
@@ -727,7 +634,6 @@ public class Main extends PApplet implements MouseWheelListener {
         recordingWidth = width;
         recordingHeight = height;
         recordingMode = RecordingFormat.BIG_PICTURE;
-
         return true;
     }
 
@@ -740,9 +646,15 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public Session getSession() {
+        //Console.log("<applet> returning session " + session);
         return session;
     }
-    
+
+    public View getView() {
+        //Console.log("<applet> returning network " + session.getNetwork());
+        return session.getView();
+    }
+
     public synchronized void center() {
         vizx = 0;
         vizy = 0;
@@ -750,9 +662,8 @@ public class Main extends PApplet implements MouseWheelListener {
         //vizy = (float)height/2.0f;
         //vizx += (session.metrics.maxX - session.metrics.minX);
         //vizy +=  (session.metrics.maxY - session.metrics.minY);
-        zoomRatio = 3.0f;
+        zoomRatio = 4.0f;
     }
-
 
     public void unselect() {
         resetSelection.set(true);
@@ -768,8 +679,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mousePressed() {
-
-        // hideNodeDetails();
         // oldmouseX = mouseX;
         //oldmouseY = mouseY;
         // mousePress = true;
@@ -777,8 +686,8 @@ public class Main extends PApplet implements MouseWheelListener {
         oldmouseY = mouseY;
 
         // mouse "brake"
-        if (mouseButton == RIGHT) {
-            inerZ *= 0.01; // smooth brake
+        if (mouseButton == LEFT) {
+            inerZ = 0; // smooth brake
         }
     }
 
@@ -791,110 +700,104 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseDragged() {
         // hideNodeDetails();
+        if (mouseButton == RIGHT) {
         mouseDragging = true;
-        float dragSensibility = 3.0f;
-
+        float dragSensibility = 0.1f;
         // OLD "INERTIAL" DRAG
-
-        inerX = ((float) mouseX - oldmouseX) / (zoomRatio * dragSensibility);
-        inerY = ((float) mouseY - oldmouseY) / (zoomRatio * dragSensibility);
+        if (zoomRatio != 0 && (1.0f / zoomRatio) != 0) {
+            inerX = ((float) mouseX - oldmouseX) * dragSensibility / (1.0f / zoomRatio);
+            inerY = ((float) mouseY - oldmouseY) * dragSensibility / (1.0f / zoomRatio);
+        }
         vizx += inerX * 2.0f;
         vizy += inerY * 2.0f;
 
-
-        // NEW "DIRECT" DRAG
-        /*
-        if (zoomRatio != 0) {
-        vizx += ((float) mouseX - oldmouseX);
-        vizy += ((float) mouseY - oldmouseY);
-        }*/
-
+        }
         oldmouseX = mouseX;
         oldmouseY = mouseY;
     }
 
     @Override
     public void mouseReleased() {
+        if (mouseButton == RIGHT) {
         mouseDragging = false;
+        }
         oldmouseX = mouseX;
         oldmouseY = mouseY;
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (session.zoomFrozen) {
-            return;
+        // 0.01 = very slow, 1.0f = very fast
+        float zoomSensibility = 0.5f;
+
+        if (zoomRatio != 0 && (1.0f / zoomRatio) != 0) {
+            inerZ += -(float) e.getWheelRotation() * zoomSensibility / (1.0f / zoomRatio);
         }
 
-        //System.out.println("new inerZ="+inerZ);
-        //inerZ = -e.getWheelRotation() * 2;
-        //this.zoomRatio -= (float) e.getWheelRotation() * 0.7f / zoomRatio;
-        inerZ = -(float) e.getWheelRotation() / (1.0f / zoomRatio);
-        stepCounter = 10;
-        //System.out.println("new inerZ="+inerZ);
+        if (e.getWheelRotation() > 0) {
+            if (zoomRatio >= MAX_ZOOM) {
+                inerX -= (width * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
+                inerY -= (height * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
+                jsSwitchToUpper();
+            }
+        } else {
+            if (zoomRatio <= MIN_ZOOM) {
+                inerX += (width * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
+                inerY += (height * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
+            } else {
+                jsSwitchToLower();
+            }
+        }
 
+        stepCounter = 10;
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {
         pushMatrix();
-        translate(x2, y2);
+        translate(
+                x2, y2);
+
+
         float a = atan2(x1 - x2, y2 - y1);
-        rotate(a);
-        line(0, -radius, -2, -2 - radius);
-        line(0, -radius, 2, -2 - radius);
+        rotate(
+                a);
+        line(
+                0, -radius, -1, -1 - radius);
+        line(
+                0, -radius, 1, -1 - radius);
         popMatrix();
+
+
     }
 
     private void arrow(PGraphics pg, float x1, float y1, float x2, float y2, float radius) {
         pg.pushMatrix();
         pg.translate(x2, y2);
+
+
         float a = atan2(x1 - x2, y2 - y1);
         pg.rotate(a);
-        pg.line(0, -radius, -2, -2 - radius);
-        pg.line(0, -radius, 2, -2 - radius);
+        pg.line(0, -radius, -1, -1 - radius);
+        pg.line(0, -radius, 1, -1 - radius);
         pg.popMatrix();
+
+
     }
 
     private float logify(float x) {
         if (abs(x) < 0.01f) {
             return 0.0f;
+
+
         }
         return (x > 0) ? log100((int) (abs(x) * 100.0f)) : -log100((int) (abs(x) * 100.0f));
+
+
     }
 
     private float log100(int x) {
         return (log(x) / ((float) log(100)));
-    }
 
-    /**
-     * Given a Throwable, gets the full stack trace for the
-     * Exception or Error as a String.  Returns an empty string
-     * if something went wrong (so the caller won't fail with a
-     * null pointer exception later).
-     * @param t
-     * @return
-     * @author kolichko Mark Kolich
-     */
-    public static String getStackTraceAsString(Throwable t) {
-
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw, true);
-        String trace = new String();
-
-        try {
-            t.printStackTrace(pw);
-            pw.flush();
-            sw.flush();
-            trace = sw.toString();
-        } catch (Exception e) {
-        } finally {
-            try {
-                sw.close();
-                pw.close();
-            } catch (Exception e) {
-            }
-        }
-
-        return trace;
 
     }
+
 }

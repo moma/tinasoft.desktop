@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 echo "########################################"
 echo "# BUILD TINASOFT FOR WINDOWS PLATFORMS #"
@@ -93,10 +93,11 @@ rm -Rf $outpath/platform
 cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
-cp install/skeletons/$arch/tina.bat $outpath
+cp install/skeletons/$arch/* $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 
 echo " - creating release archive.."
-zip -r $outfile.zip $outpath
+cd dist
+zip -r $outfile.zip $outfile
 
 # echo " - uploading to the tinasoft server.."

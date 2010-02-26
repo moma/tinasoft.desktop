@@ -13,104 +13,84 @@ function Tinaviz() {
     //name += " Changed";
   };
 
-  return {
-    init: function() {
-        wrapper = $('#vizframe').contents().find('#tinaviz')[0];
-        applet = wrapper.getSubApplet();
-        
-        applet.setEnabled(false);
-        
-        this.resized();
-        
-        $('#gui').show();
-    },
-    
-    resized: function() {
-        if (applet == null) return;
-        wrapper.width = computeAppletWidth();
-        wrapper.height = computeAppletHeight();
-        // update the overlay layout (eg. recenter the toolbars)
-        $('.htoolbar').css('left', (  (wrapper.width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
-    },
-    
-    // Public methods
-    loadGraphURI: function(uri) {
-        if (applet == null) return;
-        applet.getSession().updateFromURI(uri);
-    },
-    loadGraphString: function(gexf) {
-        if (applet == null) return;
-        applet.getSession().updateFromString(gexf);
-    },
-    setGenericityRange: function(from,to) {
-        if (applet == null) return;
-        //applet.updateViewFromString(gexf);
-    },
-    toggleLabels: function() {
-        if (applet == null) return;
-        applet.getSession().toggleLabels(); 
-    },
-    toggleNodes: function() {
-        if (applet == null) return;
-        applet.getSession().toggleNodes();
-    },
-    toggleEdges: function() {
-        if (applet == null) return;
-        applet.getSession().toggleLinks();
-    },
-    togglePause: function() {
-        if (applet == null) return;
-        applet.getSession().togglePause();
-    },
-    
-    toggleProjects: function() {
-        if (applet == null) return;
-        // toggle the filter
-        
-        // switch the
-        applet.filterConfig(categoryFilter, categoryFilterSwitch, 
-           ! applet.filterConfig(categoryFilter, categoryFilterSwitch));
-  
-    },
-    reproject: function() {
-        if (applet == null) return;
-        //applet.reproject();
-    },
-    toggleTerms: function() {
-        if (applet == null) return;
-        applet.filterConfig(categoryFilter, "mask", "term");
-    },
-    
-    switchToLocalExploration: function() {
-        if (applet == null) return;
-        applet.getSession().switchToLocalExploration();
-    },
-    
-    switchToGlobalExploration: function() {
-        if (applet == null) return;
-        applet.getSession().switchToGlobalExploration();
-    },
-    
-    unselect: function() {
-        if (applet == null) return;
-        applet.unselect();
-    },
-    clear: function() {
-        if (applet == null) return;
-        applet.getSession().clear();
-    },
-    globalNodeSelected: function(x,y,id,label) {
-        if (applet == null) return;
+  var selectMacroProject = function(x,y,id,label) {
+     if (applet == null) return;
+     console.log("selectMacroProject called!");
 
+ 
+    applet.getSession().getMeso().selectNodeById(id);
         // TODO pass the ID to the elishowk API
         
         // TODO update the DIV with data from the database
-         
-    },
-    localNodeSelected: function(x,y,id,label) {
-        if (applet == null) return;
+       console.log("selectMacroProject called for ID "+id); 
+       var doc = parent.getDocument( id );     
+       console.log("doc= "+doc); 
+
+         // update the HTML form
+      if (doc != null) {
+        $('#nodedetailstitle').html("Project: "+ label);
+        $('#abstract').html("Document abstract");
+      }
+
+  };
+
+  var selectMacroTerm = function(x,y,id,label) {
+     if (applet == null) return;
+     console.log("selectMacrolTerm called!");
+     applet.getSession().getMeso().selectNodeById(id);
+        // TODO pass the ID to the elishowk API
         
-        
+        // TODO update the DIV with data from the database
+       console.log("selectMacroTerm called for ID "+id);  
+       var doc = parent.getDocument( id );     
+       console.log("doc= "+doc); 
+
+         // update the HTML form
+       if (doc != null) {
+        $('#nodedetailstitle').html("Term: "+label);
+        $('#abstract').html("");
+       }
+ 
+ 
+  };
+
+
+  var selectMesoTerm = function(x,y,id,label) {
+     if (applet == null) return;
+     console.log("selectMesoTerm called!");
+     applet.getSession().getMacro().selectNodeById(id);
+  };
+
+  var selectMesoProject = function(x,y,id,label) {
+     if (applet == null) return;
+       console.log("selectMesoProject called!"); 
+       console.log("ID= "+id+" "); 
+       console.log(" applet.getSession().getMacro().selectNodeById(id) "); 
+     // applet.getSession().getMacro().selectNodeById(id);
+	/*
+	var getCorpus = function(corpusid) {
+	    return( JSON.parse( TinaService.getCorpus(corpusid) ) );
+	};
+	var getDocument = function(documentid) {
+	    return( JSON.parse( TinaService.getDocument(documentid) ) );
+	};
+	var getCorpora = function(corporaid) {
+	    return( JSON.parse( TinaService.getCorpora(corporaid) ) );
+	};
+	var getNGram = function(ngramid) {
+	    return( JSON.parse( TinaService.getNGram(ngramid) ) );
+	};
+	   */
+
+       console.log("parent.getDocument( "+id+" )"); 
+       var doc = parent.getDocument( id );     
+
+
+         // update the HTML form
+        $('#nodedetailstitle').html("Project: "+"(none)");
+        $('#abstract').html("Document abstract");
+
+
         // TODO pass the ID to the elishowk API
         var context = {
          root:  {
@@ -134,6 +114,8 @@ function Tinaviz() {
         var template = '<?xml version="1.0" encoding="UTF-8"?><gexf><graph>\n\
         <attributes class="node">\n\
         </attributes>\n\
+        <tina>\n\
+        </tina>\n\
         <nodes>\n\
 <?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
           <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
@@ -156,29 +138,242 @@ function Tinaviz() {
         
         console.log(output);
        
-        try {
-            result = applet.getSession().updateFromString(output);
-        } catch (e) {
-            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
-            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
-            console.log(e);
-        }
+ 
+        result = applet.getSession().getMeso().updateFromString(output);
+        if (!result) console.error(e);
         
         // TODO update the DIV with data from the database
+  };
+
+
+  return {
+    init: function() {
+        if (wrapper != null || applet != null) return;
+        wrapper = $('#vizframe').contents().find('#tinaviz')[0];
+        applet = wrapper.getSubApplet();
+        
+        this.toMacro();
+        //this.loadGraph("examples/map_dopamine_2002_2007_g.gexf");
+        
+        //this.setup();  
+   
+        // disable the applet when on another tab (to save CPU)
+        this.setEnabled(false);
+        
+        // we can already prepare the control layout
+        $('#gui').show();
+        
+        // finally, once the gexf is loaded, we light the tab!
+        console.log("enabling applet tab..");
+        parent.appletReady();
+
     },
     
+    setup: function() {
+    
+            // configure the global graph
+
+       
+        
+        var corpus = parent.getCorpus("2"); 
+        if (corpus == null) {
+          console.log("get corpus failed"); 
+          return;
+        }
+       jQuery.each(corpus, function(i, val) {
+          console.log( i );
+       });
+               
+
+
+         // update the HTML form
+        $('#nodedetailstitle').html("Project: "+"(none)");
+        $('#abstract').html("Document abstract");
+
+
+        // TODO pass the ID to the elishowk API
+        var context = {
+         root:  {
+            uuid: id,
+         },
+         neighborhood: [
+            {
+             uuid: '432561326751248',
+             label: 'this is an ngram',
+             category: 'term'
+             },
+            {
+             uuid: '715643267560489',
+             label: 'TINA PROJECT',
+             category: 'project'
+             },
+         ]
+        };
+
+        // a basic GEXF template (the applet isn't very strict regarding to the GEXf version)
+        var template = '<?xml version="1.0" encoding="UTF-8"?><gexf><graph>\n\
+        <attributes class="node">\n\
+        </attributes>\n\
+        <tina>\n\
+        </tina>\n\
+        <nodes>\n\
+<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
+          <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
+            <attvalues>\n\
+              <attvalue for="0" value="#{neighborhood[i].category}" />\n\
+            </attvalues>\n\
+          </node>\n\
+<?js } ?>\
+        </nodes>\n\
+        <edges>\n\
+<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
+          <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
+<?js } ?>\
+        </edges>\n\
+        </graph><gexf>';
+        
+  
+        /* call the template engine (tenjin is really fast!)*/
+        var output = Shotenjin.render(template, context);
+        
+        console.log(output);
+       
+
+    },
+    
+    resized: function() {
+        if (applet == null) return;
+        wrapper.width = computeAppletWidth();
+        wrapper.height = computeAppletHeight();
+        // update the overlay layout (eg. recenter the toolbars)
+        $('.htoolbar').css('left', (  (wrapper.width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
+    },
+    
+    // Public methods
+    loadFromURI: function(uri) {
+        if (applet == null) return;
+        applet.getView().updateFromURI(uri);
+    },
+    loadFromString: function(gexf) {
+        if (applet == null) return;
+        applet.getView().updateFromString(gexf);
+    },
+    
+    setGenericityRange: function(from,to) {
+        if (applet == null) return;
+        //applet.updateViewFromString(gexf);
+    },
+    toggleLabels: function() {
+        if (applet == null) return;
+        applet.getView().toggleLabels(); 
+    },
+    toggleNodes: function() {
+        if (applet == null) return;
+        applet.getView().toggleNodes();
+    },
+    toggleEdges: function() {
+        if (applet == null) return;
+        applet.getView().toggleLinks();
+    },
+    togglePause: function() {
+        if (applet == null) return;
+        applet.getView().togglePause();
+    },
+    
+    toggleProjects: function() {
+        if (applet == null) return;
+        // toggle the filter
+        
+        // switch the
+        applet.filterConfig(categoryFilter, categoryFilterSwitch, 
+           ! applet.filterConfig(categoryFilter, categoryFilterSwitch));
+  
+    },
+    reproject: function() {
+        if (applet == null) return;
+        //applet.reproject();
+    },
+    toggleTerms: function() {
+        if (applet == null) return;
+        applet.filterConfig(categoryFilter, "mask", "term");
+    },
+    
+    
+    // TODO FIXME EVIL HACK
+    toMacro: function() {
+        if (applet == null) return;
+        parent.selectMacro();
+    },
+    
+    toMeso: function() {
+        if (applet == null) return;
+        parent.selectMeso();
+    },
+    
+    toMicro: function() {
+        if (applet == null) return;
+        parent.selectMicro();
+    },
+       
+       
+    // TODO FIXME EVIL HACK   
+    selectToMacro: function() {
+        if (applet == null) return;
+        applet.getSession().toMacroLevel();
+    },
+    
+    selectToMeso: function() {
+        if (applet == null) return;
+        applet.getSession().toMesoLevel();
+    },
+    
+    selectToMicro: function() {
+        if (applet == null) return;
+        applet.getSession().toMicroLevel();
+    },
+    
+    
+    
+    unselect: function() {
+        if (applet == null) return;
+        applet.unselect();
+    },
+    clear: function() {
+        if (applet == null) return;
+        applet.getSession().clear();
+    },
+
+
+    macroNodeSelected: function(x,y,id,label,tags) {
+        if (applet == null) return;
+        console.log("macroNodeSelected called! tags: '"+tags+"'");
+        if (tags=="project") {
+            selectMacroProject(x,y,id,label);
+        } else if (tags=="term") {
+            selectMacroTerm(x,y,id,label);
+	    }
+    },
+
+    mesoNodeSelected: function(x,y,id,label,tags) {
+        if (applet == null) return;
+        console.log("mesoNodeSelected called! tags: "+tags+"'");
+        if (tags=="project") {
+            selectMesoProject(x,y,id,label);
+        } else if (tags=="term") {
+            selectMesoTerm(x,y,id,label);
+	    }
+    },
+
     takePDFPicture: function () {
         var outputFilePath = "graph.pdf";
         var result;
         try {
             result = viz.takePDFPicture(outputFilePath);
         } catch (e) {
-            //alert("Oops! Something bad just happened. Calling 911...");
-            $('#debugdiv').append('<br><b>exception='+e+'</b>');
             console.log(e);
             return;
         }
-        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
+        console.log('Saving to '+outputFilePath+'</p>');
         setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
     },
 
@@ -188,12 +383,10 @@ function Tinaviz() {
         try {
             result = viz.takePicture(outputFilePath);
         } catch (e) {
-            //alert("Oops! Something bad just happened. Calling 911...");
-            $('#debugdiv').append('<br><b>exception='+e+'</b>');
              console.log(e);
              return;
         }
-        $('#debugdiv').append('<br>Saving to '+outputFilePath+'</p>');
+        console.log('Saving to '+outputFilePath+'</p>');
         setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
     },
 
@@ -227,20 +420,22 @@ function Tinaviz() {
         return false;
     },
 
-    loadGexf: function(filename) {
+    // BROKEN, REPLACE BY HTML5 FILE API //
+    /*
+    loadGexfWithStringMethod: function(filename) {
 
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
         var gexfPath;
 
         // todo: find a better way to convert the path
-        if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
+        if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\applet\\data\\"+filename }
         else { gexfPath = path + "/content/applet/data/"+filename  }
-
+        console.log("going to load "+gexfPath);
         var file = 
             Components.classes["@mozilla.org/file/local;1"]
                 .createInstance(Components.interfaces.nsILocalFile);
-                
+        console.log("initWithPath ");      
         file.initWithPath(gexfPath);
 
         var fstream = 
@@ -256,45 +451,28 @@ function Tinaviz() {
         var str = {};
         cstream.readString(-1, str); // read the whole file and put it in str.value
         cstream.close(); // this closes fstream
+        console.log("calling this.loadFromString(..)");      
+        result = this.loadFromString(str.value);
 
-        try {
-            result = applet.updateViewFromString(str.value);
-        } catch (e) {
-            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
-            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
-            console.log(e);
-        }
     },
+    */
 
-    updateView2: function(filename) {
-
-        if (!filename) filename = "test2.gexf";
-
+    loadGraph: function(filename) {
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-
         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
         var gexfPath;
-        if (path.search(/\\/) != -1) { gexfPath = path + "\\content\\data\\"+filename }
-        else { gexfPath = path + "/content/applet/data/"+filename  }
-
+        if (path.search(/\\/) != -1) { gexfPath = path + "\\data\\graph\\"+filename }
+        else { gexfPath = path + "/data/graph/"+filename  }
         var gexfFile = 
             Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-                
+                .createInstance(Components.interfaces.nsILocalFile);    
         gexfFile.initWithPath(gexfPath);
-
         var uri = 
             Components.classes["@mozilla.org/network/protocol;1?name=file"]
                 .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                    .getURLSpecFromFile(gexfFile);
-                    
-        try {
-            result = applet.updateViewFromURI(uri);
-        } catch (e) {
-            if(e.rhinoException != null) { console.log(applet.getStackTraceAsString(e.rhinoException)); } 
-            else if(e.javaException != null) { console.log(applet.getStackTraceAsString(e.javaException)); } 
-            console.log(e);
-        }
+                    .getURLSpecFromFile(gexfFile);   
+        console.log("loading graph: "+gexfPath);
+        result = this.loadFromURI(uri);
     },
 
     
@@ -332,6 +510,7 @@ $(document).ready(function() {
     $("#altslider").slider({
             orientation: "vertical",
             range: true,
+            animate: true,
             values: [1, 100],
             slide: function(event, ui) {
 

@@ -25,7 +25,7 @@
     position:absolute;
     top:30px;
     right:16px;
-    width:298px;
+    width:294px;
     height:432px;
     background-color: #ffffff;
     background: #ffffff;
@@ -114,14 +114,17 @@
      bottom: 5px;
 }
 
-
+.nodedetailsh2 {
+   font-family:Arial,Helvetica,sans-serif;
+   font-size: 14px;
+}
 .nodedetailsh3 {
    font-family:Arial,Helvetica,sans-serif;
-   font-size: 13px;
+   font-size: 12px;
 }
 .nodedetailsp {
    font-family:Arial,Helvetica,sans-serif;
-   font-size: 11px;
+   font-size: 10px;
 }
 
 fieldset { 
