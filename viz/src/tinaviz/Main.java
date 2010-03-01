@@ -36,8 +36,17 @@ public class Main extends PApplet implements MouseWheelListener {
     float oldmouseY = 0f;
     XMLElement xml;
     Session session = new Session();
-    float MAX_ZOOM = 2.0f;
-    float MIN_ZOOM = 10.0f;
+
+    // this is the "magnification level"
+    float MACRO_UPPER = 2.0f;
+    float MACRO_LOWER = 20.0f;
+
+    float MESO_UPPER = 22.0f;
+    float MESO_LOWER = 25.0f;
+
+    float MICRO_UPPER = 27.0f;
+    float MICRO_LOWER = 30.0f;
+
     private boolean mouseDragging = false;
     private float inerX = 0.0f;
     private float inerY = 0.0f;
@@ -163,7 +172,7 @@ public class Main extends PApplet implements MouseWheelListener {
         oldmouseX = mouseX;
         oldmouseY = mouseY;
 
-        boolean generateRandomLocalGraph = false;
+        boolean generateRandomLocalGraph = true;
         boolean loadDefaultGlobalGraph = true;
 
         if (generateRandomLocalGraph) {
@@ -473,12 +482,15 @@ public class Main extends PApplet implements MouseWheelListener {
 
         translate(vizx, vizy);
 
-        if (zoomRatio > 10.0f) {
-            zoomRatio = 10.0f;
+        if (zoomRatio > MACRO_LOWER) {
+            zoomRatio = MACRO_LOWER;
+            jsSwitchToLower();
+
             //inerZ = 0.0f;
         }
-        if (zoomRatio < 3.0f) {
-            zoomRatio = 3.0f;
+        if (zoomRatio < MACRO_UPPER) {
+            zoomRatio = MACRO_UPPER;
+            jsSwitchToUpper();
             //inerZ = 0.0f;
         }
         scale(zoomRatio * (log(zoomRatio)));
@@ -734,18 +746,15 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
         if (e.getWheelRotation() > 0) {
-            if (zoomRatio >= MAX_ZOOM) {
-                inerX -= (width * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
-                inerY -= (height * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
-                jsSwitchToUpper();
-            }
+            if (zoomRatio >= MACRO_UPPER) {
+                vizx -= (width / 2.0f - mouseX) / zoomRatio * zoomSensibility * 0.01f;
+                vizy -= (height / 2.0f - mouseY) / zoomRatio * zoomSensibility * 0.01f;
+            } 
         } else {
-            if (zoomRatio <= MIN_ZOOM) {
-                inerX += (width * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
-                inerY += (height * 0.5f) * zoomSensibility * 0.01f / zoomRatio;
-            } else {
-                jsSwitchToLower();
-            }
+            if (zoomRatio <= MACRO_LOWER) {
+                vizx += (width / 2.0f - mouseX) / zoomRatio * zoomSensibility * 0.01f;
+                vizy += (height / 2.0f - mouseY) / zoomRatio * zoomSensibility * 0.01f;
+            } 
         }
 
         stepCounter = 10;
