@@ -92,11 +92,6 @@ function openConfig() {
   openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
 
 }
-
-function reloadWindow() {
-    window.location.reload();
-}
-
 /*function openDOMInspector() {
     openDialog("chrome://inspector/content/", "_blank",
                     "chrome,all,dialog=no");

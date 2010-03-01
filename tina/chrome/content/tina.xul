@@ -17,12 +17,12 @@
         width="1000"
         height="700"
         >
-  <script src="chrome://global/content/globalOverlay.js"/>
-  <script src="chrome://global/content/contentAreaUtils.js"/>
-  <script src="tina.js"/>
-  <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
+    <script src="chrome://global/content/globalOverlay.js"/>
+    <script src="chrome://global/content/contentAreaUtils.js"/>
+    <script src="tina.js"/>
+    <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 
-  <menubar>
+    <menubar>
     <!--<menu id="sessionMenu" label="&session.menu.label;" accesskey="&session.menu.accesskey;">
       <menupopup>
         <menuitem id="menu-session-new" oncommand="sessionNew()" class="menuitem-iconic"
@@ -63,8 +63,9 @@
         <menuitem id="menu-config" oncommand="openConfig()" class="menuitem-iconic"
                   label="&config.label;" accesskey="&config.accesskey;"/>
         <menuseparator/>
-        <menuitem id="menu-reload" oncommand="reloadWindow()" class="menuitem-iconic"
-                  label="&reload.label;" accesskey="&reload.accesskey;"/>
+        <menuitem id="menu-reload" oncommand="window.location.reload();" class="menuitem-iconic"
+                  label="&reload.label;" accesskey="&reload.accesskey;" key="reload_key"/>
+        <menuitem label="Close" accesskey="c" key="close_key" oncommand="window.close();"/>
         <menuitem id="pyshell_menuitem"
                   label="pyshell"
                   accesskey="p"
@@ -84,7 +85,7 @@
       </menupopup>
     </menu>
 
-  </menubar>
+    </menubar>
 
     <iframe id="tabDisplay" flex="1" src="chrome://tina/content/home.xul"/>
 
@@ -94,4 +95,9 @@
         <!--<progressmeter mode="determined" value="82"/>-->
         <spacer flex="1"/>
     </statusbar>
+    <keyset>
+        <key id="close_key" modifiers="alt" key="q" oncommand="window.close();"/>
+        <key id="reload_key" keycode="VK_F5" oncommand="window.location.reload();"/>
+    </keyset>
+
 </window>
