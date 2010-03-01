@@ -324,6 +324,8 @@ function Tinaviz() {
     
     selectToMeso: function() {
         if (applet == null) return;
+        
+        
         applet.getSession().toMesoLevel();
     },
     
@@ -463,6 +465,7 @@ function Tinaviz() {
         var gexfPath;
         if (path.search(/\\/) != -1) { gexfPath = path + "\\data\\graph\\"+filename }
         else { gexfPath = path + "/data/graph/"+filename  }
+        
         var gexfFile = 
             Components.classes["@mozilla.org/file/local;1"]
                 .createInstance(Components.interfaces.nsILocalFile);    
@@ -471,11 +474,24 @@ function Tinaviz() {
             Components.classes["@mozilla.org/network/protocol;1?name=file"]
                 .createInstance(Components.interfaces.nsIFileProtocolHandler)
                     .getURLSpecFromFile(gexfFile);   
-        console.log("loading graph: "+gexfPath);
+        console.log("loading data/graph/ graph: "+gexfPath);
         result = this.loadFromURI(uri);
     },
 
-    
+    loadAbsoluteGraph: function(filename) {
+        var gexfFile = 
+            Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);    
+        gexfFile.initWithPath(filename);
+        var uri = 
+            Components.classes["@mozilla.org/network/protocol;1?name=file"]
+                .createInstance(Components.interfaces.nsIFileProtocolHandler)
+                    .getURLSpecFromFile(gexfFile);   
+        console.log("loading absolute graph: "+uri);
+        result = this.loadFromURI(uri);
+    },
+
+
     isEnabled: function() {
         if (applet == null) {
             return false;

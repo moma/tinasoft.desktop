@@ -322,6 +322,7 @@ public class View {
                     metrics.maxRadius = node.radius;
                 }
 
+
             }
 
             //System.out.println("selectedNodeID: " + selectedNodeID);
@@ -367,6 +368,9 @@ public class View {
             }
 
         }
+
+        metrics.centerX = metrics.maxX - metrics.minX;
+        metrics.centerY = metrics.maxY - metrics.minY;
 
         hasBeenRead.set(false);
         //traverseNodes(thirdProject);

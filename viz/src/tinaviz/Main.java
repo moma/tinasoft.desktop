@@ -472,11 +472,15 @@ public class Main extends PApplet implements MouseWheelListener {
         //if (!mouseDragging) {
             // todo: make it proportionnal to the zoom level ?
             //  0.01 = sticky, 0.001 smoothie
-            inerX = (abs(inerX) <= 0.15) ? 0.0f : inerX * 0.9f;
-            inerY = (abs(inerY) <= 0.15) ? 0.0f : inerY * 0.9f;
-            inerZ = (abs(inerZ) <= 0.15) ? 0.0f : inerZ * 0.9f;
+
+            // important de les faire réduire à la même vitesse
+            inerX = (abs(inerX) <= 0.1) ? 0.0f : inerX * 0.9f;
+            inerY = (abs(inerY) <= 0.1) ? 0.0f : inerY * 0.9f;
+            inerZ = (abs(inerZ) <= 0.1) ? 0.0f : inerZ * 0.9f;
+
             vizx += inerX * 2.0f;
             vizy += inerY * 2.0f;
+            
             zoomRatio += inerZ * 0.015f;
         //}
 
@@ -485,20 +489,17 @@ public class Main extends PApplet implements MouseWheelListener {
         if (zoomRatio > MACRO_LOWER) {
             zoomRatio = MACRO_LOWER;
             jsSwitchToLower();
-
-            //inerZ = 0.0f;
         }
         if (zoomRatio < MACRO_UPPER) {
             zoomRatio = MACRO_UPPER;
             jsSwitchToUpper();
-            //inerZ = 0.0f;
         }
+
+        // TODO FIXME
         scale(zoomRatio * (log(zoomRatio)));
+
         stroke(150, 150, 150);
 
-        //if (cameraIsStopped()) {
-        //strokeWeight(3.0f);
-        //}
         strokeWeight(1);
 
         for (Node n1 : nodes) {

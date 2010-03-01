@@ -16,10 +16,13 @@
     <script type="text/javascript" src="xmlhttprequester.js"                         language="javascript"></script>
     <script type="text/javascript" src="lib/js/tenjin/shotenjin.js"                  language="javascript"></script>
     
+    
     <!-- JQUERY UI -->
     <script type="text/javascript" src="lib/js/jquery/jquery.ui.all.js"              language="javascript"></script>
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
-    
+    <script type="text/javascript"  src="lib/js/jquery/jquery.rating.pack.js"        language="javascript"></script> 
+    <link type="text/css" rel="stylesheet" href="lib/js/jquery/jquery.rating.css"/> 
+
     <!-- TINASOFT APP -->
     <script type="text/javascript" src="visualization.js"                            language="javascript"></script> 
     <link type="text/css" rel="stylesheet" href="global.css"/>
@@ -28,6 +31,14 @@
 <body style="cursor: auto;">
 <script type="text/javascript"> 
 	$(function(){
+
+            $('.hover-star').rating({
+                callback: function(value, link){
+                    // alert(value);
+                }
+            });
+
+
 		//all hover and click logic for buttons
 		$(".fg-button:not(.ui-state-disabled)")
 		.hover(
@@ -90,16 +101,15 @@
                         <p id="reviewers" class="nodedetailsp"><a href="elias.showk@iscpif.fr">Elias Showk</a>, <a href="julian.bilcke@iscpif.fr">Julian Bilcke</a></p>
                         <h3  class="nodedetailsh3">Most similar projects:</h3>
                         <p id="reviewers" class="nodedetailsp"><a href="#">TINA</a> (80%), <a href="#">TINA2</a> (10.4%)</p>
-                        <fieldset> 
-			   <label for="rate">Rate:</label> 
-			           <select name="rate" id="rate"> 
-				                <option value="5stars">*****</option> 
-				                <option value="4stars">****</option> 
-				                <option value="3stars" selected="selected">***</option> 
-				                <option value="2stars">**</option> 
-				                <option value="1stars">*</option> 
-			           </select>
-		           </fieldset> 
+                        
+                        <div> 
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="1"/> 
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="2"/> 
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="3" checked="checked"/> 
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="4"/> 
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="5"/> 
+                        </div>  
+
                     </div>
 
                     <div id="debugdiv">
