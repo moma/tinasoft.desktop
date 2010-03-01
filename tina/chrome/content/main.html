@@ -8,20 +8,22 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
     <!-- JQUERY -->
-    <script type="text/javascript" src="lib/js/jquery/jquery-1.3.js"                 language="javascript"></script>
-
-    <!-- UTILITIES -->
-    <script type="text/javascript" src="console.js"                                  language="javascript"></script>
-    <script type="text/javascript" src="prefman.js"                                  language="javascript"></script>
-    <script type="text/javascript" src="xmlhttprequester.js"                         language="javascript"></script>
-
+    <script type="text/javascript" src="lib/js/jquery/jquery-1.3.js" language="javascript"></script>
 
     <!-- JQUERY UI -->
-    <script type="text/javascript" src="lib/js/jquery/jquery.ui.all.js"              language="javascript"></script>
+    <script type="text/javascript" src="lib/js/jquery/jquery.ui.all.js" language="javascript"></script>
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
 
-    <!-- TINASOFT APP -->
-    <script type="text/javascript" src="main.js"                                     language="javascript"></script>
+    <!-- UTILITIES -->
+    <script type="text/javascript" src="console.js" language="javascript"></script>
+    <script type="text/javascript" src="prefman.js" language="javascript"></script>
+    <script type="text/javascript" src="xmlhttprequester.js" language="javascript"></script>
+
+
+    <!-- TINASOFT APP FUNCTIONS-->
+    <script type="text/javascript" src="main.js" language="javascript"></script>
+
+    <!--TINASOFT CSS -->
     <link type="text/css" rel="stylesheet" href="global.css"/>
     <link type="text/css" rel="stylesheet" href="main.css"/>
 </head>
@@ -71,36 +73,51 @@
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-0">
-                <h1>Create or import a new session</h1>
+                <h1>Import a data set</h1>
 
                 <div id="importForm">
-                    <label>Corpora file (csv)</label>
+                    <label>Data set file (csv)</label>
                     <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
-                    <label>Extraction configuration file (yaml)</label>
-                    <input id="configfile" class="field" type="file" name="configfile" value='import.yaml' /><br/>
-                    <label>Session name (or new session)</label>
+                    <!--<label>Extraction configuration file (yaml)</label>-->
+                    <input id="configfile" class="field" type="hidden" name="configfile" value='import.yaml' /><br/>
+                    <label>Data set name</label>
                     <input id="corpora" type="text" class="field" name="corpora" value='test corpora' /><br/>
-                    <label>Extraction export file path (csv)</label>
-                    <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv' /><br/>
+                    <!--<label>Extraction export file path (csv)</label>
+                    <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv' /><br/>-->
                     <!--<label>Index full-text</label>
                     <input type="checkbox" name="Check3" /><br/>-->
-                    <div id="push">
+                    <div id="importFile">
                         <button class="ui-state-default ui-corner-all" >Launch</button>
+                    </div>
+                    <div id="exportCorpora">
+                        <button class="ui-state-default ui-corner-all" >Export data set</button>
                     </div>
                 </div>
 
             </div>
             <!-- IMPORTING NGRAM WHITELIST AND CREATE GRAPH TABULATION -->
             <div id="tabs-1">
-                <h1>Import ngrams and create graph</h1>
+                <h1>Indexation and graph</h1>
                 <div class="session_select">
-                    <label>Select sessions</label>
-                    <ol id="selectable_corpora" class="selectable">
+                    <span>Select a data set and the periods you want to index</span>
+                    <ol id="selectable_corpora">
                         <!--<li class="ui-widget-content">Item 1</li>-->
                     </ol>
-                </div><!-- End demo -->
-                <div id="cooc">
-                    <button class="ui-state-default ui-corner-all" >Generate graphs</button>
+                </div>
+                <label>Ngrams white list file</label>
+                    <input id="whitelistfile" type="file" class="field"
+                    name="whitelistfile" value='' /><br/>
+                <label>User stop-ngrams file</label>
+                    <input id="userfiltersfile" type="file" class="field"
+                    name="userfiltersfile" value='' /><br/>
+                <div id="processCooc">
+                    <button class="ui-state-default ui-corner-all" >Cooccurrences</button>
+                </div>
+                <!--<div id="exportCoocMatrix">
+                    <button class="ui-state-disabled ui-corner-all" >Export matrix</button>
+                </div>-->
+                <div id="exportGraph">
+                    <button class="ui-state-disabled ui-corner-all" >Export graph</button>
                 </div>
             </div>
             
