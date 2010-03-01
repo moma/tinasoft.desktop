@@ -5,8 +5,6 @@
 
 package tinaviz.model;
 
-import java.util.HashMap;
-
 /**
  *
  * @author jbilcke
@@ -14,13 +12,10 @@ import java.util.HashMap;
 public class MesoView extends View {
 
     public boolean centerOnSelection = true;
-
-
-    public MesoView () {
-        storedNodes = new HashMap<String, tinaviz.Node>();
-        metrics = new Metrics();
+    
+    public MesoView (Graph graph) {
+        super(graph);
     }
-
 
    public void setCenterOnSelection(boolean value) {
        centerOnSelection = true;

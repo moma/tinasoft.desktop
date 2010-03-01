@@ -252,11 +252,11 @@ function Tinaviz() {
     // Public methods
     loadFromURI: function(uri) {
         if (applet == null) return;
-        applet.getView().updateFromURI(uri);
+        applet.getSession().updateFromURI(uri);
     },
     loadFromString: function(gexf) {
         if (applet == null) return;
-        applet.getView().updateFromString(gexf);
+        applet.getSession().updateFromString(gexf);
     },
     
     setGenericityRange: function(from,to) {
@@ -325,7 +325,6 @@ function Tinaviz() {
     selectToMeso: function() {
         if (applet == null) return;
         
-        
         applet.getSession().toMesoLevel();
     },
     
@@ -342,7 +341,12 @@ function Tinaviz() {
     },
     clear: function() {
         if (applet == null) return;
-        applet.getSession().clear();
+        try {
+            applet.getSession().clear();
+        } catch (e) {
+            console.log("exception: "+e);
+        
+        }
     },
 
 
@@ -478,7 +482,36 @@ function Tinaviz() {
         result = this.loadFromURI(uri);
     },
 
+     // using string technique
     loadAbsoluteGraph: function(filename) {
+    
+        var gexfPath;
+
+        console.log("going to load "+filename);
+        var file = 
+            Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+        console.log("initWithPath: "+filename);      
+        file.initWithPath(filename);
+
+        var fstream = 
+            Components.classes["@mozilla.org/network/file-input-stream;1"]
+                .createInstance(Components.interfaces.nsIFileInputStream);
+        var cstream = 
+            Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+                .createInstance(Components.interfaces.nsIConverterInputStream);
+
+        fstream.init(file, -1, 0, 0);
+        cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
+
+        var str = {};
+        cstream.readString(-1, str); // read the whole file and put it in str.value
+        cstream.close(); // this closes fstream
+        console.log("calling this.loadFromString(..):"+str.value);      
+        result = this.loadFromString(str.value);
+    },
+
+    loadAbsoluteGraphFromURI: function(filename) {
         var gexfFile = 
             Components.classes["@mozilla.org/file/local;1"]
                 .createInstance(Components.interfaces.nsILocalFile);    
@@ -490,7 +523,6 @@ function Tinaviz() {
         console.log("loading absolute graph: "+uri);
         result = this.loadFromURI(uri);
     },
-
 
     isEnabled: function() {
         if (applet == null) {

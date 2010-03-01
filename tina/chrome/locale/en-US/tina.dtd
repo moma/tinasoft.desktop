@@ -48,8 +48,8 @@
 <!ENTITY console.accesskey               "E">
 <!ENTITY config.label                    "Advanced Configuration">
 <!ENTITY config.accesskey                "C">
-<!ENTITY inspector.label                 "DOM Inspector">
-<!ENTITY inspector.accesskey             "I">
+<!ENTITY reload.label                 "Reload window">
+<!ENTITY reload.accesskey             "R">
 
 
 <!ENTITY helpMenu.label                  "Help">
@@ -57,6 +57,7 @@
 
 <!ENTITY help.label                      "Help Center">
 <!ENTITY help.accesskey                  "H">
+
 <!ENTITY updates.label                   "Software Update…">
 <!ENTITY updates.accesskey               "U">
 <!ENTITY about.label                     "About &brandShortName;">

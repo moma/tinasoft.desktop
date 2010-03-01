@@ -5,7 +5,10 @@
 package tinaviz.model;
 
 import java.awt.Color;
+import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import tinaviz.Node;
 
 //import org.w3c.dom.*;
 /**
@@ -14,17 +17,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class Session {
 
-    public MacroView macro = new MacroView();
-    public MesoView meso = new MesoView();
-    public View micro = new View();
+    public Graph graph = null;
     
+    public MacroView macro = null;
+    public MesoView meso = null;
+    public View micro = null;
+
     public ViewLevel currentLevel = ViewLevel.MACRO;
     
+    public float zoom = 3f;
+
     public Color background = new Color(12, 12, 12);
     public int fontsize = 12;
     public AtomicBoolean hasBeenRead = new AtomicBoolean(false);
 
     public Session() {
+          graph = new Graph();
+
+            macro = new MacroView(graph);
+            meso = new MesoView(graph);
+            micro = new View(graph);
     }
 
     public synchronized View getView() {
@@ -34,10 +46,7 @@ public class Session {
     }
 
     public synchronized void clear() {
-        meso.clear();
-        macro.clear();
-        micro.clear();
-        hasBeenRead.set(false);
+        graph.clear();
     }
 
     public View getMacro() {
@@ -52,17 +61,37 @@ public class Session {
         return micro;
     }
 
+    public Graph getGraph() {
+        return graph;
+    }
+
     public synchronized void toMacroLevel() {
         currentLevel = ViewLevel.MACRO;
-        hasBeenRead.set(false);
+        //hasBeenRead.set(false);
     }
     public synchronized void toMesoLevel() {
         currentLevel = ViewLevel.MESO;
-        hasBeenRead.set(false);
+        //hasBeenRead.set(false);
     }
     public synchronized void toMicroLevel() {
         currentLevel = ViewLevel.MICRO;
-        hasBeenRead.set(false);
+        //hasBeenRead.set(false);
+    }
+
+   public boolean updateFromURI(String uri) {
+        return graph.updateFromURI(uri);
+    }
+
+    public boolean updateFromString(String str) {
+        return graph.updateFromString(str);
+    }
+
+    public boolean updateFromInputStream(InputStream inputStream) {
+        return graph.updateFromInputStream(inputStream);
+    }
+
+    public boolean updateFromNodeList(List<Node> nodes) {
+        return graph.updateFromNodeList(nodes);
     }
 
     public synchronized String getLevel() {

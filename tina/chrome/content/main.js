@@ -84,18 +84,26 @@ var submitImportfile = function(event) {
 /* Tinasoft storage read acces */
 
 var listCorpora = function() {
-    console.log("inside listCorpora()");
     json=TinaService.listCorpora();
-    console.log(json);
     return( JSON.parse(json) );
 };
+
+function displayListCorpora(oldivid) {
+    var ol = $("#"+oldivid).empty();
+    var json = listCorpora();
+    for ( var i=0, len=json.length; i<len; i++ ){
+        console.log(json[i]);
+        console.log(json[i].label);
+        ol.append("<li id='"+json[i].id+"' class='ui-widget-content'>"+json[i].label+"</li>\n");
+    }
+}
 
 var getCorpus = function(corpusid) {
     return( JSON.parse( TinaService.getCorpus(corpusid) ) );
 };
 var getDocument = function(documentid) {
     console.log("doc id="+documentid);
-    
+
     return( JSON.parse( TinaService.getDocument(documentid) ) );
 };
 var getCorpora = function(corporaid) {
@@ -105,13 +113,7 @@ var getNGram = function(ngramid) {
     return( JSON.parse( TinaService.getNGram(ngramid) ) );
 };
 
-function displayListCorpora(oldivid) {
-    var ol = $("#"+oldivid).empty();
-    var json = listCorpora();
-    for ( var i=0, len=json.length; i<len; ++i ){
-        ol.append("<li id='"+json[i]['id']+"' class='ui-widget-content'>"+json[i]['label']+"</li>\n");
-    }
-}
+
 
 function getWidth() {
     var x = 0;
@@ -218,21 +220,21 @@ $(document).ready(function() {
         console.error("not implemented yet");
         //runProcessCooc(event);
     });
-    
+
     $.extend($.ui.slider.defaults, {
-			range: "min",
-			animate: true,
-			orientation: "vertical"
-	});
-		// setup master volume
-	$("#localrepulsion").slider({
-			value: 100,
-			orientation: "horizontal"
-	});
-	$("#globalrepulsion").slider({
-			value: 100,
-			orientation: "horizontal"
-	});
+            range: "min",
+            animate: true,
+            orientation: "vertical"
+    });
+        // setup master volume
+    $("#localrepulsion").slider({
+            value: 100,
+            orientation: "horizontal"
+    });
+    $("#globalrepulsion").slider({
+            value: 100,
+            orientation: "horizontal"
+    });
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");
     }, function() {

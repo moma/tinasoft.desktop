@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from tinasoft import TinaApp, ThreadPool
+from tinasoft.pytextminer import stopwords
 
 import sys
 import os
@@ -18,9 +19,9 @@ class TinasoftCallback():
     _reg_contractid_ = "Python.TinasoftCallback"
     __name__ = 'TinasoftCallback'
 
-    def callback(self, filename):
+    def callback(self, returnValue):
         _observerProxy.notifyObservers(None, 'tinasoft_finish_status', None)
-        return filename
+        return jsonpickle.encode( returnValue )
         # get Desktop directory
         #file = components.classes["@mozilla.org/file/directory_service;1"].\
         #    getService(components.interfaces.nsIProperties).\
@@ -61,19 +62,32 @@ class Tinasoft(TinaApp, ThreadPool):
         self.callback = cb.callback
 
     def runImportFile(self, *args, **kwargs):
-        _observerProxy.notifyObservers(None, 'tinasoft_running_status', str(args[3]))
+        _observerProxy.notifyObservers(None, 'tinasoft_running_status', str(args[0]))
         self.queueTask(self.importFile, args, kwargs, self.callback)
 
-    #def runImportFile(self, *args, **kwargs):
-    #    def importCallback():
-    #        self.logger.debug("End of runImportFile()")
-    #        return 1
-    #    self.logger.debug("Running asynchronous command")
-    #    t = threading.Thread(target=self.importFile,
-    #                         args=args, kwargs=kwargs)
-    #    t.setDaemon(True)
-    #    t.start()
-    #    self.logger.debug("running "+ str(t.getName()))
+    def runExportCorpora(self, *args, **kwargs):
+        _observerProxy.notifyObservers(None, 'tinasoft_running_status', str(args[0]))
+        self.logger.debug(args)
+        self.logger.debug(kwargs)
+        def task( *args, **kwargs ):
+            args[2] = self.getWhitelist( args[0] )
+            args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
+            self.exportCorpora( *args, **kwargs )
+        self.queueTask(task, args, kwargs, self.callback)
+
+    def runProcessCooc(self, *args, **kwargs):
+        _observerProxy.notifyObservers(None, 'tinasoft_running_status', str(args[0]))
+        self.logger.debug(args)
+        self.logger.debug(kwargs)
+        def task( *args, **kwargs ):
+            args[0] = self.getWhitelist( args[0] )
+            args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
+            self.processCooc( *args, **kwargs )
+        self.queueTask(task, args, kwargs, self.callback)
+
+    def runExportCoocMatrix(self): pass
+
+    def runExportGraph(self): pass
 
     def __del__(self):
         self.joinAll()

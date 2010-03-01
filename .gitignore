@@ -22,6 +22,7 @@ viz/build/*
 viz/nbproject/private/*
 viz/*.swp
 viz/*~
+tina/config.yaml
 tina/tmp/*
 tina/chrome/content/applet/tinaviz.jar
 tina/graph.pdf

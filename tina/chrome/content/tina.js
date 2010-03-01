@@ -93,10 +93,14 @@ function openConfig() {
 
 }
 
-function openDOMInspector() {
+function reloadWindow() {
+    window.location.reload();
+}
+
+/*function openDOMInspector() {
     openDialog("chrome://inspector/content/", "_blank",
                     "chrome,all,dialog=no");
-}
+}*/
 
 /**
  * Opens the update manager and checks for updates to the application.
