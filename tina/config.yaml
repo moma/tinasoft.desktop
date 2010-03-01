@@ -1,9 +1,0 @@
-# tinasoft.TinaApp configuration (YAML format)
----
-# TinaApp main params
-locale: 'en_US.UTF-8'
-storage: "tinabsddb://fetopen.test.bsddb"
-index: 'index/'
-dbenv: 'db/'
-log: 'log/tinasoft.log'
-stopwords: 'shared/stopwords/en.txt'
