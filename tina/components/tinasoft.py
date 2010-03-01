@@ -2,6 +2,8 @@
 from tinasoft import TinaApp, ThreadPool
 from tinasoft.pytextminer import stopwords
 
+import jsonpickle
+
 import sys
 import os
 from distutils import sysconfig
@@ -19,34 +21,21 @@ class TinasoftCallback():
     _reg_contractid_ = "Python.TinasoftCallback"
     __name__ = 'TinasoftCallback'
 
-    def callback(self, returnValue):
-        _observerProxy.notifyObservers(None, 'tinasoft_finish_status', None)
+    def callback(self, msg, returnValue):
+        _observerProxy.notifyObservers(None, msg, None)
         return jsonpickle.encode( returnValue )
-        # get Desktop directory
-        #file = components.classes["@mozilla.org/file/directory_service;1"].\
-        #    getService(components.interfaces.nsIProperties).\
-        #    get("Desk", components.interfaces.nsIFile)
-        #file.append(filename)
-        #ios = components.classes["@mozilla.org/network/io-service;1"].\
-        #    getService(components.interfaces.nsIIOService)
-        #URL = ios.newFileURI(filename)
-        #_logger.debug(URL)
-        #return URL
 
-        #nsIFilePicker = components.interfaces.nsIFilePicker
-        #fp = components.classes["@mozilla.org/filepicker;1"]\
-        #    .createInstance(nsIFilePicker)
-        #fp.init(window, "Save file", nsIFilePicker.modeOpen)
-        #fp.appendFilters(nsIFilePicker.filterAll)
-        #rv = fp.show()
-        #if (rv == nsIFilePicker.returnOK or rv == nsIFilePicker.returnReplace):
-        #    file = fp.file
-            #Get the path as string. Note that you usually won't
-            #need to work with the string paths.
-        #    path = fp.file.path
-        #    self.logger.debug(path)
-        #    file.append(URL)
-            #work with returned nsILocalFile...
+    def importFile( self, returnValue):
+        return self.callback( "tinasoft_runImportFile_finish_status", returnValue)
+
+    def processCooc( self, returnValue ):
+        return self.callback( "tinasoft_runprocessCooc_finish_status", returnValue)
+
+    def exportCorpora( self, returnValue ):
+        return self.callback( "tinasoft_exportCorpora_finish_status", returnValue)
+
+    def exportGraph( self, returnValue ):
+        return self.callback( "tinasoft_exportGraph_finish_status", returnValue)
 
 
 class Tinasoft(TinaApp, ThreadPool):
@@ -59,31 +48,32 @@ class Tinasoft(TinaApp, ThreadPool):
         TinaApp.__init__(self, *args, **kwargs)
         ThreadPool.__init__(self, 1)
         cb = TinasoftCallback()
-        self.callback = cb.callback
+        self.callback = cb
 
     def runImportFile(self, *args, **kwargs):
-        _observerProxy.notifyObservers(None, 'tinasoft_running_status', str(args[0]))
-        self.queueTask(self.importFile, args, kwargs, self.callback)
+        _observerProxy.notifyObservers(None, 'tinasoft_runImportFile_running_status', str(args[0]))
+        self.logger.debug(args)
+        self.queueTask( self.importFile, args, kwargs, self.callback.importFile )
 
     def runExportCorpora(self, *args, **kwargs):
-        _observerProxy.notifyObservers(None, 'tinasoft_running_status', str(args[0]))
+        _observerProxy.notifyObservers(None, 'tinasoft_runExportcorpora_running_status', str(args[0]))
         self.logger.debug(args)
-        self.logger.debug(kwargs)
         def task( *args, **kwargs ):
-            args[2] = self.getWhitelist( args[0] )
-            args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
+            # args[0] is a json serialized periods id
+            # args[1] is a corpora id
+            args[3] = self.getWhitelist( args[3] )
+            args[4] = [stopwords.StopWordFilter( "file://%s" % args[4] )]
             self.exportCorpora( *args, **kwargs )
-        self.queueTask(task, args, kwargs, self.callback)
+        self.queueTask(task, args, kwargs, self.callback.exportCorpora)
 
     def runProcessCooc(self, *args, **kwargs):
-        _observerProxy.notifyObservers(None, 'tinasoft_running_status', str(args[0]))
+        _observerProxy.notifyObservers(None, 'tinasoft_runProcessCooc_running_status', str(args[0]))
         self.logger.debug(args)
-        self.logger.debug(kwargs)
         def task( *args, **kwargs ):
             args[0] = self.getWhitelist( args[0] )
             args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
             self.processCooc( *args, **kwargs )
-        self.queueTask(task, args, kwargs, self.callback)
+        self.queueTask(task, args, kwargs, self.callback.processCooc)
 
     def runExportCoocMatrix(self): pass
 
