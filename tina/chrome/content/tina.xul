@@ -23,7 +23,7 @@
   <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
 
   <menubar>
-    <menu id="sessionMenu" label="&session.menu.label;" accesskey="&session.menu.accesskey;">
+    <!--<menu id="sessionMenu" label="&session.menu.label;" accesskey="&session.menu.accesskey;">
       <menupopup>
         <menuitem id="menu-session-new" oncommand="sessionNew()" class="menuitem-iconic"
                   label="&session.menu.new.label;" accesskey="&session.menu.new.accesskey;"/>
@@ -52,7 +52,7 @@
     <menu id="filteringMenu" label="&filtering.menu.label;" accesskey="&filtering.menu.accesskey;">
     </menu>
     <menu id="visualizationMenu" label="&visualization.menu.label;" accesskey="&visualization.menu.accesskey;">
-    </menu>
+    </menu>-->
 
     <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
       <menupopup>
@@ -63,8 +63,8 @@
         <menuitem id="menu-config" oncommand="openConfig()" class="menuitem-iconic"
                   label="&config.label;" accesskey="&config.accesskey;"/>
         <menuseparator/>
-        <menuitem id="menu-inspector" oncommand="openDOMInspector()" class="menuitem-iconic"
-                  label="&inspector.label;" accesskey="&inspector.accesskey;"/>
+        <menuitem id="menu-reload" oncommand="reloadWindow()" class="menuitem-iconic"
+                  label="&reload.label;" accesskey="&reload.accesskey;"/>
         <menuitem id="pyshell_menuitem"
                   label="pyshell"
                   accesskey="p"

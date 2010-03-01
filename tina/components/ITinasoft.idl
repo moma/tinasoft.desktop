@@ -11,20 +11,42 @@ interface ITinasoft : nsISupports {
     attribute long status;
     // Extraction task
     void runImportFile(
-        in wstring path,
+        in wstring filePath,
         in wstring configFile,
         in wstring corpora_id,
-        in wstring exportpath,
         in boolean overwrite,
         in boolean index,
-        in wstring format
+        in wstring fileFormat
     );
+    // Export an extraction session
+    void runExportCorpora(
+        in wstring periods,
+        in wstring corpora_id,
+        in wstring exportPath,
+        in wstring whitelistPath,
+        in wstring userfiltersPath
+    );
+    // import a whitelist and writes cooc matrix
+    void runProcessCooc(
+        in wstring whitelistPath,
+        in wstring corpora_id,
+        in wstring periods,
+        in wstring userfiltersPath
+    );
+    // export cooc matrix to text file
+    void runExportCoocMatrix(
+
+    );
+    // exporta gexf graph
+    void runExportGraph(
+    );
+    // database read access
     wstring listCorpora();
     wstring getCorpora(in wstring str);
     wstring getCorpus(in wstring str);
     wstring getDocument(in wstring str);
     wstring getNGram(in wstring str);
-    // Debugging : logs details of the python env
+    // logs the python env
     void pythonEnv();
 };
 
