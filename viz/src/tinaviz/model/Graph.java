@@ -28,13 +28,13 @@ public class Graph {
     public Map<String, tinaviz.Node> storedNodes = null;
     public Map<String, Object> attributes = null;
     public Metrics metrics = null;
-    public AtomicBoolean hasBeenReadbyFilter = null;
+    public AtomicBoolean hasBeenReadByFilter = null;
 
     public Graph() {
         storedNodes = new HashMap<String, tinaviz.Node>();
         attributes = new HashMap<String, Object>();
         metrics = new Metrics();
-        hasBeenReadbyFilter = new AtomicBoolean(false);
+        hasBeenReadByFilter = new AtomicBoolean(false);
     }
 
     public boolean updateFromURI(String uri) {
@@ -324,7 +324,7 @@ public class Graph {
         metrics.centerX = metrics.maxX - metrics.minX;
         metrics.centerY = metrics.maxY - metrics.minY;
 
-        hasBeenReadbyFilter.set(false);
+        hasBeenReadByFilter.set(false);
         return true;
     }
 
@@ -380,6 +380,6 @@ public class Graph {
     public void clear() {
         storedNodes.clear();
         attributes.clear();
-        hasBeenReadbyFilter.set(false);
+        hasBeenReadByFilter.set(false);
     }
 }

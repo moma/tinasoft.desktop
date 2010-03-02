@@ -28,11 +28,21 @@ import tinaviz.filters.ForceVector;
  */
 public class View {
 
-
     public boolean showLabels = true;
     public boolean showNodes = true;
     public boolean showLinks = true;
     public boolean animationPaused = false;
+    public boolean spatializeWhenMoving = false;
+    public boolean centerOnSelection = true;
+
+    public float inerX;
+    public float inerY;
+    public float inerZ;
+
+    public float camX;
+    public float camY;
+    public float camZ;
+
     public Graph graph = null;
 
     public int selection = 0;
@@ -46,6 +56,33 @@ public class View {
         this.graph = graph;
         filters = new FilterChain(graph);
         hasBeenRead = new AtomicBoolean(false);
+
+        inerX = 0f;
+        inerY = 0f;
+        inerZ = 0f;
+
+        camX = 0f;
+        camY = 0f;
+
+        camZ = 1.0f;
+
+       resetCamera();
+    }
+    public View() {
+        graph = new Graph();
+        filters = new FilterChain(graph);
+        hasBeenRead = new AtomicBoolean(false);
+
+        inerX = 0f;
+        inerY = 0f;
+        inerZ = 0f;
+
+        camX = 0f;
+        camY = 0f;
+
+        camZ = 1.0f;
+
+        resetCamera();
     }
   
     public synchronized boolean toggleLinks() {
@@ -66,6 +103,18 @@ public class View {
     public synchronized boolean togglePause() {
         animationPaused = !animationPaused;
         return animationPaused;
+    }
+
+    public String getName() {
+        return "";
+    }
+
+    public boolean cameraIsMoving() {
+        return Math.abs(inerX + inerY + inerZ) != 0.0f;
+    }
+
+    public boolean cameraIsMoving(float threshold) {
+        return Math.abs(inerX + inerY + inerZ) >= threshold;
     }
 
     public synchronized boolean createFilter(String filterName, String model) {
@@ -103,6 +152,18 @@ public class View {
         return filters.getFilter(filterName).getField(key);
     }
 
+    public void resetCamera() {
+        camX = 0;
+        camY = 0;
+        camZ = 4.0f;
+    }
+
+    public void resetCamera(float width,float height) {
+        camX = 0;
+        camY = 0;
+        camZ = 4.0f;
+    }
+    
     public void selectNodeById(String id) {
         this.selectedNodeID = id;
     }
@@ -119,4 +180,11 @@ public class View {
          }
          return null;
     }
+
+    public void clear() {
+        graph.clear();
+    }
+
+ 
+   
 }

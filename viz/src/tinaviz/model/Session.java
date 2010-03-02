@@ -17,7 +17,7 @@ import tinaviz.Node;
  */
 public class Session {
 
-    public Graph graph = null;
+    // public Graph graph = null;
     
     public MacroView macro = null;
     public MesoView meso = null;
@@ -32,21 +32,21 @@ public class Session {
     public AtomicBoolean hasBeenRead = new AtomicBoolean(false);
 
     public Session() {
-          graph = new Graph();
+          // graph = new Graph();
 
-            macro = new MacroView(graph);
-            meso = new MesoView(graph);
-            micro = new View(graph);
+            macro = new MacroView();
+            meso = new MesoView();
+            micro = new MicroView();
     }
 
-    public synchronized View getView() {
-        return (currentLevel == ViewLevel.MACRO)
-                ? macro : (currentLevel == ViewLevel.MESO)
-                ? meso : micro;
-    }
 
     public synchronized void clear() {
-        graph.clear();
+        // graph.clear();
+        
+        macro.clear();
+        meso.clear();
+        micro.clear();
+
     }
 
     public View getMacro() {
@@ -61,42 +61,46 @@ public class Session {
         return micro;
     }
 
-    public Graph getGraph() {
-        return graph;
+    public synchronized Graph getGraph() {
+        return getView().graph;
     }
 
     public synchronized void toMacroLevel() {
         currentLevel = ViewLevel.MACRO;
-        //hasBeenRead.set(false);
+        macro.hasBeenRead.set(false);
     }
     public synchronized void toMesoLevel() {
         currentLevel = ViewLevel.MESO;
-        //hasBeenRead.set(false);
+        meso.hasBeenRead.set(false);
     }
     public synchronized void toMicroLevel() {
         currentLevel = ViewLevel.MICRO;
-        //hasBeenRead.set(false);
+        micro.hasBeenRead.set(false);
     }
 
    public boolean updateFromURI(String uri) {
-        return graph.updateFromURI(uri);
+        return getGraph().updateFromURI(uri);
     }
 
     public boolean updateFromString(String str) {
-        return graph.updateFromString(str);
+        return getGraph().updateFromString(str);
     }
 
     public boolean updateFromInputStream(InputStream inputStream) {
-        return graph.updateFromInputStream(inputStream);
+        return getGraph().updateFromInputStream(inputStream);
     }
 
     public boolean updateFromNodeList(List<Node> nodes) {
-        return graph.updateFromNodeList(nodes);
+        return getGraph().updateFromNodeList(nodes);
     }
 
     public synchronized String getLevel() {
-        return (currentLevel == ViewLevel.MACRO)
-                ? "macro" : (currentLevel == ViewLevel.MESO)
-                ? "meso" : "micro";
+        return getView().getName();
     }
+        public synchronized View getView() {
+        return (currentLevel == ViewLevel.MACRO)
+                ? macro : (currentLevel == ViewLevel.MESO)
+                ? meso : micro;
+    }
+
 }

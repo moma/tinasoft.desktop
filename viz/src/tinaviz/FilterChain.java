@@ -121,10 +121,10 @@ public class FilterChain {
 
     public synchronized List<Node> getNodes() {
 
-        if (!graph.hasBeenReadbyFilter.get())
+        if (!graph.hasBeenReadByFilter.get())
             System.out.println("FilterChain 1/2 getNodes() called; graph has changed, still not filtered!");
         // if we have a new filtering task, 
-         if (!graph.hasBeenReadbyFilter.get()) {
+         if (!graph.hasBeenReadByFilter.get()) {
               System.out.println("Waiting for the end of the previous filter..");
             try {
                 //thread.interrupt();
@@ -133,7 +133,7 @@ public class FilterChain {
                 Console.error("Fatal error with thread: "+ex);
             }
             filteredNodesAreReadable.set(false);
-            graph.hasBeenReadbyFilter.set(true);
+            graph.hasBeenReadByFilter.set(true);
 
             thread = new FilterThread(this, graph.getNodeList());
             System.out.println("starting new filter..");

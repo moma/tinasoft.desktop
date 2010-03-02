@@ -111,26 +111,30 @@ function Tinaviz() {
         };
 
         // a basic GEXF template (the applet isn't very strict regarding to the GEXf version)
-        var template = '<?xml version="1.0" encoding="UTF-8"?><gexf><graph>\n\
+        var template = '<?xml version="1.0" encoding="UTF-8"?>\n\
+<gexf xmlns="http://www.gephi.org/gexf" xmlns:viz="http://www.gephi.org/gexf/viz">\n\
+        <meta lastmodifieddate="19-Feb-2010"><description>Generic Map/2002-2007</description></meta>\n\
+    <graph>\n\
         <attributes class="node">\n\
         </attributes>\n\
         <tina>\n\
         </tina>\n\
         <nodes>\n\
 <?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-          <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
-            <attvalues>\n\
-              <attvalue for="0" value="#{neighborhood[i].category}" />\n\
-            </attvalues>\n\
-          </node>\n\
+            <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
+                <attvalues>\n\
+                    <attvalue for="0" value="#{neighborhood[i].category}" />\n\
+                </attvalues>\n\
+            </node>\n\
 <?js } ?>\
         </nodes>\n\
         <edges>\n\
 <?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-          <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
+            <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
 <?js } ?>\
         </edges>\n\
-        </graph><gexf>';
+    </graph>\n\
+</gexf>';
         
   
         /* call the template engine (tenjin is really fast!)*/
@@ -138,10 +142,12 @@ function Tinaviz() {
         
         console.log(output);
        
- 
-        result = applet.getSession().getMeso().updateFromString(output);
+        console.log("calling applet.getSession().getMeso().getgraph().updateFromString(output)");
+        result = applet.getSession().getMeso().getGraph().updateFromString(output);
         if (!result) console.error(e);
         
+        // also ask to 
+
         // TODO update the DIV with data from the database
   };
 
@@ -162,7 +168,8 @@ function Tinaviz() {
         
         // we can already prepare the control layout
         $('#gui').show();
-        
+        $('#sidebariframe').hide();
+
         // finally, once the gexf is loaded, we light the tab!
         console.log("enabling applet tab..");
         parent.appletReady();
@@ -183,8 +190,6 @@ function Tinaviz() {
        jQuery.each(corpus, function(i, val) {
           console.log( i );
        });
-               
-
 
          // update the HTML form
         $('#nodedetailstitle').html("Project: "+"(none)");
@@ -210,28 +215,33 @@ function Tinaviz() {
          ]
         };
 
-        // a basic GEXF template (the applet isn't very strict regarding to the GEXf version)
-        var template = '<?xml version="1.0" encoding="UTF-8"?><gexf><graph>\n\
+
+        var template = '<?xml version="1.0" encoding="UTF-8"?>\n\
+<gexf xmlns="http://www.gephi.org/gexf" xmlns:viz="http://www.gephi.org/gexf/viz">\n\
+        <meta lastmodifieddate="19-Feb-2010"><description>Generic Map/2002-2007</description></meta>\n\
+    <graph>\n\
         <attributes class="node">\n\
         </attributes>\n\
         <tina>\n\
         </tina>\n\
         <nodes>\n\
 <?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-          <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
-            <attvalues>\n\
-              <attvalue for="0" value="#{neighborhood[i].category}" />\n\
-            </attvalues>\n\
-          </node>\n\
+            <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
+                <attvalues>\n\
+                    <attvalue for="0" value="#{neighborhood[i].category}" />\n\
+                </attvalues>\n\
+            </node>\n\
 <?js } ?>\
         </nodes>\n\
         <edges>\n\
 <?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-          <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
+            <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
 <?js } ?>\
         </edges>\n\
-        </graph><gexf>';
-        
+    </graph>\n\
+</gexf>';
+
+
   
         /* call the template engine (tenjin is really fast!)*/
         var output = Shotenjin.render(template, context);
@@ -324,7 +334,6 @@ function Tinaviz() {
     
     selectToMeso: function() {
         if (applet == null) return;
-        
         applet.getSession().toMesoLevel();
     },
     
@@ -353,6 +362,11 @@ function Tinaviz() {
     macroNodeSelected: function(x,y,id,label,tags) {
         if (applet == null) return;
         console.log("macroNodeSelected called! tags: '"+tags+"'");
+        if (id == null) {
+           $('#sidebariframe').hide();
+        } else {
+          $('#sidebariframe').show();
+        }
         if (tags=="project") {
             selectMacroProject(x,y,id,label);
         } else if (tags=="term") {
@@ -363,6 +377,11 @@ function Tinaviz() {
     mesoNodeSelected: function(x,y,id,label,tags) {
         if (applet == null) return;
         console.log("mesoNodeSelected called! tags: "+tags+"'");
+        if (id == null) {
+           $('#sidebariframe').hide();
+        } else {
+          $('#sidebariframe').show();
+        }
         if (tags=="project") {
             selectMesoProject(x,y,id,label);
         } else if (tags=="term") {
@@ -481,7 +500,38 @@ function Tinaviz() {
         console.log("loading data/graph/ graph: "+gexfPath);
         result = this.loadFromURI(uri);
     },
+     // using string technique
+    loadRelativeGraph: function(filename) {
+    
+        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+        var gexfPath;
+        if (path.search(/\\/) != -1) { gexfPath = path + "\\data\\graph\\"+filename }
+        else { gexfPath = path + "/data/graph/"+filename  }
 
+        console.log("going to load "+filename);
+        var file = 
+            Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+        console.log("initWithPath: "+gexfPath);      
+        file.initWithPath(gexfPath);
+
+        var fstream = 
+            Components.classes["@mozilla.org/network/file-input-stream;1"]
+                .createInstance(Components.interfaces.nsIFileInputStream);
+        var cstream = 
+            Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+                .createInstance(Components.interfaces.nsIConverterInputStream);
+
+        fstream.init(file, -1, 0, 0);
+        cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
+
+        var str = {};
+        cstream.readString(-1, str); // read the whole file and put it in str.value
+        cstream.close(); // this closes fstream
+        console.log("calling this.loadFromString(..):"+str.value);      
+        result = this.loadFromString(str.value);
+    },
      // using string technique
     loadAbsoluteGraph: function(filename) {
     
