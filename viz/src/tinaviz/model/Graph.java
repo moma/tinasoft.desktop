@@ -323,6 +323,8 @@ public class Graph {
 
         metrics.centerX = metrics.maxX - metrics.minX;
         metrics.centerY = metrics.maxY - metrics.minY;
+        
+        // TODO scale/normalize the graph like Gephi
 
         hasBeenReadByFilter.set(false);
         return true;

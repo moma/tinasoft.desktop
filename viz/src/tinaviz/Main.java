@@ -38,6 +38,8 @@ public class Main extends PApplet implements MouseWheelListener {
     float screenRatioGoToMesoWhenZoomed = 0.31f;
     AtomicBoolean mouseLeftDragging = new AtomicBoolean(false);
     AtomicBoolean mouseRightDragging = new AtomicBoolean(false);
+    AtomicBoolean zooming = new AtomicBoolean(false);
+    AtomicBoolean zoomIn = new AtomicBoolean(false);
     private RecordingFormat recordingMode = RecordingFormat.NONE;
     private String recordPath = "graph.pdf";
     AtomicBoolean mouseRightClicking = new AtomicBoolean(false);
@@ -52,8 +54,16 @@ public class Main extends PApplet implements MouseWheelListener {
     AtomicBoolean resetSelection = new AtomicBoolean(false);
     // Semaphore screenBufferLock = new Semaphore();
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
+    float selectedX = 0.0f;
+    float selectedY = 0.0f;
 
     private void jsNodeSelected(Node n) {
+
+        if (n != null) {
+            selectedX = n.x;
+            selectedY = n.y;
+        }
+
         if (window == null) {
             return; // in debug mode
         }
@@ -541,24 +551,29 @@ public class Main extends PApplet implements MouseWheelListener {
         //  0.01 = sticky, 0.001 smoothie
 
         // important de les faire réduire à la même vitesse
+        /*
         v.inerX = (abs(v.inerX) <= 0.14) ? 0.0f : v.inerX * 0.89f;
         v.inerY = (abs(v.inerY) <= 0.14) ? 0.0f : v.inerY * 0.89f;
         v.inerZ = (abs(v.inerZ) <= 0.14) ? 0.0f : v.inerZ * 0.89f;
+         */
 
+        /*
         v.camX += v.inerX * 2.0f;
         v.camY += v.inerY * 2.0f;
         v.camZ += v.inerZ * 0.015f;
+         * *
+         */
+
+
+        float newZ = v.camZ;
+        if (zooming.get()) {
+            newZ += (zoomIn.get()) ? 1.0f : -1.0f;
+        }
 
         switch (session.currentLevel) {
             case MACRO:
-                if (v.camZ > v.ZOOM_FLOOR) {
-                    v.camZ = v.ZOOM_FLOOR;
-                    //jsSwitchToLower();
-                }
-                if (v.camZ < v.ZOOM_CEIL) {
-                    v.camZ = v.ZOOM_CEIL;
-                    //jsSwitchToUpper();
-                }
+                v.camZ = constrain(v.camZ, v.ZOOM_CEIL, v.ZOOM_FLOOR);
+
                 break;
             case MESO:
                 if (v.camZ > v.ZOOM_FLOOR) {
@@ -578,17 +593,121 @@ public class Main extends PApplet implements MouseWheelListener {
 
         // System.out.println("camZ: "+v.camZ);
         if (session.currentLevel == ViewLevel.MESO) {
-            if (v.camZ < v.ZOOM_CEIL) {
+            if (v.camZ > v.ZOOM_CEIL) {
                 System.out.println("switch to macro!");
                 v.camZ = v.ZOOM_FLOOR + v.ZOOM_FLOOR * 0.05f;
                 jsSwitchToMacro();
             }
         }
 
-        translate(v.camX, v.camY);
-        scale(v.camZ);
 
+
+        float newX = v.camX;
+        float newY = v.camY;
+
+        if (zooming.getAndSet(false)) {
+
+            // CENTERED BUT NOT MOVING
+            /*
+            if (zoomIn.get()) {
+            newX = ((width/2.0f) / v.camZ);
+            newY = ((height/2.0f) / v.camZ);
+            System.out.println("ZOOMING IN: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
+            } else {
+            newX = ((width/2.0f) / v.camZ);
+            newY = ((height/2.0f) / v.camZ);
+            System.out.println("ZOOMING OUT: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
+            }
+             */
+
+
+
+
+
+            /* NOT TOO BAD
+            if (zoomIn.get()) {
+            if (v.camX != 0)
+            newX =   ((width/2.0f) / v.camZ) ;
+            if (v.camY != 0)
+            newY =  ((height/2.0f) / v.camZ);
+            System.out.println("ZOOMING IN: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
+            } else {
+            if (v.camX != 0)
+            newX =  ((width/2.0f) / v.camZ);
+            if (v.camY != 0)
+            newY =   ((height/2.0f) / v.camZ) ;
+            System.out.println("ZOOMING OUT: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
+            }*/
+
+            if (zoomIn.get()) {
+                System.out.println("\nZOOMING IN");
+                System.out.println("newX = (width/2.0f) - ((width/2.0f) - v.camX) * newZ;");
+                System.out.println("newX = (" + width + "/2.0f) - ((" + width + "/2.0f) - v.camX) * newZ;");
+                System.out.println("newX = (" + width + "/2.0f) - ((" + width + "/2.0f) - " + newX + ") * " + newZ + ";");
+                System.out.println("newX = (" + width / 2.0f + ") - ((" + width / 2.0f + ") - " + newX + ") * " + newZ + ";");
+                System.out.println("newX = (" + width / 2.0f + ") - (" + ( (width / 2.0f)  -  newX) + ") * " + newZ + ";");
+                System.out.println("newX = (" + width / 2.0f + ") - " + (( (width / 2.0f)  -  newX) * newZ ) + ";");
+                newX = (width / 2.0f) - ((width / 2.0f) - newX) * newZ;
+                newY = (height / 2.0f) - ((height / 2.0f) - newY) * newZ;
+
+                System.out.println("newX = " + newX + ";");
+            } else {
+                System.out.println("\nZOOMING OUT");
+                newX = (width / 2.0f) - ((width / 2.0f) - newX) * newZ;
+                newY = (height / 2.0f) - ((height / 2.0f) - newY) * newZ;
+
+            }
+
+
+            // NEARLY WORKING
+
+            //  marche presque, mais screenX retourne le résultat de l'itération précédente!
+            /*
+            if (zoomIn.get()) {
+            System.out.println("\nZOOMING IN");
+            float newXa =  (((width / 2.0f) - screenX(v.camX,v.camY)) / newZ);
+            float newYa =  (((height / 2.0f) - screenY(v.camX,v.camY)) / newZ);
+            newX =  (((width / 2.0f) - screenX(newXa,newYa)) / newZ);
+            newY =  (((height / 2.0f) - screenY(newXa,newYa)) / newZ);
+
+            System.out.println("newXa = ((("+width+") - screenX("+v.camX+","+v.camY+")) / "+newZ+");");
+            System.out.println(newXa+" = ((("+width+") - "+screenX(v.camX,v.camY)+" / "+newZ+");");
+            System.out.println("newX = ((("+width+") - screenX("+newXa+","+newYa+")) / "+newZ+");");
+            System.out.println(newX+" = ((("+width+") - "+screenX(newXa,newYa)+" / "+newZ+");");
+            }
+             */
+            /*
+            if (zoomIn.get()) {
+            System.out.println("\nZOOMING IN");
+            newX =  (((width) - v.camX) / newZ);
+            newY =  (((height) - v.camY) / newZ);
+            System.out.println(newX +" = ((("+width+") "+(-v.camX)+") / "+newZ+");");
+
+             */
+            /*else {
+            newX = - newX - ((width/2.0f) / v.camZ);
+            newY = - newY - ((height/2.0f) / v.camZ);
+            System.out.println("ZOOMING OUT: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
+            }*/
+
+
+        }
+        scale(newZ);
+        translate(newX, newY);
+
+
+        v.camX = newX;
+        v.camY = newY;
+        v.camZ = newZ;
+
+        fill(255, 0, 0);
+        ellipse(0, 0, 2, 2);
+        fill(0, 0, 255);
+        ellipse(v.camX, v.camY, 2, 2);
+        fill(0, 255, 0);
+        ellipse(mouseX, mouseY, 2, 2);
         stroke(150, 150, 150);
+
 
         strokeWeight(1);
 
@@ -764,15 +883,15 @@ public class Main extends PApplet implements MouseWheelListener {
                         }
                     }
                 } else if (_mouseLeftDrag) {
-                     if (screenX(n.x - n.radius*1.5f, n.y - n.radius*1.5f) < mouseX && mouseX < screenX(n.x + n.radius*1.5f, n.y + n.radius*1.5f)
-                            && screenY(n.x - n.radius*1.5f, n.y - n.radius*1.5f) < mouseY && mouseY < screenY(n.x + n.radius*1.5f, n.y + n.radius*1.5f)) {
+                    if (screenX(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseX && mouseX < screenX(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)
+                            && screenY(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseY && mouseY < screenY(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)) {
                         //if (distance <= n.radius * zoomRatio) {
                         // fill(200);
                         // mouseClick = false;
                         System.out.println("clicked on node " + n.uuid);
 
                         n.selected = true;
-                     }
+                    }
                 }
 
                 /*
@@ -845,6 +964,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             }
         }
+
     }
 
     public synchronized boolean takePicture(String path) {
@@ -945,7 +1065,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
              */
         }
-
+        System.out.println("TRANSLATING OUT: z=" + v.camZ + " X=" + v.camX + " Y=" + v.camY);
         oldmouseX = mouseX;
         oldmouseY = mouseY;
     }
@@ -961,50 +1081,37 @@ public class Main extends PApplet implements MouseWheelListener {
         oldmouseY = mouseY;
     }
 
-    public void zoom(float steps) {
-        float zoomSensibility = 0.5f;
-
-        View v = session.getView();
-        //float zoomRatio = session.getView().zoomRatio;
-
-        if (v.camZ != 0) {
-            v.inerZ += steps * zoomSensibility / (1.0f / v.camZ);
-        }
-
-        if (steps > 0) {
-
-            //if (v.camZ >= MACRO_UPPER) {
-            v.camX -= (width / 2.0f - mouseX) / v.camZ * zoomSensibility * 0.01f;
-            v.camY -= (height / 2.0f - mouseY) / v.camZ * zoomSensibility * 0.01f;
-            //}
-
-        } else {
-            // if (v.camZ <= MACRO_LOWER) {
-            v.camX += (width / 2.0f - mouseX) / v.camZ * zoomSensibility * 0.01f;
-            v.camY += (height / 2.0f - mouseY) / v.camZ * zoomSensibility * 0.01f;
-            //}
-        }
-
-    }
-
     public void mouseWheelMoved(MouseWheelEvent e) {
-        zoom(-(float) e.getWheelRotation());
-
+        zooming.set(true);
+        zoomIn.set(e.getWheelRotation() < 0);
     }
 
     @Override
     public void keyPressed() {
-        if (key == 'p') {
-            zoom(+1);
+        View v = session.getView();
+        if (key == CODED) {
+            if (keyCode == UP) {
+                v.camY += 10f;
+            } else if (keyCode == DOWN) {
+                v.camY -= 10f;
+            } else if (keyCode == LEFT) {
+                v.camX += 10f;
+            } else if (keyCode == RIGHT) {
+                v.camX -= 10f;
+            }
+        } else if (key == 'p') {
+            zooming.set(true);
+            zoomIn.set(true);
         } else if (key == 'm') {
-            zoom(-1);
+            zooming.set(true);
+            zoomIn.set(false);
         } else if (key == 'o') {
-            if ((session.getView().attraction + 0.00001) < 0.0003) {
-                session.getView().attraction += 0.00001f;
+            if ((v.attraction + 0.00001) < 0.0003) {
+                v.attraction += 0.00001f;
             }
         } else if (key == 'l') {
-            if ((session.getView().attraction - 0.00001f) > 1.1e-5) {
-                session.getView().attraction -= 0.00001f;
+            if ((v.attraction - 0.00001f) > 1.1e-5) {
+                v.attraction -= 0.00001f;
             }
         }
         /*
