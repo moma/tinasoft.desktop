@@ -1,5 +1,4 @@
 function Tinaviz() {
-  // Private variable
   var wrapper = null;
   var applet = null;
   var width = null;
@@ -7,12 +6,6 @@ function Tinaviz() {
   var categoryFilter = "keepCategoryFilter";
   var categoryFilterSwitch = "including";
   
-  // Private method
-  var privateMethod = function(){
-    // Access to private fields
-    //name += " Changed";
-  };
-
   var selectMacroProject = function(x,y,id,label) {
      if (applet == null) return;
      console.log("selectMacroProject called!");
@@ -50,7 +43,6 @@ function Tinaviz() {
         $('#nodedetailstitle').html("Term: "+label);
         $('#abstract').html("");
        }
- 
  
   };
 
@@ -147,10 +139,8 @@ function Tinaviz() {
         if (!result) console.error(e);
         
         // also ask to 
-
         // TODO update the DIV with data from the database
   };
-
 
   return {
     init: function() {
@@ -177,11 +167,6 @@ function Tinaviz() {
     },
     
     setup: function() {
-    
-            // configure the global graph
-
-       
-        
         var corpus = parent.getCorpus("2"); 
         if (corpus == null) {
           console.log("get corpus failed"); 
@@ -194,7 +179,6 @@ function Tinaviz() {
          // update the HTML form
         $('#nodedetailstitle').html("Project: "+"(none)");
         $('#abstract').html("Document abstract");
-
 
         // TODO pass the ID to the elishowk API
         var context = {
@@ -242,12 +226,10 @@ function Tinaviz() {
 </gexf>';
 
 
-  
         /* call the template engine (tenjin is really fast!)*/
         var output = Shotenjin.render(template, context);
         
         console.log(output);
-       
 
     },
     
@@ -308,40 +290,21 @@ function Tinaviz() {
         applet.filterConfig(categoryFilter, "mask", "term");
     },
     
-    
-    // TODO FIXME EVIL HACK
+
     toMacro: function() {
-        if (applet == null) return;
-        parent.selectMacro();
-    },
-    
-    toMeso: function() {
-        if (applet == null) return;
-        parent.selectMeso();
-    },
-    
-    toMicro: function() {
-        if (applet == null) return;
-        parent.selectMicro();
-    },
-       
-       
-    // TODO FIXME EVIL HACK   
-    selectToMacro: function() {
         if (applet == null) return;
         applet.getSession().toMacroLevel();
     },
     
-    selectToMeso: function() {
+    toMeso: function() {
         if (applet == null) return;
         applet.getSession().toMesoLevel();
     },
     
-    selectToMicro: function() {
+    toMicro: function() {
         if (applet == null) return;
         applet.getSession().toMicroLevel();
     },
-    
     
     
     unselect: function() {
@@ -359,34 +322,27 @@ function Tinaviz() {
     },
 
 
-    macroNodeSelected: function(x,y,id,label,tags) {
+    nodeSelected: function(level,x,y,id,label,attr) {
         if (applet == null) return;
-        console.log("macroNodeSelected called! tags: '"+tags+"'");
-        if (id == null) {
-           $('#sidebariframe').hide();
-        } else {
-          $('#sidebariframe').show();
-        }
-        if (tags=="project") {
-            selectMacroProject(x,y,id,label);
-        } else if (tags=="term") {
-            selectMacroTerm(x,y,id,label);
-	    }
-    },
 
-    mesoNodeSelected: function(x,y,id,label,tags) {
-        if (applet == null) return;
-        console.log("mesoNodeSelected called! tags: "+tags+"'");
-        if (id == null) {
-           $('#sidebariframe').hide();
-        } else {
-          $('#sidebariframe').show();
-        }
-        if (tags=="project") {
-            selectMesoProject(x,y,id,label);
-        } else if (tags=="term") {
-            selectMesoTerm(x,y,id,label);
-	    }
+        console.log("nodeSelected called! attributes: '"+attr+"'");
+
+        if (id == null) { $('#sidebariframe').hide(); } 
+        else            { $('#sidebariframe').show(); }
+
+        if (level == "macro") {
+		if (tags=="project") {
+			selectMacroProject(x,y,id,label);
+		} else if (tags=="term") {
+			selectMacroTerm(x,y,id,label);
+		}
+        } else if (level == "meso") {
+		if (tags=="project") {
+			selectMesoProject(x,y,id,label);
+		} else if (tags=="term") {
+			selectMesoTerm(x,y,id,label);
+		}
+	}
     },
 
     takePDFPicture: function () {

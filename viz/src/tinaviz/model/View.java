@@ -32,7 +32,7 @@ public class View {
     public boolean showNodes = true;
     public boolean showLinks = true;
     public boolean animationPaused = false;
-    public boolean spatializeWhenMoving = false;
+    public boolean spatializeWhenMoving = true;
     public boolean centerOnSelection = true;
 
     public float inerX;
@@ -42,6 +42,12 @@ public class View {
     public float camX;
     public float camY;
     public float camZ;
+
+    public float ZOOM_CEIL = 2.0f;
+    public float ZOOM_FLOOR = 80.0f;
+
+    public float repulsion;
+    public float attraction;
 
     public Graph graph = null;
 
@@ -66,6 +72,9 @@ public class View {
 
         camZ = 1.0f;
 
+        repulsion = 0.01f;
+        attraction = 0.0001f;
+
        resetCamera();
     }
     public View() {
@@ -81,6 +90,9 @@ public class View {
         camY = 0f;
 
         camZ = 1.0f;
+
+        repulsion = 0.01f;
+        attraction = 0.0001f;
 
         resetCamera();
     }
