@@ -16,12 +16,16 @@ import netscape.javascript.*;
 
 public class Main extends PApplet implements MouseWheelListener {
 
+    public PVector ref = new PVector();
+    public PVector drawerTranslation = new PVector();
+    public PVector drawerLastPosition = new PVector();
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
     PImage nodeIcon;
     PFont font;
+    /*lastMove.set(trans);
     float oldmouseX = 0f;
-    float oldmouseY = 0f;
+    float oldmouseY = 0f;*/
     XMLElement xml;
     Session session = new Session();
     // this is the "magnification level"
@@ -42,7 +46,7 @@ public class Main extends PApplet implements MouseWheelListener {
     AtomicBoolean zoomIn = new AtomicBoolean(false);
     private RecordingFormat recordingMode = RecordingFormat.NONE;
     private String recordPath = "graph.pdf";
-    AtomicBoolean mouseRightClicking = new AtomicBoolean(false);
+    AtomicBoolean mouseClickLeft = new AtomicBoolean(false);
     AtomicBoolean mouseClickRight = new AtomicBoolean(false);
     private int preSpatialize = 10;
     public static JSObject window = null;
@@ -78,27 +82,25 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     private void jsSwitchToMacro() {
-        if (window == null) {
-            return; // in debug mode
-        }
         session.toMacroLevel();
-        window.eval("switchedTo('macro');");
+        if (window != null) {
+            window.eval("switchedTo('macro');");
+        }
+
     }
 
     private void jsSwitchToMeso() {
-        if (window == null) {
-            return; // in debug mode
-        }
         session.toMesoLevel();
-        window.eval("switchedTo('meso');");
+        if (window != null) {
+            window.eval("switchedTo('meso');");
+        }
     }
 
     private void jsSwitchToMicro() {
-        if (window == null) {
-            return; // in debug mode
-        }
         session.toMicroLevel();
-        window.eval("switchedTo('micro');");
+        if (window != null) {
+            window.eval("switchedTo('micro');");
+        }
     }
 
     private void jsSwitchToUpper() {
@@ -177,8 +179,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
         // currentView.showLabels = false;
-        oldmouseX = mouseX;
-        oldmouseY = mouseY;
+
 
         boolean generateRandomLocalGraph = true;
         boolean loadDefaultLocalGraph = false;
@@ -243,7 +244,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf");
-                    "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf");
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf");
 
             /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
             + "/tinasoft.desktop/tina/chrome/content/applet/data/"
@@ -433,7 +434,8 @@ public class Main extends PApplet implements MouseWheelListener {
         pdf.text("A cool project subtitle", 18f, 70f);
         pdf.fill(120);
 
-        genericDrawer(net, pdf, w, h, net.camX, net.camY);
+        genericDrawer(net, pdf, w, h);
+
         pdf.dispose();
         pdf.endDraw();
     }
@@ -458,65 +460,15 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.text("A cool project subtitle", 18f, 70f);
         pg.fill(120);
 
-        genericDrawer(net, pg, w, h, net.camX, net.camY);
+        genericDrawer(net, pg, w, h);
         pg.endDraw();
         pg.save(recordPath);
     }
 
-    public void genericDrawer(View net, PGraphics pg, int w, int h, float vizx, float vizy) {
-
-
-        //////////// POSITION ////////////////////////////////
-        pg.translate(vizx, vizy);
-        pg.scale(zoomRatio);
-
-        pg.stroke(150, 150, 150);
-        pg.fill(120);
-        pg.strokeWeight(1.0f);
-
-        for (Node n1 : nodes) {
-            for (Node n2 : nodes) {
-                if (n1 == n2) {
-                    continue;
-                }
-
-                if (n1.neighbours.contains(n2)) {
-                    // AFFICHAGE LIEN (A CHANGER)
-                    float rpond = ((n1.radius + n2.radius) * 0.5f);
-                    int rgb = (int) ((255.0f / (net.getGraph().metrics.maxRadius - net.getGraph().metrics.minRadius)) * rpond);
-                    // old: 150
-                    pg.stroke(rgb);
-                    pg.strokeWeight(((n1.radius + n2.radius) * 0.05f));
-                    pg.line(n1.x, n1.y, n2.x, n2.y);
-                    // arrow(pg, n2.x, n2.y, n1.x, n1.y, n1.radius);
-
-                }
-
-            } // FOR NODE B
-        }   // FOr NODE A
-
-        pg.stroke(20, 20, 20);
-        pg.fill(218, 219, 220);
-        pg.strokeWeight(1.2f);
-
-        for (Node n : nodes) {
-
-            pg.ellipse(n.x, n.y, n.radius, n.radius);
-
-            pg.fill(120);
-            //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
-            pg.textSize(n.radius * 0.08f);
-
-            pg.fill(150);//old: 110
-            pg.text(n.label, n.x + n.radius,
-                    n.y + (n.radius / 2.50f));
-        }
-
+    public void genericDrawer(View net, PGraphics pg, int w, int h) {
     }
 
     public void drawAndSpatializeRealtime(View v) {
-
-
         float len = 1f;
         float vx = 1f;
         float vy = 1f;
@@ -524,16 +476,11 @@ public class Main extends PApplet implements MouseWheelListener {
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
-
         boolean _resetSelection = this.resetSelection.getAndSet(false);
-        boolean _mouseLeftClick = this.mouseRightClicking.getAndSet(false);
+        boolean _mouseLeftClick = this.mouseClickLeft.getAndSet(false);
         boolean _mouseLeftDrag = this.mouseLeftDragging.get();
 
-
-
         background(255);
-        stroke(0);
-        fill(120);
 
         if (false) {
             fill(30);
@@ -544,218 +491,100 @@ public class Main extends PApplet implements MouseWheelListener {
             textSize(18);
             text("A cool project subtitle", 18f, 70f);
             fill(120);
+        } else {
+            fill(120);
         }
-
-        //if (!mouseDragging) {
-        // todo: make it proportionnal to the zoom level ?
-        //  0.01 = sticky, 0.001 smoothie
-
-        // important de les faire réduire à la même vitesse
-        /*
-        v.inerX = (abs(v.inerX) <= 0.14) ? 0.0f : v.inerX * 0.89f;
-        v.inerY = (abs(v.inerY) <= 0.14) ? 0.0f : v.inerY * 0.89f;
-        v.inerZ = (abs(v.inerZ) <= 0.14) ? 0.0f : v.inerZ * 0.89f;
-         */
-
-        /*
-        v.camX += v.inerX * 2.0f;
-        v.camY += v.inerY * 2.0f;
-        v.camZ += v.inerZ * 0.015f;
-         * *
-         */
+        stroke(150, 150, 150);
+        strokeWeight(1);
 
 
-        float newZ = v.camZ;
-        if (zooming.get()) {
-            newZ += (zoomIn.get()) ? 1.0f : -1.0f;
+
+
+        if (zooming.getAndSet(false)) {
+            if (zoomIn.get()) {
+                v.sceneScale *= 2.0;
+                System.out.println("\nZOOMING IN. NEW SCALE: " + v.sceneScale);
+            } else {
+                v.sceneScale *= 0.5;
+                System.out.println("\nZOOMING OUT. NEW SCALE: " + v.sceneScale);
+            }
         }
 
         switch (session.currentLevel) {
             case MACRO:
-                v.camZ = constrain(v.camZ, v.ZOOM_CEIL, v.ZOOM_FLOOR);
-
                 break;
             case MESO:
-                if (v.camZ > v.ZOOM_FLOOR) {
-                    v.camZ = v.ZOOM_FLOOR;
-                    //jsSwitchToLower();
+                if (v.sceneScale > v.ZOOM_FLOOR) {
+                    v.sceneScale = v.ZOOM_FLOOR;
+                    System.out.println("switch in to micro");
                 }
-                if (v.camZ < v.ZOOM_CEIL) {
-                    // view.camZ = MACRO_UPPER;
-                    // reset the cam
-                    session.toMacroLevel();
-                    v.camZ = v.ZOOM_FLOOR + v.ZOOM_FLOOR * 0.05f;
-
+                if (v.sceneScale < v.ZOOM_CEIL) {
+                    System.out.println("switch out to macro");
+                    session.getMacro().sceneScale = session.getMacro().ZOOM_FLOOR - session.getMacro().ZOOM_FLOOR * 0.5f;
                     jsSwitchToMacro();
                 }
                 break;
         }
 
-        // System.out.println("camZ: "+v.camZ);
-        if (session.currentLevel == ViewLevel.MESO) {
-            if (v.camZ > v.ZOOM_CEIL) {
-                System.out.println("switch to macro!");
-                v.camZ = v.ZOOM_FLOOR + v.ZOOM_FLOOR * 0.05f;
-                jsSwitchToMacro();
-            }
-        }
 
 
+        v.inerX = (abs(v.inerX) <= 0.14) ? 0.0f : v.inerX * 0.89f;
+        v.inerY = (abs(v.inerY) <= 0.14) ? 0.0f : v.inerY * 0.89f;
+        v.inerZ = (abs(v.inerZ) <= 0.14) ? 0.0f : v.inerZ * 0.89f;
 
-        float newX = v.camX;
-        float newY = v.camY;
+        // add some physics (will have the same effect than mouse/keyboard actions)
+        v.translation.add(v.inerX * 2.0f, v.inerY * 2.0f, 0);
+        v.sceneScale += v.inerZ * 0.015f;
 
-        if (zooming.getAndSet(false)) {
+        // user zoom
+        PVector center = new PVector(width / 2f, height / 2f);
+        PVector scaledCenter = PVector.mult(center, v.sceneScale);
+        PVector scaledTrans = PVector.sub(center, scaledCenter);
+        translate(scaledTrans.x, scaledTrans.y);
 
-            // CENTERED BUT NOT MOVING
-            /*
-            if (zoomIn.get()) {
-            newX = ((width/2.0f) / v.camZ);
-            newY = ((height/2.0f) / v.camZ);
-            System.out.println("ZOOMING IN: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
-            } else {
-            newX = ((width/2.0f) / v.camZ);
-            newY = ((height/2.0f) / v.camZ);
-            System.out.println("ZOOMING OUT: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
-            }
-             */
-
-
-
-
-
-            /* NOT TOO BAD
-            if (zoomIn.get()) {
-            if (v.camX != 0)
-            newX =   ((width/2.0f) / v.camZ) ;
-            if (v.camY != 0)
-            newY =  ((height/2.0f) / v.camZ);
-            System.out.println("ZOOMING IN: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
-            } else {
-            if (v.camX != 0)
-            newX =  ((width/2.0f) / v.camZ);
-            if (v.camY != 0)
-            newY =   ((height/2.0f) / v.camZ) ;
-            System.out.println("ZOOMING OUT: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
-            }*/
-
-            if (zoomIn.get()) {
-                System.out.println("\nZOOMING IN");
-                System.out.println("newX = (width/2.0f) - ((width/2.0f) - v.camX) * newZ;");
-                System.out.println("newX = (" + width + "/2.0f) - ((" + width + "/2.0f) - v.camX) * newZ;");
-                System.out.println("newX = (" + width + "/2.0f) - ((" + width + "/2.0f) - " + newX + ") * " + newZ + ";");
-                System.out.println("newX = (" + width / 2.0f + ") - ((" + width / 2.0f + ") - " + newX + ") * " + newZ + ";");
-                System.out.println("newX = (" + width / 2.0f + ") - (" + ( (width / 2.0f)  -  newX) + ") * " + newZ + ";");
-                System.out.println("newX = (" + width / 2.0f + ") - " + (( (width / 2.0f)  -  newX) * newZ ) + ";");
-                newX = (width / 2.0f) - ((width / 2.0f) - newX) * newZ;
-                newY = (height / 2.0f) - ((height / 2.0f) - newY) * newZ;
-
-                System.out.println("newX = " + newX + ";");
-            } else {
-                System.out.println("\nZOOMING OUT");
-                newX = (width / 2.0f) - ((width / 2.0f) - newX) * newZ;
-                newY = (height / 2.0f) - ((height / 2.0f) - newY) * newZ;
-
-            }
-
-
-            // NEARLY WORKING
-
-            //  marche presque, mais screenX retourne le résultat de l'itération précédente!
-            /*
-            if (zoomIn.get()) {
-            System.out.println("\nZOOMING IN");
-            float newXa =  (((width / 2.0f) - screenX(v.camX,v.camY)) / newZ);
-            float newYa =  (((height / 2.0f) - screenY(v.camX,v.camY)) / newZ);
-            newX =  (((width / 2.0f) - screenX(newXa,newYa)) / newZ);
-            newY =  (((height / 2.0f) - screenY(newXa,newYa)) / newZ);
-
-            System.out.println("newXa = ((("+width+") - screenX("+v.camX+","+v.camY+")) / "+newZ+");");
-            System.out.println(newXa+" = ((("+width+") - "+screenX(v.camX,v.camY)+" / "+newZ+");");
-            System.out.println("newX = ((("+width+") - screenX("+newXa+","+newYa+")) / "+newZ+");");
-            System.out.println(newX+" = ((("+width+") - "+screenX(newXa,newYa)+" / "+newZ+");");
-            }
-             */
-            /*
-            if (zoomIn.get()) {
-            System.out.println("\nZOOMING IN");
-            newX =  (((width) - v.camX) / newZ);
-            newY =  (((height) - v.camY) / newZ);
-            System.out.println(newX +" = ((("+width+") "+(-v.camX)+") / "+newZ+");");
-
-             */
-            /*else {
-            newX = - newX - ((width/2.0f) / v.camZ);
-            newY = - newY - ((height/2.0f) / v.camZ);
-            System.out.println("ZOOMING OUT: newScale=" + v.camZ + " newX=" + newX + " newY=" + newY);
-            }*/
-
-
-        }
-        scale(newZ);
-        translate(newX, newY);
-
-
-        v.camX = newX;
-        v.camY = newY;
-        v.camZ = newZ;
-
-        fill(255, 0, 0);
-        ellipse(0, 0, 2, 2);
-        fill(0, 0, 255);
-        ellipse(v.camX, v.camY, 2, 2);
-        fill(0, 255, 0);
-        ellipse(mouseX, mouseY, 2, 2);
-        stroke(150, 150, 150);
-
-
-        strokeWeight(1);
+        // finally, push to the matrix
+        scale(v.sceneScale);
+        translate(v.translation.x, v.translation.y);
 
         for (Node n1 : nodes) {
             if (_resetSelection) {
                 n1.selected = false;
             }
-
             for (Node n2 : nodes) {
                 if (n1 == n2) {
                     continue;
                 }
-
-                //if (!v.cameraIsMoving()) {
                 vx = n2.x - n1.x;
                 vy = n2.y - n1.y;
                 len = sqrt(sq(vx) + sq(vy));
-                // }
+
 
                 if (n1.neighbours.contains(n2)) {
 
-                    // ATTRACTION
-                    //if (!mouseDragging) {
-                    //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
                     if (!v.animationPaused) {
+
+                        // take node ponderation into account
+                        if (n1.weights.containsKey(n2.uuid)) {
+                            len *= (n1.weights.get(n2.uuid));
+                        }
+
                         n1.vx += (vx * len) * attraction;
                         n1.vy += (vy * len) * attraction;
                         n2.vx -= (vx * len) * attraction;
                         n2.vy -= (vy * len) * attraction;
                     }
-                    //}
-                    //}
-                    // AFFICHAGE LIEN (A CHANGER)
+
                     if (!v.animationPaused) {
                         strokeWeight(1.0f);
                     }
 
                     if (v.showLinks) {
-
-
                         boolean doubleLink = false;
 
                         if (n2.neighbours.contains(n1)) {
                             doubleLink = true;
-
                         }
                         if (!doubleLink | n1.uuid.compareTo(n2.uuid) <= 0) {
-
                             if (doubleLink) {
                                 if (n1.selected && n2.selected) {
                                     stroke(50);
@@ -826,19 +655,16 @@ public class Main extends PApplet implements MouseWheelListener {
             n.vx = 0.0f;
             n.vy = 0.0f;
 
+
+            /*************************************************************************
+             *  SCREEN-BASED SELECTION, WHEN THE NODE IS IN THE CENTER OF THE SCREEN *
+             *************************************************************************/
             float nodeLeftMargin = screenX(n.x - n.radius, n.y - n.radius);
             float nodeTopMargin = screenY(n.x - n.radius, n.y - n.radius);
             float nodeRightMargin = screenX(n.x + n.radius, n.y + n.radius);
             float nodeBottomMargin = screenY(n.x + n.radius, n.y + n.radius);
-            /*
-            int rgb = (int) ((n.radius / (view.getGraph().metrics.maxRadius - view.getGraph().metrics.minRadius)) * 255.0f);
-            float distance = dist(
-            screenX(n.x, n.y),
-            screenY(n.x, n.y),
-            mouseX,
-            mouseY);*/
-            // temporary boolean used locally for the node selection
-            boolean hasBeenSelectedAlready = false;
+
+            boolean massSelectionHasBegin = false;
             if (session.currentLevel == ViewLevel.MACRO
                     && nodeLeftMargin < (width * screenRatioSelectNodeWhenZoomed)
                     && nodeTopMargin < (height * screenRatioSelectNodeWhenZoomed)
@@ -846,8 +672,8 @@ public class Main extends PApplet implements MouseWheelListener {
                     && nodeBottomMargin > (height - height * screenRatioSelectNodeWhenZoomed)) {
                 // System.out.println("In macro view, got '"+n.label+"' in front of our screen!");
                 if (!n.selected) {
-                    n.selected = true;
-                    hasBeenSelectedAlready = true;
+                    session.selectNode(n);
+                    massSelectionHasBegin = true;
                     jsNodeSelected(n);
                 }
             } else if (session.currentLevel == ViewLevel.MACRO
@@ -857,49 +683,84 @@ public class Main extends PApplet implements MouseWheelListener {
                     && nodeBottomMargin > (height - height * screenRatioGoToMesoWhenZoomed)) {
                 // System.out.println("In macro view, got '"+n.label+"' in front of our screen!");
                 if (!n.selected) {
-                    n.selected = true;
-                    hasBeenSelectedAlready = true;
+                    session.selectNode(n);
+                    massSelectionHasBegin = true;
                     jsNodeSelected(n);
                 }
+                System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
+                session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
                 jsSwitchToMeso();
             }
 
-            if (v.showNodes) {
-                if (_mouseLeftClick) {
-                    if (screenX(n.x - n.radius, n.y - n.radius) < mouseX && mouseX < screenX(n.x + n.radius, n.y + n.radius)
-                            && screenY(n.x - n.radius, n.y - n.radius) < mouseY && mouseY < screenY(n.x + n.radius, n.y + n.radius)) {
-                        //if (distance <= n.radius * zoomRatio) {
-                        // fill(200);
-                        // mouseClick = false;
-                        System.out.println("clicked on node " + n.uuid);
 
-                        n.selected = !n.selected;
+            /*******************************************************************************
+             *  MOUSE-BASED SELECTION, WHEN THE MOUSE CLICK OR DOUBLE-CLICK, LEFT OR RIGHT *
+             *******************************************************************************/
+            if (_mouseLeftClick) {
+                if (screenX(n.x - n.radius, n.y - n.radius) < mouseX && mouseX < screenX(n.x + n.radius, n.y + n.radius)
+                        && screenY(n.x - n.radius, n.y - n.radius) < mouseY && mouseY < screenY(n.x + n.radius, n.y + n.radius)) {
+                    //if (distance <= n.radius * zoomRatio) {
+                    // fill(200);
+                    // mouseClick = false;
+
+                    if (mouseEvent != null && mouseEvent.getClickCount() == 2) {
+                        mouseEvent.consume();
+                        System.out.println("double-clicked on node " + n.uuid);
+
+                        if (!n.selected) {
+                            session.selectNode(n);
+                            massSelectionHasBegin = true;
+                            jsNodeSelected(n);
+                            
+                        }
+
+                        if (session.currentLevel == ViewLevel.MACRO) {
+                            System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
+
+                            session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
+                            jsSwitchToMeso();
+                        } else if (session.currentLevel == ViewLevel.MESO) {
+                            System.out.println("SWITCH TO MICRO WITH THE DOUBLE CLICK METHOD");
+                            //session.getMicro().sceneScale = session.getMicro().ZOOM_CEIL + session.getMicro().ZOOM_CEIL * 0.5f;
+                            //jsSwitchToMicro();
+                        }
+                    } else {
+
+                        System.out.println("clicked on node " + n.uuid);
 
                         // deselect the node
-                        if (!n.selected) {
+                        if (n.selected) {
+                            session.unselectNode(n);
                             jsNodeSelected(null);
-                        } else if (n.selected && !hasBeenSelectedAlready) {
+                        } else if (!massSelectionHasBegin) {
+                            massSelectionHasBegin = true;
+                            session.selectNode(n);
                             jsNodeSelected(n);
+
                         }
                     }
-                } else if (_mouseLeftDrag) {
-                    if (screenX(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseX && mouseX < screenX(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)
-                            && screenY(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseY && mouseY < screenY(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)) {
-                        //if (distance <= n.radius * zoomRatio) {
-                        // fill(200);
-                        // mouseClick = false;
-                        System.out.println("clicked on node " + n.uuid);
 
-                        n.selected = true;
+
+                }
+            } else if (_mouseLeftDrag) {
+                if (screenX(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseX && mouseX < screenX(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)
+                        && screenY(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseY && mouseY < screenY(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)) {
+                    System.out.println("clicked on node " + n.uuid);
+                    n.selected = true;
+                    if (!massSelectionHasBegin) {
+                        massSelectionHasBegin = true;
+                        jsNodeSelected(n);
+
                     }
                 }
+            }
 
-                /*
-                if (n.label.startsWith(currentTextSearch)) {
-                fill(200, 100, 100);
-                strokeWeight(1.8f);
-                } else {*/
 
+
+            /****************************
+             *  PROCESSING DRAWING CODE *
+             ****************************/
+            if (v.showNodes) {
                 strokeWeight(1.0f);
                 noStroke();
 
@@ -946,8 +807,6 @@ public class Main extends PApplet implements MouseWheelListener {
                     rect(n.x, n.y, n.radius, n.radius);
                     rectMode(CORNER);
                 }
-
-
             }
             if (n.selected) {
                 fill(70);
@@ -955,13 +814,9 @@ public class Main extends PApplet implements MouseWheelListener {
                 fill(150);
             }
             if (v.showLabels) {
-
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
                 textSize(n.radius);
-
-                text(n.label, n.x + n.radius,
-                        n.y + (n.radius / PI));
-
+                text(n.label, n.x + n.radius, n.y + (n.radius / PI));
             }
         }
 
@@ -1008,34 +863,14 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mousePressed() {
-        // oldmouseX = mouseX;
-        //oldmouseY = mouseY;
-        // mousePress = true;
-        oldmouseX = mouseX;
-        oldmouseY = mouseY;
-        View v = session.getView();
-
-        // mouse "brake"
-        if (mouseButton == LEFT) {
-            /* if ((v.inerX + v.inerY + v.inerZ) > 0.15) {
-            v.inerX *= 0.99f;
-            v.inerY *= 0.99f;
-            v.inerZ *= 0.99f;
-             * *
-             */
-            // } else {
-            v.inerX = 0.0f;
-            v.inerY = 0.0f;
-            v.inerZ = 0.0f;
-            // mouseClick.set(true);
-            // }
-        }
+        session.getView().storeMousePosition(mouseX, mouseY);
     }
 
     @Override
     public void mouseClicked() {
         if (mouseButton == LEFT) {
-            mouseRightClicking.set(true);
+            mouseClickLeft.set(true);
+
         } else if (mouseButton == RIGHT) {
             mouseClickRight.set(true);
         }
@@ -1043,47 +878,35 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mouseDragged() {
-        // hideNodeDetails();
         View v = session.getView();
         if (mouseButton == RIGHT) {
             mouseRightDragging.set(true);
-            float dragSensibility = 0.1f;
-            // OLD "INERTIAL" DRAG
-            if (v.camZ != 0 && (1.0f / v.camZ) != 0) {
-                v.inerX = ((float) mouseX - oldmouseX) * dragSensibility / (1.0f / v.camZ);
-                v.inerY = ((float) mouseY - oldmouseY) * dragSensibility / (1.0f / v.camZ);
-            }
-
-            // necessary for smooth, instant dragging
-            v.camX += v.inerX * 2.0f;
-            v.camY += v.inerY * 2.0f;
+            session.getView().updateTranslationFrom(mouseX, mouseY);
         } else if (mouseButton == LEFT) {
             mouseLeftDragging.set(true);
-            /*
-            if (!mouseLeftDragging.getAndSet(true)) {
-            mouseRightClicking.set(true);
-            }
-             */
         }
-        System.out.println("TRANSLATING OUT: z=" + v.camZ + " X=" + v.camX + " Y=" + v.camY);
-        oldmouseX = mouseX;
-        oldmouseY = mouseY;
     }
 
     @Override
     public void mouseReleased() {
         if (mouseButton == RIGHT) {
             mouseRightDragging.set(false);
+            session.getView().updateTranslationFrom(mouseX, mouseY);
         } else if (mouseButton == LEFT) {
             mouseLeftDragging.set(false);
         }
-        oldmouseX = mouseX;
-        oldmouseY = mouseY;
+        session.getView().memorizeLastPosition();
+    }
+
+    public void updateDrawerTranslationFromCurrentMouse() {
+        session.getView().updateTranslationFrom(mouseX, mouseY);
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-        zooming.set(true);
-        zoomIn.set(e.getWheelRotation() < 0);
+        if (e.getUnitsToScroll() != 0) {
+            zooming.set(true);
+            zoomIn.set(e.getWheelRotation() < 0);
+        }
     }
 
     @Override
@@ -1091,13 +914,13 @@ public class Main extends PApplet implements MouseWheelListener {
         View v = session.getView();
         if (key == CODED) {
             if (keyCode == UP) {
-                v.camY += 10f;
+                v.translation.add(0.0f, 10f, 0.0f);
             } else if (keyCode == DOWN) {
-                v.camY -= 10f;
+                v.translation.add(0.0f, -10f, 0.0f);
             } else if (keyCode == LEFT) {
-                v.camX += 10f;
+                v.translation.add(10f, 0.0f, 0.0f);
             } else if (keyCode == RIGHT) {
-                v.camX -= 10f;
+                v.translation.add(-10f, 0.0f, 0.0f);
             }
         } else if (key == 'p') {
             zooming.set(true);
@@ -1114,70 +937,43 @@ public class Main extends PApplet implements MouseWheelListener {
                 v.attraction -= 0.00001f;
             }
         }
-        /*
-        else if (key == 'o') {
-        session.getView().repulsion += 0.0001f;
-        } else if (key == 'l') {
-        session.getView().repulsion -= 0.0001f;
-        }
-         */
+
         System.out.println("\nattraction: " + session.getView().attraction + " repulsion: " + session.getView().repulsion);
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {
         pushMatrix();
-        translate(
-                x2, y2);
-
-
-        float a = atan2(x1 - x2, y2 - y1);
-        rotate(
-                a);
-        line(
-                0, -radius, -1, -1 - radius);
-        line(
-                0, -radius, 1, -1 - radius);
+        translate(x2, y2);
+        rotate(atan2(x1 - x2, y2 - y1));
+        line(0, -radius, -1, -1 - radius);
+        line(0, -radius, 1, -1 - radius);
         popMatrix();
-
-
     }
 
     private void arrow(PGraphics pg, float x1, float y1, float x2, float y2, float radius) {
         pg.pushMatrix();
         pg.translate(x2, y2);
-
-
-        float a = atan2(x1 - x2, y2 - y1);
-        pg.rotate(a);
+        pg.rotate(atan2(x1 - x2, y2 - y1));
         pg.line(0, -radius, -1, -1 - radius);
         pg.line(0, -radius, 1, -1 - radius);
         pg.popMatrix();
-
-
     }
 
     private float logify(float x) {
         if (abs(x) < 0.01f) {
             return 0.0f;
-
-
         }
         return (x > 0) ? log100((int) (abs(x) * 100.0f)) : -log100((int) (abs(x) * 100.0f));
-
-
     }
 
     private float log100(int x) {
         return (log(x) / ((float) log(100)));
-
     }
 
     public static float[] rotation(float x, float y, float centerX, float centerY, float theta) {
-
         float[] rc = new float[2];
         rc[0] = (float) (centerX + (x - centerX) * cos(theta) - (y - centerY) * sin(theta));
         rc[1] = (float) (centerY + (x - centerX) * sin(theta) + (y - centerY) * cos(theta));
         return rc;
-
     }
 }

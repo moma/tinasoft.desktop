@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import processing.core.PVector;
 import tinaviz.Console;
 import tinaviz.FilterChain;
 import tinaviz.Node;
@@ -35,27 +36,26 @@ public class View {
     public boolean spatializeWhenMoving = true;
     public boolean centerOnSelection = true;
 
+
+
+    public PVector mousePosition = new PVector(0.0f, 0.0f);
+    public PVector translation = new PVector(0.0f, 0.0f);
+    public PVector lastPosition = new PVector(0.0f, 0.0f);
+    public float sceneScale = 1.0f;
     public float inerX;
     public float inerY;
     public float inerZ;
 
-    public float camX;
-    public float camY;
     public float camZ;
 
     public float ZOOM_CEIL = 2.0f;
-    public float ZOOM_FLOOR = 80.0f;
-
-    public float repulsion;
-    public float attraction;
+    public float ZOOM_FLOOR = 25.0f;
+    public float repulsion = 0.01f;
+    public float attraction = 0.0001f;
 
     public Graph graph = null;
 
-    public int selection = 0;
-    public String selectedNodeID = "";
-
     public FilterChain filters = null;
-
     public AtomicBoolean hasBeenRead = null;
 
     public View(Graph graph) {
@@ -67,16 +67,14 @@ public class View {
         inerY = 0f;
         inerZ = 0f;
 
-        camX = 0f;
-        camY = 0f;
-
         camZ = 1.0f;
 
         repulsion = 0.01f;
         attraction = 0.0001f;
 
-       resetCamera();
+        resetCamera();
     }
+
     public View() {
         graph = new Graph();
         filters = new FilterChain(graph);
@@ -86,17 +84,13 @@ public class View {
         inerY = 0f;
         inerZ = 0f;
 
-        camX = 0f;
-        camY = 0f;
-
         camZ = 1.0f;
 
         repulsion = 0.01f;
         attraction = 0.0001f;
-
         resetCamera();
     }
-  
+
     public synchronized boolean toggleLinks() {
         showLinks = !showLinks;
         return showLinks;
@@ -165,38 +159,86 @@ public class View {
     }
 
     public void resetCamera() {
-        camX = 0;
-        camY = 0;
-        camZ = 4.0f;
+
+        mousePosition = new PVector(0.0f, 0.0f);
+        translation = new PVector(0.0f, 0.0f);
+        lastPosition = new PVector(0.0f, 0.0f);
+        sceneScale = 1.0f;
+
     }
 
-    public void resetCamera(float width,float height) {
-        camX = 0;
-        camY = 0;
-        camZ = 4.0f;
+    public void resetCamera(float width, float height) {
+
+        mousePosition = new PVector(0.0f, 0.0f);
+        translation = new PVector(0.0f, 0.0f);
+        lastPosition = new PVector(0.0f, 0.0f);
+        sceneScale = 1.0f;
+
+        
+        // initializes zoom
+        PVector box = new PVector(graph.metrics.maxX - graph.metrics.minX , graph.metrics.maxY - graph.metrics.minY);
+        float ratioWidth = width / box.x;
+        float ratioHeight = height / box.y;
+        if (sceneScale == 0) {
+        sceneScale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+
+        // initializes move
+        PVector semiBox = PVector.div(box, 2);
+        PVector topLeftVector = new PVector(graph.metrics.minX, graph.metrics.minY);
+        PVector center = new PVector(width / 2f, height / 2f);
+        PVector scaledCenter = PVector.add(topLeftVector, semiBox);
+        translation.set(center);
+        translation.sub(scaledCenter);
+        lastPosition.set(translation);
+        System.out.println("automatic scaling..");
+        }
+
+         
+
     }
-    
+
     public void selectNodeById(String id) {
-        this.selectedNodeID = id;
+        graph.selectNodeById(id);
+    }
+
+    public void unselectNodeById(String id) {
+        graph.unselectNodeById(id);
     }
 
     public Graph getGraph() {
         return graph;
     }
-        // call by the drawer when isSynced is false
+    // call by the drawer when isSynced is false
+
     public synchronized List<tinaviz.Node> getNodes() {
-         List<Node> nodes = filters.getNodes();
-         if (!hasBeenRead.get() && nodes != null) {
-             hasBeenRead.set(true);
-             return nodes;
-         }
-         return null;
+        List<Node> nodes = filters.getNodes();
+        if (!hasBeenRead.get() && nodes != null) {
+            hasBeenRead.set(true);
+            return nodes;
+        }
+        return null;
     }
 
     public void clear() {
         graph.clear();
     }
 
- 
-   
+    public void updateTranslationFrom(int x, int y) {
+        Vector tmp = new Vector(0, 0);
+        tmp.set(x, y, 0);
+        tmp.sub(mousePosition);
+        tmp.div(sceneScale); // ensure const. moving speed whatever the zoom is
+        tmp.add(lastPosition);
+
+        // todo lock here
+        translation.set(tmp);
+    }
+
+    public void memorizeLastPosition() {
+        lastPosition.set(translation);
+    }
+
+    public void storeMousePosition(int x, int y) {
+        mousePosition.set(x, y, 0);
+    }
 }

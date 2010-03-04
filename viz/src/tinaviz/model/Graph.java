@@ -384,4 +384,15 @@ public class Graph {
         attributes.clear();
         hasBeenReadByFilter.set(false);
     }
+
+    public void selectNodeById(String id) {
+        if (storedNodes.containsKey(id)) {
+            storedNodes.get(id).selected = true;
+        }
+    }
+    public void unselectNodeById(String id) {
+        if (storedNodes.containsKey(id)) {
+            storedNodes.get(id).selected = false;
+        }
+    }
 }

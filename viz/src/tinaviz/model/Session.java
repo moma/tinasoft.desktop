@@ -102,5 +102,25 @@ public class Session {
                 ? macro : (currentLevel == ViewLevel.MESO)
                 ? meso : micro;
     }
+     public void selectNode(Node n) {
+        macro.selectNodeById(n.uuid);
+        meso.selectNodeById(n.uuid);
+        micro.selectNodeById(n.uuid);
+    }
+        public void unselectNode(Node n) {
+        macro.unselectNodeById(n.uuid);
+        meso.unselectNodeById(n.uuid);
+        micro.unselectNodeById(n.uuid);
+    }
 
+     public void selectNodeById(String id) {
+        macro.selectNodeById(id);
+        meso.selectNodeById(id);
+        micro.selectNodeById(id);
+    }
+        public void unselectNodeById(String id) {
+        macro.unselectNodeById(id);
+        meso.unselectNodeById(id);
+        micro.unselectNodeById(id);
+    }
 }
