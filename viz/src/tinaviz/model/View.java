@@ -48,7 +48,7 @@ public class View {
 
     public float camZ;
 
-    public float ZOOM_CEIL = 2.0f;
+    public float ZOOM_CEIL = 0.7f;
     public float ZOOM_FLOOR = 25.0f;
     public float repulsion = 0.01f;
     public float attraction = 0.0001f;

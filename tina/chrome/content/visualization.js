@@ -287,7 +287,7 @@ function Tinaviz() {
     },
     toggleTerms: function() {
         if (applet == null) return;
-        applet.filterConfig(categoryFilter, "mask", "term");
+        applet.filterConfig(categoryFilter, "mask", "NGram");
     },
     
 
@@ -333,13 +333,13 @@ function Tinaviz() {
         if (level == "macro") {
 		if (tags=="project") {
 			selectMacroProject(x,y,id,label);
-		} else if (tags=="term") {
+		} else if (tags=="NGram") {
 			selectMacroTerm(x,y,id,label);
 		}
         } else if (level == "meso") {
 		if (tags=="project") {
 			selectMesoProject(x,y,id,label);
-		} else if (tags=="term") {
+		} else if (tags=="NGram") {
 			selectMesoTerm(x,y,id,label);
 		}
 	}

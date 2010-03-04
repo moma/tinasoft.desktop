@@ -175,7 +175,7 @@ public class Graph {
 
 
 
-            Node node = new Node(uuid, label, (float) Math.random() * 10f,
+            Node node = new Node(uuid, label, (float) Math.random() * 2f,
                     (float) Math.random() * 100f,
                     (float) Math.random() * 100f);//, posx, posy);
 
