@@ -148,11 +148,10 @@ function Tinaviz() {
         wrapper = $('#vizframe').contents().find('#tinaviz')[0];
         applet = wrapper.getSubApplet();
         
+        console.log("loading default graph..");
         this.toMacro();
-        //this.loadGraph("examples/map_dopamine_2002_2007_g.gexf");
-        
-        //this.setup();  
-   
+        this.loadRelativeGraph("macro","examples/tinaapptests-exportGraph.gexf");
+
         // disable the applet when on another tab (to save CPU)
         this.setEnabled(false);
         
@@ -244,11 +243,12 @@ function Tinaviz() {
     // Public methods
     loadFromURI: function(uri) {
         if (applet == null) return;
-        applet.getSession().updateFromURI(uri);
+        applet.getSession().updateFromURI(view,uri);
     },
-    loadFromString: function(gexf) {
+    loadFromString: function(view,gexf) {
         if (applet == null) return;
-        applet.getSession().updateFromString(gexf);
+        applet.getSession().updateFromString(view,gexf);
+
     },
     
     setGenericityRange: function(from,to) {
@@ -331,13 +331,13 @@ function Tinaviz() {
         else            { $('#sidebariframe').show(); }
 
         if (level == "macro") {
-		if (tags=="project") {
+		if (attr=="project") {
 			selectMacroProject(x,y,id,label);
 		} else if (tags=="NGram") {
 			selectMacroTerm(x,y,id,label);
 		}
         } else if (level == "meso") {
-		if (tags=="project") {
+		if (attr=="project") {
 			selectMesoProject(x,y,id,label);
 		} else if (tags=="NGram") {
 			selectMesoTerm(x,y,id,label);
@@ -438,7 +438,7 @@ function Tinaviz() {
     },
     */
 
-    loadGraph: function(filename) {
+    loadDataGraph: function(view,filename) {
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
         var gexfPath;
@@ -457,7 +457,7 @@ function Tinaviz() {
         result = this.loadFromURI(uri);
     },
      // using string technique
-    loadRelativeGraph: function(filename) {
+    loadRelativeGraph: function(view,filename) {
     
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
@@ -480,16 +480,17 @@ function Tinaviz() {
                 .createInstance(Components.interfaces.nsIConverterInputStream);
 
         fstream.init(file, -1, 0, 0);
-        cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
+        // MAX filesize: 8 MB
+        cstream.init(fstream, "UTF-8", 8000000, 0); // you can use another encoding here if you wish
 
         var str = {};
         cstream.readString(-1, str); // read the whole file and put it in str.value
         cstream.close(); // this closes fstream
-        console.log("calling this.loadFromString(..):"+str.value);      
-        result = this.loadFromString(str.value);
+        console.log("calling this.loadFromString(..) with a big file!");      
+        result = this.loadFromString(view,str.value);
     },
      // using string technique
-    loadAbsoluteGraph: function(filename) {
+    loadAbsoluteGraph: function(view,filename) {
     
         var gexfPath;
 
@@ -514,7 +515,7 @@ function Tinaviz() {
         cstream.readString(-1, str); // read the whole file and put it in str.value
         cstream.close(); // this closes fstream
         console.log("calling this.loadFromString(..):"+str.value);      
-        result = this.loadFromString(str.value);
+        result = this.loadFromString(view,str.value);
     },
 
     loadAbsoluteGraphFromURI: function(filename) {

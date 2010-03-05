@@ -19,6 +19,7 @@ import javax.xml.parsers.*;
 import javax.xml.xpath.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import tinaviz.Console;
 
 public class XPathReader {
 
@@ -35,13 +36,13 @@ public class XPathReader {
         initObjects();
     }
 
-    public void parseFromStream(InputStream inputStream) throws URISyntaxException, MalformedURLException, IOException {
+    public void parseFromStream(InputStream inputStream) {
 
         this.xmlStream = inputStream;
         initObjects();
     }
 
-    public void parseFromString(String inputString) throws URISyntaxException, MalformedURLException, IOException {
+    public void parseFromString(String inputString)  {
 
         this.xmlStream = new ByteArrayInputStream(inputString.getBytes());
         initObjects();
@@ -55,13 +56,13 @@ public class XPathReader {
                     newXPath();
         } catch (IOException ex) {
             //ex.printStackTrace();
-            System.out.println(ex.getMessage());
+            Console.log(ex.getMessage());
         } catch (SAXException ex) {
             //ex.printStackTrace();
-            System.out.println(ex.getMessage());
+            Console.log(ex.getMessage());
         } catch (ParserConfigurationException ex) {
             //ex.printStackTrace();
-            System.out.println(ex.getMessage());
+            Console.log(ex.getMessage());
         }
     }
 

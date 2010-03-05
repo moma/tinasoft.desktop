@@ -99,7 +99,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private void jsSwitchToMicro() {
         session.toMicroLevel();
         if (window != null) {
-            window.eval("switchedTo('micro');");
+           window.eval("switchedTo('micro');");
         }
     }
 
@@ -162,6 +162,8 @@ public class Main extends PApplet implements MouseWheelListener {
             w = (Integer) window.call("getWidth", null);
             h = (Integer) window.call("getHeight", null);
             size(w, h, engine);
+
+           // window = null;
         } else {
             size(screen.width, screen.height, engine);
         }
@@ -181,9 +183,9 @@ public class Main extends PApplet implements MouseWheelListener {
         // currentView.showLabels = false;
 
 
-        boolean generateRandomLocalGraph = true;
+        boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
-        boolean loadDefaultGlobalGraph = true;
+        boolean loadDefaultGlobalGraph = false;
         boolean generateRandomGlobalGraph = false;
 
         if (loadDefaultLocalGraph) {

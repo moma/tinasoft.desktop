@@ -105,7 +105,9 @@ public class Graph {
         Console.log("<applet> parsing XML..");
 
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
+                Console.log("<applet> not failed yet!");
         attributes.put("zoom", (zoomValue != null) ? zoomValue.floatValue() : 1.0f);
+        Console.log("<applet> zoom passed");
 
         Double thresholdValue = (Double) xml.read(meta + "threshold/@min", XPathConstants.NUMBER);
         if (thresholdValue != null) {

@@ -18,31 +18,26 @@ import tinaviz.Node;
 public class Session {
 
     // public Graph graph = null;
-    
     public MacroView macro = null;
     public MesoView meso = null;
     public View micro = null;
-
     public ViewLevel currentLevel = ViewLevel.MACRO;
-    
     public float zoom = 3f;
-
     public Color background = new Color(12, 12, 12);
     public int fontsize = 12;
     public AtomicBoolean hasBeenRead = new AtomicBoolean(false);
 
     public Session() {
-          // graph = new Graph();
+        // graph = new Graph();
 
-            macro = new MacroView();
-            meso = new MesoView();
-            micro = new MicroView();
+        macro = new MacroView();
+        meso = new MesoView();
+        micro = new MicroView();
     }
-
 
     public synchronized void clear() {
         // graph.clear();
-        
+
         macro.clear();
         meso.clear();
         micro.clear();
@@ -66,19 +61,27 @@ public class Session {
     }
 
     public synchronized void toMacroLevel() {
-        currentLevel = ViewLevel.MACRO;
-        macro.hasBeenRead.set(false);
-    }
-    public synchronized void toMesoLevel() {
-        currentLevel = ViewLevel.MESO;
-        meso.hasBeenRead.set(false);
-    }
-    public synchronized void toMicroLevel() {
-        currentLevel = ViewLevel.MICRO;
-        micro.hasBeenRead.set(false);
+        if (currentLevel != ViewLevel.MACRO) {
+            currentLevel = ViewLevel.MACRO;
+            macro.hasBeenRead.set(false);
+        }
     }
 
-   public boolean updateFromURI(String uri) {
+    public synchronized void toMesoLevel() {
+        if (currentLevel != ViewLevel.MESO) {
+            currentLevel = ViewLevel.MESO;
+            meso.hasBeenRead.set(false);
+        }
+    }
+
+    public synchronized void toMicroLevel() {
+        if (currentLevel != ViewLevel.MICRO) {
+            currentLevel = ViewLevel.MICRO;
+            micro.hasBeenRead.set(false);
+        }
+    }
+
+    public boolean updateFromURI(String uri) {
         return getGraph().updateFromURI(uri);
     }
 
@@ -94,31 +97,60 @@ public class Session {
         return getGraph().updateFromNodeList(nodes);
     }
 
+    public boolean updateFromURI(String level, String uri) {
+        if (level.equals("macro")) {
+            return macro.getGraph().updateFromURI(uri);
+        } else if (level.equals("meso")) {
+            return meso.getGraph().updateFromURI(uri);
+        } else if (level.equals("micro")) {
+            return micro.getGraph().updateFromURI(uri);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean updateFromString(String level, String str) {
+        if (level.equals("macro")) {
+            return macro.getGraph().updateFromString(str);
+        } else if (level.equals("meso")) {
+            return meso.getGraph().updateFromString(str);
+        } else if (level.equals("micro")) {
+            return micro.getGraph().updateFromString(str);
+        } else {
+            return false;
+        }
+    }
+
+    
     public synchronized String getLevel() {
         return getView().getName();
     }
-        public synchronized View getView() {
+
+    public synchronized View getView() {
         return (currentLevel == ViewLevel.MACRO)
                 ? macro : (currentLevel == ViewLevel.MESO)
                 ? meso : micro;
     }
-     public void selectNode(Node n) {
+
+    public void selectNode(Node n) {
         macro.selectNodeById(n.uuid);
         meso.selectNodeById(n.uuid);
         micro.selectNodeById(n.uuid);
     }
-        public void unselectNode(Node n) {
+
+    public void unselectNode(Node n) {
         macro.unselectNodeById(n.uuid);
         meso.unselectNodeById(n.uuid);
         micro.unselectNodeById(n.uuid);
     }
 
-     public void selectNodeById(String id) {
+    public void selectNodeById(String id) {
         macro.selectNodeById(id);
         meso.selectNodeById(id);
         micro.selectNodeById(id);
     }
-        public void unselectNodeById(String id) {
+
+    public void unselectNodeById(String id) {
         macro.unselectNodeById(id);
         meso.unselectNodeById(id);
         micro.unselectNodeById(id);
