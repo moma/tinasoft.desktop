@@ -46,7 +46,6 @@ public class View {
     public float inerY;
     public float inerZ;
 
-    public float camZ;
 
     public float ZOOM_CEIL = 0.7f;
     public float ZOOM_FLOOR = 25.0f;
@@ -57,23 +56,9 @@ public class View {
 
     public FilterChain filters = null;
     public AtomicBoolean hasBeenRead = null;
+    public int prespatializeSteps = 0;
 
-    public View(Graph graph) {
-        this.graph = graph;
-        filters = new FilterChain(graph);
-        hasBeenRead = new AtomicBoolean(false);
 
-        inerX = 0f;
-        inerY = 0f;
-        inerZ = 0f;
-
-        camZ = 1.0f;
-
-        repulsion = 0.01f;
-        attraction = 0.0001f;
-
-        resetCamera();
-    }
 
     public View() {
         graph = new Graph();
@@ -84,10 +69,9 @@ public class View {
         inerY = 0f;
         inerZ = 0f;
 
-        camZ = 1.0f;
-
         repulsion = 0.01f;
         attraction = 0.0001f;
+               prespatializeSteps = 0;
         resetCamera();
     }
 
@@ -163,35 +147,36 @@ public class View {
         mousePosition = new PVector(0.0f, 0.0f);
         translation = new PVector(0.0f, 0.0f);
         lastPosition = new PVector(0.0f, 0.0f);
-        sceneScale = 1.0f;
+        sceneScale = 2.0f;
 
     }
 
     public void resetCamera(float width, float height) {
 
         mousePosition = new PVector(0.0f, 0.0f);
-        translation = new PVector(0.0f, 0.0f);
+        translation = new PVector(width/2.0f, width/2.0f);
         lastPosition = new PVector(0.0f, 0.0f);
         sceneScale = 1.0f;
 
         
         // initializes zoom
-        PVector box = new PVector(graph.metrics.maxX - graph.metrics.minX , graph.metrics.maxY - graph.metrics.minY);
+        PVector box = new PVector(graph.metrics.maxX - graph.metrics.minX, graph.metrics.maxY - graph.metrics.minY);
         float ratioWidth = width / box.x;
         float ratioHeight = height / box.y;
         if (sceneScale == 0) {
-        sceneScale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
-
+            sceneScale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+        }
+        
         // initializes move
         PVector semiBox = PVector.div(box, 2);
-        PVector topLeftVector = new PVector(graph.metrics.minX, graph.metrics.minY);
+        PVector topLeftVector = new PVector(graph.metrics.minX,graph.metrics.minY);
         PVector center = new PVector(width / 2f, height / 2f);
         PVector scaledCenter = PVector.add(topLeftVector, semiBox);
         translation.set(center);
         translation.sub(scaledCenter);
         lastPosition.set(translation);
         System.out.println("automatic scaling..");
-        }
+        
 
          
 

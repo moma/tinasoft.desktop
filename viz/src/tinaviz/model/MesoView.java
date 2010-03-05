@@ -10,17 +10,12 @@ package tinaviz.model;
  */
 public class MesoView extends View {
 
-    public MesoView(Graph graph) {
-        super(graph);
-        spatializeWhenMoving = true;
-        centerOnSelection = true;
-        ZOOM_CEIL = 1.0f;
-        ZOOM_FLOOR = 10.0f;
 
-    }
 
     public MesoView() {
         super();
+                spatializeWhenMoving = true;
+        centerOnSelection = true;
         ZOOM_CEIL = 1.0f;
         ZOOM_FLOOR = 10.0f;
 

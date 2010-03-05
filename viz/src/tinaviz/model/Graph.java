@@ -66,12 +66,6 @@ public class Graph {
             //Console.log("<applet> calling parse XML on "+str);
             return parseXML(xml);
 
-        } catch (URISyntaxException ex) {
-            Console.log(ex.toString());
-        } catch (MalformedURLException ex) {
-            Console.log(ex.toString());
-        } catch (IOException ex) {
-            Console.log(ex.toString());
         } catch (XPathExpressionException ex) {
             Console.log(ex.toString());
         }
@@ -85,13 +79,8 @@ public class Graph {
             return parseXML(xml);
         } catch (XPathExpressionException ex) {
             Console.log(ex.toString());
-        } catch (URISyntaxException ex) {
-            Console.log(ex.toString());
-        } catch (MalformedURLException ex) {
-            Console.log(ex.toString());
-        } catch (IOException ex) {
-            Console.log(ex.toString());
-        }
+        } 
+          
         return false;
     }
 

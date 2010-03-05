@@ -111,7 +111,8 @@ public class Session {
 
     public boolean updateFromString(String level, String str) {
         if (level.equals("macro")) {
-            return macro.getGraph().updateFromString(str);
+            macro.getGraph().updateFromString(str);
+            return true;
         } else if (level.equals("meso")) {
             return meso.getGraph().updateFromString(str);
         } else if (level.equals("micro")) {

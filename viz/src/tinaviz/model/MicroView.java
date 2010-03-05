@@ -11,19 +11,18 @@ package tinaviz.model;
  */
 public class MicroView extends View {
 
-    public MicroView (Graph graph) {
-        super(graph);
-        spatializeWhenMoving = true;
-        centerOnSelection = true;
-    }
+ 
 
     public MicroView() {
         super();
+            spatializeWhenMoving = true;
+        centerOnSelection = true;
     }
 
    public void setCenterOnSelection(boolean value) {
        centerOnSelection = value;
    }
+    @Override
     public String getName() {
         return "micro";
     }
