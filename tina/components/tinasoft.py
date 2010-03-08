@@ -6,6 +6,9 @@ import jsonpickle
 
 import sys
 import os
+from os import makedirs
+from os.path import exists, join
+
 from distutils import sysconfig
 
 from xpcom import components, verbose, COMException, ServerException, nsError
@@ -29,13 +32,13 @@ class TinasoftCallback():
         return self.callback( "tinasoft_runImportFile_finish_status", returnValue)
 
     def processCooc( self, returnValue ):
-        return self.callback( "tinasoft_runprocessCooc_finish_status", returnValue)
+        return self.callback( "tinasoft_runProcessCooc_finish_status", returnValue)
 
     def exportCorpora( self, returnValue ):
-        return self.callback( "tinasoft_exportCorpora_finish_status", returnValue)
+        return self.callback( "tinasoft_runExportCorpora_finish_status", returnValue)
 
     def exportGraph( self, returnValue ):
-        return self.callback( "tinasoft_exportGraph_finish_status", returnValue)
+        return self.callback( "tinasoft_runExportGraph_finish_status", returnValue)
 
 
 class Tinasoft(TinaApp, ThreadPool):
@@ -59,25 +62,72 @@ class Tinasoft(TinaApp, ThreadPool):
         _observerProxy.notifyObservers(None, 'tinasoft_runExportcorpora_running_status', str(args[0]))
         self.logger.debug(args)
         def task( *args, **kwargs ):
+            args = list(args)
             # args[0] is a json serialized periods id
             # args[1] is a corpora id
             args[3] = self.getWhitelist( args[3] )
             args[4] = [stopwords.StopWordFilter( "file://%s" % args[4] )]
             self.exportCorpora( *args, **kwargs )
-        self.queueTask(task, args, kwargs, self.callback.exportCorpora)
+        #self.queueTask(task, args, kwargs, self.callback.exportCorpora)
 
-    def runProcessCooc(self, *args, **kwargs):
+    def runProcessCooc( self, *args, **kwargs ):
         _observerProxy.notifyObservers(None, 'tinasoft_runProcessCooc_running_status', str(args[0]))
         self.logger.debug(args)
         def task( *args, **kwargs ):
-            args[0] = self.getWhitelist( args[0] )
-            args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
+            args = list(args)
+            args[0] = self.getWhitelist( args[0],
+                occsCol='occurrences',
+                accept='x'
+            )
+            args[2] = args[2].split(',')
+            if args[3] == '':
+                args[3] = []
+            else:
+                args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
             self.processCooc( *args, **kwargs )
         self.queueTask(task, args, kwargs, self.callback.processCooc)
 
     def runExportCoocMatrix(self): pass
 
-    def runExportGraph(self): pass
+
+    def runExportGraph( self, *args, **kwargs ):
+        _observerProxy.notifyObservers(None, 'tinasoft_runExportGraph_running_status', None)
+        def task( *args, **kwargs ):
+            # corporaid, periods, threshold, self.whitelist
+            args = list(args)
+            # whitelist instance
+            args[3] = self.getWhitelist( args[3],
+                occsCol='occurrences',
+                accept='x'
+            )
+            # periods parsing
+            args[1] = args[1].split(',')
+            # threshold parsing
+            if args[2] == '':
+                args[2] = None
+            else:
+                args[2] = args[2].split(',')
+                args[2] = map( float, args[2] )
+            # gexf file path
+            args[0] = self.getGraphPath( args[0], args[1], args[2] )
+            # path, periods, threshold, self.whitelist
+            self.exportGraph( *args, **kwargs )
+        self.queueTask(task, args, kwargs, self.callback.exportGraph)
+
+    def walkGraphPath( self, corporaid ):
+        path = join( self.config['user'], corporaid )
+        self.logger.debug( path )
+        return os.listdir( path )
+
+    def getGraphPath(self, corporaid, periods, threshold):
+        path = join( self.config['user'], corporaid )
+        if not exists( path ):
+            makedirs( path )
+        filename = "-".join( periods ) + "_" \
+            + "-".join( map(str,threshold) ) \
+            + ".gexf"
+        self.logger.debug( join( path, filename ) )
+        return join( path, filename )
 
     def __del__(self):
         self.joinAll()

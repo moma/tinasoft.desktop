@@ -21,7 +21,7 @@ var tinasoftTaskObserver = {
     observe : function ( subject , topic , data ){
         // traitements en fonction du topic...
         if(topic == "tinasoft_runImportFile_finish_status"){
-            alert("tinasoft_runImportFile_finish_status");
+            //alert("tinasoft_runImportFile_finish_status");
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
         }
@@ -29,15 +29,24 @@ var tinasoftTaskObserver = {
             //alert("tinasoft_runImportFile_running_status, please wait");
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
-            console.log(data);
+            //console.log(data);
         }
         if(topic == "tinasoft_runProcessCooc_finish_status"){
-            //alert("tinasoft_runImportFile_finish_status");
-            console.log(data);
+            $('#processCooc button').toggleClass("ui-state-disabled", 1);
+            $('#generateGraph button').toggleClass("ui-state-disabled", 1);
+            console.log("tinasoft_runProcessCooc_finish_status = " +data);
         }
         if (topic == "tinasoft_runProcessCooc_running_status") {
-            //alert("tinasoft_runImportFile_running_status, please wait");
-            console.log(data);
+            $('#processCooc button').toggleClass("ui-state-disabled", 1);
+            console.log("tinasoft_runProcessCooc_running_status = " +data);
+        }
+        if(topic == "tinasoft_runExportGraph_finish_status"){
+            $('#generateGraph button').toggleClass("ui-state-disabled", 1);
+            console.log("tinasoft_runExportGraph_finish_status = " +data);
+        }
+        if (topic == "tinasoft_runExportGraph_running_status") {
+            $('#generateGraph button').toggleClass("ui-state-disabled", 1);
+            console.log("tinasoft_runExportGraph_running_status = " +data);
         }
     }
 };
@@ -50,7 +59,10 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_finish
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_running_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_running_status" , false );
-/* Tinasoft corpora importing tool */
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_finish_status" , false );
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_running_status" , false );
+
+/* Importing data set action controler */
 
 var submitImportfile = function(event) {
     corpora = $("#corpora")
@@ -82,48 +94,125 @@ var submitImportfile = function(event) {
     return true;
 
 };
+
+/* Writing a data set's cooccurrences action controler */
+
 var submitprocessCooc = function(event) {
-    corpora = $("#selectable_corpora")
-    whitelistpath = $("#whitelistfile")
-    userfilterspath  = $("#userfiltersfile")
+    var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
+    var whitelistpath = $("#whitelistfile")
+    var userfilterspath  = $("#userfiltersfile")
     // DEBUG
     if ( whitelistpath.val() == '' ) {
-        corpora.addClass('ui-state-error');
+        whitelistpath.addClass('ui-state-error');
         console.log( "missing the white list path field" );
         return false;
     }
-    if ( userfilterspath.val() == "" ) {
-        path.addClass('ui-state-error');
-        console.log( "missing the user filters path field" );
-        return false;
-    }
 
-    TinaService.runProcessCooc(
-        whitelistpath.val(),
-        corpora_id,
-        corpus_list,
-        userfilterspath.val()
-    );
+    for (corpora in corporaAndPeriods) {
+        TinaService.runProcessCooc(
+            whitelistpath.val(),
+            corpora,
+            corporaAndPeriods[corpora],
+            userfilterspath.val()
+        );
+    }
     return true;
 };
 
-/* Tinasoft storage read functions */
+
+/* Writing a data set's graph action controler */
+
+var submitExportGraph = function(event) {
+    var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
+    var whitelistpath = $("#whitelistfile")
+    // DEBUG
+    if ( whitelistpath.val() == '' ) {
+        whitelistpath.addClass('ui-state-error');
+        console.log( "missing the white list path field" );
+        return false;
+    }
+    threshold = [0,1];
+    for (corpora in corporaAndPeriods) {
+        TinaService.runExportGraph(
+            corpora,
+            corporaAndPeriods[corpora],
+            threshold,
+            whitelistpath.val()
+        );
+    }
+    return true;
+};
+
+/* Indexation workflow control */
 
 var listCorpora = function() {
     corporaList=TinaService.listCorpora();
     return( JSON.parse(corporaList) );
 };
 
-function displayListCorpora(oldivid) {
-    var ol = $("#"+oldivid).empty();
+function displayListCorpus(trid, corpora) {
+    var tr = $("#"+trid);
+    tr.append("<td>"
+        + "<ol id='selectable_corpus_"
+        + trid + "' class='selectable'>"
+        + "</ol></td>"
+    );
+    var ol = $( "#selectable_corpus_" + trid  ).empty()
+    for ( var id in corpora['edges']['Corpus'] ) {
+        ol.append("<li id='"
+            + id
+            + "' class='ui-widget-content ui-state-default'>"
+            + id
+        +"</li>");
+    }
+    selectableCorpusInit( ol, corpora );
+}
+
+function selectableReset() {
+    /* Resets any li from any 'selectable' class div */
+    $("li",".selectable").each(function(){
+        var li = $(this);
+        li.removeClass('ui-state-active');
+        console.log("removed selected");
+    });
+}
+
+function selectableCorpusInit( ol, corpora ) {
+    ol.selectable({
+        stop: function(){
+            selectableReset();
+            corporaAndPeriods = {};
+            corporaAndPeriods[corpora.id] = [];
+            $(".ui-selected",this).each(function(){
+                var selected_li = $(this);
+                selected_li.addClass('ui-state-active');
+                corporaAndPeriods[corpora.id].push(( selected_li.html() ));
+            });
+            Cache.setValue( "last_selected_periods", corporaAndPeriods );
+            console.log ( Cache.getValue( "last_selected_periods", "", 1 ) );
+        },
+    });
+}
+
+var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
+
+function displayListCorpora(table) {
+    var body = $(table + " tbody")
+    body.empty();
     var list = listCorpora();
     for ( var i=0, len=list.length; i<len; i++ ){
         var corpora = list[i]
-        ol.append("<li id='"+ corpora.id +"' class='ui-widget-content ui-state-default'>"+
-            corpora.label +"</li>\n");
+        body.append("<tr id='tr_corpora_" + i
+            +"' class='ui-widget-content'>"
+            + "<td>"
+            + corpora.label
+            + "</td>"
+        +"</tr>");
+        displayListCorpus( "tr_corpora_" + i, corpora );
     }
 }
 
+/* Storage getters */
 var getCorpus = function(corpusid) {
     return( JSON.parse( TinaService.getCorpus(corpusid) ) );
 };
@@ -234,28 +323,21 @@ $(document).ready(function() {
     });
     var max = 0;
     $("label").each(function(){
-    if ($(this).width() > max)
-        max = $(this).width();
+        if ($(this).width() > max)
+            max = $(this).width();
     });
     $("label").width(max);
     $('#importFile button').click(function(event) {
-        //var target = $(event.target);
         submitImportfile(event);
-        //if ( submitImportfile(event) == true ) {
-            //$(this).toggleClass("ui-state-disabled", 1);
-        //}
     });
     $('#exportCorpora button').click(function(event) {
         submitExportCorpora(event)
-        //if ( submitprocessCooc(event) == true ) {
-        //    $(this).toggleClass("ui-state-disabled", 1);
-        //}
     });
     $('#processCooc button').click(function(event) {
         submitprocessCooc(event)
-        //if ( submitprocessCooc(event) == true ) {
-        //    $(this).toggleClass("ui-state-disabled", 1);
-        //}
+    });
+    $('#generateGraph button').click(function(event) {
+        submitExportGraph(event)
     });
 
     $.extend($.ui.slider.defaults, {
@@ -282,27 +364,7 @@ $(document).ready(function() {
     }, function() {
     buttons.button("destroy");
     }).click();*/
-    $("#selectable_corpora").selectable({
-        stop: function(){
-            //var result = ""
-            $(this).each(function(){
-                li = $("#selectable_corpora li");
-                li.toggleClass("ui-state-active");
-                if (li.hasClass("ui-selected")) {
-                    var index = li.index(this) + 1;
-                    //console.log(index);
-                }
-            });
-        },
-        /*selected: function(event, ui) {
-            console.log("entered selected");
-        },
-        unselected: function(event, ui){
-            console.log("entered UNselected");
-        },*/
-    });
-    displayListCorpora( "selectable_corpora" );
-
+    displayListCorpora( "#corpora_table" );
 
     // TINASOFT WINDOW IS RESIZED
     $(window).bind('resize', function() {

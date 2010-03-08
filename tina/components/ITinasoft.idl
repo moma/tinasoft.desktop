@@ -33,12 +33,16 @@ interface ITinasoft : nsISupports {
         in wstring periods,
         in wstring userfiltersPath
     );
-    // export cooc matrix to text file
+    // export a cooc matrix to text file
     void runExportCoocMatrix(
 
     );
-    // exporta gexf graph
+    // export a gexf graph
     void runExportGraph(
+        in wstring corpora_id,
+        in wstring periods,
+        in wstring threshold,
+        in wstring whitelistPath
     );
     // database read access
     wstring listCorpora();

@@ -64,7 +64,7 @@
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-0">
                 <h1>Import a data set</h1>
-
+                <h3>Select a source file and an identifier name to import</h3>
                 <div id="importForm">
                     <label>Data set file (csv)</label>
                     <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
@@ -80,34 +80,41 @@
                         <button class="ui-state-default ui-corner-all" >Launch</button>
                     </div>
                     <div id="exportCorpora">
-                        <button class="ui-state-default ui-corner-all" >Export data set</button>
+                        <button class="ui-state-default ui-state-disabled ui-corner-all" >Export data set</button>
                     </div>
                 </div>
 
             </div>
             <!-- IMPORTING NGRAM WHITELIST AND CREATE GRAPH TABULATION -->
-            <div id="tabs-1">
-                <h1>Indexation and graph</h1>
+            <div id="tabs-1" class="ui-widget">
+                <h1>Indexation and graph generation</h1>
                 <div class="session_select">
-                    <span>Select a data set and the periods you want to index</span>
-                    <ol id="selectable_corpora">
-                        <!--<li class="ui-widget-content">Item 1</li>-->
-                    </ol>
+                    <h3>Select a data set and the periods you want to index</h3>
+                <table id="corpora_table" class="sortable">
+                      <thead class="ui-widget-header">
+                        <tr>
+                          <th>Available data sets</th>
+                          <th>Select periods</th>
+                          <th>Available graphs</th>
+                        </tr>
+                      </thead>
+                    <tbody class="ui-widget-content"></tbody>
+                </table>
                 </div>
-                <label>Ngrams white list file</label>
+                <label class="ui-widget-content">Ngrams white list</label>
                     <input id="whitelistfile" type="file" class="field"
                     name="whitelistfile" value='' /><br/>
-                <label>User stop-ngrams file</label>
+                <label class="ui-widget-content">User-defined stopwords</label>
                     <input id="userfiltersfile" type="file" class="field"
                     name="userfiltersfile" value='' /><br/>
-                <div id="processCooc">
+                <div id="processCooc" >
                     <button class="ui-state-default ui-corner-all" >Cooccurrences</button>
                 </div>
                 <!--<div id="exportCoocMatrix">
                     <button class="ui-state-disabled ui-corner-all" >Export matrix</button>
                 </div>-->
-                <div id="exportGraph">
-                    <button class="ui-state-disabled ui-corner-all" >Export graph</button>
+                <div id="generateGraph">
+                    <button class="ui-state-default ui-state-disabled ui-corner-all" >Generate graph</button>
                 </div>
             </div>
 
