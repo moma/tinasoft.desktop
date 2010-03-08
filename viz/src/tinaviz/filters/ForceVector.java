@@ -28,7 +28,7 @@ public class ForceVector implements Filter {
         params.put(KEY_REPULSION, 0.01f);
         params.put(KEY_ATTRACTION, 0.0001f);
     }
-    public List<Node> process(List<Node> input, Map<String, Channel> channels) {
+    public List<Node> process(List<Node> input) {
         List<Node> output = input;
 
         if( ! (Boolean) params.get(KEY_ENABLED) ) {

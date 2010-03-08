@@ -4,9 +4,8 @@
 	        <!-- charset must remain utf-8 to be handled properly by Processing -->
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>TinaViz</title>
-		<style type="text/css">
-		/* <![CDATA[ */
-		body {
+<style type="text/css">/* <![CDATA[ */
+body {
   		  margin: 0px 0px 0px 0px;
 		  font-family: verdana, geneva, arial, helvetica, sans-serif; 
 		  font-size: 11px; 
@@ -14,15 +13,17 @@
 		  text-decoration: none; 
 		  font-weight: normal; 
 		  line-height: normal; 
-		}
-        .container {
-			/*border: dashed 2px;*/
+}
+.container {
+   /*border: dashed 2px;*/
 			
-		}
-		/* ]]> */
-		</style>
+}
+/* ]]> */</style>
 <script type="text/javascript">
 
+/* APPLET CALLBACKS */
+
+// called when the applet initialize, and need it's width/height values
 function getWidth() {
     return parent.computeAppletWidth();
 }
@@ -31,20 +32,13 @@ function getHeight() {
    return parent.computeAppletHeight();
 }
 
+// called when the applet is ready to be shown
+// we then call the tinaviz wrapper constructor (the init()' method, maybe this should be rewritten)
 function appletInitialized() {
    return parent.tinaviz.init();
 }
 
-
-function switchToMacro() {
-   return parent.parent.selectMacro();
-}
-function switchToMeso() {
-   return parent.parent.selectMeso();
-}
-function switchToMicro() {
-   return parent.parent.selectMicro();
-}
+// called by the applet to show some messages to the XULRunner console
 function consoleLog(msg) {
     parent.console.log(msg);
 }
@@ -54,15 +48,17 @@ function consoleError(msg) {
 function consoleDebug(msg) {
     parent.console.debug(msg);
 }
-function macroNodeSelected(x,y,id,label,tags) {
-   return parent.tinaviz.macroNodeSelected(x,y,id,label,tags);
+
+// called whenever a node is clicked
+function nodeSelected(level,x,y,id,label,attributes) {
+   return parent.tinaviz.nodeSelected(level,x,y,id,label,attributes);
 }
-function mesoNodeSelected(x,y,id,label,tags) {
-   return parent.tinaviz.mesoNodeSelected(x,y,id,label,tags);
+// called whenever the applet decide to switch to another level (eg. macro, meso..)
+function switchedTo(level) {
+   // here it is a bit tricky, we need to change the tabs, which are a bit far in the div/iframe tree...
+   return parent.parent.switchedTo(level);
 }
-function microNodeSelected(x,y,id,label,tags) {
-   return parent.tinaviz.microNodeSelected(x,y,id,label,tags);
-}
+
 </script>
 	</head>
 	<body>
@@ -89,6 +85,7 @@ function microNodeSelected(x,y,id,label,tags) {
 					<param name="subapplet.classname" value="tinaviz.Main" /> 
 					<param name="subapplet.displayname" value="TinaViz" />
 					<param name="jogl.silent.noddraw.check" value="true" />
+				    <param name="java_arguments" value="-Xmx512m -Dsun.java2d.noddraw=true"/>
 					<param name="engine" value="software" />
 								
 			<!--<![endif]-->
@@ -113,6 +110,7 @@ function microNodeSelected(x,y,id,label,tags) {
 					<param name="subapplet.classname" value="tinaviz.Main" /> 
 					<param name="subapplet.displayname" value="TinaViz" />
 					<param name="jogl.silent.noddraw.check" value="true" />
+					<param name="java_arguments" value="-Xmx512m -Dsun.java2d.noddraw=true"/
 					<param name="engine" value="software" />
 
 					<p>

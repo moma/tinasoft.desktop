@@ -16,4 +16,6 @@ public class Metrics {
     public float maxY = 1.0f;
     public float minRadius = 0.0f;
     public float maxRadius = 0.0f;
+    public float centerX = 0.5f;
+    public float centerY = 0.5f;
 }

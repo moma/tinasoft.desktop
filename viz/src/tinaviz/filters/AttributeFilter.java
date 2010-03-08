@@ -39,13 +39,13 @@ public class AttributeFilter implements Filter {
         params.put(KEY_ENABLED, true);
     }
 
-    public List<Node> process(List<Node> input, Map<String, Channel> channels) {
+    public List<Node> process(List<Node> input) {
         List<Node> output = new ArrayList<Node>();
 
         if( ! (Boolean) params.get(KEY_ENABLED) ) {
             return output;
         }
-        
+        /*
         for (Node n : input) {
             boolean match = true;
             for (Channel f : channels.values()) {
@@ -58,6 +58,8 @@ public class AttributeFilter implements Filter {
             }
             if (match) output.add(n);
         }
+         * 
+         */
         return output;
     }
 

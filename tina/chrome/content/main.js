@@ -272,15 +272,13 @@ function appletReady() {
   $("#tabs").data('disabled.tabs', [4]);
 }
 
-function selectMacro() {
-    $("#tabs").tabs( 'select' , 2 );
+function switchedTo(level) {
+    var tabs = { "macro" : 2,
+                 "meso"  : 3,
+                 "micro" : 4 };
+    $("#tabs").tabs( 'select' , tabs[level] );
 }
-function selectMeso() {
-    $("#tabs").tabs( 'select' , 3 );
-}
-function selectMicro() {
-    $("#tabs").tabs( 'select' , [4] );
-}
+
 
 // wait for the DOM to be loaded
 $(document).ready(function() {
@@ -297,7 +295,7 @@ $(document).ready(function() {
                 tabvizframe.tinaviz.resized();
                 tabvizframe.tinaviz.setEnabled(true);
             }
-            tabvizframe.tinaviz.selectToMacro();
+            tabvizframe.tinaviz.toMacro();
         } else if (ui.index == 3) {
             if (!tabvizframe.tinaviz.isEnabled()) {
                 $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
@@ -305,7 +303,7 @@ $(document).ready(function() {
                 tabvizframe.tinaviz.resized();
                 tabvizframe.tinaviz.setEnabled(true);
             }
-            tabvizframe.tinaviz.selectToMeso();
+            tabvizframe.tinaviz.toMeso();
         } else if (ui.index == 4) {
             if (!tabvizframe.tinaviz.isEnabled()) {
                 $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
@@ -313,7 +311,7 @@ $(document).ready(function() {
                 tabvizframe.tinaviz.resized();
                 tabvizframe.tinaviz.setEnabled(true);
             }
-            tabvizframe.tinaviz.selectToMicro();
+            tabvizframe.tinaviz.toMicro();
         } else {
             // hide the frame; magic!
             tabvizframe.tinaviz.setEnabled(false);

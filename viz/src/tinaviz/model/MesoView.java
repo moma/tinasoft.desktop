@@ -2,10 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package tinaviz.model;
-
-import java.util.HashMap;
 
 /**
  *
@@ -13,17 +10,23 @@ import java.util.HashMap;
  */
 public class MesoView extends View {
 
-    public boolean centerOnSelection = true;
 
 
-    public MesoView () {
-        storedNodes = new HashMap<String, tinaviz.Node>();
-        metrics = new Metrics();
+    public MesoView() {
+        super();
+                spatializeWhenMoving = true;
+        centerOnSelection = true;
+        ZOOM_CEIL = 1.0f;
+        ZOOM_FLOOR = 10.0f;
+
     }
 
+    public void setCenterOnSelection(boolean value) {
+        centerOnSelection = value;
+    }
 
-   public void setCenterOnSelection(boolean value) {
-       centerOnSelection = true;
-   }
-
+    @Override
+    public String getName() {
+        return "meso";
+    }
 }

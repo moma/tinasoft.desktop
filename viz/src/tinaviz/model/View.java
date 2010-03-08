@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import processing.core.PVector;
 import tinaviz.Console;
 import tinaviz.FilterChain;
 import tinaviz.Node;
@@ -28,413 +29,51 @@ import tinaviz.filters.ForceVector;
  */
 public class View {
 
-    public static final String NS = "tina";
     public boolean showLabels = true;
     public boolean showNodes = true;
     public boolean showLinks = true;
-    public boolean showPosterOverlay = false;
     public boolean animationPaused = false;
-    public boolean colorsDesaturated = false;
-    public boolean zoomFrozen = false;
-    public int selection = 0;
-    public float zoom = 0.5f;
-    public String selectedNodeID = "";
-    public boolean prespatialize = true;
-    public FilterChain filters = new FilterChain();
-    public Map<String, tinaviz.Node> storedNodes;
-    public Metrics metrics;
-    public AtomicBoolean hasBeenRead = new AtomicBoolean(false);
+    public boolean highDefinition = false;
+    public boolean spatializeWhenMoving = true;
+    public boolean centerOnSelection = true;
 
-    /*
-    public boolean updateFromURI(String uri) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
-    XPathReader xml = new XPathReader();
-    xml.parseFromURI(uri);
-    return parseXML(xml);
-    }
 
-    public boolean updateFromString(String str) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
-    XPathReader xml = new XPathReader();
-    xml.parseFromString(str);
-    return parseXML(xml);
-    }
 
-    public boolean updateFromInputStream(InputStream inputStream) throws URISyntaxException, MalformedURLException, IOException, XPathExpressionException {
-    XPathReader xml = new XPathReader();
-    xml.parseFromStream(inputStream);
-    return parseXML(xml);
-    }
-     */
-    public boolean updateFromURI(String uri) {
+    public PVector mousePosition = new PVector(0.0f, 0.0f);
+    public PVector translation = new PVector(0.0f, 0.0f);
+    public PVector lastPosition = new PVector(0.0f, 0.0f);
+    public float sceneScale = 1.0f;
+    public float inerX;
+    public float inerY;
+    public float inerZ;
 
-        //Console.log("<applet> got updateFromURI(" + uri + ") from " + this);
-        try {
-            XPathReader xml = new XPathReader();
-            xml.parseFromURI(uri);
-            return parseXML(xml);
-        } catch (XPathExpressionException ex) {
-            Console.log(ex.toString());
-        } catch (URISyntaxException ex) {
-            Console.log(ex.toString());
-        } catch (MalformedURLException ex) {
-            Console.log(ex.toString());
-        } catch (IOException ex) {
-            Console.log(ex.toString());
-        }
-        return false;
-    }
 
-    public boolean updateFromString(String str) {
-        //Console.log("<applet> got updateFromString(..) from " + this);
-        try {
-            XPathReader xml = new XPathReader();
+    public float ZOOM_CEIL = 0.7f;
+    public float ZOOM_FLOOR = 25.0f;
+    public float repulsion = 0.01f;
+    public float attraction = 0.0001f;
 
-            xml.parseFromString(str);
+    public Graph graph = null;
 
-            //Console.log("<applet> calling parse XML on "+str);
-            return parseXML(xml);
+    public FilterChain filters = null;
+    public AtomicBoolean hasBeenRead = null;
+    public int prespatializeSteps = 0;
 
-        } catch (URISyntaxException ex) {
-            Console.log(ex.toString());
-        } catch (MalformedURLException ex) {
-            Console.log(ex.toString());
-        } catch (IOException ex) {
-            Console.log(ex.toString());
-        } catch (XPathExpressionException ex) {
-            Console.log(ex.toString());
-        }
-        return false;
-    }
 
-    public boolean updateFromInputStream(InputStream inputStream) {
-        try {
-            XPathReader xml = new XPathReader();
-            xml.parseFromStream(inputStream);
-            return parseXML(xml);
-        } catch (XPathExpressionException ex) {
-            Console.log(ex.toString());
-        } catch (URISyntaxException ex) {
-            Console.log(ex.toString());
-        } catch (MalformedURLException ex) {
-            Console.log(ex.toString());
-        } catch (IOException ex) {
-            Console.log(ex.toString());
-        }
-        return false;
-    }
 
-    public boolean updateFromNodeList(List<Node> nodes) {
-        addNodes(nodes);
-        return true;
-    }
+    public View() {
+        graph = new Graph();
+        filters = new FilterChain(graph);
+        hasBeenRead = new AtomicBoolean(false);
 
-    private boolean parseXML(XPathReader xml) throws XPathExpressionException {
-        String meta = "/gexf/graph/tina/";
-            Console.log("<applet> parsing XML..");
+        inerX = 0f;
+        inerY = 0f;
+        inerZ = 0f;
 
-        Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
-
-        if (zoomValue != null) {
-            System.out.println("zoom: " + zoom);
-            this.zoom = zoomValue.floatValue();
-        }
-
-        Double thresholdValue = (Double) xml.read(meta + "threshold/@min", XPathConstants.NUMBER);
-        if (thresholdValue != null) {
-            //lowerThreshold = thresholdValue.floatValue();
-        }
-
-        thresholdValue = (Double) xml.read(meta + "threshold/@max", XPathConstants.NUMBER);
-        if (thresholdValue != null) {
-            //upperThreshold = thresholdValue.floatValue();
-        }
-
-        //System.out.println("threshold: [" + lowerThreshold + "," + upperThreshold + "]");
-
-
-        String selected = (String) xml.read(meta + "select/@node", XPathConstants.STRING);
-        if (selected != null) {
-            selectedNodeID = selected;
-            System.out.println("selected node: " + selectedNodeID);
-        }
-
-        Boolean cond = (Boolean) xml.read(meta + "labels/@show", XPathConstants.BOOLEAN);
-        if (cond != null) {
-            showLabels = cond;
-            System.out.println("showLabels: " + showLabels);
-        }
-
-        cond = (Boolean) xml.read(meta + "nodes/@show", XPathConstants.BOOLEAN);
-        if (cond != null) {
-            showNodes = cond;
-            System.out.println("showNodes: " + showNodes);
-        }
-
-        cond = (Boolean) xml.read(meta + "links/@show", XPathConstants.BOOLEAN);
-        if (cond != null) {
-            showLinks = cond;
-            System.out.println("showLinks: " + showLinks);
-        }
-
-        cond = (Boolean) xml.read(meta + "layout/@show", XPathConstants.BOOLEAN);
-        if (cond != null) {
-            animationPaused = cond;
-            System.out.println("animationPaused: " + animationPaused);
-        }
-
-        cond = (Boolean) xml.read(meta + "layout/@prespatialize", XPathConstants.BOOLEAN);
-        if (cond != null) {
-            prespatialize = cond;
-            System.out.println("prespatialize: " + prespatialize);
-        }
-
-
-        // reset the graph metrics
-        metrics.minX = 0.0f;
-        metrics.minY = 0.0f;
-        metrics.maxX = 0.0f;
-        metrics.maxY = 0.0f;
-        metrics.minRadius = 0.0f;
-        metrics.maxRadius = 0.0f;
-
-            Console.log("<applet> parsing XML: reading nodes..");
-        org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
-                XPathConstants.NODESET);
-        for (int i = 0; i < nodes.getLength(); i++) {
-            org.w3c.dom.Node xmlnode = nodes.item(i);
-
-            /*if (xmlnode.getNodeType() != org.w3c.dom.Node.ELEMENT_NODE){
-            continue;
-            }*/
-            //System.out.println(xmlnode.getNodeValue());
-
-            org.w3c.dom.NamedNodeMap xmlnodeAttributes = xmlnode.getAttributes();
-
-
-            //String uuid = nodeAttributes.getNamedItem("id").getNodeValue();
-            //String label = nodeAttributes.getNamedItem("label").getNodeValue();
-
-
-
-            String uuid = xmlnodeAttributes.getNamedItem("id").getNodeValue();
-
-            String label = (xmlnodeAttributes.getNamedItem("label") != null)
-                    ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
-                    : uuid;
-
-
-
-            Node node = new Node(uuid, label, (float) Math.random() * 10f,
-                    (float) Math.random() * 100f,
-                    (float) Math.random() * 100f);//, posx, posy);
-
-            node.category = "term";
-            
-            // update the graph metrics
-            if (node.x < metrics.minX) {
-                metrics.minX = node.x;
-            }
-            if (node.x > metrics.maxX) {
-                metrics.maxX = node.x;
-            }
-            if (node.y < metrics.minY) {
-                metrics.minY = node.y;
-            }
-            if (node.y > metrics.maxY) {
-                metrics.maxY = node.y;
-            }
-            if (node.radius < metrics.minRadius) {
-                    metrics.minRadius = node.radius;
-           }
-            if (node.radius > metrics.maxRadius) {
-                    metrics.maxRadius = node.radius;
-            }
-
-            org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
-
-            for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
-                org.w3c.dom.Node n = xmlnodeChildren.item(j);
-                if (n.getNodeName().equals("attvalues")) {
-                    // System.out.println("in attributes tag");
-                    org.w3c.dom.NodeList xmlattribs = n.getChildNodes();
-                    for (int k = 0; k < xmlattribs.getLength(); k++) {
-                        org.w3c.dom.Node attr = xmlattribs.item(k);
-                        if (attr.getNodeName().equals("attvalue")) {
-                            // System.out.println("in attribute tag");
-                            if (attr.getAttributes() != null) {
-                                if (attr.getAttributes().getNamedItem("for") != null) {
-                                    if (attr.getAttributes().getNamedItem("for").getNodeValue().equals("0")) {
-                                        node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
-                                        // System.out.println(" - category: "+node.category);
-
-                                    } else if (attr.getAttributes().getNamedItem("for").getNodeValue().equals("1")) {
-                                        //node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
-                                        // System.out.println("  - genericity: "+node.genericity );
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                } else if (n.getNodeName().equals("viz:position") || n.getNodeName().equals("position")) {
-                    org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
-                    if (xmlnodePositionAttributes.getNamedItem("x") != null) {
-                        node.x = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("x").getNodeValue());
-                    }
-                    if (xmlnodePositionAttributes.getNamedItem("y") != null) {
-                        node.y = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("y").getNodeValue());
-                    }
-                } else if (n.getNodeName().equals("viz:size") || n.getNodeName().equals("size")) {
-                    org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
-                    if (xmlnodePositionAttributes.getNamedItem("value") != null) {
-                        // FIXME normalize radius by a max radius, so it is not too big
-                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.7f;
-                    }
-                } else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
-                    org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
-                    if (xmlnodePositionAttributes.getNamedItem("r") != null) {
-                        node.r = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("r").getNodeValue());
-                    }
-                    if (xmlnodePositionAttributes.getNamedItem("g") != null) {
-                        node.g = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("g").getNodeValue());
-                    }
-                    if (xmlnodePositionAttributes.getNamedItem("b") != null) {
-                        node.b = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("b").getNodeValue());
-                    }
-
-                }
-                // update the graph metrics
-                if (node.x < metrics.minX) {
-                    metrics.minX = node.x;
-                }
-                if (node.x > metrics.maxX) {
-                    metrics.maxX = node.x;
-                }
-                if (node.y < metrics.minY) {
-                    metrics.minY = node.y;
-                }
-                if (node.y > metrics.maxY) {
-                    metrics.maxY = node.y;
-                }
-                if (node.radius < metrics.minRadius) {
-                    metrics.minRadius = node.radius;
-                }
-                if (node.radius > metrics.maxRadius) {
-                    metrics.maxRadius = node.radius;
-                }
-
-            }
-
-            //System.out.println("selectedNodeID: " + selectedNodeID);
-
-            //if (selectedNodeID.equals(uuid)) {
-            //    node.selected = true;
-            //}
-
-            if (storedNodes.containsKey(uuid)) {
-                //System.out.println("updating node " + uuid);
-                storedNodes.get(uuid).update(node);
-            } else {
-                //System.out.println("adding node " + uuid);
-                storedNodes.put(uuid, node);
-                //nodeList.add(node);
-            }
-
-
-        }
-
-
-        org.w3c.dom.NodeList edges = (org.w3c.dom.NodeList) xml.read("/gexf/graph/edges/edge",
-                XPathConstants.NODESET);
-        for (int i = 0; i < edges.getLength(); i++) {
-            org.w3c.dom.Node xmledge = edges.item(i);
-            org.w3c.dom.NamedNodeMap edgeAttributes = xmledge.getAttributes();
-            if (edgeAttributes.getNamedItem("source") == null
-                    || edgeAttributes.getNamedItem("target") == null) {
-                continue;
-            }
-
-            String source = edgeAttributes.getNamedItem("source").getNodeValue();
-            String target = edgeAttributes.getNamedItem("target").getNodeValue();
-            Float weight = (edgeAttributes.getNamedItem("weight") != null)
-                    ? Float.parseFloat(edgeAttributes.getNamedItem("weight").getNodeValue()) : 1.0f;
-
-            if (storedNodes.containsKey(source) && storedNodes.containsKey(target)) {
-                storedNodes.get(source).addNeighbour(storedNodes.get(target));
-
-                // add the weight
-                //System.out.println("adding edge "+i+" <"+source+","+target+">");
-                storedNodes.get(source).weights.put(target, weight);
-            }
-
-        }
-
-        hasBeenRead.set(false);
-        //traverseNodes(thirdProject);
-        return true;
-    }
-
-    // call by the drawer when isSynced is false
-    public synchronized List<tinaviz.Node> getNodes() {
-
-        if (true) {
-            return new ArrayList(storedNodes.values());
-        } else {
-            if (filters.filtered.get()) {
-                hasBeenRead.set(true);
-                return filters.filteredNodes;
-            } else {
-                // filter still not ready, drawer will have to wait a bit more
-                return null;
-            }
-        }
-    }
-
-    public void putNode(tinaviz.Node node) {
-        if (storedNodes.containsKey(node.uuid)) {
-            storedNodes.put(node.uuid, node);
-        } else {
-            storedNodes.get(node.uuid).update(node);
-        }
-    }
-
-    public void addNode(tinaviz.Node node) {
-        if (!storedNodes.containsKey(node.uuid)) {
-            storedNodes.put(node.uuid, node);
-        }
-    }
-
-    public void updateNode(tinaviz.Node node) {
-        if (storedNodes.containsKey(node.uuid)) {
-            storedNodes.get(node.uuid).update(node);
-        }
-    }
-
-    public void addNeighbour(tinaviz.Node node1, tinaviz.Node node2) {
-        if (storedNodes.containsKey(node1.uuid)) {
-            storedNodes.get(node1.uuid).addNeighbour(node2);
-        } else {
-            node1.addNeighbour(node2);
-            storedNodes.put(node1.uuid, node1);
-
-        }
-    }
-
-    public void addNodes(List<tinaviz.Node> nodes) {
-        for (tinaviz.Node node : nodes) {
-            addNode(node);
-        }
-    }
-
-    public int size() {
-        return storedNodes.size();
-    }
-
-    public tinaviz.Node getNode(String key) {
-        return storedNodes.get(key);
-    }
-
-    public void clear() {
-        storedNodes.clear();
+        repulsion = 0.01f;
+        attraction = 0.0001f;
+               prespatializeSteps = 0;
+        resetCamera();
     }
 
     public synchronized boolean toggleLinks() {
@@ -452,14 +91,21 @@ public class View {
         return showNodes;
     }
 
-    public synchronized boolean togglePosterOverlay() {
-        showPosterOverlay = !showPosterOverlay;
-        return showPosterOverlay;
-    }
-
     public synchronized boolean togglePause() {
         animationPaused = !animationPaused;
         return animationPaused;
+    }
+
+    public String getName() {
+        return "";
+    }
+
+    public boolean cameraIsMoving() {
+        return Math.abs(inerX + inerY + inerZ) != 0.0f;
+    }
+
+    public boolean cameraIsMoving(float threshold) {
+        return Math.abs(inerX + inerY + inerZ) >= threshold;
     }
 
     public synchronized boolean createFilter(String filterName, String model) {
@@ -497,9 +143,94 @@ public class View {
         return filters.getFilter(filterName).getField(key);
     }
 
-    public void selectNodeById(String id) {
-        for (Node n : storedNodes.values()) {
-            n.selected = true;
+    public void resetCamera() {
+
+        mousePosition = new PVector(0.0f, 0.0f);
+        translation = new PVector(0.0f, 0.0f);
+        lastPosition = new PVector(0.0f, 0.0f);
+        sceneScale = 2.0f;
+
+    }
+
+    public void resetCamera(float width, float height) {
+
+        mousePosition = new PVector(0.0f, 0.0f);
+        translation = new PVector(width/2.0f, width/2.0f);
+        lastPosition = new PVector(0.0f, 0.0f);
+        sceneScale = 1.0f;
+
+        
+        // initializes zoom
+        PVector box = new PVector(graph.metrics.maxX - graph.metrics.minX, graph.metrics.maxY - graph.metrics.minY);
+        float ratioWidth = width / box.x;
+        float ratioHeight = height / box.y;
+        if (sceneScale == 0) {
+            sceneScale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
         }
+        
+        // initializes move
+        PVector semiBox = PVector.div(box, 2);
+        PVector topLeftVector = new PVector(graph.metrics.minX,graph.metrics.minY);
+        PVector center = new PVector(width / 2f, height / 2f);
+        PVector scaledCenter = PVector.add(topLeftVector, semiBox);
+        translation.set(center);
+        translation.sub(scaledCenter);
+        lastPosition.set(translation);
+        System.out.println("automatic scaling..");
+        
+
+         
+
+    }
+
+    public void selectNodeById(String id) {
+        graph.selectNodeById(id);
+    }
+
+    public void unselectNodeById(String id) {
+        graph.unselectNodeById(id);
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+    // call by the drawer when isSynced is false
+
+    public synchronized List<tinaviz.Node> popNodes() {
+        return filters.popNodes();
+        /*
+        if (!hasBeenRead.get() && nodes != null) {
+            System.out.println("[view] we havn't been read, and nodes are not null.. -> set read to true, and return nodes!");
+            hasBeenRead.set(true);
+            return nodes;
+        } else {
+            if (nodes != null) {
+                // there are filtered nodes waiting for us
+            }
+        }
+        return null;*/
+    }
+
+    public void clear() {
+        graph.clear();
+    }
+
+    public void updateTranslationFrom(int x, int y) {
+        Vector tmp = new Vector(0, 0);
+        tmp.set(x, y, 0);
+        tmp.sub(mousePosition);
+        tmp.div(sceneScale); // ensure const. moving speed whatever the zoom is
+        tmp.add(lastPosition);
+
+        // todo lock here
+        translation.set(tmp);
+    }
+
+    public void memorizeLastPosition() {
+        lastPosition.set(translation);
+    }
+
+    public void storeMousePosition(int x, int y) {
+        mousePosition.set(x, y, 0);
     }
 }

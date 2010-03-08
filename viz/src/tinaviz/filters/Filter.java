@@ -7,7 +7,6 @@ package tinaviz.filters;
 
 import java.security.KeyException;
 import java.util.List;
-import java.util.Map;
 import tinaviz.Node;
 
 /**
@@ -15,7 +14,7 @@ import tinaviz.Node;
  * @author jbilcke
  */
 public interface Filter {
-  public List<Node> process(List<Node> input, Map<String, Channel> channels);
+  public List<Node> process(List<Node> input);
 
   public void setField(String key, String value) throws KeyException;
   public void setField(String key, float value) throws KeyException;

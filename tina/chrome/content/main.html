@@ -28,8 +28,18 @@
     <link type="text/css" rel="stylesheet" href="main.css"/>
 </head>
 <body style="cursor: auto;">
-<script type="text/javascript">
+<script type="text/javascript"> 
+
     $(function(){
+    
+    	 $('#htoolbar input[type=file]').change(function(e){
+	      console.log("calling clear()");
+	      tabvizframe.tinaviz.clear();
+	      console.log("loadAbsoluteGraph"+$(this).val());
+          tabvizframe.tinaviz.loadAbsoluteGraph( $(this).val() );
+        });
+	
+    
         //all hover and click logic for buttons
         $(".fg-button:not(.ui-state-disabled)")
         .hover(
@@ -117,70 +127,72 @@
                     <button class="ui-state-default ui-state-disabled ui-corner-all" >Generate graph</button>
                 </div>
             </div>
-
+            
             <div id="tabs-2" class="ui-corner-bottom">
-                <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-                <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                   <a href="#" onclick="tabvizframe.tinaviz.openGraphBrowser()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-folder-open"></span> open</a>
-                </div>
-                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a id="buttonlabel" href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a>
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
-                    </div>
-
-                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
-                    </div>
-
-                    <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.unselect()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> unselect</a>
-                    </div>
-
-                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> projects</a>
-                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo " title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> terms</a>
-                    </div>
-                </div>
-                <!--<div id="globalrepulsion" style="width:150px; height:12px; margin:15px;"></div>-->
-                <div class="search">
-                        <label for="searchfield">Search:</label>
-                        <input id="searchfield" name="searchfield" />
-                </div>
-            </div>
-
-
-
-            <div id="tabs-3" class="ui-corner-bottom">
               <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                   <a href="#" onclick="tabvizframe.tinaviz.openGraphBrowser()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-folder-open"></span> open</a>
+                   <a href="#" onclick="#" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> labels</a>
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> nodes</a>
-                        <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> edges</a>
+                        <a id="buttonlabel" href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> Labels</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> Nodes</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> Edges</a>
                     </div>
+
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> pause</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> Pause</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#" onclick="tabvizframe.tinaviz.unselect()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> unselect</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.unselect()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
+                    </div>
+
+                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> Projects</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo " title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> Terms</a>
+                    </div>
+                    
+                      <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.search()" class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
+                       </div>
+                </div>
+                <!--<div id="globalrepulsion" style="width:150px; height:12px; margin:15px;"></div>-->
+            </div>
+
+            <div id="tabs-3" class="ui-corner-bottom">
+               <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
+                   <a href="#" onclick="#" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
+                </div>
+                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a id="buttonlabel" href="#" onclick="tabvizframe.tinaviz.toggleLabels()" class="fg-button ui-state-default fg-button-icon-solo ui-corner-left" title="labels"><span class="ui-icon ui-icon-label"></span> Labels</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleNodes()" class="fg-button ui-state-default fg-button-icon-solo" title="nodes"><span class="ui-icon ui-icon-nodes"></span> Nodes</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleEdges()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-right" title="edges"><span class="ui-icon ui-icon-edges"></span> Edges</a>
+                    </div>
+                          
+                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.togglePause()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> Pause</a>
+                    </div>
+
+                    <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.unselect()" class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" title="pause"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
 
-                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleProjects()" class="fg-button ui-state-default fg-button-icon-left ui-corner-left" title="projects"><span class="ui-icon ui-icon-projects"></span> Projects</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo " title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>
+                        <a href="#" onclick="tabvizframe.tinaviz.toggleTerms()" class="fg-button ui-state-default fg-button-icon-left  ui-corner-right" title="terms"><span class="ui-icon ui-icon-terms"></span> Terms</a>
+                    </div>
+                    
+                      <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
+                        <a href="#" onclick="tabvizframe.tinaviz.search()" class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
+                      </div>
 
-                   </div>
+                        <a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo  ui-corner-all" title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>
                 </div>
                 <!--<div id="localrepulsion" style="width:150px; height:12px; margin:15px;"></div>-->
-                <div class="search"">
-                        <label for="searchfield">Search:</label>
-                        <input id="searchfield" name="searchfield" />
-                </div>
             </div>
             <div id="tabs-4" class="ui-corner-bottom">
                 Micro Level (Not Implemented)
