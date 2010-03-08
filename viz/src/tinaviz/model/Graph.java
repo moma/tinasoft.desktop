@@ -28,13 +28,13 @@ public class Graph {
     public Map<String, tinaviz.Node> storedNodes = null;
     public Map<String, Object> attributes = null;
     public Metrics metrics = null;
-    public AtomicBoolean hasBeenReadByFilter = null;
+    public AtomicBoolean locked = null;
 
     public Graph() {
         storedNodes = new HashMap<String, tinaviz.Node>();
         attributes = new HashMap<String, Object>();
         metrics = new Metrics();
-        hasBeenReadByFilter = new AtomicBoolean(false);
+        locked = new AtomicBoolean(true);
     }
 
     public boolean updateFromURI(String uri) {
@@ -58,9 +58,10 @@ public class Graph {
 
     public boolean updateFromString(String str) {
         //Console.log("<applet> got updateFromString(..) from " + this);
+        
         try {
             XPathReader xml = new XPathReader();
-
+System.out.println("loading GEXF from string..");
             xml.parseFromString(str);
 
             //Console.log("<applet> calling parse XML on "+str);
@@ -79,8 +80,8 @@ public class Graph {
             return parseXML(xml);
         } catch (XPathExpressionException ex) {
             Console.log(ex.toString());
-        } 
-          
+        }
+
         return false;
     }
 
@@ -90,11 +91,12 @@ public class Graph {
     }
 
     private boolean parseXML(XPathReader xml) throws XPathExpressionException {
+        locked.set(true);
         String meta = "/gexf/graph/tina/";
         Console.log("<applet> parsing XML..");
 
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
-                Console.log("<applet> not failed yet!");
+        Console.log("<applet> not failed yet!");
         attributes.put("zoom", (zoomValue != null) ? zoomValue.floatValue() : 1.0f);
         Console.log("<applet> zoom passed");
 
@@ -138,6 +140,8 @@ public class Graph {
         metrics.maxY = 0.0f;
         metrics.minRadius = 0.0f;
         metrics.maxRadius = 0.0f;
+        metrics.centerX = 0.0f;
+        metrics.centerY = 0.0f;
 
         Console.log("<applet> parsing XML: reading nodes..");
         org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
@@ -230,7 +234,7 @@ public class Graph {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("value") != null) {
                         // FIXME normalize radius by a max radius, so it is not too big
-                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.7f;
+                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.02f;
                     }
                 } else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
@@ -314,10 +318,10 @@ public class Graph {
 
         metrics.centerX = metrics.maxX - metrics.minX;
         metrics.centerY = metrics.maxY - metrics.minY;
-        
-        // TODO scale/normalize the graph like Gephi
 
-        hasBeenReadByFilter.set(false);
+        // TODO scale/normalize the graph like Gephi
+        System.out.println("loading GEXF from string..done (setting hasBeenReadByFilter to false)");
+        locked.set(false);
         return true;
     }
 
@@ -373,7 +377,7 @@ public class Graph {
     public void clear() {
         storedNodes.clear();
         attributes.clear();
-        hasBeenReadByFilter.set(false);
+        locked.set(false);
     }
 
     public void selectNodeById(String id) {
@@ -381,6 +385,7 @@ public class Graph {
             storedNodes.get(id).selected = true;
         }
     }
+
     public void unselectNodeById(String id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;

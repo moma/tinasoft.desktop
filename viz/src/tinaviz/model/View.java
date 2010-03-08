@@ -33,6 +33,7 @@ public class View {
     public boolean showNodes = true;
     public boolean showLinks = true;
     public boolean animationPaused = false;
+    public boolean highDefinition = false;
     public boolean spatializeWhenMoving = true;
     public boolean centerOnSelection = true;
 
@@ -195,13 +196,19 @@ public class View {
     }
     // call by the drawer when isSynced is false
 
-    public synchronized List<tinaviz.Node> getNodes() {
-        List<Node> nodes = filters.getNodes();
+    public synchronized List<tinaviz.Node> popNodes() {
+        return filters.popNodes();
+        /*
         if (!hasBeenRead.get() && nodes != null) {
+            System.out.println("[view] we havn't been read, and nodes are not null.. -> set read to true, and return nodes!");
             hasBeenRead.set(true);
             return nodes;
+        } else {
+            if (nodes != null) {
+                // there are filtered nodes waiting for us
+            }
         }
-        return null;
+        return null;*/
     }
 
     public void clear() {

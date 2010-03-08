@@ -27,7 +27,7 @@ import tinaviz.model.Graph;
 public class FilterChain {
 
     public List<Node> filteredNodes = null;
-    public AtomicBoolean filteredNodesAreReadable = null;
+    public AtomicBoolean popLocked = null;
     private Map<String, Filter> filters = null;
     private List<FilterChainListener> listeners = null;
     public Graph graph = null;
@@ -42,13 +42,14 @@ public class FilterChain {
             this.nodes = null;
             this.chain = chain;
         }
+
         public FilterThread(FilterChain chain, List<Node> nodes) {
             this.nodes = nodes;
             this.chain = chain;
         }
 
         @Override
-        public void run()  {
+        public void run() {
             System.out.println("filter started!..");
             List<Node> result = (nodes != null) ? nodes : new ArrayList<Node>();
             for (Filter f : filters.values()) {
@@ -60,14 +61,14 @@ public class FilterChain {
             }
             chain.filteredNodes = result;
             System.out.println("filter finished! setting flash 'ready' to true..");
-            chain.filteredNodesAreReadable.set(true);
+            chain.popLocked.set(false);
         }
     }
 
     public FilterChain(Graph graph) {
 
         filteredNodes = new ArrayList<Node>();
-        filteredNodesAreReadable = new AtomicBoolean(true);
+        popLocked = new AtomicBoolean(true);
         filters = new HashMap<String, Filter>();
         listeners = new ArrayList<FilterChainListener>();
         thread = new FilterThread(this);
@@ -118,33 +119,40 @@ public class FilterChain {
         return false;
     }
 
+    public synchronized List<Node> popNodes() {
 
-    public synchronized List<Node> getNodes() {
+        // if the graph has been updated
+        if (!graph.locked.get()) {
+            popLocked.set(true); // lock the popper
+            graph.locked.set(true);
 
-        if (!graph.hasBeenReadByFilter.get())
-            System.out.println("FilterChain 1/2 getNodes() called; graph has changed, still not filtered!");
-        // if we have a new filtering task, 
-         if (!graph.hasBeenReadByFilter.get()) {
-              System.out.println("Waiting for the end of the previous filter..");
+            System.out.println("graph need to be repopped now!");
             try {
                 //thread.interrupt();
+                System.out.println("waiting previous filter thread..");
                 thread.join();
             } catch (InterruptedException ex) {
-                Console.error("Fatal error with thread: "+ex);
+                Console.error("Fatal error with thread: " + ex);
             }
-            filteredNodesAreReadable.set(false);
-            graph.hasBeenReadByFilter.set(true);
+            System.out.println("previous filter thread terminated. setting to false locks..");
+
 
             thread = new FilterThread(this, graph.getNodeList());
-            System.out.println("starting new filter..");
+            System.out.println("starting new filter thread..");
             thread.start();
-            System.out.println("filter should be started..");
-        }
-        if (!filteredNodesAreReadable.get()) 
-            System.out.println("FilterChain 2/2 getNodes() called; filtered nodes are not ready!");
-        return (filteredNodesAreReadable.get()) ? filteredNodes : null;
-    }
+            return null;
+        } else {
 
+            if (!popLocked.get()) {
+                popLocked.set(true); // no more popping!
+                return filteredNodes;
+            }
+
+            return null;
+
+        }
+
+    }
 
     public void addFilterChainListener(FilterChainListener listener) {
         listeners.add(listener);

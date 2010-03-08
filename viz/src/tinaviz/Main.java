@@ -2,6 +2,7 @@ package tinaviz;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.FilePermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,8 +140,8 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
 
-        font = loadFont(DEFAULT_FONT);
-        //font = createFont("Arial", 96, true);
+        //font = loadFont(DEFAULT_FONT);
+        font = createFont("Arial", 96, true);
         //String[] fontList = PFont.list();
         //println(fontList);
 
@@ -153,26 +154,25 @@ public class Main extends PApplet implements MouseWheelListener {
                 engine = OPENGL;
 
             }
-            // engine = OPENGL;
             window = JSObject.getWindow(this);
             int w = screen.width;
             int h = screen.height;
-
             w = (Integer) window.call("getWidth", null);
             h = (Integer) window.call("getHeight", null);
             size(w, h, engine);
-
-            // window = null;
         } else {
             size(screen.width, screen.height, engine);
         }
 
-        // textFont(font);
-        smooth();
-        frameRate(30);
-
-        textFont(font, 32);
-        //center();
+        if (engine == OPENGL) {
+            smooth();
+            frameRate(30);
+            textFont(font, 96);
+        } else {
+            smooth();
+            frameRate(20);
+            textFont(font, 24);
+        }
 
         addMouseWheelListener(this);
         //noStroke();
@@ -182,9 +182,19 @@ public class Main extends PApplet implements MouseWheelListener {
         // currentView.showLabels = false;
 
 
-        boolean generateRandomLocalGraph = true;
+        /*
+        SecurityManager appsm = System.getSecurityManager();
+        if (appsm != null) {
+               appsm.checkPermission(new FilePermission("*","read"));
+        } else {
+
+        }
+         * *
+         */
+
+        boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
-        boolean loadDefaultGlobalGraph = true;
+        boolean loadDefaultGlobalGraph = false;
         boolean generateRandomGlobalGraph = false;
 
         if (loadDefaultLocalGraph) {
@@ -232,7 +242,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             }
             tmp.add(root);
-            System.out.println("Generated " + tmp.size() + " nodes!");
+            Console.log("Generated " + tmp.size() + " nodes!");
 
             session.getMeso().getGraph().updateFromNodeList(tmp);
 
@@ -243,19 +253,19 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
-                    //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf");
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf");
-
+                    //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
+                    //"file://default.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf"
             /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
             + "/tinasoft.desktop/tina/chrome/content/applet/data/"
             + "map_dopamine_2002_2007_g.gexf"))*/
-
+            );
             //session.animationPaused = true;
         } else if (generateRandomGlobalGraph) {
 
             List<Node> tmp = new ArrayList<Node>();
             Node node;
-            System.out.println("Generating random graph..");
+            Console.log("Generating random graph..");
             float rx = random(width);
             float ry = random(height);
             float radius = 0.0f;
@@ -293,7 +303,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         // fill(255, 184);
 
-        System.out.println("Starting visualization..");
+        Console.log("Starting visualization..");
         if (window != null) {
             window.eval("appletInitialized();");
         }
@@ -316,10 +326,12 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
 
-        List<Node> n = v.getNodes();
+        List<Node> n = v.popNodes();
         if (n != null) {
+            System.out.println("clearing nodes..");
             nodes.clear();
             nodes.addAll(n);
+            System.out.println("reset camera("+width+","+height+")");
             v.resetCamera(width,height);
             //center(); // uncomment this later
             System.out.println("got new nodes!");
@@ -502,26 +514,8 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean _mouseLeftDrag = this.mouseLeftDragging.get();
 
         background(255);
-
-        //textMode(SCREEN);
-
-        if (false) {
-            fill(30);
-            textSize(40);
-            text("TinaSoft", 15f, 50f);
-
-            fill(80);
-            textSize(18);
-            text("A cool project subtitle", 18f, 70f);
-            fill(120);
-        } else {
-            fill(120);
-        }
         stroke(150, 150, 150);
         strokeWeight(1);
-
-
-
 
         if (zooming.getAndSet(false)) {
             if (zoomIn.get()) {
@@ -585,9 +579,12 @@ public class Main extends PApplet implements MouseWheelListener {
                 vx = n2.x - n1.x;
                 vy = n2.y - n1.y;
                 distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
+
                 // plutot que mettre une distance minimale,
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
+
+
 
                 if (n1.neighbours.contains(n2)) {
 
@@ -602,6 +599,10 @@ public class Main extends PApplet implements MouseWheelListener {
                         n1.vy += (vy * distance) * attraction;
                         n2.vx -= (vx * distance) * attraction;
                         n2.vy -= (vy * distance) * attraction;
+
+                        // TODO min repulsion
+                        //n2.vx += n2.radius * (1.0 / distance);
+                        //n2.vx += n2.radius * (1.0 / distance);
                     }
 
                     if (!v.animationPaused) {
@@ -634,7 +635,7 @@ public class Main extends PApplet implements MouseWheelListener {
                             }
 
 
-                            if (v.animationPaused) {
+                            if (v.highDefinition) {
                                 strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
                             }
 
@@ -992,12 +993,16 @@ public class Main extends PApplet implements MouseWheelListener {
             v.showLabels = !v.showLabels;
         } else if (key == 'n') {
             v.showNodes = !v.showNodes;
-        } else if (key == 'o') {
+        } else if (key == 'a') {
+            v.animationPaused = !v.animationPaused;
+        } else if (key == 'h') {
+            v.highDefinition = !v.highDefinition;
+        }   else if (key == 'o') {
             if ((v.attraction + 0.00001) < 0.0003) {
                 v.attraction += 0.00001f;
             }
         } else if (key == 'l') {
-            if ((v.attraction - 0.00001f) > 1.1e-5) {
+            if ((v.attraction - 0.00001f) > 1.5e-5) {
                 v.attraction -= 0.00001f;
             }
         }
