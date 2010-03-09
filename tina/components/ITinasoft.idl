@@ -10,16 +10,16 @@ interface ITinasoft : nsISupports {
     // status can be one of the states above
     attribute long status;
     // Extraction task
-    void runImportFile(
+    wstring runImportFile(
         in wstring filePath,
         in wstring configFile,
         in wstring corpora_id,
-        in boolean overwrite,
         in boolean index,
-        in wstring fileFormat
+        in wstring fileFormat,
+        in boolean overwrite
     );
     // Export an extraction session
-    void runExportCorpora(
+    wstring runExportCorpora(
         in wstring periods,
         in wstring corpora_id,
         in wstring exportPath,
@@ -27,18 +27,16 @@ interface ITinasoft : nsISupports {
         in wstring userfiltersPath
     );
     // import a whitelist and writes cooc matrix
-    void runProcessCooc(
+    wstring runProcessCooc(
         in wstring whitelistPath,
         in wstring corpora_id,
         in wstring periods,
         in wstring userfiltersPath
     );
     // export a cooc matrix to text file
-    void runExportCoocMatrix(
-
-    );
+    wstring runExportCoocMatrix();
     // export a gexf graph
-    void runExportGraph(
+    wstring runExportGraph(
         in wstring corpora_id,
         in wstring periods,
         in wstring threshold,
