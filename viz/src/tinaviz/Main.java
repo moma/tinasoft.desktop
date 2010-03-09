@@ -157,8 +157,19 @@ public class Main extends PApplet implements MouseWheelListener {
             window = JSObject.getWindow(this);
             int w = screen.width;
             int h = screen.height;
-            w = (Integer) window.call("getWidth", null);
-            h = (Integer) window.call("getHeight", null);
+            Object o = window.call("getWidth", null);
+            if (o != null) {
+                if (o instanceof Double) {
+                    w = ((Double) o).intValue();
+                }
+            }
+            o = window.call("getHeight", null);
+            if (o != null) {
+                if (o instanceof Double) {
+                    h = ((Double) o).intValue();
+                }
+            }
+
             size(w, h, engine);
         } else {
             size(screen.width, screen.height, engine);
@@ -185,7 +196,7 @@ public class Main extends PApplet implements MouseWheelListener {
         /*
         SecurityManager appsm = System.getSecurityManager();
         if (appsm != null) {
-               appsm.checkPermission(new FilePermission("*","read"));
+        appsm.checkPermission(new FilePermission("*","read"));
         } else {
 
         }
@@ -255,11 +266,9 @@ public class Main extends PApplet implements MouseWheelListener {
             session.getMacro().getGraph().updateFromURI(
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf"
-            /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
-            + "/tinasoft.desktop/tina/chrome/content/applet/data/"
-            + "map_dopamine_2002_2007_g.gexf"))*/
-            );
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
+                    + "/tinasoft.desktop/tina/chrome/content/applet/data/"
+                    + "map_dopamine_2002_2007_g.gexf"))*/);
             //session.animationPaused = true;
         } else if (generateRandomGlobalGraph) {
 
@@ -331,8 +340,8 @@ public class Main extends PApplet implements MouseWheelListener {
             System.out.println("clearing nodes..");
             nodes.clear();
             nodes.addAll(n);
-            System.out.println("reset camera("+width+","+height+")");
-            v.resetCamera(width,height);
+            System.out.println("reset camera(" + width + "," + height + ")");
+            v.resetCamera(width, height);
             //center(); // uncomment this later
             System.out.println("got new nodes!");
         }
@@ -787,13 +796,17 @@ public class Main extends PApplet implements MouseWheelListener {
                 } else if (_mouseLeftDrag) {
                     if (screenX(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseX && mouseX < screenX(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)
                             && screenY(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseY && mouseY < screenY(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)) {
-                        System.out.println("clicked on node " + n.uuid);
+                        System.out.println("dragged left mouse over node " + n.uuid);
+
+                        // old code to restore "selection only"
                         session.selectNode(n);
                         if (!massSelectionHasBegin) {
-                            massSelectionHasBegin = true;
-                            jsNodeSelected(n);
-
+                        massSelectionHasBegin = true;
+                        jsNodeSelected(n);
+                        
                         }
+
+
                     }
                 } else {
                     n.highlighted = true;
@@ -867,6 +880,8 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             if (n.selected) {
                 fill(70);
+            } else if (n.highlighted) {
+                fill(110);
             } else {
                 fill(150);
             }
@@ -997,7 +1012,7 @@ public class Main extends PApplet implements MouseWheelListener {
             v.animationPaused = !v.animationPaused;
         } else if (key == 'h') {
             v.highDefinition = !v.highDefinition;
-        }   else if (key == 'o') {
+        } else if (key == 'o') {
             if ((v.attraction + 0.00001) < 0.0003) {
                 v.attraction += 0.00001f;
             }
