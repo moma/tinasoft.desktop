@@ -208,16 +208,23 @@ System.out.println("loading GEXF from string..");
                         if (attr.getNodeName().equals("attvalue")) {
                             // System.out.println("in attribute tag");
                             if (attr.getAttributes() != null) {
+                                org.w3c.dom.Node attrID = null;
                                 if (attr.getAttributes().getNamedItem("for") != null) {
-                                    if (attr.getAttributes().getNamedItem("for").getNodeValue().equals("0")) {
+                                     attrID = attr.getAttributes().getNamedItem("for");
+                                } else {
+                                    // maybe this is an old gexf..
+                                    attrID = attr.getAttributes().getNamedItem("id");
+                                }
+
+                                    if (attrID.getNodeValue().equals("0")) {
                                         node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
                                         // System.out.println(" - category: "+node.category);
 
-                                    } else if (attr.getAttributes().getNamedItem("for").getNodeValue().equals("1")) {
+                                    } else if (attrID.getNodeValue().equals("1")) {
                                         //node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
                                         // System.out.println("  - genericity: "+node.genericity );
                                     }
-                                }
+                                
                             }
                         }
 

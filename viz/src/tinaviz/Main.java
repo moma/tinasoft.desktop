@@ -157,8 +157,19 @@ public class Main extends PApplet implements MouseWheelListener {
             window = JSObject.getWindow(this);
             int w = screen.width;
             int h = screen.height;
-            w = (Integer) window.call("getWidth", null);
-            h = (Integer) window.call("getHeight", null);
+            Object o = window.call("getWidth", null);
+            if (o != null) {
+                if (o instanceof Double) {
+                    w = ((Double) o).intValue();
+                }
+            }
+            o = window.call("getHeight", null);
+            if (o != null) {
+                if (o instanceof Double) {
+                    h = ((Double) o).intValue();
+                }
+            }
+
             size(w, h, engine);
         } else {
             size(screen.width, screen.height, engine);
@@ -185,7 +196,7 @@ public class Main extends PApplet implements MouseWheelListener {
         /*
         SecurityManager appsm = System.getSecurityManager();
         if (appsm != null) {
-               appsm.checkPermission(new FilePermission("*","read"));
+        appsm.checkPermission(new FilePermission("*","read"));
         } else {
 
         }
@@ -195,7 +206,7 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
         boolean loadDefaultGlobalGraph = false;
-        boolean generateRandomGlobalGraph = false;
+        boolean generateRandomGlobalGraph = true;
 
         if (loadDefaultLocalGraph) {
 
@@ -255,11 +266,9 @@ public class Main extends PApplet implements MouseWheelListener {
             session.getMacro().getGraph().updateFromURI(
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf"
-            /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
-            + "/tinasoft.desktop/tina/chrome/content/applet/data/"
-            + "map_dopamine_2002_2007_g.gexf"))*/
-            );
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
+                    + "/tinasoft.desktop/tina/chrome/content/applet/data/"
+                    + "map_dopamine_2002_2007_g.gexf"))*/);
             //session.animationPaused = true;
         } else if (generateRandomGlobalGraph) {
 
@@ -301,6 +310,9 @@ public class Main extends PApplet implements MouseWheelListener {
         session.toMacroLevel();
         // session.toMesoLevel();
 
+        // DEBUG MODE
+        session.macro.prespatializeSteps = 0;
+
         // fill(255, 184);
 
         Console.log("Starting visualization..");
@@ -331,8 +343,8 @@ public class Main extends PApplet implements MouseWheelListener {
             System.out.println("clearing nodes..");
             nodes.clear();
             nodes.addAll(n);
-            System.out.println("reset camera("+width+","+height+")");
-            v.resetCamera(width,height);
+            System.out.println("reset camera(" + width + "," + height + ")");
+            v.resetCamera(width, height);
             //center(); // uncomment this later
             System.out.println("got new nodes!");
         }
@@ -520,11 +532,10 @@ public class Main extends PApplet implements MouseWheelListener {
         if (zooming.getAndSet(false)) {
             if (zoomIn.get()) {
                 v.sceneScale *= 2.0;
-                System.out.println("\nZOOMING IN. NEW SCALE: " + v.sceneScale);
             } else {
                 v.sceneScale *= 0.5;
-                System.out.println("\nZOOMING OUT. NEW SCALE: " + v.sceneScale);
             }
+            System.out.println("\nZoom: " + v.sceneScale);
         }
 
         switch (session.currentLevel) {
@@ -600,9 +611,6 @@ public class Main extends PApplet implements MouseWheelListener {
                         n2.vx -= (vx * distance) * attraction;
                         n2.vy -= (vy * distance) * attraction;
 
-                        // TODO min repulsion
-                        //n2.vx += n2.radius * (1.0 / distance);
-                        //n2.vx += n2.radius * (1.0 / distance);
                     }
 
                     if (!v.animationPaused) {
@@ -659,16 +667,32 @@ public class Main extends PApplet implements MouseWheelListener {
                         }
 
                     }
-                }
-                // REPULSION
-                //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
-                if (!v.animationPaused) {
 
-                    n1.vx -= (vx / distance) * repulsion;
-                    n1.vy -= (vy / distance) * repulsion;
-                    n2.vx += (vx / distance) * repulsion;
-                    n2.vy += (vy / distance) * repulsion;
 
+                     // NEIGHBOUR REPULSION
+                    //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
+                    if (!v.animationPaused) {
+                        n1.vx -= n1.radius * (1.0f / distance); //
+                        n1.vy -= n1.radius * (1.0f / distance); //
+                        n2.vx += n1.radius * (1.0f / distance); //
+                        n2.vy += n1.radius * (1.0f / distance); // 0.01f
+
+
+                    }
+
+                } else {
+
+                    // STANDARD REPULSION
+                    //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
+                    if (!v.animationPaused) {
+
+
+                        n1.vx -= (vx / distance) * repulsion;
+                        n1.vy -= (vy / distance) * repulsion;
+                        n2.vx += (vx / distance) * repulsion;
+                        n2.vy += (vy / distance) * repulsion;
+
+                    }
                 }
 
                 //}
@@ -684,18 +708,18 @@ public class Main extends PApplet implements MouseWheelListener {
 
             if (!n.fixed) {
 
+                // important, we limit the velocity!
+                n.vx = constrain(n.vx, -15, 15);
+                n.vy = constrain(n.vy, -15, 15);
 
-                n.vx = constrain(n.vx, -20, 20);
-                n.vy = constrain(n.vy, -20, 20);
-
-
-                n.x += n.vx * 0.5f;
-                n.y += n.vy * 0.5f;
+                // update the coordinate
+                n.x = constrain(n.x + n.vx * 0.5f,-30000,+30000);
+                n.y = constrain(n.y + n.vy * 0.5f, -30000,+30000);
 
             }
+            
             n.vx = 0.0f;
             n.vy = 0.0f;
-
 
             /*************************************************************************
              *  SCREEN-BASED SELECTION, WHEN THE NODE IS IN THE CENTER OF THE SCREEN *
@@ -787,13 +811,17 @@ public class Main extends PApplet implements MouseWheelListener {
                 } else if (_mouseLeftDrag) {
                     if (screenX(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseX && mouseX < screenX(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)
                             && screenY(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseY && mouseY < screenY(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)) {
-                        System.out.println("clicked on node " + n.uuid);
+                        System.out.println("dragged left mouse over node " + n.uuid);
+
+                        // old code to restore "selection only"
                         session.selectNode(n);
                         if (!massSelectionHasBegin) {
-                            massSelectionHasBegin = true;
-                            jsNodeSelected(n);
-
+                        massSelectionHasBegin = true;
+                        jsNodeSelected(n);
+                        
                         }
+
+
                     }
                 } else {
                     n.highlighted = true;
@@ -867,6 +895,8 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             if (n.selected) {
                 fill(70);
+            } else if (n.highlighted) {
+                fill(110);
             } else {
                 fill(150);
             }
@@ -989,25 +1019,31 @@ public class Main extends PApplet implements MouseWheelListener {
             zoomIn.set(false);
         } else if (key == 'e') {
             v.showLinks = !v.showLinks;
+            System.out.println("show links is now "+v.showLinks);
         } else if (key == 't') {
             v.showLabels = !v.showLabels;
         } else if (key == 'n') {
             v.showNodes = !v.showNodes;
+            System.out.println("show nodes is now "+v.showNodes);
         } else if (key == 'a') {
             v.animationPaused = !v.animationPaused;
+            System.out.println("Animation paused is now "+v.animationPaused);
         } else if (key == 'h') {
             v.highDefinition = !v.highDefinition;
-        }   else if (key == 'o') {
+            System.out.println("HD mode is now "+v.highDefinition);
+        } else if (key == 'o') {
             if ((v.attraction + 0.00001) < 0.0003) {
                 v.attraction += 0.00001f;
+                System.out.println("\nattraction: " + session.getView().attraction);
+
             }
         } else if (key == 'l') {
             if ((v.attraction - 0.00001f) > 1.5e-5) {
                 v.attraction -= 0.00001f;
+                System.out.println("\nattraction: " + session.getView().attraction);
             }
         }
 
-        System.out.println("\nattraction: " + session.getView().attraction + " repulsion: " + session.getView().repulsion);
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {

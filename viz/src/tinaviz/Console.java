@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package tinaviz;
 
 import java.io.PrintWriter;
@@ -15,6 +14,7 @@ import java.util.logging.Logger;
  * @author Julian bilcke <julian.bilcke@iscpif.fr>
  */
 public class Console {
+
     /**
      * Given a Throwable, gets the full stack trace for the
      * Exception or Error as a String.  Returns an empty string
@@ -46,40 +46,43 @@ public class Console {
         return trace;
     }
 
-
-        /**
+    /**
      * Given a Throwable, gets the full stack trace for the
      * Exception or Error as a String.
      */
     public static void catchExceptionWithError(Throwable t) {
         error(Console.getStackTraceAsString(t));
     }
+
     public static void catchExceptionWithLog(Throwable t) {
         log(Console.getStackTraceAsString(t));
     }
+
     public static void catchExceptionWithDebug(Throwable t) {
         debug(Console.getStackTraceAsString(t));
     }
 
-   public static void error(String s) {
+    public static void error(String s) {
         if (Main.window != null) {
-           Main.window.eval("consoleError(\""+s+"\");");
-        } else {
-            Logger.getLogger("console").log(Level.SEVERE, null, s);
+            Main.window.eval("consoleError(\"" + s + "\");");
         }
+        Logger.getLogger("console").log(Level.SEVERE, null, s);
+
     }
+
     public static void log(String s) {
         if (Main.window != null) {
-            Main.window.eval("consoleLog(\""+s+"\");");
-        }else {
-            Logger.getLogger("console").log(Level.INFO, null, s);
+            Main.window.eval("consoleLog(\"" + s + "\");");
         }
+        Logger.getLogger("console").log(Level.INFO, null, s);
+
     }
+
     public static void debug(String s) {
         if (Main.window != null) {
-            Main.window.eval("consoleDebug(\""+s+"\");");
-        } else {
-            Logger.getLogger("console").log(Level.FINE, null, s);
+            Main.window.eval("consoleDebug(\"" + s + "\");");
         }
+        Logger.getLogger("console").log(Level.FINE, null, s);
+
     }
 }
