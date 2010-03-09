@@ -153,6 +153,9 @@ public class Main extends PApplet implements MouseWheelListener {
             } else if (getParameter("engine").equals("hardware")) {
                 engine = OPENGL;
 
+            } else if (getParameter("engine").equals("optimized")) {
+                engine = JAVA2D;
+
             }
             window = JSObject.getWindow(this);
             int w = screen.width;
