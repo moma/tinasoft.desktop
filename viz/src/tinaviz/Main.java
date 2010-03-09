@@ -140,8 +140,8 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
 
-        //font = loadFont(DEFAULT_FONT);
-        font = createFont("Arial", 96, true);
+        font = loadFont(DEFAULT_FONT);
+        //font = createFont("Arial", 96, true);
         //String[] fontList = PFont.list();
         //println(fontList);
 
@@ -206,7 +206,7 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
         boolean loadDefaultGlobalGraph = false;
-        boolean generateRandomGlobalGraph = true;
+        boolean generateRandomGlobalGraph = false;
 
         if (loadDefaultLocalGraph) {
 
@@ -524,6 +524,7 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean _resetSelection = this.resetSelection.getAndSet(false);
         boolean _mouseLeftClick = this.mouseClickLeft.getAndSet(false);
         boolean _mouseLeftDrag = this.mouseLeftDragging.get();
+        boolean _mouseRightDrag = this.mouseRightDragging.get();
 
         background(255);
         stroke(150, 150, 150);
@@ -613,9 +614,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
                     }
 
-                    if (!v.animationPaused) {
-                        strokeWeight(1.0f);
-                    }
 
                     if (v.showLinks) {
                         boolean doubleLink = false;
@@ -624,6 +622,9 @@ public class Main extends PApplet implements MouseWheelListener {
                             doubleLink = true;
                         }
                         if (!doubleLink | n1.uuid.compareTo(n2.uuid) <= 0) {
+
+                            // greyscale!
+                            if (false) {
                             if (doubleLink) {
                                 if (n1.selected && n2.selected) {
                                     stroke(50);
@@ -641,10 +642,31 @@ public class Main extends PApplet implements MouseWheelListener {
                                     stroke(240);
                                 }
                             }
+                            } else {
+                                if (doubleLink) {
+                                if (n1.selected && n2.selected) {
+                                    stroke(50);
+                                } else if (n1.selected || n2.selected) {
+                                    stroke(130);
+                                } else {
+                                    stroke((n1.r+n2.r)/2,(n1.g+n2.g)/2,(n1.b+n2.b)/2);
+                                }
+                            } else {
+                                if (n1.selected && n2.selected) {
+                                    stroke(70);
+                                } else if (n1.selected || n2.selected) {
+                                    stroke(150);
+                                } else {
+                                    stroke((n1.r+n2.r)/2,(n1.g+n2.g)/2,(n1.b+n2.b)/2);
+                                }
+                            }
+                            }
 
 
-                            if (v.highDefinition) {
+                            if (v.highDefinition && !_mouseRightDrag && n1.weights != null && n2.uuid != null) {
                                 strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
+                            } else {
+                                strokeWeight(1);
                             }
 
                             if (false) {
@@ -672,11 +694,18 @@ public class Main extends PApplet implements MouseWheelListener {
                      // NEIGHBOUR REPULSION
                     //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
                     if (!v.animationPaused) {
+
+                        /*
                         n1.vx -= n1.radius * (1.0f / distance); //
                         n1.vy -= n1.radius * (1.0f / distance); //
                         n2.vx += n1.radius * (1.0f / distance); //
                         n2.vy += n1.radius * (1.0f / distance); // 0.01f
-
+                        */
+                        
+                        n1.vx -= (vx / distance) * repulsion;
+                        n1.vy -= (vy / distance) * repulsion;
+                        n2.vx += (vx / distance) * repulsion;
+                        n2.vy += (vy / distance) * repulsion;
 
                     }
 
@@ -709,8 +738,8 @@ public class Main extends PApplet implements MouseWheelListener {
             if (!n.fixed) {
 
                 // important, we limit the velocity!
-                n.vx = constrain(n.vx, -15, 15);
-                n.vy = constrain(n.vy, -15, 15);
+                n.vx = constrain(n.vx, -10, 10);
+                n.vy = constrain(n.vy, -10, 10);
 
                 // update the coordinate
                 n.x = constrain(n.x + n.vx * 0.5f,-30000,+30000);

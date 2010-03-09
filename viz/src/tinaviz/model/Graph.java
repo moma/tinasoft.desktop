@@ -169,12 +169,11 @@ System.out.println("loading GEXF from string..");
                     : uuid;
 
 
-
             Node node = new Node(uuid, label, (float) Math.random() * 2f,
                     (float) Math.random() * 100f,
                     (float) Math.random() * 100f);//, posx, posy);
 
-            node.category = "term";
+            node.category = "NGram";
 
             // update the graph metrics
             if (node.x < metrics.minX) {
@@ -215,7 +214,7 @@ System.out.println("loading GEXF from string..");
                                     // maybe this is an old gexf..
                                     attrID = attr.getAttributes().getNamedItem("id");
                                 }
-
+                                if (attrID != null) {
                                     if (attrID.getNodeValue().equals("0")) {
                                         node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
                                         // System.out.println(" - category: "+node.category);
@@ -224,6 +223,7 @@ System.out.println("loading GEXF from string..");
                                         //node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
                                         // System.out.println("  - genericity: "+node.genericity );
                                     }
+                                }
                                 
                             }
                         }
@@ -297,6 +297,7 @@ System.out.println("loading GEXF from string..");
 
         }
 
+        Console.log("<graph> parsing edges..");
 
         org.w3c.dom.NodeList edges = (org.w3c.dom.NodeList) xml.read("/gexf/graph/edges/edge",
                 XPathConstants.NODESET);

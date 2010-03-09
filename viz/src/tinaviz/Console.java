@@ -66,7 +66,8 @@ public class Console {
         if (Main.window != null) {
             Main.window.eval("consoleError(\"" + s + "\");");
         }
-        Logger.getLogger("console").log(Level.SEVERE, null, s);
+        System.out.println("ERROR "+s);
+        //Logger.getLogger("console").log(Level.SEVERE, s, null);
 
     }
 
@@ -74,7 +75,8 @@ public class Console {
         if (Main.window != null) {
             Main.window.eval("consoleLog(\"" + s + "\");");
         }
-        Logger.getLogger("console").log(Level.INFO, null, s);
+        System.out.println("LOG "+s);
+       // Logger.getLogger("console").log(Level.INFO, s, null);
 
     }
 
@@ -82,7 +84,8 @@ public class Console {
         if (Main.window != null) {
             Main.window.eval("consoleDebug(\"" + s + "\");");
         }
-        Logger.getLogger("console").log(Level.FINE, null, s);
+        System.out.println("DEBUG "+s);
+       // Logger.getLogger("console").log(Level.FINE, s, null);
 
     }
 }
