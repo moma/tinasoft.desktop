@@ -206,7 +206,7 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
         boolean loadDefaultGlobalGraph = false;
-        boolean generateRandomGlobalGraph = false;
+        boolean generateRandomGlobalGraph = true;
 
         if (loadDefaultLocalGraph) {
 
@@ -309,6 +309,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
         session.toMacroLevel();
         // session.toMesoLevel();
+
+        // DEBUG MODE
+        session.macro.prespatializeSteps = 0;
 
         // fill(255, 184);
 
@@ -529,11 +532,10 @@ public class Main extends PApplet implements MouseWheelListener {
         if (zooming.getAndSet(false)) {
             if (zoomIn.get()) {
                 v.sceneScale *= 2.0;
-                System.out.println("\nZOOMING IN. NEW SCALE: " + v.sceneScale);
             } else {
                 v.sceneScale *= 0.5;
-                System.out.println("\nZOOMING OUT. NEW SCALE: " + v.sceneScale);
             }
+            System.out.println("\nZoom: " + v.sceneScale);
         }
 
         switch (session.currentLevel) {
@@ -609,9 +611,6 @@ public class Main extends PApplet implements MouseWheelListener {
                         n2.vx -= (vx * distance) * attraction;
                         n2.vy -= (vy * distance) * attraction;
 
-                        // TODO min repulsion
-                        //n2.vx += n2.radius * (1.0 / distance);
-                        //n2.vx += n2.radius * (1.0 / distance);
                     }
 
                     if (!v.animationPaused) {
@@ -668,16 +667,32 @@ public class Main extends PApplet implements MouseWheelListener {
                         }
 
                     }
-                }
-                // REPULSION
-                //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
-                if (!v.animationPaused) {
 
-                    n1.vx -= (vx / distance) * repulsion;
-                    n1.vy -= (vy / distance) * repulsion;
-                    n2.vx += (vx / distance) * repulsion;
-                    n2.vy += (vy / distance) * repulsion;
 
+                     // NEIGHBOUR REPULSION
+                    //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
+                    if (!v.animationPaused) {
+                        n1.vx -= n1.radius * (1.0f / distance); //
+                        n1.vy -= n1.radius * (1.0f / distance); //
+                        n2.vx += n1.radius * (1.0f / distance); //
+                        n2.vy += n1.radius * (1.0f / distance); // 0.01f
+
+
+                    }
+
+                } else {
+
+                    // STANDARD REPULSION
+                    //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
+                    if (!v.animationPaused) {
+
+
+                        n1.vx -= (vx / distance) * repulsion;
+                        n1.vy -= (vy / distance) * repulsion;
+                        n2.vx += (vx / distance) * repulsion;
+                        n2.vy += (vy / distance) * repulsion;
+
+                    }
                 }
 
                 //}
@@ -693,18 +708,18 @@ public class Main extends PApplet implements MouseWheelListener {
 
             if (!n.fixed) {
 
+                // important, we limit the velocity!
+                n.vx = constrain(n.vx, -15, 15);
+                n.vy = constrain(n.vy, -15, 15);
 
-                n.vx = constrain(n.vx, -20, 20);
-                n.vy = constrain(n.vy, -20, 20);
-
-
-                n.x += n.vx * 0.5f;
-                n.y += n.vy * 0.5f;
+                // update the coordinate
+                n.x = constrain(n.x + n.vx * 0.5f,-30000,+30000);
+                n.y = constrain(n.y + n.vy * 0.5f, -30000,+30000);
 
             }
+            
             n.vx = 0.0f;
             n.vy = 0.0f;
-
 
             /*************************************************************************
              *  SCREEN-BASED SELECTION, WHEN THE NODE IS IN THE CENTER OF THE SCREEN *
@@ -1004,25 +1019,31 @@ public class Main extends PApplet implements MouseWheelListener {
             zoomIn.set(false);
         } else if (key == 'e') {
             v.showLinks = !v.showLinks;
+            System.out.println("show links is now "+v.showLinks);
         } else if (key == 't') {
             v.showLabels = !v.showLabels;
         } else if (key == 'n') {
             v.showNodes = !v.showNodes;
+            System.out.println("show nodes is now "+v.showNodes);
         } else if (key == 'a') {
             v.animationPaused = !v.animationPaused;
+            System.out.println("Animation paused is now "+v.animationPaused);
         } else if (key == 'h') {
             v.highDefinition = !v.highDefinition;
+            System.out.println("HD mode is now "+v.highDefinition);
         } else if (key == 'o') {
             if ((v.attraction + 0.00001) < 0.0003) {
                 v.attraction += 0.00001f;
+                System.out.println("\nattraction: " + session.getView().attraction);
+
             }
         } else if (key == 'l') {
             if ((v.attraction - 0.00001f) > 1.5e-5) {
                 v.attraction -= 0.00001f;
+                System.out.println("\nattraction: " + session.getView().attraction);
             }
         }
 
-        System.out.println("\nattraction: " + session.getView().attraction + " repulsion: " + session.getView().repulsion);
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {
