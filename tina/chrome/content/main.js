@@ -36,6 +36,7 @@ var tinasoftTaskObserver = {
             $('#processCooc button').toggleClass("ui-state-disabled", 1);
         }
         if(topic == "tinasoft_runExportGraph_finish_status"){
+            displayListCorpora();
             $('#exportGraph button').toggleClass("ui-state-disabled", 1);
         }
         if (topic == "tinasoft_runExportGraph_running_status") {
@@ -70,9 +71,16 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_runni
 /* Importing data set action controler */
 
 var submitImportfile = function(event) {
-    corpora = $("#corpora")
-    path = $("#csvfile")
-    config  = $("#configfile")
+    var corpora = $("#corpora");
+    var path = $("#csvfile");
+    var config  = $("#configfile");
+    var overwrite = $("#overwrite:checked");
+    if (overwrite.val() !== undefined) {
+        overwrite = true;
+    }
+    else {
+        overwrite = false;
+    }
     // DEBUG
     //path.val("pubmed_tina_test.csv");
     //config.val("import.yaml");
@@ -93,7 +101,7 @@ var submitImportfile = function(event) {
         corpora.val(),
         false,
         'tina',
-        false
+        overwrite
     );
     return true;
 
@@ -183,8 +191,37 @@ var listCorpora = function() {
     return( JSON.parse(corporaList) );
 };
 
+function displayListGraph(trid, corpora) {
+    var tr = $( "#" +trid );
+    // corpus list cell
+    var olid = 'graph_list_' + trid
+    tr.append("<td>"
+        + "<ol id='"
+        + olid + "' >"
+        + "</ol></td>"
+    );
+    var ol = $( "#" + olid  ).empty();
+    var graphList = JSON.parse( TinaService.walkGraphPath(corpora['id']) );
+    for ( var i=0; i < graphList.length; i++ ) {
+        var button = $("<button class='ui-state-default ui-corner-all' value='"
+            + graphList[i]
+            + "'>"
+            + graphList[i]
+            + "</button>"
+        ).click(function(event) {
+            tabvizframe.tinaviz.clear();
+            console.log( "opening " + $(this).attr('value') );
+            if (tabvizframe.tinaviz.loadRelativeGraph("macro",$(this).attr('value')) == true) {
+                switchedTo( "macro" );
+            }
+        });
+        ol.append(button);
+    }
+}
+
 function displayListCorpus(trid, corpora) {
     var tr = $( "#" +trid );
+    // corpus list cell
     var olid = 'selectable_corpus_' + trid
     tr.append("<td>"
         + "<ol id='"
@@ -242,6 +279,8 @@ function displayListCorpora(table) {
         +"</tr>");
         //console.log(body.html());
         displayListCorpus( corpo_trid, corpora );
+        displayListGraph( corpo_trid, corpora );
+
     }
 }
 
