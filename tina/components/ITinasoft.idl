@@ -35,6 +35,7 @@ interface ITinasoft : nsISupports {
     );
     // export a cooc matrix to text file
     wstring runExportCoocMatrix();
+
     // export a gexf graph
     wstring runExportGraph(
         in wstring corpora_id,
@@ -42,6 +43,11 @@ interface ITinasoft : nsISupports {
         in wstring threshold,
         in wstring whitelistPath
     );
+    // file system file functions
+    wstring walkGraphPath(
+        in wstring corpora_id
+    );
+
     // database read access
     wstring listCorpora();
     wstring getCorpora(in wstring str);

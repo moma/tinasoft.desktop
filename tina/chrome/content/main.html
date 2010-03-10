@@ -82,6 +82,7 @@
                     <input id="configfile" class="field" type="hidden" name="configfile" value='import.yaml' /><br/>
                     <label>Data set name identifier (create or update)</label><br/>
                     <input id="corpora" type="text" name="corpora" value='test corpora' size="24"/><br/><br/>
+                    <label>Overwrite (uncheck will only update unexisting documents)</label><input id="overwrite" type="checkbox" name="overwrite"/><br/><br/>
                     <!--<label>Extraction export file path (csv)</label>
                     <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv' /><br/>-->
                     <!--<label>Index full-text</label>
@@ -98,6 +99,7 @@
                             <tr>
                               <th>Available data sets</th>
                               <th>Select periods</th>
+                              <th>Available graphs</th>
                             </tr>
                           </thead>
                         <tbody class="ui-widget-content"></tbody>

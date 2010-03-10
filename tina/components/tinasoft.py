@@ -147,8 +147,10 @@ class Tinasoft(TinaApp, ThreadPool):
 
     def walkGraphPath( self, corporaid ):
         path = join( self.config['user'], corporaid )
-        self.logger.debug( path )
-        return os.listdir( path )
+        if not exists( path ):
+            return self.serialize( [] )
+
+        return self.serialize( [join( path, file ) for file in os.listdir( path )] )
 
     def getGraphPath(self, corporaid, periods, threshold):
         path = join( self.config['user'], corporaid )
@@ -157,7 +159,7 @@ class Tinasoft(TinaApp, ThreadPool):
         filename = "-".join( periods ) + "_" \
             + "-".join( map(str,threshold) ) \
             + ".gexf"
-        self.logger.debug( join( path, filename ) )
+        #self.logger.debug( join( path, filename ) )
         return join( path, filename )
 
     def __del__(self):
