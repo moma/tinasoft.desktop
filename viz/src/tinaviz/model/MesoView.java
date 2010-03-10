@@ -17,7 +17,7 @@ public class MesoView extends View {
                 spatializeWhenMoving = true;
         centerOnSelection = true;
         ZOOM_CEIL = 1.0f;
-        ZOOM_FLOOR = 10.0f;
+        ZOOM_FLOOR = 30.0f;
 
     }
 
