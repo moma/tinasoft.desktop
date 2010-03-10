@@ -53,9 +53,9 @@ public class Main extends PApplet implements MouseWheelListener {
     private int recordingWidth = 100;
     private int recordingHeight = 100;
     private String DEFAULT_FONT = "ArialMT-150.vlw";
-    AtomicBoolean screenBufferUpdated = new AtomicBoolean(false);
-    AtomicBoolean screenBufferUpdating = new AtomicBoolean(false);
-    AtomicBoolean resetSelection = new AtomicBoolean(false);
+    private AtomicBoolean screenBufferUpdated = new AtomicBoolean(false);
+    private AtomicBoolean screenBufferUpdating = new AtomicBoolean(false);
+    private AtomicBoolean resetSelection = new AtomicBoolean(false);
     // Semaphore screenBufferLock = new Semaphore();
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
     float selectedX = 0.0f;
@@ -72,9 +72,9 @@ public class Main extends PApplet implements MouseWheelListener {
             return; // in debug mode
         }
         if (n == null) {
-            window.eval("nodeSelected('" + session.getLevel() + "',0,0,null,null,null);");
+            window.eval("parent.tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null);");
         } else {
-            window.eval("nodeSelected('" + session.getLevel() + "',"
+            window.eval("parent.tinaviz.nodeSelected('" + session.getLevel() + "',"
                     + screenX(n.x, n.y) + ","
                     + screenY(n.x, n.y) + ",\""
                     + n.uuid + "\",\"" + n.label + "\", \"" + n.category + "\");");
@@ -84,7 +84,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private void jsSwitchToMacro() {
         session.toMacroLevel();
         if (window != null) {
-            window.eval("switchedTo('macro');");
+            window.eval("parent.tinaviz.switchedTo('macro');");
         }
 
     }
@@ -92,14 +92,14 @@ public class Main extends PApplet implements MouseWheelListener {
     private void jsSwitchToMeso() {
         session.toMesoLevel();
         if (window != null) {
-            window.eval("switchedTo('meso');");
+            window.eval("parent.tinaviz.switchedTo('meso');");
         }
     }
 
     private void jsSwitchToMicro() {
         session.toMicroLevel();
         if (window != null) {
-            window.eval("switchedTo('micro');");
+            window.eval("parent.tinaviz.switchedTo('micro');");
         }
     }
 
@@ -160,18 +160,18 @@ public class Main extends PApplet implements MouseWheelListener {
             window = JSObject.getWindow(this);
             int w = screen.width;
             int h = screen.height;
-            Object o = window.call("getWidth", null);
+            /*Object o = window.call("parent.tinaviz.getWidth", null);
             if (o != null) {
-                if (o instanceof Double) {
-                    w = ((Double) o).intValue();
-                }
+            if (o instanceof Double) {
+            w = ((Double) o).intValue();
             }
-            o = window.call("getHeight", null);
+            }
+            o = window.call("parent.tinaviz.getHeight", null);
             if (o != null) {
-                if (o instanceof Double) {
-                    h = ((Double) o).intValue();
-                }
+            if (o instanceof Double) {
+            h = ((Double) o).intValue();
             }
+            }*/
 
             size(w, h, engine);
         } else {
@@ -320,7 +320,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         Console.log("Starting visualization..");
         if (window != null) {
-            window.eval("appletInitialized();");
+            window.eval("parent.tinaviz.init();");
         }
 
     }
@@ -457,7 +457,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
-    public void pdfDrawer(View net, int w, int h) {
+    public void pdfDrawer(View v, int w, int h) {
         PGraphicsPDF pdf = (PGraphicsPDF) createGraphics(w, h, PDF, "/tmp/out.pdf");
         pdf.beginDraw();
 
@@ -482,7 +482,7 @@ public class Main extends PApplet implements MouseWheelListener {
         pdf.text("A cool project subtitle", 18f, 70f);
         pdf.fill(120);
 
-        genericDrawer(net, pdf, w, h);
+        genericDrawer(v, pdf, w, h);
 
         pdf.dispose();
         pdf.endDraw();
@@ -628,41 +628,41 @@ public class Main extends PApplet implements MouseWheelListener {
 
                             // greyscale!
                             if (false) {
-                            if (doubleLink) {
-                                if (n1.selected && n2.selected) {
-                                    stroke(50);
-                                } else if (n1.selected || n2.selected) {
-                                    stroke(130);
+                                if (doubleLink) {
+                                    if (n1.selected && n2.selected) {
+                                        stroke(50);
+                                    } else if (n1.selected || n2.selected) {
+                                        stroke(130);
+                                    } else {
+                                        stroke(200);
+                                    }
                                 } else {
-                                    stroke(200);
+                                    if (n1.selected && n2.selected) {
+                                        stroke(70);
+                                    } else if (n1.selected || n2.selected) {
+                                        stroke(150);
+                                    } else {
+                                        stroke(240);
+                                    }
                                 }
-                            } else {
-                                if (n1.selected && n2.selected) {
-                                    stroke(70);
-                                } else if (n1.selected || n2.selected) {
-                                    stroke(150);
-                                } else {
-                                    stroke(240);
-                                }
-                            }
                             } else {
                                 if (doubleLink) {
-                                if (n1.selected && n2.selected) {
-                                    stroke(50);
-                                } else if (n1.selected || n2.selected) {
-                                    stroke(130);
+                                    if (n1.selected && n2.selected) {
+                                        stroke(50);
+                                    } else if (n1.selected || n2.selected) {
+                                        stroke(130);
+                                    } else {
+                                        stroke((n1.r + n2.r) / 2, (n1.g + n2.g) / 2, (n1.b + n2.b) / 2);
+                                    }
                                 } else {
-                                    stroke((n1.r+n2.r)/2,(n1.g+n2.g)/2,(n1.b+n2.b)/2);
+                                    if (n1.selected && n2.selected) {
+                                        stroke(70);
+                                    } else if (n1.selected || n2.selected) {
+                                        stroke(150);
+                                    } else {
+                                        stroke((n1.r + n2.r) / 2, (n1.g + n2.g) / 2, (n1.b + n2.b) / 2);
+                                    }
                                 }
-                            } else {
-                                if (n1.selected && n2.selected) {
-                                    stroke(70);
-                                } else if (n1.selected || n2.selected) {
-                                    stroke(150);
-                                } else {
-                                    stroke((n1.r+n2.r)/2,(n1.g+n2.g)/2,(n1.b+n2.b)/2);
-                                }
-                            }
                             }
 
 
@@ -694,7 +694,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     }
 
 
-                     // NEIGHBOUR REPULSION
+                    // NEIGHBOUR REPULSION
                     //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
                     if (!v.animationPaused) {
 
@@ -703,8 +703,8 @@ public class Main extends PApplet implements MouseWheelListener {
                         n1.vy -= n1.radius * (1.0f / distance); //
                         n2.vx += n1.radius * (1.0f / distance); //
                         n2.vy += n1.radius * (1.0f / distance); // 0.01f
-                        */
-                        
+                         */
+
                         n1.vx -= (vx / distance) * repulsion;
                         n1.vy -= (vy / distance) * repulsion;
                         n2.vx += (vx / distance) * repulsion;
@@ -745,11 +745,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 n.vy = constrain(n.vy, -10, 10);
 
                 // update the coordinate
-                n.x = constrain(n.x + n.vx * 0.5f,-30000,+30000);
-                n.y = constrain(n.y + n.vy * 0.5f, -30000,+30000);
+                n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
+                n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
 
             }
-            
+
             n.vx = 0.0f;
             n.vy = 0.0f;
 
@@ -848,9 +848,9 @@ public class Main extends PApplet implements MouseWheelListener {
                         // old code to restore "selection only"
                         session.selectNode(n);
                         if (!massSelectionHasBegin) {
-                        massSelectionHasBegin = true;
-                        jsNodeSelected(n);
-                        
+                            massSelectionHasBegin = true;
+                            jsNodeSelected(n);
+
                         }
 
 
@@ -978,7 +978,11 @@ public class Main extends PApplet implements MouseWheelListener {
         return session.getView();
     }
 
-    public void unselect() {
+    public View getView(String v) {
+        return session.getView(v);
+    }
+
+    public void resetSelection() {
         resetSelection.set(true);
     }
 
@@ -1050,19 +1054,35 @@ public class Main extends PApplet implements MouseWheelListener {
             zooming.set(true);
             zoomIn.set(false);
         } else if (key == 'e') {
-            v.showLinks = !v.showLinks;
-            System.out.println("show links is now "+v.showLinks);
+            if (window != null) {
+                window.eval("parent.tinaviz.toggleEdges('" + v.getName() + "');");
+            } else {
+                v.showLinks = !v.showLinks;
+            }
+            System.out.println("show links is now " + v.showLinks);
         } else if (key == 't') {
-            v.showLabels = !v.showLabels;
+            if (window != null) {
+                window.eval("parent.tinaviz.toggleLabels('" + v.getName() + "');");
+            } else {
+                v.showLabels = !v.showLabels;
+            }
         } else if (key == 'n') {
-            v.showNodes = !v.showNodes;
-            System.out.println("show nodes is now "+v.showNodes);
+            if (window != null) {
+                window.eval("parent.tinaviz.toggleNodes('" + v.getName() + "');");
+            } else {
+                v.showNodes = !v.showNodes;
+            }
+            System.out.println("show nodes is now " + v.showNodes);
         } else if (key == 'a') {
-            v.animationPaused = !v.animationPaused;
-            System.out.println("Animation paused is now "+v.animationPaused);
+            if (window != null) {
+                window.eval("parent.tinaviz.togglePause('" + v.getName() + "');");
+            } else {
+                v.animationPaused = !v.animationPaused;
+            }
+            System.out.println("Animation paused is now " + v.animationPaused);
         } else if (key == 'h') {
             v.highDefinition = !v.highDefinition;
-            System.out.println("HD mode is now "+v.highDefinition);
+            System.out.println("HD mode is now " + v.highDefinition);
         } else if (key == 'o') {
             if ((v.attraction + 0.00001) < 0.0003) {
                 v.attraction += 0.00001f;

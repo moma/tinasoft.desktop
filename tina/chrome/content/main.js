@@ -324,12 +324,12 @@ function getHeight() {
 }
 
 /* TODO replace by CSS query */
-function computeAppletWidth() {
+function getAppletWidth() {
     return getWidth() - 15;
 }
 
 /* TODO replace by CSS query */
-function computeAppletHeight() {
+function getAppletHeight() {
     return getHeight() - 140;
 }
 
@@ -345,7 +345,13 @@ function switchedTo(level) {
     $("#tabs").tabs( 'select' , tabs[level] );
 }
 
-
+function resizeApplet() {
+    var w = getAppletWidth();
+    var h = getAppletHeight();
+    $('#tabvizframe').css("height",""+h+"px");
+    $('#tabvizframe').css("width",""+w+"px");
+    tabvizframe.tinaviz.size(w,h);
+}
 // wait for the DOM to be loaded
 $(document).ready(function() {
 
@@ -358,28 +364,22 @@ $(document).ready(function() {
         // MAGIC TRICK FOR THE JAVA IFRAME
         if (ui.index == 2) {
             if (!tabvizframe.tinaviz.isEnabled()) {
-                $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
-                $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-                tabvizframe.tinaviz.resized();
+                resizeApplet();
                 tabvizframe.tinaviz.setEnabled(true);
             }
-            tabvizframe.tinaviz.toMacro();
+            tabvizframe.tinaviz.setLevel("macro");
         } else if (ui.index == 3) {
             if (!tabvizframe.tinaviz.isEnabled()) {
-                $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
-                $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-                tabvizframe.tinaviz.resized();
+                resizeApplet();
                 tabvizframe.tinaviz.setEnabled(true);
             }
-            tabvizframe.tinaviz.toMeso();
+            tabvizframe.tinaviz.setLevel("meso");
         } else if (ui.index == 4) {
             if (!tabvizframe.tinaviz.isEnabled()) {
-                $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
-                $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-                tabvizframe.tinaviz.resized();
+                resizeApplet();
                 tabvizframe.tinaviz.setEnabled(true);
             }
-            tabvizframe.tinaviz.toMicro();
+            tabvizframe.tinaviz.setLevel("micro");
         } else {
             // hide the frame; magic!
             tabvizframe.tinaviz.setEnabled(false);
@@ -437,11 +437,7 @@ $(document).ready(function() {
     $(window).bind('resize', function() {
         // check if the applet is ready
         if (tabvizframe.tinaviz.isEnabled()) {
-            // resize the iframe with pixel precision (we decided to control the size manually in our CSS)
-            $('#tabvizframe').css("height",""+(computeAppletHeight())+"px");
-            $('#tabvizframe').css("width",""+(computeAppletWidth())+"px");
-            // call the tinaviz's resized() callback
-            tabvizframe.tinaviz.resized();
+            resizeApplet();
         }
     });
 });

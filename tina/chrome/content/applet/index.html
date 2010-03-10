@@ -19,47 +19,6 @@ body {
 			
 }
 /* ]]> */</style>
-<script type="text/javascript">
-
-/* APPLET CALLBACKS */
-
-// called when the applet initialize, and need it's width/height values
-function getWidth() {
-    return parent.computeAppletWidth();
-}
-         
-function getHeight() {
-   return parent.computeAppletHeight();
-}
-
-// called when the applet is ready to be shown
-// we then call the tinaviz wrapper constructor (the init()' method, maybe this should be rewritten)
-function appletInitialized() {
-   return parent.tinaviz.init();
-}
-
-// called by the applet to show some messages to the XULRunner console
-function consoleLog(msg) {
-    parent.console.log(msg);
-}
-function consoleError(msg) {
-    parent.console.error(msg);
-}
-function consoleDebug(msg) {
-    parent.console.debug(msg);
-}
-
-// called whenever a node is clicked
-function nodeSelected(level,x,y,id,label,attributes) {
-   return parent.tinaviz.nodeSelected(level,x,y,id,label,attributes);
-}
-// called whenever the applet decide to switch to another level (eg. macro, meso..)
-function switchedTo(level) {
-   // here it is a bit tricky, we need to change the tabs, which are a bit far in the div/iframe tree...
-   return parent.parent.switchedTo(level);
-}
-
-</script>
 	</head>
 	<body>
 		<div id="content">	 

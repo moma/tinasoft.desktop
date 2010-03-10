@@ -60,50 +60,59 @@ public class Session {
         return getView().graph;
     }
 
+    public synchronized void setLevel(String level) {
+        if (level.equals("macro")) {
+            toMacroLevel();
+        } else if (level.equals("meso")){
+            toMesoLevel();
+        } else if (level.equals("micro")){
+            toMicroLevel();
+        }
+    }
     public synchronized void toMacroLevel() {
         if (currentLevel != ViewLevel.MACRO) {
             currentLevel = ViewLevel.MACRO;
-            macro.hasBeenRead.set(false);
+            macro.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
     public synchronized void toMesoLevel() {
         if (currentLevel != ViewLevel.MESO) {
             currentLevel = ViewLevel.MESO;
-            meso.hasBeenRead.set(false);
+           meso.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
     public synchronized void toMicroLevel() {
         if (currentLevel != ViewLevel.MICRO) {
             currentLevel = ViewLevel.MICRO;
-            micro.hasBeenRead.set(false);
+           micro.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
     public boolean updateFromURI(String uri) {
-        return getGraph().updateFromURI(uri);
+        return getView().updateFromURI(uri);
     }
 
     public boolean updateFromString(String str) {
-        return getGraph().updateFromString(str);
+        return getView().updateFromString(str);
     }
 
     public boolean updateFromInputStream(InputStream inputStream) {
-        return getGraph().updateFromInputStream(inputStream);
+        return getView().updateFromInputStream(inputStream);
     }
 
     public boolean updateFromNodeList(List<Node> nodes) {
-        return getGraph().updateFromNodeList(nodes);
+        return getView().updateFromNodeList(nodes);
     }
 
     public boolean updateFromURI(String level, String uri) {
         if (level.equals("macro")) {
-            return macro.getGraph().updateFromURI(uri);
+            return macro.updateFromURI(uri);
         } else if (level.equals("meso")) {
-            return meso.getGraph().updateFromURI(uri);
+            return meso.updateFromURI(uri);
         } else if (level.equals("micro")) {
-            return micro.getGraph().updateFromURI(uri);
+            return micro.updateFromURI(uri);
         } else {
             return false;
         }
@@ -111,12 +120,11 @@ public class Session {
 
     public boolean updateFromString(String level, String str) {
         if (level.equals("macro")) {
-            macro.getGraph().updateFromString(str);
-            return true;
+            return macro.updateFromString(str);
         } else if (level.equals("meso")) {
-            return meso.getGraph().updateFromString(str);
+            return meso.updateFromString(str);
         } else if (level.equals("micro")) {
-            return micro.getGraph().updateFromString(str);
+            return micro.updateFromString(str);
         } else {
             return false;
         }
@@ -131,6 +139,13 @@ public class Session {
         return (currentLevel == ViewLevel.MACRO)
                 ? macro : (currentLevel == ViewLevel.MESO)
                 ? meso : micro;
+    }
+
+    public synchronized View getView(String v) {
+        if (v.contains("macro")) return macro;
+        if (v.contains("meso")) return meso;
+         if (v.contains("micro")) return micro;
+        return null;
     }
 
     public void selectNode(Node n) {
