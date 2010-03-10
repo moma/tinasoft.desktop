@@ -55,36 +55,64 @@ class Tinasoft(TinaApp, ThreadPool):
 
     def runImportFile(self, *args, **kwargs):
         _observerProxy.notifyObservers(None, 'tinasoft_runImportFile_running_status', str(args[0]))
-        self.logger.debug(args)
+
+            #in wstring filePath,
+            #in wstring configFile,
+            #in wstring corpora_id,
+            #in boolean index,
+            #in wstring fileFormat,
+            #in wstring overwrite
         self.queueTask( self.importFile, args, kwargs, self.callback.importFile )
 
     def runExportCorpora(self, *args, **kwargs):
-        _observerProxy.notifyObservers(None, 'tinasoft_runExportcorpora_running_status', str(args[0]))
-        self.logger.debug(args)
+        _observerProxy.notifyObservers(None, 'tinasoft_runExportCorpora_running_status', str(args[0]))
         def task( *args, **kwargs ):
+                #in wstring periods,
+                #in wstring corpora_id,
+                #in wstring exportPath,
+                #in wstring whitelistPath,
+                #in wstring userfiltersPath
             args = list(args)
-            # args[0] is a json serialized periods id
+            # args[0] is a STRING of periods id
+            args[0] = args[0].split(',')
             # args[1] is a corpora id
-            args[3] = self.getWhitelist( args[3] )
-            args[4] = [stopwords.StopWordFilter( "file://%s" % args[4] )]
-            self.exportCorpora( *args, **kwargs )
-        #self.queueTask(task, args, kwargs, self.callback.exportCorpora)
-
-    def runProcessCooc( self, *args, **kwargs ):
-        _observerProxy.notifyObservers(None, 'tinasoft_runProcessCooc_running_status', str(args[0]))
-        self.logger.debug(args)
-        def task( *args, **kwargs ):
-            args = list(args)
-            args[0] = self.getWhitelist( args[0],
+            #  args[3] is a white list
+            if args[3] != '':
+                args[3] = self.getWhitelist( args[3],
                 occsCol='occurrences',
                 accept='x'
             )
-            args[2] = args[2].split(',')
+            else:
+                args[3] = None
+            #  args[4] is an user defined stopwords file
+            if args[4] == '':
+                args[4] = []
+            else:
+                args[4] = [stopwords.StopWordFilter( "file://%s" % args[4] )]
+            self.exportCorpora( *args, **kwargs )
+        self.queueTask(task, args, kwargs, self.callback.exportCorpora)
+
+    def runProcessCooc( self, *args, **kwargs ):
+        _observerProxy.notifyObservers(None, 'tinasoft_runProcessCooc_running_status', str(args[0]))
+        def task( *args, **kwargs ):
+                #in wstring whitelistPath,
+                #in wstring corpora_id,
+                #in wstring periods,
+                #in wstring userfiltersPath
+            args = list(args)
+            whitelistpath = args[0]
+            args[0] = self.getWhitelist( whitelistpath,
+                occsCol='occurrences',
+                accept='x'
+            )
+            periods = args[2]
+            args[2] = periods.split(',')
             if args[3] == '':
                 args[3] = []
             else:
                 args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
             self.processCooc( *args, **kwargs )
+            self.runExportGraph( args[1], periods, '', whitelistpath, **kwargs )
         self.queueTask(task, args, kwargs, self.callback.processCooc)
 
     def runExportCoocMatrix(self): pass
@@ -93,7 +121,10 @@ class Tinasoft(TinaApp, ThreadPool):
     def runExportGraph( self, *args, **kwargs ):
         _observerProxy.notifyObservers(None, 'tinasoft_runExportGraph_running_status', None)
         def task( *args, **kwargs ):
-            # corporaid, periods, threshold, self.whitelist
+                #in wstring corpora_id,
+                #in wstring periods,
+                #in wstring threshold,
+                #in wstring whitelistPath
             args = list(args)
             # whitelist instance
             args[3] = self.getWhitelist( args[3],
@@ -112,7 +143,7 @@ class Tinasoft(TinaApp, ThreadPool):
             args[0] = self.getGraphPath( args[0], args[1], args[2] )
             # path, periods, threshold, self.whitelist
             self.exportGraph( *args, **kwargs )
-        self.queueTask(task, args, kwargs, self.callback.exportGraph)
+        #self.queueTask(task, args, kwargs, self.callback.exportGraph)
 
     def walkGraphPath( self, corporaid ):
         path = join( self.config['user'], corporaid )

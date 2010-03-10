@@ -1,7 +1,15 @@
-#corpora_table ol { list-style-type: none; margin: 0; padding: 0; }
-#corpora_table li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
+.corpora_table ol { list-style-type: none; margin: 0; padding: 0; }
+.corpora_table li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
 /*#corpora_table .ui-selected { border: 1px solid #7e7783; background: #5f5964; font-weight: bold; color: #ffffff; outline: none; }
 */
+
+.formleft {
+    float:left;
+    margin-right: 20px;
+    min-height: 300px;
+    padding:1em 1em;
+    background:#D0D0D0;
+}
 
 label, input[type="text"]{
     float:left;
@@ -12,7 +20,7 @@ label {
     margin-right: 5px;
 }
 
-.field{
+.field {
     width:100%;
     overflow:auto;
     margin:5px 0px;
@@ -28,6 +36,7 @@ label {
 
 /*
 .htoolbar {
+    position:absolute;
     position:absolute;
     bottom:80px;
     left:40px;

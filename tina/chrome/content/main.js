@@ -19,34 +19,33 @@ if ( typeof(TinaService) == "undefined" ) {
 
 var tinasoftTaskObserver = {
     observe : function ( subject , topic , data ){
+        console.log(topic + "\nDATA = " + data);
         // traitements en fonction du topic...
         if(topic == "tinasoft_runImportFile_finish_status"){
-            //alert("tinasoft_runImportFile_finish_status");
             $('#importFile button').toggleClass("ui-state-disabled", 1);
-            $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
+            displayListCorpora( "corpora_table" );
+            $( "#corpora_table" ).animate({backgroundColor: '#aa0000', color: '#fff'}, 1000);
         }
         if (topic == "tinasoft_runImportFile_running_status") {
-            //alert("tinasoft_runImportFile_running_status, please wait");
             $('#importFile button').toggleClass("ui-state-disabled", 1);
-            $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
-            //console.log(data);
         }
         if(topic == "tinasoft_runProcessCooc_finish_status"){
             $('#processCooc button').toggleClass("ui-state-disabled", 1);
-            $('#generateGraph button').toggleClass("ui-state-disabled", 1);
-            console.log("tinasoft_runProcessCooc_finish_status = " +data);
         }
         if (topic == "tinasoft_runProcessCooc_running_status") {
             $('#processCooc button').toggleClass("ui-state-disabled", 1);
-            console.log("tinasoft_runProcessCooc_running_status = " +data);
         }
         if(topic == "tinasoft_runExportGraph_finish_status"){
-            $('#generateGraph button').toggleClass("ui-state-disabled", 1);
-            console.log("tinasoft_runExportGraph_finish_status = " +data);
+            $('#exportGraph button').toggleClass("ui-state-disabled", 1);
         }
         if (topic == "tinasoft_runExportGraph_running_status") {
-            $('#generateGraph button').toggleClass("ui-state-disabled", 1);
-            console.log("tinasoft_runExportGraph_running_status = " +data);
+            $('#exportGraph button').toggleClass("ui-state-disabled", 1);
+        }
+        if(topic == "tinasoft_runExportCorpora_finish_status"){
+            $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
+        }
+        if (topic == "tinasoft_runExportCorpora_running_status") {
+            $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
         }
     }
 };
@@ -57,10 +56,16 @@ var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserv
 // Observers registering
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_running_status" , false );
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportCorpora_finish_status" , false );
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportCorpora_running_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_running_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_running_status" , false );
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_finish_status" , false );
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_running_status" , false );
+
+/**************************
+ * Tinasoft XPCOM ACTIONS
+***************************/
 
 /* Importing data set action controler */
 
@@ -68,7 +73,6 @@ var submitImportfile = function(event) {
     corpora = $("#corpora")
     path = $("#csvfile")
     config  = $("#configfile")
-    //exportpath = $("#exportfile")
     // DEBUG
     //path.val("pubmed_tina_test.csv");
     //config.val("import.yaml");
@@ -88,8 +92,8 @@ var submitImportfile = function(event) {
         config.val(),
         corpora.val(),
         false,
-        false,
-        'tina'
+        'tina',
+        false
     );
     return true;
 
@@ -139,8 +143,37 @@ var submitExportGraph = function(event) {
             threshold,
             whitelistpath.val()
         );
+        return true;
     }
-    return true;
+};
+
+/* Writing a data set's export csv action controler */
+
+var submitExportCorpora = function(event) {
+    var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
+    var whitelistpath = $("#whitelistfile");
+    var userstopwordspath = $("#userstopwordsfile");
+    var exportpath = $("#exportfile");
+    if ( exportpath.val() == '' ) {
+        exportpath.addClass('ui-state-error');
+        console.log( "missing the export path field" );
+        return false;
+    }
+    for (corpora in corporaAndPeriods) {
+            /*in wstring periods,
+            in wstring corpora_id,
+            in wstring exportPath,
+            in wstring whitelistPath,
+            in wstring userfiltersPath*/
+        TinaService.runExportCorpora(
+            corporaAndPeriods[corpora],
+            corpora,
+            exportpath.val(),
+            whitelistpath.val(),
+            userstopwordspath.val()
+        );
+        return true;
+    }
 };
 
 /* Indexation workflow control */
@@ -151,13 +184,14 @@ var listCorpora = function() {
 };
 
 function displayListCorpus(trid, corpora) {
-    var tr = $("#"+trid);
+    var tr = $( "#" +trid );
+    var olid = 'selectable_corpus_' + trid
     tr.append("<td>"
-        + "<ol id='selectable_corpus_"
-        + trid + "' class='selectable'>"
+        + "<ol id='"
+        + olid + "' class='selectable'>"
         + "</ol></td>"
     );
-    var ol = $( "#selectable_corpus_" + trid  ).empty()
+    var ol = $( "#" + olid  ).empty()
     for ( var id in corpora['edges']['Corpus'] ) {
         ol.append("<li id='"
             + id
@@ -173,7 +207,6 @@ function selectableReset() {
     $("li",".selectable").each(function(){
         var li = $(this);
         li.removeClass('ui-state-active');
-        console.log("removed selected");
     });
 }
 
@@ -189,26 +222,26 @@ function selectableCorpusInit( ol, corpora ) {
                 corporaAndPeriods[corpora.id].push(( selected_li.html() ));
             });
             Cache.setValue( "last_selected_periods", corporaAndPeriods );
-            console.log ( Cache.getValue( "last_selected_periods", "", 1 ) );
+            //console.log ( Cache.getValue( "last_selected_periods", "", 1 ) );
         },
     });
 }
 
-var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-
 function displayListCorpora(table) {
-    var body = $(table + " tbody")
+    var body = $( "#" +table+ " tbody" )
     body.empty();
     var list = listCorpora();
     for ( var i=0, len=list.length; i<len; i++ ){
+        var corpo_trid = table+ "_tr_corpora_" + i;
         var corpora = list[i]
-        body.append("<tr id='tr_corpora_" + i
-            +"' class='ui-widget-content'>"
+        body.append("<tr id='"+ corpo_trid
+            + "' class='ui-widget-content'>"
             + "<td>"
             + corpora.label
             + "</td>"
         +"</tr>");
-        displayListCorpus( "tr_corpora_" + i, corpora );
+        //console.log(body.html());
+        displayListCorpus( corpo_trid, corpora );
     }
 }
 
@@ -288,6 +321,8 @@ function resizeApplet() {
 }
 // wait for the DOM to be loaded
 $(document).ready(function() {
+
+    var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     $("#tabs").tabs();
     $("#tabs").data('disabled.tabs', [2, 3, 4]);
 
@@ -334,9 +369,9 @@ $(document).ready(function() {
     $('#processCooc button').click(function(event) {
         submitprocessCooc(event)
     });
-    $('#generateGraph button').click(function(event) {
+    /*$('#exportGraph button').click(function(event) {
         submitExportGraph(event)
-    });
+    });*/
 
     $.extend($.ui.slider.defaults, {
             range: "min",
@@ -362,7 +397,8 @@ $(document).ready(function() {
     }, function() {
     buttons.button("destroy");
     }).click();*/
-    displayListCorpora( "#corpora_table" );
+    displayListCorpora( "corpora_table" );
+    displayListCorpora( "graph_table" );
 
     // TINASOFT WINDOW IS RESIZED
     $(window).bind('resize', function() {
