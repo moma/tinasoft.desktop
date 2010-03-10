@@ -158,8 +158,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
             }
             window = JSObject.getWindow(this);
-            int w = screen.width;
-            int h = screen.height;
+            int w = 200;
+            int h = 200;
             /*Object o = window.call("parent.tinaviz.getWidth", null);
             if (o != null) {
             if (o instanceof Double) {

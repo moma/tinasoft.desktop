@@ -312,6 +312,7 @@ function switchedTo(level) {
     $("#tabs").tabs( 'select' , tabs[level] );
 }
 
+
 function resizeApplet() {
     var w = getAppletWidth();
     var h = getAppletHeight();

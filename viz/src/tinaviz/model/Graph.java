@@ -295,7 +295,6 @@ System.out.println("loading GEXF from string..");
                 //nodeList.add(node);
             }
 
-
         }
 
         Console.log("<graph> parsing edges..");

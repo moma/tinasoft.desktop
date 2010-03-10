@@ -492,6 +492,7 @@ function Tinaviz() {
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"#{label}\">\n\
+                <viz:size value=\"20\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"NGram\" />\n\
                 </attvalues>\n\
@@ -516,7 +517,7 @@ function Tinaviz() {
         </edges>\n\
     </graph>\n\
 </gexf>", ng);
-        console.log(gexf);
+        // console.log(gexf);
         applet.getSession().updateFromString("meso",gexf);
   },
 
