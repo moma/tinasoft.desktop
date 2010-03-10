@@ -121,7 +121,7 @@ public class FilterChain {
 
     public synchronized List<Node> popNodes() {
 
-        // if the graph has been updated
+        // if the graph has been unlocked
         if (!graph.locked.get()) {
             popLocked.set(true); // lock the popper
             graph.locked.set(true);

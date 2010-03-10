@@ -64,28 +64,22 @@ public class Console {
 
     public static void error(String s) {
         if (Main.window != null) {
-            Main.window.eval("consoleError(\"" + s + "\");");
+            Main.window.eval("parent.tinaviz.logError(\"" + s + "\");");
         }
         System.out.println("ERROR "+s);
-        //Logger.getLogger("console").log(Level.SEVERE, s, null);
-
     }
 
     public static void log(String s) {
         if (Main.window != null) {
-            Main.window.eval("consoleLog(\"" + s + "\");");
+            Main.window.eval("parent.tinaviz.logNormal(\"" + s + "\");");
         }
         System.out.println("LOG "+s);
-       // Logger.getLogger("console").log(Level.INFO, s, null);
-
     }
 
     public static void debug(String s) {
         if (Main.window != null) {
-            Main.window.eval("consoleDebug(\"" + s + "\");");
+            Main.window.eval("parent.tinaviz.logDebug(\"" + s + "\");");
         }
         System.out.println("DEBUG "+s);
-       // Logger.getLogger("console").log(Level.FINE, s, null);
-
     }
 }

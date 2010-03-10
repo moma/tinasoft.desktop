@@ -29,12 +29,13 @@ public class Graph {
     public Map<String, Object> attributes = null;
     public Metrics metrics = null;
     public AtomicBoolean locked = null;
-
+    public AtomicBoolean needToBeReadAgain = null;
     public Graph() {
         storedNodes = new HashMap<String, tinaviz.Node>();
         attributes = new HashMap<String, Object>();
         metrics = new Metrics();
         locked = new AtomicBoolean(true);
+        needToBeReadAgain = new AtomicBoolean(false);
     }
 
     public boolean updateFromURI(String uri) {
@@ -241,7 +242,7 @@ System.out.println("loading GEXF from string..");
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("value") != null) {
                         // FIXME normalize radius by a max radius, so it is not too big
-                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.02f;
+                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.1f;
                     }
                 } else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();

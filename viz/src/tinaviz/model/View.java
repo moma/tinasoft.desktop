@@ -76,9 +76,13 @@ public class View {
         resetCamera();
     }
 
+    // TODO refactor these two..
     public synchronized boolean toggleLinks() {
         showLinks = !showLinks;
         return showLinks;
+    }
+    public synchronized boolean toggleEdges() {
+        return toggleLinks();
     }
 
     public synchronized boolean toggleLabels() {
@@ -143,6 +147,23 @@ public class View {
         return filters.getFilter(filterName).getField(key);
     }
 
+
+    public boolean updateFromURI(String uri) {
+        return graph.updateFromURI(uri);
+    }
+
+    public boolean updateFromString(String str) {
+        return graph.updateFromString(str);
+    }
+
+    public boolean updateFromInputStream(InputStream inputStream) {
+        return graph.updateFromInputStream(inputStream);
+    }
+
+    public boolean updateFromNodeList(List<Node> nodes) {
+        return graph.updateFromNodeList(nodes);
+    }
+
     public void resetCamera() {
 
         mousePosition = new PVector(0.0f, 0.0f);
@@ -198,17 +219,6 @@ public class View {
 
     public synchronized List<tinaviz.Node> popNodes() {
         return filters.popNodes();
-        /*
-        if (!hasBeenRead.get() && nodes != null) {
-            System.out.println("[view] we havn't been read, and nodes are not null.. -> set read to true, and return nodes!");
-            hasBeenRead.set(true);
-            return nodes;
-        } else {
-            if (nodes != null) {
-                // there are filtered nodes waiting for us
-            }
-        }
-        return null;*/
     }
 
     public void clear() {
