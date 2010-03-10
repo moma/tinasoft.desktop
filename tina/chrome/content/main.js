@@ -36,6 +36,7 @@ var tinasoftTaskObserver = {
             $('#processCooc button').toggleClass("ui-state-disabled", 1);
         }
         if(topic == "tinasoft_runExportGraph_finish_status"){
+            displayListCorpora();
             $('#exportGraph button').toggleClass("ui-state-disabled", 1);
         }
         if (topic == "tinasoft_runExportGraph_running_status") {
@@ -200,14 +201,19 @@ function displayListGraph(trid, corpora) {
         + "</ol></td>"
     );
     var ol = $( "#" + olid  ).empty();
-    console.log("searching graphs for "+corpora['id']);
     var graphList = JSON.parse( TinaService.walkGraphPath(corpora['id']) );
     for ( var i=0; i < graphList.length; i++ ) {
-        var button = $("<button class='ui-state-default ui-corner-all'>"
+        var button = $("<button class='ui-state-default ui-corner-all' value='"
+            + graphList[i]
+            + "'>"
             + graphList[i]
             + "</button>"
         ).click(function(event) {
-            tabvizframe.tinaviz.loadRelativeGraph("macro",graphList[i]);
+            tabvizframe.tinaviz.clear();
+            console.log( "opening " + $(this).attr('value') );
+            if (tabvizframe.tinaviz.loadRelativeGraph("macro",$(this).attr('value')) == true) {
+                switchedTo( "macro" );
+            }
         });
         ol.append(button);
     }
