@@ -25,14 +25,14 @@ class TinasoftCallback():
     __name__ = 'TinasoftCallback'
 
     def callback(self, msg, returnValue):
-        _observerProxy.notifyObservers(None, msg, None)
+        _observerProxy.notifyObservers(None, msg, jsonpickle.encode( returnValue ))
         return jsonpickle.encode( returnValue )
 
     def importFile( self, returnValue):
         return self.callback( "tinasoft_runImportFile_finish_status", returnValue)
 
-    def processCooc( self, returnValue ):
-        return self.callback( "tinasoft_runProcessCooc_finish_status", returnValue)
+    def processCoocGraph( self, returnValue ):
+        return self.callback( "tinasoft_runProcessCoocGraph_finish_status", returnValue)
 
     def exportCorpora( self, returnValue ):
         return self.callback( "tinasoft_runExportCorpora_finish_status", returnValue)
@@ -52,10 +52,13 @@ class Tinasoft(TinaApp, ThreadPool):
         ThreadPool.__init__(self, 1)
         cb = TinasoftCallback()
         self.callback = cb
+        TinaApp.notify = _observerProxy.notifyObservers
 
     def runImportFile(self, *args, **kwargs):
-        _observerProxy.notifyObservers(None, 'tinasoft_runImportFile_running_status', str(args[0]))
-
+        _observerProxy.notifyObservers(None,
+            'tinasoft_runImportFile_running_status',
+            jsonpickle.encode( self.STATUS_RUNNING )
+        )
             #in wstring filePath,
             #in wstring configFile,
             #in wstring corpora_id,
@@ -65,7 +68,10 @@ class Tinasoft(TinaApp, ThreadPool):
         self.queueTask( self.importFile, args, kwargs, self.callback.importFile )
 
     def runExportCorpora(self, *args, **kwargs):
-        _observerProxy.notifyObservers(None, 'tinasoft_runExportCorpora_running_status', str(args[0]))
+        _observerProxy.notifyObservers(None,
+            'tinasoft_runExportCorpora_running_status',
+            jsonpickle.encode( self.STATUS_RUNNING )
+        )
         def task( *args, **kwargs ):
                 #in wstring periods,
                 #in wstring corpora_id,
@@ -90,36 +96,60 @@ class Tinasoft(TinaApp, ThreadPool):
             else:
                 args[4] = [stopwords.StopWordFilter( "file://%s" % args[4] )]
             self.exportCorpora( *args, **kwargs )
+        # queue this task
         self.queueTask(task, args, kwargs, self.callback.exportCorpora)
 
-    def runProcessCooc( self, *args, **kwargs ):
-        _observerProxy.notifyObservers(None, 'tinasoft_runProcessCooc_running_status', str(args[0]))
-        def task( *args, **kwargs ):
+
+
+    def runProcessCoocGraph( self, *args, **kwargs ):
+        """defines and queues the double task of writing a new cooc matrix into storage and generating the corresponding graph"""
+        _observerProxy.notifyObservers(None,
+            'tinasoft_runProcessCoocGraph_running_status',
+            jsonpickle.encode( self.STATUS_RUNNING )
+        )
+        def taskCoocGraph( *args, **kwargs ):
                 #in wstring whitelistPath,
                 #in wstring corpora_id,
                 #in wstring periods,
-                #in wstring userfiltersPath
+                #in wstring userfiltersPath,
+                #in wstring threshold,
             args = list(args)
             whitelistpath = args[0]
             args[0] = self.getWhitelist( whitelistpath,
                 occsCol='occurrences',
                 accept='x'
             )
-            periods = args[2]
-            args[2] = periods.split(',')
+            whitelist = args[0]
+            corporaid = args[1]
+            periods = args[2].split(',')
+            args[2] = periods
             if args[3] == '':
                 args[3] = []
             else:
                 args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
+            # first step : cooc matrix
             self.processCooc( *args, **kwargs )
-            self.runExportGraph( args[1], periods, '', whitelistpath, **kwargs )
-        self.queueTask(task, args, kwargs, self.callback.processCooc)
+
+            # threshold param parsing
+            if args[4] == '':
+                threshold = None
+            else:
+                threshold = map( float,  args[4].split(',') )
+            gexfpath = self.getGraphPath( corporaid, periods, threshold )
+            # second step : graph generation
+            self.exportGraph( gexfpath, periods, threshold, whitelist, **kwargs )
+        # queue this task
+        self.queueTask(taskCoocGraph, args, kwargs, self.callback.processCoocGraph)
+
 
     def runExportCoocMatrix(self): pass
 
 
     def runExportGraph( self, *args, **kwargs ):
-        _observerProxy.notifyObservers(None, 'tinasoft_runExportGraph_running_status', None)
+        _observerProxy.notifyObservers(None,
+            'tinasoft_runExportGraph_running_status',
+            jsonpickle.encode( self.STATUS_RUNNING )
+        )
         def task( *args, **kwargs ):
                 #in wstring corpora_id,
                 #in wstring periods,
@@ -143,16 +173,17 @@ class Tinasoft(TinaApp, ThreadPool):
             args[0] = self.getGraphPath( args[0], args[1], args[2] )
             # path, periods, threshold, self.whitelist
             self.exportGraph( *args, **kwargs )
-        #self.queueTask(task, args, kwargs, self.callback.exportGraph)
+        self.queueTask(task, args, kwargs, self.callback.exportGraph)
 
     def walkGraphPath( self, corporaid ):
+        """returns the list of files in the gexf directory tree"""
         path = join( self.config['user'], corporaid )
         if not exists( path ):
             return self.serialize( [] )
-
         return self.serialize( [join( path, file ) for file in os.listdir( path )] )
 
     def getGraphPath(self, corporaid, periods, threshold):
+        """returns the relative path for a given graph in the graph dir tree"""
         path = join( self.config['user'], corporaid )
         if not exists( path ):
             makedirs( path )
@@ -163,9 +194,11 @@ class Tinasoft(TinaApp, ThreadPool):
         return join( path, filename )
 
     def __del__(self):
+        """resumes all the transactions when destroying this object"""
         self.joinAll()
 
     def pythonEnv(self):
+        """logs the complete python debug env"""
         self.logger.debug( "python environment debug:" )
         for p in sys.path:
            self.logger.debug( p )

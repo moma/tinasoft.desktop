@@ -7,6 +7,8 @@ interface ITinasoft : nsISupports {
     // Running means the operation has started and is working to complete
     // it's tasks.
     const long STATUS_RUNNING = 0;
+    const long STATUS_ERROR = -1;
+    const long STATUS_OK = 100;
     // status can be one of the states above
     attribute long status;
     // Extraction task
@@ -27,11 +29,12 @@ interface ITinasoft : nsISupports {
         in wstring userfiltersPath
     );
     // import a whitelist and writes cooc matrix
-    wstring runProcessCooc(
+    wstring runProcessCoocGraph(
         in wstring whitelistPath,
         in wstring corpora_id,
         in wstring periods,
-        in wstring userfiltersPath
+        in wstring userfiltersPath,
+        in wstring threshold
     );
     // export a cooc matrix to text file
     wstring runExportCoocMatrix();
