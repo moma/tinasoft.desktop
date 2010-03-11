@@ -24,29 +24,38 @@ var tinasoftTaskObserver = {
         if(topic == "tinasoft_runImportFile_finish_status"){
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             displayListCorpora( "corpora_table" );
-            $( "#corpora_table" ).animate({backgroundColor: '#aa0000', color: '#fff'}, 1000);
+            $('#importFile button').html( "Launch" );
+            $( "#corpora_table" ).toggleClass("ui-state-highlight", 1);
         }
         if (topic == "tinasoft_runImportFile_running_status") {
-            $('#importFile button').toggleClass("ui-state-disabled", 1);
+            if (data == '0') {
+                $('#importFile button').toggleClass("ui-state-disabled", 1);
+            }
+            $('#importFile button').html( "imported "+data+" lines" );
         }
-        if(topic == "tinasoft_runProcessCooc_finish_status"){
+        if(topic == "tinasoft_runProcessCoocGraph_finish_status"){
             $('#processCooc button').toggleClass("ui-state-disabled", 1);
+            displayListCorpora( "graph_table" );
+            $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
-        if (topic == "tinasoft_runProcessCooc_running_status") {
+        if (topic == "tinasoft_runProcessCoocGraph_running_status") {
             $('#processCooc button').toggleClass("ui-state-disabled", 1);
         }
         if(topic == "tinasoft_runExportGraph_finish_status"){
-            displayListCorpora();
-            $('#exportGraph button').toggleClass("ui-state-disabled", 1);
+            displayListCorpora( "graph_table" );
+            $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
         if (topic == "tinasoft_runExportGraph_running_status") {
-            $('#exportGraph button').toggleClass("ui-state-disabled", 1);
         }
         if(topic == "tinasoft_runExportCorpora_finish_status"){
             $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
+            $('#importFile button').html( "Launch" );
         }
         if (topic == "tinasoft_runExportCorpora_running_status") {
-            $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
+            if (data == '0') {
+                $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
+            }
+            $('#exportCorpora button').html( data+" % done" );
         }
     }
 };
@@ -59,13 +68,13 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_finish
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_running_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportCorpora_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportCorpora_running_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCooc_running_status" , false );
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_finish_status" , false );
+ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_running_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_running_status" , false );
 
 /**************************
- * Tinasoft XPCOM ACTIONS
+ * Tinasoft FORM ACTIONS
 ***************************/
 
 /* Importing data set action controler */
@@ -81,7 +90,7 @@ var submitImportfile = function(event) {
     else {
         overwrite = false;
     }
-    // DEBUG
+    // DEBUG VALUE
     //path.val("pubmed_tina_test.csv");
     //config.val("import.yaml");
     //exportpath.val("test-export.csv");
@@ -107,25 +116,26 @@ var submitImportfile = function(event) {
 
 };
 
-/* Writing a data set's cooccurrences action controler */
+/* Writing cooccurrences and generate a graph action controler */
 
-var submitprocessCooc = function(event) {
+var submitprocessCoocGraph = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     var whitelistpath = $("#whitelistfile")
     var userfilterspath  = $("#userfiltersfile")
-    // DEBUG
     if ( whitelistpath.val() == '' ) {
         whitelistpath.addClass('ui-state-error');
         console.log( "missing the white list path field" );
         return false;
     }
-
+    // DEBUG VALUE
+    threshold = [0,1];
     for (corpora in corporaAndPeriods) {
         TinaService.runProcessCooc(
             whitelistpath.val(),
             corpora,
             corporaAndPeriods[corpora],
-            userfilterspath.val()
+            userfilterspath.val(),
+            threshold
         );
     }
     return true;
@@ -134,6 +144,7 @@ var submitprocessCooc = function(event) {
 
 /* Writing a data set's graph action controler */
 
+/*
 var submitExportGraph = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     var whitelistpath = $("#whitelistfile")
@@ -154,6 +165,7 @@ var submitExportGraph = function(event) {
         return true;
     }
 };
+* /
 
 /* Writing a data set's export csv action controler */
 
@@ -407,7 +419,7 @@ $(document).ready(function() {
         submitExportCorpora(event)
     });
     $('#processCooc button').click(function(event) {
-        submitprocessCooc(event)
+        submitprocessCoocGraph(event)
     });
     /*$('#exportGraph button').click(function(event) {
         submitExportGraph(event)
