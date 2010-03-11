@@ -50,6 +50,11 @@
     padding:1em 1em;
     background:#D0D0D0;
 }
+.import-form {
+    width: 410px;
+}
+.export-form {
+}
 
 label, input[type="text"]{
     float:left;
@@ -70,11 +75,13 @@ label {
     float:left;
     width:0px;
     height:0px;
-    border:3px;
+    border:0px;
 }
 .whitebox {/*
     margin: 0;
     padding: 2px;*/
+    width: 0px;
+    height: 0px;
     background: #ffffff;
 }
 .infodiv {

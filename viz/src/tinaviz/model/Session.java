@@ -177,4 +177,10 @@ public class Session {
         meso.resetCamera(width, height);
         micro.resetCamera(width, height);
     }
+
+    public void unselectAll() {
+        macro.unselectAll();
+        meso.unselectAll();
+        micro.unselectAll();
+    }
 }

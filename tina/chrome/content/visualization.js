@@ -437,7 +437,7 @@ function Tinaviz() {
         </edges>\n\
     </graph>\n\
 </gexf>", ng);
-     console.log(gexf);
+     // console.log(gexf);
      applet.getSession().updateFromString("meso",gexf);
    },
    
@@ -486,7 +486,7 @@ function Tinaviz() {
         </edges>\n\
     </graph>\n\
 </gexf>", doc);
-     console.log(gexf);
+     // console.log(gexf);
      applet.getSession().updateFromString("meso",gexf);
    },
   selectMesoTerm: function(x,y,id,label,attr) {
@@ -539,7 +539,7 @@ function Tinaviz() {
         </edges>\n\
     </graph>\n\
 </gexf>", ng);
-     console.log(gexf);
+     // console.log(gexf);
      applet.getSession().updateFromString("meso",gexf);
     },
    selectMesoDocument: function(x,y,id,label,attr) {
@@ -586,7 +586,7 @@ function Tinaviz() {
         </edges>\n\
     </graph>\n\
 </gexf>", doc);
-     console.log(gexf);
+     // console.log(gexf);
      applet.getSession().updateFromString("meso",gexf);
    }
   };

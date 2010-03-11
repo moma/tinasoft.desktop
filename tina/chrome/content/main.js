@@ -327,7 +327,7 @@ var getCorpus = function(corpusid) {
     return( JSON.parse( TinaService.getCorpus(corpusid) ) );
 };
 var getDocument = function(documentid) {
-    console.log("doc id="+documentid);
+    // console.log("doc id="+documentid);
     return( JSON.parse( TinaService.getDocument(documentid) ) );
 };
 var getCorpora = function(corporaid) {
