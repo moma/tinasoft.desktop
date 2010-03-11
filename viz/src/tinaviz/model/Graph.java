@@ -392,7 +392,6 @@ System.out.println("loading GEXF from string..");
     public void clear() {
         storedNodes.clear();
         attributes.clear();
-        locked.set(false);
     }
 
     public void selectNodeById(String id) {
@@ -404,6 +403,12 @@ System.out.println("loading GEXF from string..");
     public void unselectNodeById(String id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
+        }
+    }
+
+    public void unselectAll() {
+        for (Node n : storedNodes.values()) {
+            n.selected = false;
         }
     }
 }

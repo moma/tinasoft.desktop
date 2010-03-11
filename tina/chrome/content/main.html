@@ -72,7 +72,7 @@
     });
 </script>
     <div class="demo">
-        <div id="tabs">
+        <div class="ui-tabs ui-widget ui-widget-content ui-corner-top" id="tabs">
             <ul>
                 <li><a title="configure input data sets" href="#tabs-0">Data sets</a></li>
                 <li><a title="configure the thematic fields" href="#tabs-1">Thematic fields</a></li>
@@ -82,14 +82,15 @@
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-0">
-                <div id="importForm" class="ui-widget ui-widget-content ui-corner-all formleft">
+                <div id="importForm" class="ui-widget ui-widget-content ui-corner-all formleft import-form">
                     <h1>Import a data set</h1>
                     <h3>Select a source file and an identifier name to import</h3>
                     <label><h3>Data set source file (csv, required)</h3></label><br/>
-                    <span class="ui-state-highlight">First line must be:<br/>
-                         'doc_titl','doc_abst','doc_acrnm','corp_num','doc_num','index_1','index_2','date','doc_keywords'<br/>
-                         'doc_num' and 'corp_num' are unique identifiers in the database<br/>
-                         'corp_num' is considered as a period identifier (time period or not)
+                    <span class="ui-state-highlight">First line must be:<br/
+                        'doc_titl','doc_abst','doc_acrnm','corp_num','doc_num','index_1','index_2',<br/>
+                        'date','doc_keywords'<br/>
+                        'doc_num' and 'corp_num' are unique identifiers in the database<br/>
+                        'corp_num' is considered as a period identifier (time period or not)
                     </span><br/>
                     <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
                     <!--<label>Extraction configuration file (yaml)</label>-->
@@ -112,7 +113,7 @@
                         <button class="ui-state-default ui-corner-all">Launch</button>
                     </div>
                 </div>
-                <div id="exportForm" class="ui-widget ui-widget-content ui-corner-all formleft">
+                <div id="exportForm" class="ui-widget ui-widget-content ui-corner-all formleft export-form">
                     <h1>Export a data set</h1>
                     <h3>Select a data set and the periods you want to export, then select ngrams setting the status to 's'</h3>
                     <table id="corpora_table" class="corpora_table">
@@ -179,12 +180,16 @@
 
             <div id="tabs-2" class="ui-corner-bottom">
               <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+
+                <!--
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                    <a href="#"
                       onclick="#"
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
+                -->
+
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a
                            href="#"
@@ -219,6 +224,7 @@
                            title="unselect"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
                     </div>
 
+                    <!--
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a href="#"
                            onclick="tinaviz.toggleProjects()"
@@ -229,24 +235,32 @@
                            class="fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-right"
                            title="terms"><span class="ui-icon ui-icon-terms"></span> Fields</a>
                     </div>
+                    -->
 
+                      <!--
                       <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                         <a href="#"
                            onclick="tinaviz.search($('searchfield').val())"
                            class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
                        </div>
+                       -->
                 </div>
                 <!--<div id="globalrepulsion" style="width:150px; height:12px; margin:15px;"></div>-->
             </div>
 
             <div id="tabs-3" class="ui-corner-bottom">
+
                <div id="htoolbar2" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+
+               <!--
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                    <a href="#"
                       onclick="#"
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
+                -->
+
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a
                            href="#"
@@ -280,27 +294,44 @@
                            title="pause"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
                     </div>
 
+                    <!--
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a href="#"
                            onclick="tinaviz.toggleProjects()"
                            class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-corner-left"
                            title="projects"><span class="ui-icon ui-icon-projects"></span> Projects</a>
+<<<<<<< HEAD:tina/chrome/content/main.html
                         <!--<a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo " title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>-->
                         <a href="#"
                            onclick="tinaviz.toggleTerms()"
                            class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-corner-right"
+=======
+
+                        <a href="#"
+                           onclick="tinaviz.toggleTerms()"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-corner-right"
+>>>>>>> 7b40b50e64598f77a78b4347eda219d17ad62154:tina/chrome/content/main.html
                            title="terms"><span class="ui-icon ui-icon-terms"></span> Fields</a>
                     </div>
+                    -->
 
+                <!--
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                         <a href="#" onclick="tinaviz.reproject()" class="fg-button ui-state-default ui-state-disabled fg-button-icon-solo  ui-corner-all" title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>
                        </div>
+<<<<<<< HEAD:tina/chrome/content/main.html
 
+=======
+                       -->
+
+                       <!--
+>>>>>>> 7b40b50e64598f77a78b4347eda219d17ad62154:tina/chrome/content/main.html
                       <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                         <a href="#"
                            onclick="tinaviz.search($('searchfield').val())"
                            class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
                        </div>
+                       -->
                 </div>
                 <!--<div id="globalrepulsion" style="width:150px; height:12px; margin:15px;"></div>-->
             </div>
@@ -311,19 +342,25 @@
         </div>
     </div>
 
-       <div id="whitebox" class="ui-widget ui-widget-content ui-corner-all formleft whitebox">
+       <div id="whitebox" class="ui-widget ui-widget-content ui-corner-bottom formleft whitebox">
               <div id="container"></div>
               <div id="infodiv" class="ui-widget ui-widget-content ui-corner-all formleft infodiv ui-helper-clearfix">
                     <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
+<<<<<<< HEAD:tina/chrome/content/main.html
                         <h2 id="nodedetailstitle" class="nodedetailsh2">Project: (none)</h3>
                         <p id="selectioncontent" class="nodedetailsp">bla bla</p>
+=======
+                        <h2 id="nodedetailstitle" class="nodedetailsh2">No node selected</h3>
+                        <p id="selectioncontent" class="nodedetailsp"></p>
+>>>>>>> 7b40b50e64598f77a78b4347eda219d17ad62154:tina/chrome/content/main.html
                         <h3  class="nodedetailsh3">Abstract:</h3>
                         <p id="abstract" class="nodedetailsp"></p>
                         <h3  class="nodedetailsh3">Terms:</h3>
-                        <p id="terms" class="nodedetailsp"><a href="#">term1</a>, <a href="#">term2</a>, <a href="#">term3</a>, <a href="#">term4</a>, <a href="#">term5</a></p>
+                        <p id="terms" class="nodedetailsp"><!--<a href="#">term1</a>, <a href="#">term2</a>, <a href="#">term3</a>, <a href="#">term4</a>, <a href="#">term5</a>--></p>
                         <h3  class="nodedetailsh3">Reviewers:</h3>
-                        <p id="reviewers" class="nodedetailsp"><a href="elias.showk@iscpif.fr">Elias Showk</a>, <a href="julian.bilcke@iscpif.fr">Julian Bilcke</a></p>
+                        <p id="reviewers" class="nodedetailsp"><!--<a href="elias.showk@iscpif.fr">Elias Showk</a>, <a href="julian.bilcke@iscpif.fr">Julian Bilcke</a>--></p>
                         <h3  class="nodedetailsh3">Most similar projects:</h3>
+<<<<<<< HEAD:tina/chrome/content/main.html
                         <p id="reviewers" class="nodedetailsp"><a href="#">TINA</a> (80%), <a href="#">TINA2</a> (10.4%)</p>
 
                         <div>
@@ -334,6 +371,20 @@
                                 <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="5"/>
                         </div>
 
+=======
+                        <p id="reviewers" class="nodedetailsp"><!--<a href="#">TINA</a> (80%), <a href="#">TINA2</a> (10.4%)--></p>
+
+                        <div>
+                            <!--
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="1"/>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="2"/>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="3" checked="checked"/>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="4"/>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="5"/>
+                              -->
+                        </div>
+
+>>>>>>> 7b40b50e64598f77a78b4347eda219d17ad62154:tina/chrome/content/main.html
                     </div><!-- BUTTON SET -->
                 </div><!-- / INFODIV -->
 

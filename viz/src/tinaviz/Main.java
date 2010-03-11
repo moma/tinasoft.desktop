@@ -1107,8 +1107,15 @@ public class Main extends PApplet implements MouseWheelListener {
         getSession().resetCamera(width, height);
     }
 
-    public void resetCameras(String view) {
+    public void resetCamera(String view) {
         getSession().getView(view).resetCamera(width, height);
+    }
+    public void select(String id) {
+        getSession().selectNodeById(id);
+    }
+
+    public void unselect() {
+        getSession().unselectAll();
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {

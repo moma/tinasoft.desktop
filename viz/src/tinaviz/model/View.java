@@ -212,6 +212,10 @@ public class View {
         graph.unselectNodeById(id);
     }
 
+    public void unselectAll() {
+        graph.unselectAll();
+    }
+
     public Graph getGraph() {
         return graph;
     }
@@ -223,6 +227,7 @@ public class View {
 
     public void clear() {
         graph.clear();
+        filters.popLocked.set(false);
     }
 
     public void updateTranslationFrom(int x, int y) {
