@@ -171,4 +171,10 @@ public class Session {
         meso.unselectNodeById(id);
         micro.unselectNodeById(id);
     }
+
+    public void resetCamera(float width, float height) {
+        macro.resetCamera(width, height);
+        meso.resetCamera(width, height);
+        micro.resetCamera(width, height);
+    }
 }

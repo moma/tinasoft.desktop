@@ -347,7 +347,7 @@ public class Main extends PApplet implements MouseWheelListener {
             nodes.clear();
             nodes.addAll(n);
             System.out.println("reset camera(" + width + "," + height + ")");
-            v.resetCamera(width, height);
+            // v.resetCamera(width, height);
             //center(); // uncomment this later
             System.out.println("got new nodes!");
         }
@@ -618,7 +618,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     }
 
 
-                    if (v.showLinks) {
+                    if (v.showLinks || n1.selected) {
                         boolean doubleLink = false;
 
                         if (n2.neighbours.contains(n1)) {
@@ -834,7 +834,6 @@ public class Main extends PApplet implements MouseWheelListener {
                             if (!massSelectionHasBegin) {
                                 massSelectionHasBegin = true;
                                 jsNodeSelected(n);
-
                             }
                         }
                     }
@@ -850,7 +849,6 @@ public class Main extends PApplet implements MouseWheelListener {
                         if (!massSelectionHasBegin) {
                             massSelectionHasBegin = true;
                             jsNodeSelected(n);
-
                         }
 
 
@@ -879,7 +877,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
 
                 if (n.selected) {
-                    fill(60, 60, 60);
+                    fill(40, 40, 40);
                     if (drawDisk) {
                         ellipse(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
                     } else {
@@ -926,11 +924,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
             }
             if (n.selected) {
-                fill(70);
+                fill(20);
             } else if (n.highlighted) {
-                fill(110);
+                fill(60);
             } else {
-                fill(150);
+                fill(100);
             }
             if (v.showLabels) {
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
@@ -1096,6 +1094,13 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
+    }
+
+    public void clear() {
+        getSession().clear();
+    }
+    public void resetCameras() {
+        getSession().resetCamera(width, height);
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {

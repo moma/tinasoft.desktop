@@ -242,7 +242,7 @@ System.out.println("loading GEXF from string..");
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("value") != null) {
                         // FIXME normalize radius by a max radius, so it is not too big
-                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.1f;
+                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.3f;
                     }
                 } else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
@@ -255,7 +255,6 @@ System.out.println("loading GEXF from string..");
                     if (xmlnodePositionAttributes.getNamedItem("b") != null) {
                         node.b = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("b").getNodeValue());
                     }
-
                 }
                 // update the graph metrics
                 if (node.x < metrics.minX) {
@@ -327,6 +326,18 @@ System.out.println("loading GEXF from string..");
         metrics.centerX = metrics.maxX - metrics.minX;
         metrics.centerY = metrics.maxY - metrics.minY;
 
+        // now we need to configure the colors
+        for (Node n : storedNodes.values()) {
+            if (n.r < 0) {
+                n.r = 255 - ((180f / metrics.maxRadius)*n.radius);
+            }
+            if (n.g < 0) {
+                n.g = 255 - ((200f / metrics.maxRadius)*n.radius);
+            }
+            if (n.b < 0) {
+                n.b = 255 - ((170f / metrics.maxRadius)*n.radius);
+            }
+        }
         // TODO scale/normalize the graph like Gephi
         System.out.println("loading GEXF from string..done (setting hasBeenReadByFilter to false)");
         locked.set(false);
