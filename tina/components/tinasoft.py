@@ -84,10 +84,7 @@ class Tinasoft(TinaApp, ThreadPool):
             # args[1] is a corpora id
             #  args[3] is a white list
             if args[3] != '':
-                args[3] = self.getWhitelist( args[3],
-                occsCol='occurrences',
-                accept='x'
-            )
+                args[3] = self.getWhitelist( args[3] )
             else:
                 args[3] = None
             #  args[4] is an user defined stopwords file

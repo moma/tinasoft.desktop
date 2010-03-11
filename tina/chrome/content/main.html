@@ -7,18 +7,18 @@
     <meta name="keywords" content="Tinasoft,CREA">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
-    
+
     <!-- JQUERY -->
     <script type="text/javascript" src="lib/js/jquery/jquery-1.3.js" language="javascript"></script>
 
     <!-- JQUERY UI -->
     <script type="text/javascript" src="lib/js/jquery/jquery.ui.all.js" language="javascript"></script>
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
-    
+
     <!-- JQUERY UI ADD-ONS -->
-    <script type="text/javascript"  src="lib/js/jquery/jquery.rating.pack.js"        language="javascript"></script> 
-    <link type="text/css" rel="stylesheet" href="lib/js/jquery/jquery.rating.css"/> 
-    
+    <script type="text/javascript"  src="lib/js/jquery/jquery.rating.pack.js"        language="javascript"></script>
+    <link type="text/css" rel="stylesheet" href="lib/js/jquery/jquery.rating.css"/>
+
     <!-- UTILITIES -->
     <script type="text/javascript" src="console.js" language="javascript"></script>
     <script type="text/javascript" src="prefman.js" language="javascript"></script>
@@ -28,7 +28,7 @@
     <!-- TINASOFT APP FUNCTIONS-->
     <script type="text/javascript" src="visualization.js" language="javascript"></script>
     <script type="text/javascript" src="main.js" language="javascript"></script>
-    
+
     <!--TINASOFT CSS -->
     <link type="text/css" rel="stylesheet" href="global.css"/>
     <link type="text/css" rel="stylesheet" href="main.css"/>
@@ -39,7 +39,7 @@
 
     $(function(){
 
-	
+
          $('#htoolbar input[type=file]').change(function(e){
           console.log("calling clear()");
           tinaviz.clear();
@@ -68,7 +68,7 @@
                 $(this).removeClass("ui-state-active");
             }
         });
-        
+
     });
 </script>
     <div class="demo">
@@ -87,7 +87,9 @@
                     <h3>Select a source file and an identifier name to import</h3>
                     <label><h3>Data set source file (csv, required)</h3></label><br/>
                     <span class="ui-state-highlight">First line must be:<br/>
-                         'doc_titl','doc_abst','doc_acrnm','corp_num','doc_num','index_1','index_2','date','doc_keywords'
+                         'doc_titl','doc_abst','doc_acrnm','corp_num','doc_num','index_1','index_2','date','doc_keywords'<br/>
+                         'doc_num' and 'corp_num' are unique identifiers in the database<br/>
+                         'corp_num' is considered as a period identifier (time period or not)
                     </span><br/>
                     <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
                     <!--<label>Extraction configuration file (yaml)</label>-->
@@ -184,20 +186,20 @@
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a 
-                           href="#" 
-                           onclick="tinaviz.toggleLabels('macro')" 
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left toggle-labels macro" 
+                        <a
+                           href="#"
+                           onclick="tinaviz.toggleLabels('macro')"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left toggle-labels macro"
                            title="labels"><span class="ui-icon ui-icon-label"></span> Labels</a>
-                        <a  
-                           href="#" 
-                           onclick="tinaviz.toggleNodes('macro')" 
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo toggle-nodes macro" 
+                        <a
+                           href="#"
+                           onclick="tinaviz.toggleNodes('macro')"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo toggle-nodes macro"
                            title="nodes"><span class="ui-icon ui-icon-nodes"></span> Nodes</a>
-                        <a 
-                           href="#" 
+                        <a
+                           href="#"
                            onclick="tinaviz.toggleEdges('macro')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right toggle-edges macro" 
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right toggle-edges macro"
                            title="edges"><span class="ui-icon ui-icon-edges"></span> Edges</a>
                     </div>
 
@@ -219,18 +221,18 @@
 
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a href="#"
-                           onclick="tinaviz.toggleProjects()" 
+                           onclick="tinaviz.toggleProjects()"
                            class="fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-left"
                            title="projects"><span class="ui-icon ui-icon-projects"></span> Projects</a>
-                        <a href="#" 
-                           onclick="tinaviz.toggleTerms()" 
-                           class="fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-right" 
+                        <a href="#"
+                           onclick="tinaviz.toggleTerms()"
+                           class="fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-right"
                            title="terms"><span class="ui-icon ui-icon-terms"></span> Fields</a>
                     </div>
 
                       <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                         <a href="#"
-                           onclick="tinaviz.search($('searchfield').val())" 
+                           onclick="tinaviz.search($('searchfield').val())"
                            class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
                        </div>
                 </div>
@@ -240,63 +242,63 @@
             <div id="tabs-3" class="ui-corner-bottom">
                <div id="htoolbar2" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                   <a href="#" 
-                      onclick="#" 
-                      class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" 
+                   <a href="#"
+                      onclick="#"
+                      class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a 
-                           href="#" 
-                           onclick="tinaviz.toggleLabels('meso')" 
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left toggle-labels macro" 
+                        <a
+                           href="#"
+                           onclick="tinaviz.toggleLabels('meso')"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left toggle-labels macro"
                            title="labels"><span class="ui-icon ui-icon-label"></span> Labels</a>
-                        <a  
-                           href="#" 
-                           onclick="tinaviz.toggleNodes('meso')" 
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo toggle-nodes macro" 
+                        <a
+                           href="#"
+                           onclick="tinaviz.toggleNodes('meso')"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo toggle-nodes macro"
                            title="nodes"><span class="ui-icon ui-icon-nodes"></span> Nodes</a>
-                        <a 
-                           href="#" 
+                        <a
+                           href="#"
                            onclick="tinaviz.toggleEdges('meso')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right toggle-edges macro" 
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right toggle-edges macro"
                            title="edges"><span class="ui-icon ui-icon-edges"></span> Edges</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a 
-                           href="#" 
-                           onclick="tinaviz.togglePause('meso')" 
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all toggle-pause macro" 
+                        <a
+                           href="#"
+                           onclick="tinaviz.togglePause('meso')"
+                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all toggle-pause macro"
                            title="pause"><span class="ui-icon ui-icon-pause"></span> Pause</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#" 
-                           onclick="tinaviz.unselect()" 
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" 
+                        <a href="#"
+                           onclick="tinaviz.unselect()"
+                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                            title="pause"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a href="#"
-                           onclick="tinaviz.toggleProjects()" 
+                           onclick="tinaviz.toggleProjects()"
                            class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-corner-left"
                            title="projects"><span class="ui-icon ui-icon-projects"></span> Projects</a>
                         <!--<a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo " title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>-->
-                        <a href="#" 
-                           onclick="tinaviz.toggleTerms()" 
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-corner-right" 
+                        <a href="#"
+                           onclick="tinaviz.toggleTerms()"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-corner-right"
                            title="terms"><span class="ui-icon ui-icon-terms"></span> Fields</a>
                     </div>
 
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                         <a href="#" onclick="tinaviz.reproject()" class="fg-button ui-state-default ui-state-disabled fg-button-icon-solo  ui-corner-all" title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>
                        </div>
-                       
+
                       <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                         <a href="#"
-                           onclick="tinaviz.search($('searchfield').val())" 
+                           onclick="tinaviz.search($('searchfield').val())"
                            class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
                        </div>
                 </div>
@@ -314,7 +316,7 @@
               <div id="infodiv" class="ui-widget ui-widget-content ui-corner-all formleft infodiv ui-helper-clearfix">
                     <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
                         <h2 id="nodedetailstitle" class="nodedetailsh2">Project: (none)</h3>
-                        <p id="selectioncontent" class="nodedetailsp">bla bla</p> 
+                        <p id="selectioncontent" class="nodedetailsp">bla bla</p>
                         <h3  class="nodedetailsh3">Abstract:</h3>
                         <p id="abstract" class="nodedetailsp"></p>
                         <h3  class="nodedetailsh3">Terms:</h3>
@@ -323,18 +325,18 @@
                         <p id="reviewers" class="nodedetailsp"><a href="elias.showk@iscpif.fr">Elias Showk</a>, <a href="julian.bilcke@iscpif.fr">Julian Bilcke</a></p>
                         <h3  class="nodedetailsh3">Most similar projects:</h3>
                         <p id="reviewers" class="nodedetailsp"><a href="#">TINA</a> (80%), <a href="#">TINA2</a> (10.4%)</p>
-                       
-                        <div> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="1"/> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="2"/> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="3" checked="checked"/> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="4"/> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="5"/> 
-                        </div> 
-                         
+
+                        <div>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="1"/>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="2"/>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="3" checked="checked"/>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="4"/>
+                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="5"/>
+                        </div>
+
                     </div><!-- BUTTON SET -->
                 </div><!-- / INFODIV -->
-                
+
           </div> <!-- / WHITEBOX -->
     </div>
 </body>

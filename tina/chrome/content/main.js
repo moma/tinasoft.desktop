@@ -37,6 +37,7 @@ var tinasoftTaskObserver = {
         if (topic == "tinasoft_runImportFile_running_status") {
             if (data == TinaService.STATUS_RUNNING) {
                 $('#importFile button').toggleClass("ui-state-disabled", 1);
+                $('#importFile button').html( "starting" );
             }
             $('#importFile button').html( "imported "+data+" lines" );
         }
@@ -55,6 +56,7 @@ var tinasoftTaskObserver = {
         if (topic == "tinasoft_runProcessCoocGraph_running_status") {
             if (data == TinaService.STATUS_RUNNING) {
                 $('#processCooc button').toggleClass("ui-state-disabled", 1);
+                $('#processCooc button').html( "starting" );
             }
             $('#processCooc button').html( data );
         }
@@ -79,6 +81,7 @@ var tinasoftTaskObserver = {
         if (topic == "tinasoft_runExportCorpora_running_status") {
             if (data == TinaService.STATUS_RUNNING) {
                 $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
+                $('#exportCorpora button').html( "starting" );
             }
             $('#exportCorpora button').html( data+" % done" );
         }
@@ -390,7 +393,7 @@ function resizeApplet() {
     var w = getAppletWidth();
     var h = getAppletHeight();
     $('#whitebox').css("height",""+(h)+"px");
-    $('#whitebox').css("width",""+(w)+"px");  
+    $('#whitebox').css("width",""+(w)+"px");
     $('#vizframe').css("height",""+(h)+"px");
     $('#vizframe').css("width",""+(w-350)+"px");
     $('#infodiv').show();
@@ -399,11 +402,11 @@ function resizeApplet() {
     tinaviz.size(w,h);
 }
 // wait for the DOM to be loaded
-$(document).ready(function() { 
+$(document).ready(function() {
     $("#tabs").tabs();
-    
+
     $("#tabs").data('disabled.tabs', [0, 1, 2, 3, 4]);
-    
+
     $('#infodiv').hide();
 
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
@@ -435,10 +438,10 @@ $(document).ready(function() {
             tinaviz.disable();
             $('#vizframe').css("height","0px");
             $('#vizframe').css("width","0px");
-          
+
             $('#whitebox').css("height","0px");
             $('#whitebox').css("width","0px");
-              
+
             $('#infodiv').css("height","0px");
             $('#infodiv').css("width","0px");
             $('#infodiv').hide();
@@ -479,7 +482,7 @@ $(document).ready(function() {
             value: 100,
             orientation: "horizontal"
     });*/
-    
+
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");
     }, function() {
@@ -493,13 +496,13 @@ $(document).ready(function() {
     displayListCorpora( "corpora_table" );
     displayListCorpora( "graph_table" );
 
-	$('.hover-star').rating({
-		callback: function(value, link){
-			// TODO update the user db (sessions, votes, comments..) here
-		}
-	});
+    $('.hover-star').rating({
+        callback: function(value, link){
+            // TODO update the user db (sessions, votes, comments..) here
+        }
+    });
 
-	
+
     // TINASOFT WINDOW IS RESIZED
     $(window).bind('resize', function() {
         // check if the applet is ready
@@ -507,8 +510,8 @@ $(document).ready(function() {
             resizeApplet();
         }
     });
-    
-    
+
+
        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
         var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
         var appletPath;
@@ -518,7 +521,7 @@ $(document).ready(function() {
         appletFile.initWithPath(appletPath);
         var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
         var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no"  frameborder="1" src="'+appletURL+'"></iframe>';
-        
+
         window.setTimeout("$('#container').html('"+iframehtml+"');", 2000);
-           
+
 });
