@@ -244,7 +244,7 @@ function displayListGraph(trid, corpora) {
             + graphList[i]
             + "'>"
             + graphList[i]
-            + "</button>"
+            + "</button><br/>"
         ).click(function(event) {
             tabvizframe.tinaviz.clear();
             console.log( "opening " + $(this).attr('value') );
