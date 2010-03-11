@@ -20,82 +20,17 @@ function Tinaviz() {
         //this.loadRelativeGraph("macro","user/fet open/8_0.0-1.0.gexf");
 
         // disable the applet when on another tab (to save CPU)
-        // WARNING WARNING WANRING WARNING
-        // DISABLING THE APPLET IN OPENGL MODE IS STUPID BECAUSE THIS CAUSE A BIG INFINITE LOOP !
-        this.setEnabled(false);
+        // WARNING, DISABLING THE APPLET IN OPENGL CAUSE AN INFINITE LOOP
+        this.disable();
 
         // we can already prepare the control layout
-        $('#gui').show();
-        $('#sidebariframe').hide();
+        //$('#gui').show();
+        //$('#sidebariframe').hide();
 
         // finally, once the gexf is loaded, we light the tab!
         this.logDebug("enabling applet tab..");
-        parent.appletReady();
 
-    },
-
-    setup: function() {
-        var corpus = parent.getCorpus("2");
-        if (corpus == null) {
-          this.logError("get corpus failed");
-          return;
-        }
-       jQuery.each(corpus, function(i, val) {
-          this.logNormal( "EACH CORPUS : "+ i );
-       });
-
-         // update the HTML form
-        $('#nodedetailstitle').html("Document: "+"(none)");
-        $('#abstract').html("Document abstract");
-
-        // TODO pass the ID to the elishowk API
-        var context = {
-         root:  {
-            uuid: id,
-         },
-         neighborhood: [
-            {
-             uuid: '432561326751248',
-             label: 'this is an ngram',
-             category: 'term'
-             },
-            {
-             uuid: '715643267560489',
-             label: 'TINA Document',
-             category: 'Document'
-             },
-         ]
-        };
-
-
-        var template = '<?xml version="1.0" encoding="UTF-8"?>\n\
-<gexf xmlns="http://www.gephi.org/gexf" xmlns:viz="http://www.gephi.org/gexf/viz">\n\
-        <meta lastmodifieddate="19-Feb-2010"><description>Generic Map/2002-2007</description></meta>\n\
-    <graph>\n\
-        <attributes class="node">\n\
-        </attributes>\n\
-        <tina>\n\
-        </tina>\n\
-        <nodes>\n\
-<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-            <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
-                <attvalues>\n\
-                    <attvalue for="0" value="#{neighborhood[i].category}" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js } ?>\
-        </nodes>\n\
-        <edges>\n\
-<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-            <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
-<?js } ?>\
-        </edges>\n\
-    </graph>\n\
-</gexf>';
-
-        /* call the template engine (tenjin is really fast!)*/
-        var output = Shotenjin.render(template, context);
-        this.logDebug(output);
+        $("#tabs").data('disabled.tabs', [2,3,4]);
     },
 
     size: function(w,h) {
@@ -103,7 +38,7 @@ function Tinaviz() {
         wrapper.width = w;
         wrapper.height = h;
         // update the overlay layout (eg. recenter the toolbars)
-        $('.htoolbar').css('left', (  (wrapper.width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
+        //$('.htoolbar').css('left', (  (wrapper.width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
     },
 
     // Public methods
@@ -123,32 +58,32 @@ function Tinaviz() {
 
     toggleLabels: function(view) {
             if (applet != null && applet.getView(view).toggleLabels()) {
-                 parent.$('.toggle-labels .'+view).addClass("ui-state-active");
+                 $('.toggle-labels .'+view).addClass("ui-state-active");
             } else {
-                 parent.$('.toggle-labels .'+view).removeClass("ui-state-active");
+                 $('.toggle-labels .'+view).removeClass("ui-state-active");
             }
     },
 
     toggleNodes: function(view) {
             if (applet != null && applet.getView(view).toggleNodes()) {
-                 parent.$('.toggle-nodes .'+view).addClass("ui-state-active");
+                 $('.toggle-nodes .'+view).addClass("ui-state-active");
             } else {
-                 parent.$('.toggle-nodes .'+view).removeClass("ui-state-active");
+                 $('.toggle-nodes .'+view).removeClass("ui-state-active");
             }
     },
     toggleEdges: function(view) {
             if (applet != null && applet.getView(view).toggleEdges()) {
-                 parent.$('.toggle-edges .'+view).addClass("ui-state-active");
+                 $('.toggle-edges .'+view).addClass("ui-state-active");
             } else {
-                 parent.$('.toggle-edges .'+view).removeClass("ui-state-active");
+                 $('.toggle-edges .'+view).removeClass("ui-state-active");
             }
     },
 
     togglePause: function(view) {
             if (applet != null && applet.getView(view).togglePause()) {
-                 parent.$('.toggle-pause .'+view).addClass("ui-state-active");
+                 $('.toggle-pause .'+view).addClass("ui-state-active");
             } else {
-                 parent.$('.toggle-pause .'+view).removeClass("ui-state-active");
+                 $('.toggle-pause .'+view).removeClass("ui-state-active");
             }
     },
 
@@ -170,6 +105,8 @@ function Tinaviz() {
     unselect: function() {
         if (applet == null) return;
         applet.unselect();
+        applet.clear("meso");
+        applet.resetCamera("meso");
     },
     clear: function() {
         if (applet == null) return;
@@ -186,8 +123,8 @@ function Tinaviz() {
 
         this.logDebug("nodeSelected called! attributes: '"+attr+"'");
 
-        if (id == null) { $('#sidebariframe').hide(); }
-        else            { $('#sidebariframe').show(); }
+        /*if (id == null) { $('#sidebariframe').hide(); }
+        else            { $('#sidebariframe').show(); }*/
 
         if (level == "macro") {
             if (attr=="Document") {
@@ -371,18 +308,23 @@ function Tinaviz() {
         });
     },
 
-    isEnabled: function() {
-        if (applet == null) {
-            return false;
-        } else {
-            return applet.isEnabled();
-        }
+    enabled: function() {
+        if (applet == null) return false;
+        return applet.isEnabled();
     },
-    setEnabled:  function(enabled) {
+    disabled: function() {
+        if (applet == null) return true;
+        return !applet.isEnabled();
+    },
+    enable:  function() {
         if (applet == null) return;
-        applet.setEnabled(enabled);
+        applet.setEnabled(true);
     },
-
+    disable:  function() {
+        if (applet == null) return;
+        applet.setEnabled(false);
+    },
+    
     setLevel: function(level) {
         if (applet == null) return;
         applet.getSession().setLevel(level);
@@ -399,99 +341,76 @@ function Tinaviz() {
        console.log("DEBUG "+msg);
     },
     switchedTo: function(level) {
-        // here it is a bit tricky, we need to change the tabs, which are a bit far in the div/iframe tree...
-        parent.switchedTo(level);
+        switchedTo(level);
     },
 
     getWidth: function() {
-        return parent.getAppletWidth();
+        return getAppletWidth();
     },
     getHeight: function() {
-       return parent.getAppletHeight();
+       return getAppletHeight();
     },
 
     search: function(txt) {
         this.logNormal("Searching is not implemented yet..");
     },
 
-
-  selectMacroDocument: function(x,y,id,label) {
-     if (applet == null) return;
-     this.logDebug("selectMacroDocument called!");
-
-
-    applet.getSession().getMeso().selectNodeById(id);
-        // TODO pass the ID to the elishowk API
-
-        // TODO update the DIV with data from the database
-       this.logDebug("selectMacroDocument called for ID "+id);
-       var doc = parent.getDocument( id );
-       this.logDebug("doc= "+doc);
-
-         // update the HTML form
-      if (doc != null) {
-        $('#nodedetailstitle').html("Project: "+ label);
-        $('#abstract').html("Document abstract");
-      }
-
-  },
-
-  selectMacroTerm: function(x,y,id,label) {
-     if (applet == null) return;
-     this.logDebug("selectMacroTerm called!");
-     applet.getSession().getMeso().selectNodeById(id);
-        // TODO pass the ID to the elishowk API
-
-        // TODO update the DIV with data from the database
-       this.logDebug("selectMacroTerm called for ID "+id);
-       var ng = parent.getNGram( id );
-        this.logDebug("ng= "+ng);
-         /*
-        for (var key in ng) {
-            this.logDebug( "key: "+ key +" value: " +ng[key]);
-        }*/
-
-
-         // update the HTML form
-       if (ng == null) return;
-
+  getNGram: function(id) {
+       var ng = getNGram( id );
+       this.logDebug("ng= "+ng);
+       if (ng == null) return null;
        delete ng['py/object'];
-       ng["edges_data"] = {
-          "Document" : {},
-          "Corpus" : {}
-       };
-
-       $('#nodedetailstitle').html("Term: "+ng['label']);
-       $('#abstract').html("");
-
+       ng["edges_data"] = { "Document" : {}, "Corpus" : {} };
        for (var doc in ng["edges"]["Document"]) {
-           var obj = parent.getDocument(doc);
-           if (obj == null) {
-             delete ng["edges"]["Document"][doc];
-           } else {
-             ng["edges_data"]["Document"][doc] = obj;
-           }
+           var obj = getDocument(doc);
+           if (obj == null) { delete ng["edges"]["Document"][doc];} 
+           else {  ng["edges_data"]["Document"][doc] = obj;}
        }
-
        for (var corp in ng["edges"]["Corpus"]) {
-           var obj = parent.getCorpus(corp);
-           if (obj == null) {
-             delete ng["edges"]["Corpus"][corp];
-           } else {
-             ng["edges_data"]["Corpus"][corp] = obj;
-           }
+           var obj = getCorpus(corp);
+           if (obj == null) { delete ng["edges"]["Corpus"][corp];}
+           else { ng["edges_data"]["Corpus"][corp] = obj;}
        }
+       return ng;
+  },
+  
+  getDocument: function(id) {
+       var doc = getDocument( id );
+       this.logDebug("doc= "+doc);
+       if (doc == null) return null;
+       delete doc['py/object'];
+       doc["edges_data"] = { "NGram" : {}, "Corpus" : {} };
+       for (var ng in doc["edges"]["NGram"]) {
+           var obj = getNGram(ng);
+           if (obj == null) { delete doc["edges"]["NGram"][ng];} 
+           else {  doc["edges_data"]["NGram"][ng] = obj;}
+       }
+       for (var corp in doc["edges"]["Corpus"]) {
+           var obj = getCorpus(corp);
+           if (obj == null) { delete doc["edges"]["Corpus"][corp];}
+           else { doc["edges_data"]["Corpus"][corp] = obj;}
+       }
+       return doc;
+  },
+  
+  selectMacroTerm: function(x,y,id,label,attr) {
+     this.logDebug("selectMacroTerm("+id+","+label+")");
+     var ng = this.getNGram(id);
+     if (ng==null) return;
+     
+     $('#nodedetailstitle').html("Term: "+ng['label']);
+     $('#abstract').html("");
 
-        var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+     var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
-        <meta lastmodifieddate=\"19-Feb-2010\"><description>Generic Map/2002-2007</description></meta>\n\
+        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
     <graph>\n\
         <attributes class=\"node\">\n\
         </attributes>\n\
         <tina>\n\
         </tina>\n\
         <nodes>\n\
-            <node id=\"#{id}\" label=\"#{label}\">\n\
+            <node id=\"#{id}\" label=\"${label}\">\n\
                 <viz:size value=\"20\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"NGram\" />\n\
@@ -499,9 +418,10 @@ function Tinaviz() {
             </node>\n\
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
-            <node id=\"#{target_node}\" label=\"#{edges_data[target_type][target_node]['label']}\">\n\
+            <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+                <viz:size value=\"10\"/>\n\
                 <attvalues>\n\
-                    <attvalue for=\"0\" value=\"#{target_type}\" />\n\
+                    <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
             </node>\n\
 <?js    } ?>\
@@ -517,116 +437,164 @@ function Tinaviz() {
         </edges>\n\
     </graph>\n\
 </gexf>", ng);
-        // console.log(gexf);
-        applet.getSession().updateFromString("meso",gexf);
-  },
-
-
-  selectMesoTerm: function(x,y,id,label) {
+     console.log(gexf);
+     applet.getSession().updateFromString("meso",gexf);
+   },
+   
+  selectMacroDocument: function(x,y,id,label,attr) {
      if (applet == null) return;
-     this.logDebug("selectMesoTerm called!");
-     applet.getSession().getMacro().selectNodeById(id);
-  },
+     this.logDebug("selectMacroDocument("+id+","+label+")");
+     var doc = this.getDocument(id);
+     if (doc==null) return;
+     
+     $('#nodedetailstitle').html("Project: "+doc['label']);
+     $('#abstract').html("");
 
-  selectMesoDocument: function(x,y,id,label) {
-     if (applet == null) return;
-       this.logDebug("selectMesoDocument called!");
-       this.logDebug("ID= "+id+" ");
-       this.logDebug(" applet.getSession().getMacro().selectNodeById(id) ");
-     // applet.getSession().getMacro().selectNodeById(id);
-    /*
-    var getCorpus = function(corpusid) {
-        return( JSON.parse( TinaService.getCorpus(corpusid) ) );
-    };
-    var getDocument = function(documentid) {
-        return( JSON.parse( TinaService.getDocument(documentid) ) );
-    };
-    var getCorpora = function(corporaid) {
-        return( JSON.parse( TinaService.getCorpora(corporaid) ) );
-    };
-    var getNGram = function(ngramid) {
-        return( JSON.parse( TinaService.getNGram(ngramid) ) );
-    };
-       */
-
-       this.logDebug("parent.getDocument( "+id+" )");
-       var doc = parent.getDocument( id );
-
-
-         // update the HTML form
-        $('#nodedetailstitle').html("Document: "+"(none)");
-        $('#abstract').html("Document abstract");
-
-
-        // TODO pass the ID to the elishowk API
-        var context = {
-         root:  {
-            uuid: id,
-         },
-         neighborhood: [
-            {
-             uuid: '432561326751248',
-             label: 'this is an ngram',
-             category: 'term'
-             },
-            {
-             uuid: '715643267560489',
-             label: 'TINA Document',
-             category: 'Document'
-             },
-         ]
-        };
-
-        // a basic GEXF template (the applet isn't very strict regarding to the GEXf version)
-        var template = '<?xml version="1.0" encoding="UTF-8"?>\n\
-<gexf xmlns="http://www.gephi.org/gexf" xmlns:viz="http://www.gephi.org/gexf/viz">\n\
-        <meta lastmodifieddate="19-Feb-2010"><description>Generic Map/2002-2007</description></meta>\n\
+     var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
+        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
     <graph>\n\
-        <attributes class="node">\n\
+        <attributes class=\"node\">\n\
         </attributes>\n\
         <tina>\n\
         </tina>\n\
         <nodes>\n\
-<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-            <node id="#{neighborhood[i].uuid}" label="#{neighborhood[i].label}">\n\
+            <node id=\"#{id}\" label=\"${label}\">\n\
+                <viz:size value=\"20\"/>\n\
                 <attvalues>\n\
-                    <attvalue for="0" value="#{neighborhood[i].category}" />\n\
+                    <attvalue for=\"0\" value=\"Document\" />\n\
                 </attvalues>\n\
             </node>\n\
+<?js for (var target_type in edges) { ?>\
+<?js     for (var target_node in edges[target_type]) { ?>\
+            <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+                <viz:size value=\"10\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\"${target_type}\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js    } ?>\
 <?js } ?>\
         </nodes>\n\
         <edges>\n\
-<?js for (var i = 0, n = neighborhood.length; i < n; i++) { ?>\
-            <edge id="#{i}" source="#{root.uuid}" target="#{neighborhood[i].uuid}" weight="1.0" />\n\
+<?js var i=0; ?>\
+<?js for (var target_type in edges) { ?>\
+<?js     for (var target_node in edges[target_type]) { ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node}\" weight=\"#{edges[target_type][target_node]}\" />\n\
+<?js    } ?>\
 <?js } ?>\
         </edges>\n\
     </graph>\n\
-</gexf>';
+</gexf>", doc);
+     console.log(gexf);
+     applet.getSession().updateFromString("meso",gexf);
+   },
+  selectMesoTerm: function(x,y,id,label,attr) {
+     this.logDebug("selectMesoTerm("+id+","+label+")");
+     var ng = this.getNGram(id);
+     if (ng==null) return;
+     
+     $('#nodedetailstitle').html("Term: "+ ng['label']);
+     $('#abstract').html("");
+     $('#terms').html(Shotenjin.render(
+     "<?js var first; for (var target_type in edges) { first=target_type; break; } ?>\
+     <a href=\"\" class=\"ui-widget-content ui-state-default\">#{edges_data[target_type]['label']}</a> \
+     <?js for (var target_type in edges) { if (target_type == first) continue; ?>\
+     ,&nbsp;<a href=\"\" class=\"ui-widget-content ui-state-default\">#{edges_data[target_type]['label']}</a>\
+     <?js } ?>.", ng));
+      
+     var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
+        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
+    <graph>\n\
+        <attributes class=\"node\">\n\
+        </attributes>\n\
+        <tina>\n\
+        </tina>\n\
+        <nodes>\n\
+            <node id=\"#{id}\" label=\"${label}\">\n\
+                <viz:size value=\"20\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\"NGram\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js for (var target_type in edges) { ?>\
+<?js     for (var target_node in edges[target_type]) { ?>\
+            <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+                <viz:size value=\"10\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\"${target_type}\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js    } ?>\
+<?js } ?>\
+        </nodes>\n\
+        <edges>\n\
+<?js var i=0; ?>\
+<?js for (var target_type in edges) { ?>\
+<?js     for (var target_node in edges[target_type]) { ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node}\" weight=\"#{edges[target_type][target_node]}\" />\n\
+<?js    } ?>\
+<?js } ?>\
+        </edges>\n\
+    </graph>\n\
+</gexf>", ng);
+     console.log(gexf);
+     applet.getSession().updateFromString("meso",gexf);
+    },
+   selectMesoDocument: function(x,y,id,label,attr) {
+     this.logDebug("selectMesoDocument("+id+","+label+")");
+     var doc = this.getDocument(id);
+     if (doc==null) return;
+     
+     $('#nodedetailstitle').html("Project: "+doc['label']);
+     $('#abstract').html("");
 
-
-        /* call the template engine (tenjin is really fast!)*/
-        var output = Shotenjin.render(template, context);
-
-        console.log(output);
-
-        console.log("calling applet.getSession().getMeso().getgraph().updateFromString(output)");
-        //result = applet.getSession().getMeso().getGraph().updateFromString(output);
-        if (!result) console.error(e);
-
-        // also ask to
-        // TODO update the DIV with data from the database
-  }
-
+     var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
+        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
+    <graph>\n\
+        <attributes class=\"node\">\n\
+        </attributes>\n\
+        <tina>\n\
+        </tina>\n\
+        <nodes>\n\
+            <node id=\"#{id}\" label=\"${label}\">\n\
+                <viz:size value=\"20\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\"Document\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js for (var target_type in edges) { ?>\
+<?js     for (var target_node in edges[target_type]) { ?>\
+            <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+                <viz:size value=\"10\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\"${target_type}\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js    } ?>\
+<?js } ?>\
+        </nodes>\n\
+        <edges>\n\
+<?js var i=0; ?>\
+<?js for (var target_type in edges) { ?>\
+<?js     for (var target_node in edges[target_type]) { ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node}\" weight=\"#{edges[target_type][target_node]}\" />\n\
+<?js    } ?>\
+<?js } ?>\
+        </edges>\n\
+    </graph>\n\
+</gexf>", doc);
+     console.log(gexf);
+     applet.getSession().updateFromString("meso",gexf);
+   }
   };
 }
 
-
 tinaviz = new Tinaviz();
 
-$(document).ready(function() {
-
-    // hide all the GUI until we loaded the applet
-    $("#gui").hide();
+//$(document).ready(function() {
 
     /*
     $("#searchfield").autocomplete({
@@ -638,6 +606,7 @@ $(document).ready(function() {
         }
     });
     */
+    /*
     $("#altslider").slider({
             orientation: "vertical",
             range: true,
@@ -653,19 +622,10 @@ $(document).ready(function() {
                 $("#lowerThresholdInput").val(ui.values[0]/100);
             }
     });
+    */
 
-        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-        var appletPath;
-        if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
-        else { appletPath = path + "/content/applet/index.html" }
-        var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        appletFile.initWithPath(appletPath);
-        var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
 
-        $('#container')
-            .html('<iframe id="vizframe" class="vizframe" allowtransparency="true" scrolling="no"  frameborder="0" src="'+appletURL+'"></iframe>');
-});
+//});
 
 
 

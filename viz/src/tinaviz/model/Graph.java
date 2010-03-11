@@ -94,12 +94,10 @@ System.out.println("loading GEXF from string..");
     private boolean parseXML(XPathReader xml) throws XPathExpressionException {
         locked.set(true);
         String meta = "/gexf/graph/tina/";
-        Console.log("<applet> parsing XML..");
+        Console.log("<applet> reading GEXF..");
 
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
-        Console.log("<applet> not failed yet!");
         attributes.put("zoom", (zoomValue != null) ? zoomValue.floatValue() : 1.0f);
-        Console.log("<applet> zoom passed");
 
         Double thresholdValue = (Double) xml.read(meta + "threshold/@min", XPathConstants.NUMBER);
         if (thresholdValue != null) {
@@ -144,7 +142,6 @@ System.out.println("loading GEXF from string..");
         metrics.centerX = 0.0f;
         metrics.centerY = 0.0f;
 
-        Console.log("<applet> parsing XML: reading nodes..");
         org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
                 XPathConstants.NODESET);
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -242,7 +239,7 @@ System.out.println("loading GEXF from string..");
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("value") != null) {
                         // FIXME normalize radius by a max radius, so it is not too big
-                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.1f;
+                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.3f;
                     }
                 } else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
@@ -255,7 +252,6 @@ System.out.println("loading GEXF from string..");
                     if (xmlnodePositionAttributes.getNamedItem("b") != null) {
                         node.b = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("b").getNodeValue());
                     }
-
                 }
                 // update the graph metrics
                 if (node.x < metrics.minX) {
@@ -297,8 +293,6 @@ System.out.println("loading GEXF from string..");
 
         }
 
-        Console.log("<graph> parsing edges..");
-
         org.w3c.dom.NodeList edges = (org.w3c.dom.NodeList) xml.read("/gexf/graph/edges/edge",
                 XPathConstants.NODESET);
         for (int i = 0; i < edges.getLength(); i++) {
@@ -327,8 +321,21 @@ System.out.println("loading GEXF from string..");
         metrics.centerX = metrics.maxX - metrics.minX;
         metrics.centerY = metrics.maxY - metrics.minY;
 
-        // TODO scale/normalize the graph like Gephi
-        System.out.println("loading GEXF from string..done (setting hasBeenReadByFilter to false)");
+        // now we need to configure the colors
+        for (Node n : storedNodes.values()) {
+            if (n.r < 0) {
+                n.r = 255 - ((160f / metrics.maxRadius)*n.radius);
+            }
+            if (n.g < 0) {
+                n.g = 255 - ((180f / metrics.maxRadius)*n.radius);
+            }
+            if (n.b < 0) {
+                n.b = 255 - ((150f / metrics.maxRadius)*n.radius);
+            }
+        }
+
+        Console.log("<graph> GEXF loaded!");
+
         locked.set(false);
         return true;
     }

@@ -246,9 +246,10 @@ function displayListGraph(trid, corpora) {
             + graphList[i]
             + "</button><br/>"
         ).click(function(event) {
-            tabvizframe.tinaviz.clear();
+            tinaviz.clear();
             console.log( "opening " + $(this).attr('value') );
-            if (tabvizframe.tinaviz.loadRelativeGraph("macro",$(this).attr('value')) == true) {
+            $("#tabs").data('disabled.tabs', [4]);
+            if (tinaviz.loadRelativeGraph("macro",$(this).attr('value')) == true) {
                 switchedTo( "macro" );
             }
         });
@@ -368,18 +369,14 @@ function getHeight() {
 
 /* TODO replace by CSS query */
 function getAppletWidth() {
-    return getWidth() - 15;
+    return getWidth() - 57;
 }
 
 /* TODO replace by CSS query */
 function getAppletHeight() {
-    return getHeight() - 140;
+    return getHeight() - 142;
 }
 
-/* called when java applet is ready */
-function appletReady() {
-  $("#tabs").data('disabled.tabs', [4]);
-}
 
 function switchedTo(level) {
     var tabs = { "macro" : 2,
@@ -392,43 +389,59 @@ function switchedTo(level) {
 function resizeApplet() {
     var w = getAppletWidth();
     var h = getAppletHeight();
-    $('#tabvizframe').css("height",""+h+"px");
-    $('#tabvizframe').css("width",""+w+"px");
-    tabvizframe.tinaviz.size(w,h);
+    $('#whitebox').css("height",""+(h)+"px");
+    $('#whitebox').css("width",""+(w)+"px");  
+    $('#vizframe').css("height",""+(h)+"px");
+    $('#vizframe').css("width",""+(w-350)+"px");
+    $('#infodiv').show();
+    $('#infodiv').css("height",""+(h-100)+"px");
+    $('#infodiv').css("width",""+(260)+"px");
+    tinaviz.size(w,h);
 }
 // wait for the DOM to be loaded
-$(document).ready(function() {
+$(document).ready(function() { 
+    $("#tabs").tabs();
+    
+    $("#tabs").data('disabled.tabs', [0, 1, 2, 3, 4]);
+    
+    $('#infodiv').hide();
 
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-    $("#tabs").tabs();
-    $("#tabs").data('disabled.tabs', [2, 3, 4]);
+
 
     $("#tabs").bind('tabsselect', function(event, ui) {
 
         // MAGIC TRICK FOR THE JAVA IFRAME
         if (ui.index == 2) {
-            if (!tabvizframe.tinaviz.isEnabled()) {
+            if (tinaviz.disabled()) {
                 resizeApplet();
-                tabvizframe.tinaviz.setEnabled(true);
+                tinaviz.enable();
             }
-            tabvizframe.tinaviz.setLevel("macro");
+            tinaviz.setLevel("macro");
         } else if (ui.index == 3) {
-            if (!tabvizframe.tinaviz.isEnabled()) {
+            if (tinaviz.disabled()) {
                 resizeApplet();
-                tabvizframe.tinaviz.setEnabled(true);
+                tinaviz.enable();
             }
-            tabvizframe.tinaviz.setLevel("meso");
+            tinaviz.setLevel("meso");
         } else if (ui.index == 4) {
-            if (!tabvizframe.tinaviz.isEnabled()) {
+            if (tinaviz.disabled()) {
                 resizeApplet();
-                tabvizframe.tinaviz.setEnabled(true);
+                tinaviz.enable();
             }
-            tabvizframe.tinaviz.setLevel("micro");
+            tinaviz.setLevel("micro");
         } else {
             // hide the frame; magic!
-            tabvizframe.tinaviz.setEnabled(false);
-            $('#tabvizframe').css("height","0px");
-            $('#tabvizframe').css("width","0px");
+            tinaviz.disable();
+            $('#vizframe').css("height","0px");
+            $('#vizframe').css("width","0px");
+          
+            $('#whitebox').css("height","0px");
+            $('#whitebox').css("width","0px");
+              
+            $('#infodiv').css("height","0px");
+            $('#infodiv').css("width","0px");
+            $('#infodiv').hide();
         }
     });
     var max = 0;
@@ -456,14 +469,17 @@ $(document).ready(function() {
             orientation: "vertical"
     });
         // setup master volume
+        /*
     $("#localrepulsion").slider({
             value: 100,
             orientation: "horizontal"
-    });
+    });*/
+    /*
     $("#globalrepulsion").slider({
             value: 100,
             orientation: "horizontal"
-    });
+    });*/
+    
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");
     }, function() {
@@ -477,11 +493,32 @@ $(document).ready(function() {
     displayListCorpora( "corpora_table" );
     displayListCorpora( "graph_table" );
 
+	$('.hover-star').rating({
+		callback: function(value, link){
+			// TODO update the user db (sessions, votes, comments..) here
+		}
+	});
+
+	
     // TINASOFT WINDOW IS RESIZED
     $(window).bind('resize', function() {
         // check if the applet is ready
-        if (tabvizframe.tinaviz.isEnabled()) {
+        if (tinaviz.enabled()) {
             resizeApplet();
         }
     });
+    
+    
+       var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+        var appletPath;
+        if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
+        else { appletPath = path + "/content/applet/index.html" }
+        var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        appletFile.initWithPath(appletPath);
+        var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
+        var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no"  frameborder="1" src="'+appletURL+'"></iframe>';
+        
+        window.setTimeout("$('#container').html('"+iframehtml+"');", 2000);
+           
 });

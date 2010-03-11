@@ -57,57 +57,22 @@ $(function(){
 				else { $(this).addClass("ui-state-active"); }	
 		})
 		.mouseup(function(){
-			if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button,  .fg-buttonset-multi .fg-button') ){
+			if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button, .fg-buttonset-multi .fg-button') ){
 				$(this).removeClass("ui-state-active");
 			}
 	});
 });
 </script> 
-      <div id="container">
-      </div>
-      <div id="gui">
+<!--<div id="toolbars">
+                <div id="vtoolbar" class="ui-widget ui-widget-content ui-corner-all formleft vtoolbar">
+		            <input id="upperThresholdInput" class="thresholdInput upperThreshold" value="1.0" />
+			        <div id="altslider" class="altslider"></div>
+		            <input id="lowerThresholdInput" class="thresholdInput lowerThreshold" value="0.0" />
+               </div>
+</div><!-- TOOLBARS-->
+        <div id="container">
+        </div>
 
-          <div id="iframes">
-               <!-- <iframe id="vtoolbariframe" class="vtoolbariframe"></iframe>-->
-                <iframe id="sidebariframe" class="sidebariframe"></iframe>
-          </div>
-
-          <div id="toolbars">
-
-              <div id="nodedetails" class="fg-toolbar ui-widget-miniheader ui-corner-all ui-helper-clearfix nodedetails">
-              </div>
-              
-                <div id="vtoolbar" class="fg-toolbar ui-widget-vheader ui-corner-all ui-helper-clearfix vtoolbar">
-		        <input id="upperThresholdInput" class="thresholdInput upperThreshold" value="1.0" />
-			<div id="altslider" class="altslider"></div>
-		        <input id="lowerThresholdInput" class="thresholdInput lowerThreshold" value="0.0" />
-                </div>
-
-                <div id="sidebar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix sidebar">
-
-                    <div class="fg-buttonset fg-buttonset-single ui-helper-clearfix">
-                        <h2 id="nodedetailstitle" class="nodedetailsh2">Project: (none)</h3>
-                        <p id="selectioncontent" class="nodedetailsp">bla bla</p> 
-                        <h3  class="nodedetailsh3">Abstract:</h3>
-                        <p id="abstract" class="nodedetailsp">-</p>
-                        <h3  class="nodedetailsh3">Terms:</h3>
-                        <p id="terms" class="nodedetailsp"><a href="#">term1</a>, <a href="#">term2</a>, <a href="#">term3</a>, <a href="#">term4</a>, <a href="#">term5</a></p>
-                        <h3  class="nodedetailsh3">Reviewers:</h3>
-                        <p id="reviewers" class="nodedetailsp"><a href="elias.showk@iscpif.fr">Elias Showk</a>, <a href="julian.bilcke@iscpif.fr">Julian Bilcke</a></p>
-                        <h3  class="nodedetailsh3">Most similar projects:</h3>
-                        <p id="reviewers" class="nodedetailsp"><a href="#">TINA</a> (80%), <a href="#">TINA2</a> (10.4%)</p>
-                       
-                        <div> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="1"/> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="2"/> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="3" checked="checked"/> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="4"/> 
-                                <input class="hover-star {split:2}" type="radio" name="test-3B-rating-1" value="5"/> 
-                        </div>  
-                    </div><!-- BUTTON SET -->
-                </div><!-- SIDEBAR -->
-            </div> <!-- TOOLBARS-->
-        </div> <!-- GUI -->
     </body>
 </html>
 

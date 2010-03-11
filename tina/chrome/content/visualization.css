@@ -1,16 +1,7 @@
 
 
-
- /* VERTICAL TOOLBAR FOR TINA */
- .ui-widget-header { border: 1px solid #231d2b; background: #30273a url(lib/js/jquery/css/eggplant/images/ui-bg_highlight-soft_25_30273a_1x100.png) 50% 50% repeat-x; color: #ffffff;  }
-.ui-widget-vheader { border: 1px solid #231d2b; background: #30273a url(lib/js/jquery/css/eggplant/images/ui-bg_highlight-soft_25_30273a_1x100v.png) 50% 50% repeat-y; color: #ffffff; }
-.ui-widget-miniheader { border: 1px solid #231d2b; background: #30273a 50% 50% repeat-y; color: #ffffff; }
-
-
 .vizframe {
-   position:absolute;/*
-    top:0px;
-    left:0px;*/
+   position:float;
     top:0px;
     left:0px;
     width:100%;
@@ -21,51 +12,16 @@
 
 }
 
-.sidebariframe {
-    position:absolute;
+.infodiv {
+    position:float;
     top:30px;
     right:16px;
-    width:294px;
-    height:432px;
-    background-color: #ffffff;
-    background: #ffffff;
-    border:solid 0px;
-    z-index:1;
+    width: 300px;
+    height: 100%;
+    /*z-index:2;*/
+    /*background: #ffffff;*/
 }
 
-.sidebar {
-    position:absolute;
-    top:30px;
-    right:16px;
-    width: 280px;
-    height: 415px;
-    z-index:2;
-}
-
-
-.nodedetailsiframe {
-    position:absolute;
-    top:80px;
-    left:40px;
-    width:97px;
-    height: 70px;
-    background-color: #000000;
-    background: #000000;
-    border:solid 0px;
-    z-index:1;
-}
-
-.nodedetails {
-    position:absolute;
-    top:80px;
-    left:40px;
-    width: 80px;
-    height: 55px;
-   /* background-color: #000000;
-    background: #000000;*/
-     border: solid 0px;
-    z-index: 2;
-}
 
 
 .vtoolbariframe {
@@ -125,6 +81,18 @@
 .nodedetailsp {
    font-family:Arial,Helvetica,sans-serif;
    font-size: 10px;
+}
+
+.formleft {
+    float:left;
+    margin-right: 20px;
+    min-height: 300px;
+    padding:1em 1em;
+    background:#D0D0D0;
+}
+
+a {
+   color: #000000;
 }
 
 fieldset { 

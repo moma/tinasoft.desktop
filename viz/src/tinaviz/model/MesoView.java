@@ -14,11 +14,10 @@ public class MesoView extends View {
 
     public MesoView() {
         super();
-                spatializeWhenMoving = true;
+        spatializeWhenMoving = true;
         centerOnSelection = true;
-        ZOOM_CEIL = 1.0f;
+        ZOOM_CEIL = 0.5f;
         ZOOM_FLOOR = 30.0f;
-
     }
 
     public void setCenterOnSelection(boolean value) {
