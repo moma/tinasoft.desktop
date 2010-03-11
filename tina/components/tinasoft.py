@@ -95,7 +95,7 @@ class Tinasoft(TinaApp, ThreadPool):
                 args[4] = []
             else:
                 args[4] = [stopwords.StopWordFilter( "file://%s" % args[4] )]
-            self.exportCorpora( *args, **kwargs )
+            return self.exportCorpora( *args, **kwargs )
         # queue this task
         self.queueTask(task, args, kwargs, self.callback.exportCorpora)
 
@@ -128,7 +128,8 @@ class Tinasoft(TinaApp, ThreadPool):
             else:
                 args[3] = [stopwords.StopWordFilter( "file://%s" % args[3] )]
             # first step : cooc matrix
-            self.processCooc( *args, **kwargs )
+            if self.processCooc( *args, **kwargs ) == self.STATUS_ERROR:
+                return self.STATUS_ERROR
 
             # threshold param parsing
             if args[4] == '':
@@ -137,7 +138,7 @@ class Tinasoft(TinaApp, ThreadPool):
                 threshold = map( float,  args[4].split(',') )
             gexfpath = self.getGraphPath( corporaid, periods, threshold )
             # second step : graph generation
-            self.exportGraph( gexfpath, periods, threshold, whitelist, **kwargs )
+            return self.exportGraph( gexfpath, periods, threshold, whitelist, **kwargs )
         # queue this task
         self.queueTask(taskCoocGraph, args, kwargs, self.callback.processCoocGraph)
 
@@ -172,7 +173,7 @@ class Tinasoft(TinaApp, ThreadPool):
             # gexf file path
             args[0] = self.getGraphPath( args[0], args[1], args[2] )
             # path, periods, threshold, self.whitelist
-            self.exportGraph( *args, **kwargs )
+            return self.exportGraph( *args, **kwargs )
         self.queueTask(task, args, kwargs, self.callback.exportGraph)
 
     def walkGraphPath( self, corporaid ):

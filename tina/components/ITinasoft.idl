@@ -6,9 +6,9 @@
 interface ITinasoft : nsISupports {
     // Running means the operation has started and is working to complete
     // it's tasks.
-    const long STATUS_RUNNING = 0;
-    const long STATUS_ERROR = -1;
-    const long STATUS_OK = 100;
+    const short STATUS_RUNNING = 0;
+    const short STATUS_ERROR = 666;
+    const short STATUS_OK = 1;
     // status can be one of the states above
     attribute long status;
     // Extraction task

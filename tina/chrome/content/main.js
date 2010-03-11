@@ -20,39 +20,64 @@ if ( typeof(TinaService) == "undefined" ) {
 var tinasoftTaskObserver = {
     observe : function ( subject , topic , data ){
         console.log(topic + "\nDATA = " + data);
+        //data = JSON.parse(data);
         // traitements en fonction du topic...
         if(topic == "tinasoft_runImportFile_finish_status"){
+            if (data == TinaService.STATUS_ERROR) {
+                $('#importFile button').toggleClass("ui-state-error", 1);
+                $('#importFile button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
+                return;
+            }
             $('#importFile button').toggleClass("ui-state-disabled", 1);
-            displayListCorpora( "corpora_table" );
             $('#importFile button').html( "Launch" );
+            displayListCorpora( "corpora_table" );
             $( "#corpora_table" ).toggleClass("ui-state-highlight", 1);
         }
+
         if (topic == "tinasoft_runImportFile_running_status") {
-            if (data == '0') {
+            if (data == TinaService.STATUS_RUNNING) {
                 $('#importFile button').toggleClass("ui-state-disabled", 1);
             }
             $('#importFile button').html( "imported "+data+" lines" );
         }
         if(topic == "tinasoft_runProcessCoocGraph_finish_status"){
+            if (data == TinaService.STATUS_ERROR) {
+                $('#processCooc button').toggleClass("ui-state-error", 1);
+                $('#processCooc button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
+                return;
+            }
+            $('#processCooc button').html( "Launch" );
             $('#processCooc button').toggleClass("ui-state-disabled", 1);
             displayListCorpora( "graph_table" );
             $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
+
         if (topic == "tinasoft_runProcessCoocGraph_running_status") {
-            $('#processCooc button').toggleClass("ui-state-disabled", 1);
+            if (data == TinaService.STATUS_RUNNING) {
+                $('#processCooc button').toggleClass("ui-state-disabled", 1);
+            }
+            $('#processCooc button').html( data );
         }
+
         if(topic == "tinasoft_runExportGraph_finish_status"){
             displayListCorpora( "graph_table" );
             $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
+
         if (topic == "tinasoft_runExportGraph_running_status") {
         }
+
         if(topic == "tinasoft_runExportCorpora_finish_status"){
+            if (data == TinaService.STATUS_ERROR) {
+                $('#exportCorpora button').toggleClass("ui-state-error", 1);
+                $('#exportCorpora button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
+                return;
+            }
             $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
-            $('#importFile button').html( "Launch" );
+            $('#exportCorpora button').html( "Launch" );
         }
         if (topic == "tinasoft_runExportCorpora_running_status") {
-            if (data == '0') {
+            if (data == TinaService.STATUS_RUNNING) {
                 $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
             }
             $('#exportCorpora button').html( data+" % done" );
@@ -130,7 +155,7 @@ var submitprocessCoocGraph = function(event) {
     // DEBUG VALUE
     threshold = [0,1];
     for (corpora in corporaAndPeriods) {
-        TinaService.runProcessCooc(
+        TinaService.runProcessCoocGraph(
             whitelistpath.val(),
             corpora,
             corporaAndPeriods[corpora],
@@ -171,8 +196,8 @@ var submitExportGraph = function(event) {
 
 var submitExportCorpora = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-    var whitelistpath = $("#whitelistfile");
-    var userstopwordspath = $("#userstopwordsfile");
+    var whitelistpath = $("#prewhitelistfile");
+    var userstopwordspath = $("#preuserstopwordsfile");
     var exportpath = $("#exportfile");
     if ( exportpath.val() == '' ) {
         exportpath.addClass('ui-state-error');
