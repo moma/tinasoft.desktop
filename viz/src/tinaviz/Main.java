@@ -539,7 +539,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } else {
                 v.sceneScale *= 0.5;
             }
-            System.out.println("\nZoom: " + v.sceneScale);
+            System.out.println("Zoom: " + v.sceneScale);
         }
 
         switch (session.currentLevel) {
@@ -595,6 +595,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 vy = n2.y - n1.y;
                 distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
 
+                //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
                 // plutot que mettre une distance minimale,
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
@@ -704,7 +705,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         n2.vx += n1.radius * (1.0f / distance); //
                         n2.vy += n1.radius * (1.0f / distance); // 0.01f
                          */
-
+                       
                         n1.vx -= (vx / distance) * repulsion;
                         n1.vy -= (vy / distance) * repulsion;
                         n2.vx += (vx / distance) * repulsion;
@@ -1099,8 +1100,15 @@ public class Main extends PApplet implements MouseWheelListener {
     public void clear() {
         getSession().clear();
     }
+    public void clear(String view) {
+        getSession().getView(view).clear();
+    }
     public void resetCameras() {
         getSession().resetCamera(width, height);
+    }
+
+    public void resetCameras(String view) {
+        getSession().getView(view).resetCamera(width, height);
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {

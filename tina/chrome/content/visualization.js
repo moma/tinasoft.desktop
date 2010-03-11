@@ -30,7 +30,7 @@ function Tinaviz() {
         // finally, once the gexf is loaded, we light the tab!
         this.logDebug("enabling applet tab..");
 
-        $("#tabs").data('disabled.tabs', [4]);
+        $("#tabs").data('disabled.tabs', [2,3,4]);
     },
 
     size: function(w,h) {
@@ -105,6 +105,8 @@ function Tinaviz() {
     unselect: function() {
         if (applet == null) return;
         applet.unselect();
+        applet.clear("meso");
+        applet.resetCamera("meso");
     },
     clear: function() {
         if (applet == null) return;
@@ -417,6 +419,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+                <viz:size value=\"10\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -465,6 +468,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+                <viz:size value=\"10\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -481,7 +485,7 @@ function Tinaviz() {
 <?js } ?>\
         </edges>\n\
     </graph>\n\
-</gexf>", ng);
+</gexf>", doc);
      console.log(gexf);
      applet.getSession().updateFromString("meso",gexf);
    },
@@ -517,6 +521,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+                <viz:size value=\"10\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -563,6 +568,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+                <viz:size value=\"10\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -579,7 +585,7 @@ function Tinaviz() {
 <?js } ?>\
         </edges>\n\
     </graph>\n\
-</gexf>", ng);
+</gexf>", doc);
      console.log(gexf);
      applet.getSession().updateFromString("meso",gexf);
    }

@@ -91,13 +91,17 @@
                     <input id="configfile" class="field" type="hidden" name="configfile" value='import.yaml' /><br/>
                     <label>Data set name identifier (create or update)</label><br/>
                     <input id="corpora" type="text" name="corpora" value='test corpora' size="24"/><br/><br/>
-                    <label>Overwrite (uncheck will only update unexisting documents)</label><input id="overwrite" type="checkbox" name="overwrite"/><br/><br/>
+                    <label>Overwrite</label><br/>
+                    <span class="ui-state-highlight">OFF updates the corpora only with the non-existing documents</span><br/>
+                    <span class="ui-state-highlight">ON overwrites all the existing objects</span><br/>
+                    <input id="overwrite" type="checkbox" name="overwrite"/>
+                    <br/><br/>
                     <!--<label>Extraction export file path (csv)</label>
                     <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv' /><br/>-->
                     <!--<label>Index full-text</label>
                     <input type="checkbox" name="Check3" /><br/>-->
                     <div id="importFile">
-                        <button class="ui-state-default ui-corner-all" >Import</button>
+                        <button class="ui-state-default ui-corner-all">Launch</button>
                     </div>
                 </div>
                 <div id="exportForm" class="ui-widget ui-widget-content ui-corner-all formleft">
@@ -108,7 +112,7 @@
                             <tr>
                               <th>Available data sets</th>
                               <th>Select periods</th>
-                              <th>Available graphs</th>
+                              <th>Available graphs ('path/to/period_proxMin-proxMax.gexf')</th>
                             </tr>
                           </thead>
                         <tbody class="ui-widget-content"></tbody>
@@ -116,11 +120,11 @@
                     <label>Export file (csv)</label>
                     <input id="exportfile" class="field" type="file" name="exportfile"/><br/>
                     <label>Pre-selected ngrams white list path (optional)</label>
-                    <input id="whitelistfile" class="field" type="file" name="whitelistfile"/><br/>
+                    <input id="prewhitelistfile" class="field" type="file" name="whitelistfile"/><br/>
                     <label>User defined stopwords path (optional)</label>
-                    <input id="userstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
+                    <input id="preuserstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
                     <div id="exportCorpora">
-                        <button class="ui-state-default ui-corner-all" >Export</button>
+                        <button class="ui-state-default ui-corner-all" >Launch</button>
                     </div>
                 </div>
                 <div style="clear:both;"></div>
@@ -164,9 +168,9 @@
             <div id="tabs-2" class="ui-corner-bottom">
               <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                   <a href="#" 
-                      onclick="#" 
-                      class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" 
+                   <a href="#"
+                      onclick="#"
+                      class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
@@ -188,18 +192,19 @@
                     </div>
 
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a 
-                           href="#" 
-                           onclick="tinaviz.togglePause('macro')" 
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all toggle-pause macro" 
+
+                        <a
+                           href="#"
+                           onclick="tinaviz.togglePause('macro')"
+                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all toggle-pause macro"
                            title="pause"><span class="ui-icon ui-icon-pause"></span> Pause</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#" 
-                           onclick="tinaviz.unselect()" 
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all" 
-                           title="pause"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
+                        <a href="#"
+                           onclick="tinaviz.unselect()"
+                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
+                           title="unselect"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
@@ -207,7 +212,6 @@
                            onclick="tinaviz.toggleProjects()" 
                            class="fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-left"
                            title="projects"><span class="ui-icon ui-icon-projects"></span> Projects</a>
-                        <!--<a href="#" onclick="tabvizframe.tinaviz.reproject()" class="fg-button ui-state-default fg-button-icon-solo " title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>-->
                         <a href="#" 
                            onclick="tinaviz.toggleTerms()" 
                            class="fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-right" 
