@@ -408,6 +408,7 @@ function Tinaviz() {
         <attributes class=\"node\">\n\
         </attributes>\n\
         <tina>\n\
+            <selected node=\""+id+"\" />\n\
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"${label}\">\n\
@@ -457,6 +458,7 @@ function Tinaviz() {
         <attributes class=\"node\">\n\
         </attributes>\n\
         <tina>\n\
+            <selected node=\""+id+"\" />\n\
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"${label}\">\n\
@@ -510,6 +512,7 @@ function Tinaviz() {
         <attributes class=\"node\">\n\
         </attributes>\n\
         <tina>\n\
+            <selected node=\""+id+"\" />\n\
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"${label}\">\n\
@@ -557,6 +560,7 @@ function Tinaviz() {
         <attributes class=\"node\">\n\
         </attributes>\n\
         <tina>\n\
+            <selected node=\""+id+"\" />\n\
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"${label}\">\n\
