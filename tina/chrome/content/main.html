@@ -85,14 +85,20 @@
                 <div id="importForm" class="ui-widget ui-widget-content ui-corner-all formleft import-form">
                     <h1>Import a data set</h1>
                     <h3>Select a source file and an identifier name to import</h3>
-                    <label>Data set source file (csv)</label>
+                    <label><h3>Data set source file (csv, required)</h3></label><br/>
+                    <span class="ui-state-highlight">First line must be:<br/>
+                         'doc_titl','doc_abst','doc_acrnm','corp_num','doc_num','index_1','index_2','date','doc_keywords'
+                    </span><br/>
                     <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
                     <!--<label>Extraction configuration file (yaml)</label>-->
                     <input id="configfile" class="field" type="hidden" name="configfile" value='import.yaml' /><br/>
-                    <label>Data set name identifier (create or update)</label><br/>
+                    <label><h3>Data set name identifier (required)</h3></label><br/>
+                    <span class="ui-state-highlight">
+                    Please choose a unique name for each data set
+                    </span><br/>
                     <input id="corpora" type="text" name="corpora" value='test corpora' size="24"/><br/><br/>
-                    <label>Overwrite</label><br/>
-                    <span class="ui-state-highlight">OFF updates the corpora only with the non-existing documents</span><br/>
+                    <label><h3>Overwrite</h3></label><br/>
+                    <span class="ui-state-highlight">OFF updates the data set only with the non-existing documents</span><br/>
                     <span class="ui-state-highlight">ON overwrites all the existing objects</span><br/>
                     <input id="overwrite" type="checkbox" name="overwrite"/>
                     <br/><br/>
@@ -106,7 +112,7 @@
                 </div>
                 <div id="exportForm" class="ui-widget ui-widget-content ui-corner-all formleft export-form">
                     <h1>Export a data set</h1>
-                    <h3>Select a data set and the periods you want to export</h3>
+                    <h3>Select a data set and the periods you want to export, then select ngrams setting the status to 's'</h3>
                     <table id="corpora_table" class="corpora_table">
                           <thead class="ui-widget-header">
                             <tr>
@@ -117,11 +123,13 @@
                           </thead>
                         <tbody class="ui-widget-content"></tbody>
                     </table>
-                    <label>Export file (csv)</label>
+                    <label><h3>Export path (csv file, required)</h3></label>
                     <input id="exportfile" class="field" type="file" name="exportfile"/><br/>
-                    <label>Pre-selected ngrams white list path (optional)</label>
+                    <label><h3>Pre-selected ngrams white list path (optional, only used to preset the status)</h3></label><br/>
+                    <span class="ui-state-highlight">Please input the same file format as exported previously</span><br/>
                     <input id="prewhitelistfile" class="field" type="file" name="whitelistfile"/><br/>
-                    <label>User defined stopwords path (optional)</label>
+                    <label><h3>User defined stopwords path (optional, only used to preset the status)</h3></label><br/>
+                    <span class="ui-state-highlight">Please input a file with one ngram on each line</span><br/>
                     <input id="preuserstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
                     <div id="exportCorpora">
                         <button class="ui-state-default ui-corner-all" >Launch</button>
@@ -146,10 +154,12 @@
                             <tbody class="ui-widget-content"></tbody>
                         </table>
                     </div>
-                    <label>Ngrams white list</label>
+                    <label><h3>Ngrams white list (required)</h3></label><br/>
+                    <span class="ui-state-highlight">Please input the same file format as exported previously</span><br/>
                         <input id="whitelistfile" type="file" class="field"
                         name="whitelistfile" value='' /><br/>
-                    <label>User-defined stopwords</label>
+                    <label><h3>User-defined stopwords (optional)</h3></label><br/>
+                    <span class="ui-state-highlight">Please input a file with one ngram on each line. Applied only to white listed ngram</span><br/>
                         <input id="userfiltersfile" type="file" class="field"
                         name="userfiltersfile" value='' /><br/>
                     <div id="processCooc" >

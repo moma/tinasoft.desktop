@@ -115,10 +115,7 @@ class Tinasoft(TinaApp, ThreadPool):
                 #in wstring threshold,
             args = list(args)
             whitelistpath = args[0]
-            args[0] = self.getWhitelist( whitelistpath,
-                occsCol='occurrences',
-                accept='x'
-            )
+            args[0] = self.getWhitelist( whitelistpath )
             whitelist = args[0]
             corporaid = args[1]
             periods = args[2].split(',')
@@ -158,10 +155,7 @@ class Tinasoft(TinaApp, ThreadPool):
                 #in wstring whitelistPath
             args = list(args)
             # whitelist instance
-            args[3] = self.getWhitelist( args[3],
-                occsCol='occurrences',
-                accept='x'
-            )
+            args[3] = self.getWhitelist( args[3] )
             # periods parsing
             args[1] = args[1].split(',')
             # threshold parsing
