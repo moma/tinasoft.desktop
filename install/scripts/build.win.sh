@@ -90,14 +90,17 @@ echo " - moving files around to create the windows build.."
 cp -R tina $outpath
 rm -Rf $outpath/xulrunner
 rm -Rf $outpath/platform
+rm -Rf $outpath/db
+rm -Rf $outpath/user
+rm -Rf $outpath/index
+rm -Rf $outpath/*.yaml
 cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
 cp install/skeletons/$arch/* $outpath
+cp -R install/data/* $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 cp -R tests $outpath/tests
-rm -Rf $outpath/db
-rm -Rf $outpath/index
 
 echo " - creating release archive.."
 cd dist
