@@ -31,6 +31,7 @@ var tinasoftTaskObserver = {
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             $('#importFile button').html( "Launch" );
             displayListCorpora( "corpora_table" );
+            displayListCorpora( "graph_table" );
             $( "#corpora_table" ).toggleClass("ui-state-highlight", 1);
         }
 
@@ -49,6 +50,7 @@ var tinasoftTaskObserver = {
             }
             $('#processCooc button').html( "Launch" );
             $('#processCooc button').toggleClass("ui-state-disabled", 1);
+            displayListCorpora( "corpora_table" );
             displayListCorpora( "graph_table" );
             $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
@@ -62,6 +64,7 @@ var tinasoftTaskObserver = {
         }
 
         if(topic == "tinasoft_runExportGraph_finish_status"){
+            displayListCorpora( "corpora_table" );
             displayListCorpora( "graph_table" );
             $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
