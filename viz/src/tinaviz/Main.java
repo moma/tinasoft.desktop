@@ -7,6 +7,7 @@ import java.io.FilePermission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import tinaviz.model.*;
 import processing.opengl.*;
@@ -60,6 +61,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
     float selectedX = 0.0f;
     float selectedY = 0.0f;
+
 
     private void jsNodeSelected(Node n) {
 
@@ -340,16 +342,15 @@ public class Main extends PApplet implements MouseWheelListener {
             return;
         }
 
-
+        
         List<Node> n = v.popNodes();
         if (n != null) {
-            System.out.println("clearing nodes..");
+            System.out.println("pop nodes gave something! overwriting node screen cache..");
             nodes.clear();
             nodes.addAll(n);
-            System.out.println("reset camera(" + width + "," + height + ")");
+            //System.out.println("reset camera(" + width + "," + height + ")");
             // v.resetCamera(width, height);
             //center(); // uncomment this later
-            System.out.println("got new nodes!");
         }
 
         //session.animationPaused = tmp; // TODO replace by a lock here
