@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import tinaviz.Console;
@@ -30,12 +31,15 @@ public class Graph {
     public Metrics metrics = null;
     public AtomicBoolean locked = null;
     public AtomicBoolean needToBeReadAgain = null;
+    public AtomicInteger revision;
+
     public Graph() {
         storedNodes = new HashMap<String, tinaviz.Node>();
         attributes = new HashMap<String, Object>();
         metrics = new Metrics();
         locked = new AtomicBoolean(true);
-        needToBeReadAgain = new AtomicBoolean(false);
+        revision = new AtomicInteger(0);
+
     }
 
     public boolean updateFromURI(String uri) {
@@ -337,6 +341,7 @@ System.out.println("loading GEXF from string..");
         Console.log("<graph> GEXF loaded!");
 
         locked.set(false);
+        touch();
         return true;
     }
 
@@ -351,18 +356,21 @@ System.out.println("loading GEXF from string..");
         } else {
             storedNodes.get(node.uuid).update(node);
         }
+        touch();
     }
 
     public void addNode(tinaviz.Node node) {
         if (!storedNodes.containsKey(node.uuid)) {
             storedNodes.put(node.uuid, node);
         }
+        touch();
     }
 
     public void updateNode(tinaviz.Node node) {
         if (storedNodes.containsKey(node.uuid)) {
             storedNodes.get(node.uuid).update(node);
         }
+        touch();
     }
 
     public void addNeighbour(tinaviz.Node node1, tinaviz.Node node2) {
@@ -373,6 +381,7 @@ System.out.println("loading GEXF from string..");
             storedNodes.put(node1.uuid, node1);
 
         }
+        touch();
     }
 
     public void addNodes(List<tinaviz.Node> nodes) {
@@ -392,23 +401,38 @@ System.out.println("loading GEXF from string..");
     public void clear() {
         storedNodes.clear();
         attributes.clear();
+        touch();
     }
 
+    private void touch() {
+       revision.incrementAndGet();
+    }
     public void selectNodeById(String id) {
+        boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
+            changed = true;
         }
+
+        // if (changed) touch();
+
     }
 
     public void unselectNodeById(String id) {
+         boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
+            changed = true;
         }
+        // if (changed) touch();
     }
 
     public void unselectAll() {
+        boolean changed = false;
         for (Node n : storedNodes.values()) {
             n.selected = false;
+            changed = true;
         }
+         // if (changed) touch();
     }
 }

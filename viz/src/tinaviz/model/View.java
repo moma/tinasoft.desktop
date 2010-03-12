@@ -227,7 +227,6 @@ public class View {
 
     public void clear() {
         graph.clear();
-        filters.popLocked.set(false);
     }
 
     public void updateTranslationFrom(int x, int y) {

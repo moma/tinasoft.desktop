@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.SwingUtilities;
 
 import tinaviz.filters.Channel;
@@ -28,6 +29,8 @@ public class FilterChain {
 
     public List<Node> filteredNodes = null;
     public AtomicBoolean popLocked = null;
+    public AtomicBoolean filterIsRunning = new AtomicBoolean(false);
+    public AtomicInteger graphRevision = new AtomicInteger(0);
     private Map<String, Filter> filters = null;
     private List<FilterChainListener> listeners = null;
     public Graph graph = null;
@@ -61,6 +64,7 @@ public class FilterChain {
             }
             chain.filteredNodes = result;
             System.out.println("filter finished! setting flash 'ready' to true..");
+            chain.filterIsRunning.set(false);
             chain.popLocked.set(false);
         }
     }
@@ -121,36 +125,38 @@ public class FilterChain {
 
     public synchronized List<Node> popNodes() {
 
-        // if the graph has been unlocked
-        if (!graph.locked.get()) {
-            popLocked.set(true); // lock the popper
-            graph.locked.set(true);
-
-            System.out.println("graph need to be repopped now!");
-            try {
-                //thread.interrupt();
-                System.out.println("waiting previous filter thread..");
-                thread.join();
-            } catch (InterruptedException ex) {
-                Console.error("Fatal error with thread: " + ex);
-            }
-            System.out.println("previous filter thread terminated. setting to false locks..");
-
-
-            thread = new FilterThread(this, graph.getNodeList());
-            System.out.println("starting new filter thread..");
-            thread.start();
+        // we are already filtering, please wait..
+        if (filterIsRunning.get()) {
+            System.out.println("Filter is already running, please wait..");
             return null;
-        } else {
+        }
 
+        // if we are up to date,
+        if (graphRevision.get() == graph.revision.get()) {
+            System.out.println("Filter is up to date, and not running..");
+            // check if we already popped
             if (!popLocked.get()) {
+                System.out.println("Filter is up to date, but have already been popped!..");
                 popLocked.set(true); // no more popping!
                 return filteredNodes;
             }
-
             return null;
-
         }
+
+        // we have to wait for the graph to be unlocked
+        if (graph.locked.get()) {
+            System.out.println("Graph is locked.. probably parsing some XML!");
+            return null;
+        }
+
+        System.out.println("okay, graph looks unlocked, starting new filter thread..");
+        filterIsRunning.set(true);
+        thread = new FilterThread(this, graph.getNodeList());
+        thread.start();
+
+        System.out.println("updating filter revision!");
+        graphRevision.set(graph.revision.get());
+        return null;
 
     }
 
