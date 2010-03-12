@@ -27,6 +27,8 @@ rm -Rf $outpath/xulrunner
 cp install/skeletons/$arch/tina $outpath
 cp -R .packaging/$arch/$xulrunner/ $outpath
 cp -R tests $outpath/tests
+rm -Rf $outpath/db
+rm -Rf $outpath/index
 
 echo " - creating release archive.."
 tar -cf $outfile.tar.gz $outpath

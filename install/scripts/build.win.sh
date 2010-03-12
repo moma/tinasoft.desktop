@@ -78,7 +78,7 @@ if [ -e ".packaging/$arch/$xulrunner/platform" ]
   then 
     echo " - platform-specific libraries found"
   else
-    echo " - platform-specific libraries not dound, downloading.."
+    echo " - platform-specific libraries not found, downloading.."
     wget $platformdownpath/$platformdownfile
     unzip $platformdownfile
     mkdir -p .packaging/$arch/$xulrunner/platform
@@ -96,6 +96,8 @@ rm $outpath/tina-stub
 cp install/skeletons/$arch/* $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 cp -R tests $outpath/tests
+rm -Rf $outpath/db
+rm -Rf $outpath/index
 
 echo " - creating release archive.."
 cd dist
