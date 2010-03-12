@@ -88,19 +88,19 @@
                     <label><h3>Data set source file (csv, required)</h3></label><br/>
                     <span class="ui-state-highlight">Please follow the template file given in the 'tests' directory</span><br/>
                     <span class="ui-state-highlight">
-                        'doc_num' and 'corp_num' are <b>unique</b> id<br/>
-                        'corp_num' represents a period id (time period or not)
+                        'doc_num' and 'corp_num' are <b>unique</b> id names<br/>
+                        'corp_num' represents a <b>period</b> id name
                     </span><br/>
                     <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
                     <!--<label>Extraction configuration file (yaml)</label>-->
                     <input id="configfile" class="field" type="hidden" name="configfile" value='import.yaml' /><br/>
                     <label><h3>Data set name identifier (required)</h3></label><br/>
                     <span class="ui-state-highlight">
-                    Please choose a unique name for each data set
+                    Please choose a <b>unique</b> name for each data set
                     </span><br/>
-                    <input id="corpora" type="text" name="corpora" value='test corpora' size="24"/><br/><br/>
-                    <label><h3>Overwrite</h3></label><br/>
-                    <!--<span class="ui-state-highlight">OFF updates the data set only with the non-existing documents</span><br/>
+                    <input id="corpora" type="text" name="corpora" size="24"/><br/><br/>
+                    <!--<label><h3>Overwrite</h3></label><br/>
+                    <span class="ui-state-highlight">OFF updates the data set only with the non-existing documents</span><br/>
                     <span class="ui-state-highlight">ON overwrites all the existing objects</span><br/>-->
                     <input id="overwrite" type="checkbox" name="overwrite" disabled />
                     <br/>
@@ -128,7 +128,7 @@
                     <label><h3>Export path (csv file, required)</h3></label>
                     <input id="exportfile" class="field" type="file" name="exportfile"/><br/>
                     <label><h3>Pre-selected ngrams white list path (optional, only used to preset the status)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input the same file format as exported</span><br/>
+                    <span class="ui-state-highlight">Please input the same file format as exported (example in the 'tests' directory)</span><br/>
                     <input id="prewhitelistfile" class="field" type="file" name="whitelistfile"/><br/>
                     <label><h3>User defined stopwords path (optional, only used to preset the status)</h3></label><br/>
                     <span class="ui-state-highlight">Please input a file with one stop-ngram on each line (example in the 'tests' directory)</span><br/>
@@ -157,11 +157,12 @@
                         </table>
                     </div>
                     <label><h3>Ngrams white list (required)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input the same file format as exported previously</span><br/>
+                    <span class="ui-state-highlight">Please input the same file format as exported previously (example in the 'tests' directory)</span><br/>
+                    <span class="ui-state-highlight"></span><br/>
                         <input id="whitelistfile" type="file" class="field"
                         name="whitelistfile" value='' /><br/>
                     <label><h3>User-defined stopwords (optional)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input a file with one ngram on each line. Applied only to white listed ngram</span><br/>
+                    <span class="ui-state-highlight">Please input a file with one ngram on each line. Applied only to white listed ngram (example in the 'tests' directory)</span><br/>
                         <input id="userfiltersfile" type="file" class="field"
                         name="userfiltersfile" value='' /><br/>
                     <div id="processCooc" >
