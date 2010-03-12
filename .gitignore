@@ -29,4 +29,5 @@ tina/graph.pdf
 tina/log/*
 tina/db/*
 tina/index/*
+tina/user/*
 tina/pylib/tinasoft/*
