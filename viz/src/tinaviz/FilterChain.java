@@ -127,21 +127,25 @@ public class FilterChain {
 
         // we are already filtering, please wait..
         if (filterIsRunning.get()) {
-            System.out.println("Filter is already running, please wait..");
+            System.out.println("Filters are already running, please wait..");
             return null;
         }
 
         // if we are up to date,
         if (graphRevision.get() == graph.revision.get()) {
-            System.out.println("Filter is up to date, and not running..");
             // check if we already popped
             if (!popLocked.get()) {
-                System.out.println("Filter is up to date, but have already been popped!..");
+                System.out.println("Filters are up to date, not running, and not popped.. we return filtered nodes!");
                 popLocked.set(true); // no more popping!
                 return filteredNodes;
+            } else {
+                // the most common case, so don't show this log..
+               //System.out.println("Filter is up to date, but have already been popped!..");
+               return null;
             }
-            return null;
+
         }
+         System.out.println("Filter is outdated, checking if we can run a new filter thread..");
 
         // we have to wait for the graph to be unlocked
         if (graph.locked.get()) {

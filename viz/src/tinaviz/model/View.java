@@ -148,23 +148,23 @@ public class View {
     }
 
 
-    public boolean updateFromURI(String uri) {
+    public synchronized boolean updateFromURI(String uri) {
         return graph.updateFromURI(uri);
     }
 
-    public boolean updateFromString(String str) {
+    public synchronized boolean updateFromString(String str) {
         return graph.updateFromString(str);
     }
 
-    public boolean updateFromInputStream(InputStream inputStream) {
+    public synchronized boolean updateFromInputStream(InputStream inputStream) {
         return graph.updateFromInputStream(inputStream);
     }
 
-    public boolean updateFromNodeList(List<Node> nodes) {
+    public synchronized boolean updateFromNodeList(List<Node> nodes) {
         return graph.updateFromNodeList(nodes);
     }
 
-    public void resetCamera() {
+    public synchronized void resetCamera() {
 
         mousePosition = new PVector(0.0f, 0.0f);
         translation = new PVector(0.0f, 0.0f);
@@ -173,7 +173,7 @@ public class View {
 
     }
 
-    public void resetCamera(float width, float height) {
+    public synchronized void resetCamera(float width, float height) {
 
         mousePosition = new PVector(0.0f, 0.0f);
         translation = new PVector(width/2.0f, width/2.0f);
@@ -225,11 +225,11 @@ public class View {
         return filters.popNodes();
     }
 
-    public void clear() {
+    public synchronized void clear() {
         graph.clear();
     }
 
-    public void updateTranslationFrom(int x, int y) {
+    public synchronized void updateTranslationFrom(int x, int y) {
         Vector tmp = new Vector(0, 0);
         tmp.set(x, y, 0);
         tmp.sub(mousePosition);

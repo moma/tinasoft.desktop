@@ -350,7 +350,7 @@ System.out.println("loading GEXF from string..");
         return new ArrayList(storedNodes.values());
     }
 
-    public void putNode(tinaviz.Node node) {
+    public synchronized void putNode(tinaviz.Node node) {
         if (storedNodes.containsKey(node.uuid)) {
             storedNodes.put(node.uuid, node);
         } else {
@@ -359,21 +359,21 @@ System.out.println("loading GEXF from string..");
         touch();
     }
 
-    public void addNode(tinaviz.Node node) {
+    public synchronized void addNode(tinaviz.Node node) {
         if (!storedNodes.containsKey(node.uuid)) {
             storedNodes.put(node.uuid, node);
         }
         touch();
     }
 
-    public void updateNode(tinaviz.Node node) {
+    public synchronized void updateNode(tinaviz.Node node) {
         if (storedNodes.containsKey(node.uuid)) {
             storedNodes.get(node.uuid).update(node);
         }
         touch();
     }
 
-    public void addNeighbour(tinaviz.Node node1, tinaviz.Node node2) {
+    public synchronized void addNeighbour(tinaviz.Node node1, tinaviz.Node node2) {
         if (storedNodes.containsKey(node1.uuid)) {
             storedNodes.get(node1.uuid).addNeighbour(node2);
         } else {
@@ -384,21 +384,21 @@ System.out.println("loading GEXF from string..");
         touch();
     }
 
-    public void addNodes(List<tinaviz.Node> nodes) {
+    public synchronized void addNodes(List<tinaviz.Node> nodes) {
         for (tinaviz.Node node : nodes) {
             addNode(node);
         }
     }
 
-    public int size() {
+    public synchronized int size() {
         return storedNodes.size();
     }
 
-    public tinaviz.Node getNode(String key) {
+    public synchronized tinaviz.Node getNode(String key) {
         return storedNodes.get(key);
     }
 
-    public void clear() {
+    public synchronized void clear() {
         storedNodes.clear();
         attributes.clear();
         touch();
@@ -406,6 +406,7 @@ System.out.println("loading GEXF from string..");
 
     private void touch() {
        revision.incrementAndGet();
+       System.out.println("incremented graph revision to "+revision.get());
     }
     public void selectNodeById(String id) {
         boolean changed = false;
