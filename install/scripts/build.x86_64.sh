@@ -6,7 +6,7 @@ echo #############################################
 echo ""
 
 name="Tinasoft"
-version="0.1"
+version="1.0-alpha"
 arch="x86_64"
 xulrunner="xulrunner-1.9.1" 
 #xulrunnerdownfile="xulrunner-1.9.1.7.en-US.linux-i686.tar.bz2"
@@ -26,6 +26,7 @@ cp -R tina $outpath
 rm -Rf $outpath/xulrunner
 cp install/skeletons/$arch/tina $outpath
 cp -R .packaging/$arch/$xulrunner/ $outpath
+cp -R tests $outpath/tests
 
 echo " - creating release archive.."
 tar -cf $outfile.tar.gz $outpath

@@ -6,7 +6,7 @@ echo "########################################"
 echo ""
 
 name="Tinasoft"
-version="0.1"
+version="1.0-alpha"
 arch="windows"
 xulrunner="xulrunner-1.9.1"
 
@@ -95,6 +95,7 @@ rm $outpath/tina
 rm $outpath/tina-stub
 cp install/skeletons/$arch/* $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
+cp -R tests $outpath/tests
 
 echo " - creating release archive.."
 cd dist

@@ -400,12 +400,12 @@ function Tinaviz() {
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
-     <h3 class=\"nodedetailsh3\">Documents:</h3>\n\
+     <h3 class=\"nodedetailsh3\">Tagging these projects:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][first]['label']}</a> \
      <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMacroDocument(#{doc})\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][doc]['label']}</a>\
+         ,&nbsp;<a href=\"javascript:tinaviz.selectMacroDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][doc]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
 
@@ -458,12 +458,12 @@ function Tinaviz() {
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
-     <h3 class=\"nodedetailsh3\">All NGrams:</h3>\n\
+     <h3 class=\"nodedetailsh3\">Terms:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
      <?js for (var ng in edges['NGram']) { if (doc == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMacroTerm(#{ng})\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
+         ,&nbsp;<a href=\"javascript:tinaviz.selectMacroTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
 
@@ -514,12 +514,12 @@ function Tinaviz() {
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
-     <h3 class=\"nodedetailsh3\">Documents:</h3>\n\
+     <h3 class=\"nodedetailsh3\">Tagging these projects:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][first]['label']}</a> \
      <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoDocument(#{doc})\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][doc]['label']}</a>\
+         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][doc]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
      
@@ -577,12 +577,12 @@ function Tinaviz() {
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
-     <h3 class=\"nodedetailsh3\">All NGrams:</h3>\n\
+     <h3 class=\"nodedetailsh3\">Terms:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
      <?js for (var ng in edges['NGram']) { if (doc == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoTerm(#{ng})\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
+         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
 
