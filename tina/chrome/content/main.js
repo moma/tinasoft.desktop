@@ -400,8 +400,8 @@ function resizeApplet() {
     $('#vizframe').css("height",""+(h)+"px");
     $('#vizframe').css("width",""+(w-350)+"px");
     $('#infodiv').show();
-    $('#infodiv').css("height",""+(h-100)+"px");
-    $('#infodiv').css("width",""+(260)+"px");
+    $('#infodiv').css("height",""+(h-50)+"px");
+    $('#infodiv').css("width",""+(300)+"px");
     tinaviz.size(w,h);
 }
 // wait for the DOM to be loaded

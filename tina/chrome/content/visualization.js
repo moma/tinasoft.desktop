@@ -120,6 +120,12 @@ function Tinaviz() {
 
     nodeSelected: function(level,x,y,id,label,attr) {
         if (applet == null) return;
+        if (id==null) {
+            $('#infodiv').html("<h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>");
+            applet.resetCamera("meso");
+            applet.clear("meso");
+            return;
+        }
 
         this.logDebug("nodeSelected called! attributes: '"+attr+"'");
 
@@ -400,7 +406,7 @@ function Tinaviz() {
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
-     <h3 class=\"nodedetailsh3\">Tagging these projects:</h3>\n\
+     <h3 class=\"nodedetailsh3\">Linked to these projects:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][first]['label']}</a> \
@@ -458,14 +464,14 @@ function Tinaviz() {
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
-     <h3 class=\"nodedetailsh3\">Terms:</h3>\n\
+     <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
-     <?js for (var ng in edges['NGram']) { if (doc == first) continue; ?>\
+     <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
          ,&nbsp;<a href=\"javascript:tinaviz.selectMacroTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
-     </p>\n", ng));
+     </p>\n", doc));
 
      var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
@@ -514,7 +520,7 @@ function Tinaviz() {
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
-     <h3 class=\"nodedetailsh3\">Tagging these projects:</h3>\n\
+     <h3 class=\"nodedetailsh3\">Linked to these projects:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][first]['label']}</a> \
@@ -577,14 +583,14 @@ function Tinaviz() {
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
-     <h3 class=\"nodedetailsh3\">Terms:</h3>\n\
+     <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
-     <?js for (var ng in edges['NGram']) { if (doc == first) continue; ?>\
+     <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
          ,&nbsp;<a href=\"javascript:tinaviz.selectMesoTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
-     </p>\n", ng));
+     </p>\n", doc));
 
      var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
