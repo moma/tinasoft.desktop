@@ -86,11 +86,10 @@
                     <h1>Import a data set</h1>
                     <h3>Select a source file and an identifier name to import</h3>
                     <label><h3>Data set source file (csv, required)</h3></label><br/>
-                    <span class="ui-state-highlight">First line must be:<br/>
-                        'doc_titl','doc_abst','doc_acrnm','corp_num','doc_num','index_1','index_2',<br/>
-                        'date','doc_keywords'<br/>
-                        'doc_num' and 'corp_num' are unique identifiers in the database<br/>
-                        'corp_num' is considered as a period identifier (time period or not)
+                    <span class="ui-state-highlight">Please follow the template file given in the 'tests' directory</span><br/>
+                    <span class="ui-state-highlight">
+                        'doc_num' and 'corp_num' are <b>unique</b> id<br/>
+                        'corp_num' represents a period id (time period or not)
                     </span><br/>
                     <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
                     <!--<label>Extraction configuration file (yaml)</label>-->
@@ -101,10 +100,10 @@
                     </span><br/>
                     <input id="corpora" type="text" name="corpora" value='test corpora' size="24"/><br/><br/>
                     <label><h3>Overwrite</h3></label><br/>
-                    <span class="ui-state-highlight">OFF updates the data set only with the non-existing documents</span><br/>
-                    <span class="ui-state-highlight">ON overwrites all the existing objects</span><br/>
-                    <input id="overwrite" type="checkbox" name="overwrite"/>
-                    <br/><br/>
+                    <!--<span class="ui-state-highlight">OFF updates the data set only with the non-existing documents</span><br/>
+                    <span class="ui-state-highlight">ON overwrites all the existing objects</span><br/>-->
+                    <input id="overwrite" type="checkbox" name="overwrite" disabled />
+                    <br/>
                     <!--<label>Extraction export file path (csv)</label>
                     <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv' /><br/>-->
                     <!--<label>Index full-text</label>
@@ -129,10 +128,10 @@
                     <label><h3>Export path (csv file, required)</h3></label>
                     <input id="exportfile" class="field" type="file" name="exportfile"/><br/>
                     <label><h3>Pre-selected ngrams white list path (optional, only used to preset the status)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input the same file format as exported previously</span><br/>
+                    <span class="ui-state-highlight">Please input the same file format as exported</span><br/>
                     <input id="prewhitelistfile" class="field" type="file" name="whitelistfile"/><br/>
                     <label><h3>User defined stopwords path (optional, only used to preset the status)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input a file with one ngram on each line</span><br/>
+                    <span class="ui-state-highlight">Please input a file with one stop-ngram on each line (example in the 'tests' directory)</span><br/>
                     <input id="preuserstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
                     <div id="exportCorpora">
                         <button class="ui-state-default ui-corner-all" >Launch</button>
