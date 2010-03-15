@@ -6,8 +6,8 @@ echo #############################################
 echo ""
 
 name="Tinasoft"
-version="1.0-alpha"
-arch="x86_64"
+version="1.0alpha"
+arch="Linux_x86_64"
 xulrunner="xulrunner-1.9.1" 
 #xulrunnerdownfile="xulrunner-1.9.1.7.en-US.linux-i686.tar.bz2"
 #xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozillla/xulrunner/releases/1.9.1.7/runtimes/"

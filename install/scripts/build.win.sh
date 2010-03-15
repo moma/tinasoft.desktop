@@ -6,17 +6,16 @@ echo "########################################"
 echo ""
 
 name="Tinasoft"
-version="1.0-alpha"
-arch="windows"
+version="1.0alpha"
+arch="WINNT_x86"
 xulrunner="xulrunner-1.9.1"
+platform="$arch-msvc"
 
 xulrunnerdownfile="xulrunner-1.9.1.7.en-US.win32.zip"
 xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozilla/xulrunner/releases/1.9.1.7/runtimes"
 
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
-
-platform="WINNT_x86-msvc"
 
 pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
 pyxpcomextdownfile="pythonext-2.6.0.20090330-$platform.xpi"
