@@ -54,16 +54,19 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
 fi
 
 echo " - copying xulrunner files to output distribution.."
+
 cp -R tina $outpath
-rm -Rf $outpath/xulrunner
 rm $outpath/tina
 rm $outpath/tina-stub
-cp install/skeletons/$arch/tina $outpath
-cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
-cp $outpath/xulrunner/xulrunner-stub $outpath/xulrunner
-cp -R tests $outpath/tests
+rm -Rf $outpath/xulrunner
 rm -Rf $outpath/db
+rm -Rf $outpath/user
 rm -Rf $outpath/index
+rm -Rf $outpath/*.yaml
+cp install/skeletons/$arch/* $outpath
+cp -R install/data/* $outpath
+cp -R tests $outpath/tests
+cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 
 echo " - creating release archive.."
 tar -cf $outfile.tar.gz $outpath

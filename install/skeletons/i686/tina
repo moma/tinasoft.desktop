@@ -1,4 +1,0 @@
-#!/bin/bash
-export LD_LIBRARY_PATH=`pwd`/platform/Linux_x86-gcc3/lib
-echo $LD_LIBRARY_PATH
-./xulrunner-stub
