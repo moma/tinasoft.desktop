@@ -935,7 +935,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (v.showLabels) {
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
                 textSize(n.radius);
-                text(n.label, n.x + n.radius, n.y + (n.radius / PI));
+                text((n.highlighted) ? n.label : reduceLabel(n.label, 20), n.x + n.radius, n.y + (n.radius / PI));
                 //textSize(n.radius / v.sceneScale);
                 //text(n.label, v.translation.x + n.x + n.radius, v.translation.y + n.y + ((n.radius/v.sceneScale) / PI));
             }
@@ -1153,5 +1153,16 @@ public class Main extends PApplet implements MouseWheelListener {
         rc[0] = (float) (centerX + (x - centerX) * cos(theta) - (y - centerY) * sin(theta));
         rc[1] = (float) (centerY + (x - centerX) * sin(theta) + (y - centerY) * cos(theta));
         return rc;
+    }
+
+
+    public String reduceLabel(String label) {
+        return reduceLabel(label, 20);
+    }
+
+    public String reduceLabel(String label, int len) {
+        return (label.length() > len)
+                ? label.substring(0, len / 2) + "..." + label.substring(label.length() - (len / 2))
+                : label;
     }
 }
