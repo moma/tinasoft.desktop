@@ -7,14 +7,14 @@ echo ""
 
 name="Tinasoft"
 version="1.0-alpha"
-arch="i686"
+arch="Linux_x86"
 xulrunner="xulrunner-1.9.1"
 xulrunnerdownfile="xulrunner-1.9.1.7.en-US.linux-i686.tar.bz2"
 xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozilla/xulrunner/releases/1.9.1.7/runtimes"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
-pyxpcomextdownfile="pythonext-2.6.0.20090330-Linux_x86-gcc3.xpi"
+pyxpcomextdownfile="pythonext-2.6.0.20090330-$arch-gcc3.xpi"
 
 if [ -e $outfile ]
   then
