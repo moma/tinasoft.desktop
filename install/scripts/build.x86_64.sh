@@ -23,12 +23,15 @@ fi
 
 echo " - copying xulrunner files to output distribution.."
 cp -R tina $outpath
-rm -Rf $outpath/xulrunner
-cp install/skeletons/$arch/tina $outpath
-cp -R .packaging/$arch/$xulrunner/ $outpath
-cp -R tests $outpath/tests
+rm $outpath/tina
+rm $outpath/tina-stub
 rm -Rf $outpath/db
+rm -Rf $outpath/user
 rm -Rf $outpath/index
+rm -Rf $outpath/*.yaml
+cp install/skeletons/$arch/* $outpath
+cp -R install/data/* $outpath
+cp -R tests $outpath/tests
 
 echo " - creating release archive.."
 tar -cf $outfile.tar.gz $outpath
