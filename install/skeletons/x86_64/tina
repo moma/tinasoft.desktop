@@ -1,0 +1,4 @@
+#!/bin/bash
+export LD_LIBRARY_PATH=`pwd`/platform/Linux_x86_64-gcc3/lib
+export NLTK_DATA=`pwd`/shared/nltk_data
+xulrunner/xulrunner application.ini
