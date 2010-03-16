@@ -40,8 +40,8 @@ public class Main extends PApplet implements MouseWheelListener {
     float MICRO_LOWER = 30.0f;*/
     // pourcentage de l'ecran pour lequel la présence des bords d'un node
     // déclenche le passage dans le mode macro
-    float screenRatioSelectNodeWhenZoomed = 0.40f;
-    float screenRatioGoToMesoWhenZoomed = 0.31f;
+    float screenRatioSelectNodeWhenZoomed = 0.3f;
+    float screenRatioGoToMesoWhenZoomed = 0.65f;
     AtomicBoolean mouseLeftDragging = new AtomicBoolean(false);
     AtomicBoolean mouseRightDragging = new AtomicBoolean(false);
     AtomicBoolean zooming = new AtomicBoolean(false);
@@ -61,7 +61,6 @@ public class Main extends PApplet implements MouseWheelListener {
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
     float selectedX = 0.0f;
     float selectedY = 0.0f;
-
 
     private void jsNodeSelected(Node n) {
 
@@ -342,7 +341,7 @@ public class Main extends PApplet implements MouseWheelListener {
             return;
         }
 
-        
+
         List<Node> n = v.popNodes();
         if (n != null) {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
@@ -554,6 +553,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (v.sceneScale < v.ZOOM_CEIL) {
                     System.out.println("switch out to macro");
                     session.getMacro().sceneScale = session.getMacro().ZOOM_FLOOR - session.getMacro().ZOOM_FLOOR * 0.5f;
+                    session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2.0f;
                     jsSwitchToMacro();
                 }
                 break;
@@ -582,6 +582,7 @@ public class Main extends PApplet implements MouseWheelListener {
         scale(v.sceneScale);
         translate(v.translation.x, v.translation.y);
 
+
         for (Node n1 : nodes) {
             if (_resetSelection) {
                 n1.selected = false;
@@ -590,6 +591,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n1 == n2) {
                     continue;
                 }
+
 
                 // todo: what happen when vx or vy are 0 ?
                 vx = n2.x - n1.x;
@@ -706,7 +708,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         n2.vx += n1.radius * (1.0f / distance); //
                         n2.vy += n1.radius * (1.0f / distance); // 0.01f
                          */
-                       
+
                         n1.vx -= (vx / distance) * repulsion;
                         n1.vy -= (vy / distance) * repulsion;
                         n2.vx += (vx / distance) * repulsion;
@@ -738,7 +740,11 @@ public class Main extends PApplet implements MouseWheelListener {
         strokeWeight(1.0f);
         //}
 
+
+
         for (Node n : nodes) {
+            float nsx = screenX(n.x, n.y), nsy = screenY(n.x, n.y);
+            boolean visible = (nsx > -(width / 2.0f) && nsx < width + (width / 2.0f) && nsy > -(height / 2.0f) && nsy < height + (height / 2.0f));
 
             if (!n.fixed) {
 
@@ -755,40 +761,46 @@ public class Main extends PApplet implements MouseWheelListener {
             n.vx = 0.0f;
             n.vy = 0.0f;
 
+            // small improvment that should enhance perfs
+            if (!visible) {
+                continue;
+            }
+            float nsd = screenX(n.x + n.radius, n.y) - screenX(n.x - n.radius, n.y);
+
+            if (nsd < 4) {
+                continue;
+            }
+
             /*************************************************************************
              *  SCREEN-BASED SELECTION, WHEN THE NODE IS IN THE CENTER OF THE SCREEN *
              *************************************************************************/
-            float nodeLeftMargin = screenX(n.x - n.radius, n.y - n.radius);
-            float nodeTopMargin = screenY(n.x - n.radius, n.y - n.radius);
-            float nodeRightMargin = screenX(n.x + n.radius, n.y + n.radius);
-            float nodeBottomMargin = screenY(n.x + n.radius, n.y + n.radius);
-
+            // node coordinate at the screen
+            // diameter of the node at the screen
             boolean massSelectionHasBegin = false;
-            if (session.currentLevel == ViewLevel.MACRO
-                    && nodeLeftMargin < (width * screenRatioSelectNodeWhenZoomed)
-                    && nodeTopMargin < (height * screenRatioSelectNodeWhenZoomed)
-                    && nodeRightMargin > (width - width * screenRatioSelectNodeWhenZoomed)
-                    && nodeBottomMargin > (height - height * screenRatioSelectNodeWhenZoomed)) {
-                // System.out.println("In macro view, got '"+n.label+"' in front of our screen!");
-                if (!n.selected) {
-                    session.selectNode(n);
-                    massSelectionHasBegin = true;
-                    jsNodeSelected(n);
+
+
+            float screenRatio = ((nsd / (float) width) + (nsd / (float) height)) / 2.0f;
+
+            if (session.currentLevel == ViewLevel.MACRO) {
+                if (screenRatio > screenRatioGoToMesoWhenZoomed) {
+                    // System.out.println("In macro view, got '"+n.label+"' in front of our screen!");
+                    if (!n.selected) {
+                        session.selectNode(n);
+                        massSelectionHasBegin = true;
+                        jsNodeSelected(n);
+                    }
+
+                    System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
+                    session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
+                    jsSwitchToMeso();
+                } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
+                    // System.out.println("In macro view, got '"+n.label+"' in front of our screen!");
+                    if (!n.selected) {
+                        session.selectNode(n);
+                        massSelectionHasBegin = true;
+                        jsNodeSelected(n);
+                    }
                 }
-            } else if (session.currentLevel == ViewLevel.MACRO
-                    && nodeLeftMargin < (width * screenRatioGoToMesoWhenZoomed)
-                    && nodeTopMargin < (height * screenRatioGoToMesoWhenZoomed)
-                    && nodeRightMargin > (width - width * screenRatioGoToMesoWhenZoomed)
-                    && nodeBottomMargin > (height - height * screenRatioGoToMesoWhenZoomed)) {
-                // System.out.println("In macro view, got '"+n.label+"' in front of our screen!");
-                if (!n.selected) {
-                    session.selectNode(n);
-                    massSelectionHasBegin = true;
-                    jsNodeSelected(n);
-                }
-                System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
-                session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
-                jsSwitchToMeso();
             }
 
 
@@ -816,7 +828,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         if (session.currentLevel == ViewLevel.MACRO) {
                             System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
 
-                            session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
+                            session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
                             jsSwitchToMeso();
                         } else if (session.currentLevel == ViewLevel.MESO) {
                             System.out.println("SWITCH TO MICRO WITH THE DOUBLE CLICK METHOD");
@@ -925,6 +937,12 @@ public class Main extends PApplet implements MouseWheelListener {
                     rectMode(CORNER);
                 }
             }
+
+            // skip label drawing for small nodes
+            if (nsd < 10) {
+                continue;
+            }
+
             if (n.selected) {
                 fill(20);
             } else if (n.highlighted) {
@@ -935,7 +953,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (v.showLabels) {
                 //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
                 textSize(n.radius);
-                text((n.highlighted) ? n.label : reduceLabel(n.label, 20), n.x + n.radius, n.y + (n.radius / PI));
+                text((n.highlighted) ? n.label : reduceLabel(n.label, 40), n.x + n.radius, n.y + (n.radius / PI));
                 //textSize(n.radius / v.sceneScale);
                 //text(n.label, v.translation.x + n.x + n.radius, v.translation.y + n.y + ((n.radius/v.sceneScale) / PI));
             }
@@ -1101,9 +1119,11 @@ public class Main extends PApplet implements MouseWheelListener {
     public void clear() {
         getSession().clear();
     }
+
     public void clear(String view) {
         getSession().getView(view).clear();
     }
+
     public void resetCameras() {
         getSession().resetCamera(width, height);
     }
@@ -1111,6 +1131,7 @@ public class Main extends PApplet implements MouseWheelListener {
     public void resetCamera(String view) {
         getSession().getView(view).resetCamera(width, height);
     }
+
     public void select(String id) {
         getSession().selectNodeById(id);
     }
@@ -1155,14 +1176,13 @@ public class Main extends PApplet implements MouseWheelListener {
         return rc;
     }
 
-
     public String reduceLabel(String label) {
-        return reduceLabel(label, 20);
+        return reduceLabel(label, 30);
     }
 
     public String reduceLabel(String label, int len) {
         return (label.length() > len)
-                ? label.substring(0, len / 2) + "..." + label.substring(label.length() - (len / 2))
+                ? label.substring(0, len - 2) + ".."
                 : label;
     }
 }
