@@ -426,7 +426,7 @@ function Tinaviz() {
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"20\"/>\n\
+                <viz:size value=\"7\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"NGram\" />\n\
                 </attvalues>\n\
@@ -434,7 +434,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"10\"/>\n\
+                <viz:size value=\"1.5\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -445,14 +445,24 @@ function Tinaviz() {
         <edges>\n\
 <?js var i=0; ?>\
 <?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node}\" weight=\"#{edges[target_type][target_node]}\" />\n\
+<?js     for (var target_node1 in edges[target_type]) { ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
+<?js        for (var target_node2 in edges[target_type]) { ?>\
+<?js            for (var shared in edges_data[target_type][target_node1]['edges']['NGram']) { ?>\
+<?js                if (shared==id) continue; ?>\
+<?js                if (shared in edges_data[target_type][target_node2]['edges']['NGram']) { ?>\
+            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"1.0\" />\n\
+<?js                    break; ?>\
+<?js                } ?>\
+<?js            } ?>\
+<?js        } ?>\
 <?js    } ?>\
 <?js } ?>\
         </edges>\n\
     </graph>\n\
 </gexf>", ng);
      // console.log(gexf);
+     applet.clear("meso");
      applet.getSession().updateFromString("meso",gexf);
    },
    
@@ -484,7 +494,7 @@ function Tinaviz() {
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"20\"/>\n\
+                <viz:size value=\"7\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"Document\" />\n\
                 </attvalues>\n\
@@ -492,7 +502,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"10\"/>\n\
+                <viz:size value=\"1.5\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -503,14 +513,24 @@ function Tinaviz() {
         <edges>\n\
 <?js var i=0; ?>\
 <?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node}\" weight=\"#{edges[target_type][target_node]}\" />\n\
+<?js     for (var target_node1 in edges[target_type]) { ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
+<?js        for (var target_node2 in edges[target_type]) { ?>\
+<?js            for (var shared in edges_data[target_type][target_node1]['edges']['Document']) { ?>\
+<?js                if (shared==id) continue; ?>\
+<?js                if (shared in edges_data[target_type][target_node2]['edges']['Document']) { ?>\
+            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"1.0\" />\n\
+<?js                    break; ?>\
+<?js                } ?>\
+<?js            } ?>\
+<?js        } ?>\
 <?js    } ?>\
 <?js } ?>\
         </edges>\n\
     </graph>\n\
 </gexf>", doc);
      // console.log(gexf);
+     applet.clear("meso");
      applet.getSession().updateFromString("meso",gexf);
    },
   selectMesoTerm: function(x,y,id,label,attr) {
@@ -547,7 +567,7 @@ function Tinaviz() {
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"20\"/>\n\
+                <viz:size value=\"7\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"NGram\" />\n\
                 </attvalues>\n\
@@ -555,7 +575,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"10\"/>\n\
+                <viz:size value=\"1.5\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -566,14 +586,24 @@ function Tinaviz() {
         <edges>\n\
 <?js var i=0; ?>\
 <?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node}\" weight=\"#{edges[target_type][target_node]}\" />\n\
+<?js     for (var target_node1 in edges[target_type]) { ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
+<?js        for (var target_node2 in edges[target_type]) { ?>\
+<?js            for (var shared in edges_data[target_type][target_node1]['edges']['NGram']) { ?>\
+<?js                if (shared==id) continue; ?>\
+<?js                if (shared in edges_data[target_type][target_node2]['edges']['NGram']) { ?>\
+            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"1.0\" />\n\
+<?js                    break; ?>\
+<?js                } ?>\
+<?js            } ?>\
+<?js        } ?>\
 <?js    } ?>\
 <?js } ?>\
         </edges>\n\
     </graph>\n\
 </gexf>", ng);
      // console.log(gexf);
+     applet.clear("meso");
      applet.getSession().updateFromString("meso",gexf);
     },
    selectMesoDocument: function(x,y,id,label,attr) {
@@ -603,7 +633,7 @@ function Tinaviz() {
         </tina>\n\
         <nodes>\n\
             <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"20\"/>\n\
+                <viz:size value=\"7\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"Document\" />\n\
                 </attvalues>\n\
@@ -611,7 +641,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"10\"/>\n\
+                <viz:size value=\"1.5\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -622,14 +652,24 @@ function Tinaviz() {
         <edges>\n\
 <?js var i=0; ?>\
 <?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node}\" weight=\"#{edges[target_type][target_node]}\" />\n\
+<?js     for (var target_node1 in edges[target_type]) { ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
+<?js        for (var target_node2 in edges[target_type]) { ?>\
+<?js            for (var shared in edges_data[target_type][target_node1]['edges']['Document']) { ?>\
+<?js                if (shared==id) continue; ?>\
+<?js                if (shared in edges_data[target_type][target_node2]['edges']['Document']) { ?>\
+            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"1.0\" />\n\
+<?js                    break; ?>\
+<?js                } ?>\
+<?js            } ?>\
+<?js        } ?>\
 <?js    } ?>\
 <?js } ?>\
         </edges>\n\
     </graph>\n\
 </gexf>", doc);
      // console.log(gexf);
+     applet.clear("meso");
      applet.getSession().updateFromString("meso",gexf);
    }
   };

@@ -529,15 +529,18 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean _mouseLeftDrag = this.mouseLeftDragging.get();
         boolean _mouseRightDrag = this.mouseRightDragging.get();
 
+        Node bestMatchForSelection = null;
+        Node bestMatchForSwitch = null;
+
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
 
         if (zooming.getAndSet(false)) {
             if (zoomIn.get()) {
-                v.sceneScale *= 2.0;
+                v.sceneScale *= 1.5f;
             } else {
-                v.sceneScale *= 0.5;
+                v.sceneScale *= 0.75;
             }
             System.out.println("Zoom: " + v.sceneScale);
         }
@@ -753,6 +756,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 n.vy = constrain(n.vy, -10, 10);
 
                 // update the coordinate
+                // also set the bound box for the whole scene
                 n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
                 n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
 
@@ -778,27 +782,22 @@ public class Main extends PApplet implements MouseWheelListener {
             // diameter of the node at the screen
             boolean massSelectionHasBegin = false;
 
-
             float screenRatio = ((nsd / (float) width) + (nsd / (float) height)) / 2.0f;
 
             if (session.currentLevel == ViewLevel.MACRO) {
                 if (screenRatio > screenRatioGoToMesoWhenZoomed) {
-                    // System.out.println("In macro view, got '"+n.label+"' in front of our screen!");
-                    if (!n.selected) {
-                        session.selectNode(n);
-                        massSelectionHasBegin = true;
-                        jsNodeSelected(n);
+                    if (bestMatchForSwitch == null) {
+                        bestMatchForSwitch = n;
                     }
-
-                    System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
-                    session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
-                    jsSwitchToMeso();
+                    if (n.radius > bestMatchForSwitch.radius) {
+                        bestMatchForSwitch = n;
+                    }
                 } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
-                    // System.out.println("In macro view, got '"+n.label+"' in front of our screen!");
-                    if (!n.selected) {
-                        session.selectNode(n);
-                        massSelectionHasBegin = true;
-                        jsNodeSelected(n);
+                    if (bestMatchForSelection == null) {
+                        bestMatchForSelection = n;
+                    }
+                    if (n.radius > bestMatchForSelection.radius) {
+                        bestMatchForSelection = n;
                     }
                 }
             }
@@ -865,7 +864,6 @@ public class Main extends PApplet implements MouseWheelListener {
                             jsNodeSelected(n);
                         }
 
-
                     }
                 } else {
                     n.highlighted = true;
@@ -874,89 +872,90 @@ public class Main extends PApplet implements MouseWheelListener {
                 n.highlighted = false;
             }
 
+            // best match for the "screen" selection
 
+            if (!v.showNodes) {
+                continue;
+            }
 
             /****************************
              *  PROCESSING DRAWING CODE *
              ****************************/
-            if (v.showNodes) {
-                strokeWeight(1.0f);
-                noStroke();
+            strokeWeight(1.0f);
+            noStroke();
 
-                boolean drawDisk = false;
-                if (n.category.equals("NGram")) {
-                    drawDisk = true;
-                } else if (n.category.equals("Document")) {
-                    drawDisk = false;
-                }
-
-                if (n.selected) {
-                    fill(40, 40, 40);
-                    if (drawDisk) {
-                        ellipse(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
-                    } else {
-                        rectMode(CENTER);
-                        rect(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
-                        rectMode(CORNER);
-                    }
-                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
-                } else if (n.highlighted) {
-                    fill(110, 110, 110);
-                    if (drawDisk) {
-                        ellipse(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
-                    } else {
-                        rectMode(CENTER);
-                        rect(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
-                        rectMode(CORNER);
-                    }
-                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
-                } else {
-                    fill(180, 180, 180);
-                    if (drawDisk) {
-                        ellipse(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
-                    } else {
-                        rectMode(CENTER);
-                        rect(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
-                        rectMode(CORNER);
-                    }
-                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255));
-                }
-
-                /*
-                if (net.animationPaused) {
-                strokeWeight(2.0f);
-                } else {
-                strokeWeight(1.0f);
-                }*/
-                //stroke(100, 100, 100);
-                if (drawDisk) {
-                    ellipse(n.x, n.y, n.radius, n.radius);
-                } else {
-                    rectMode(CENTER);
-                    rect(n.x, n.y, n.radius, n.radius);
-                    rectMode(CORNER);
-                }
+            boolean drawDisk = false;
+            if (n.category.equals("NGram")) {
+                drawDisk = true;
+            } else if (n.category.equals("Document") || n.category.equals("Project")) {
+                drawDisk = false;
             }
 
-            // skip label drawing for small nodes
-            if (nsd < 10) {
-                continue;
+
+            if (n.selected) {
+                fill(40, 40, 40);
+            } else if (n.highlighted) {
+                fill(110, 110, 110);
+            } else {
+                fill(180, 180, 180);
+            }
+
+            if (drawDisk) {
+                ellipse(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
+            } else {
+                rectMode(CENTER);
+                rect(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
+                rectMode(CORNER);
             }
 
             if (n.selected) {
-                fill(20);
+                fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
             } else if (n.highlighted) {
-                fill(60);
+                fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
             } else {
+                fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255));
+            }
+
+            if (drawDisk) {
+                ellipse(n.x, n.y, n.radius, n.radius);
+            } else {
+                rectMode(CENTER);
+                rect(n.x, n.y, n.radius, n.radius);
+                rectMode(CORNER);
+            }
+
+
+            // skip label drawing for small nodes
+            // or if we have to hide labels
+            if (nsd < 13 | !v.showLabels) {
+                continue;
+            }
+
+            if (nsd < 14) {
+                fill(200);
+            } else if (nsd < 15) {
+                fill(160);
+            } else if (nsd < 16) {
+                fill(130);
+            } else if (nsd < 17) {
+                fill(110);
+            } else if (nsd < 18) {
                 fill(100);
+            } else if (nsd < 19) {
+                fill(90);
+            } else {
+                fill(80);
             }
-            if (v.showLabels) {
-                //fill((int) ((100.0f / MAX_RADIUS) * node.radius ));
-                textSize(n.radius);
-                text((n.highlighted) ? n.label : reduceLabel(n.label, 40), n.x + n.radius, n.y + (n.radius / PI));
-                //textSize(n.radius / v.sceneScale);
-                //text(n.label, v.translation.x + n.x + n.radius, v.translation.y + n.y + ((n.radius/v.sceneScale) / PI));
+
+
+            if (n.selected) {
+                fill(10);
+            } else if (n.highlighted) {
+                fill(50);
             }
+            textSize(n.radius);
+            text((n.highlighted) ? n.label : reduceLabel(n.label, 40), n.x + n.radius, n.y + (n.radius / PI));
+
         }
 
     }
