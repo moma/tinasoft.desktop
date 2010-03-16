@@ -498,7 +498,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"1.5\"/>\n\
+                <viz:size value=\"1.7\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\
@@ -553,7 +553,7 @@ function Tinaviz() {
 <?js for (var target_type in edges) { ?>\
 <?js     for (var target_node in edges[target_type]) { ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"1.5\"/>\n\
+                <viz:size value=\"4.0\"/>\n\
                 <attvalues>\n\
                     <attvalue for=\"0\" value=\"${target_type}\" />\n\
                 </attvalues>\n\

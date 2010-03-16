@@ -930,22 +930,16 @@ public class Main extends PApplet implements MouseWheelListener {
                 continue;
             }
 
-            if (nsd < 14) {
-                fill(200);
-            } else if (nsd < 15) {
-                fill(160);
-            } else if (nsd < 16) {
-                fill(130);
-            } else if (nsd < 17) {
-                fill(110);
-            } else if (nsd < 18) {
-                fill(100);
-            } else if (nsd < 19) {
-                fill(90);
-            } else {
-                fill(80);
-            }
 
+            // degrade du radius [r=14 level=255, r=40 level=80]
+            float minRad = 14.0f;
+            float maxRad = 25.0f;
+            int minRadColor = 255;
+            int maxRadColor = 80;
+
+            float tRatio = 1.0f / (maxRad - minRad);
+            float nsdRatio = constrain((nsd - minRad) * tRatio,0,1);
+            fill(minRadColor + nsdRatio * (float)(maxRadColor - minRadColor));
 
             if (n.selected) {
                 fill(10);
