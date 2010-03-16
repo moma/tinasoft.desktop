@@ -536,17 +536,22 @@ public class Main extends PApplet implements MouseWheelListener {
         stroke(150, 150, 150);
         strokeWeight(1);
 
+        bezierDetail(32);
+        
         if (zooming.getAndSet(false)) {
             if (zoomIn.get()) {
                 v.sceneScale *= 1.5f;
             } else {
-                v.sceneScale *= 0.75;
+                v.sceneScale *= 0.75f;
             }
             System.out.println("Zoom: " + v.sceneScale);
         }
 
         switch (session.currentLevel) {
             case MACRO:
+                if (v.sceneScale < v.ZOOM_CEIL) {
+                    v.sceneScale = v.ZOOM_CEIL;
+                }
                 break;
             case MESO:
                 if (v.sceneScale > v.ZOOM_FLOOR) {
@@ -633,49 +638,43 @@ public class Main extends PApplet implements MouseWheelListener {
                         }
                         if (!doubleLink | n1.uuid.compareTo(n2.uuid) <= 0) {
 
-                            // greyscale!
-                            if (false) {
-                                if (doubleLink) {
-                                    if (n1.selected && n2.selected) {
-                                        stroke(50);
-                                    } else if (n1.selected || n2.selected) {
-                                        stroke(130);
-                                    } else {
-                                        stroke(200);
-                                    }
+                            float cr = (n1.r + n2.r) / 2;
+                            float cg = (n1.g + n2.g) / 2;
+                            float cb = (n1.b + n2.b) / 2;
+
+                            /*
+                            cr = constrain(cr, 0, 255);
+                            cg = constrain(cg, 0, 255);
+                            cb =  constrain(cb, 0, 255);*/
+
+                            if (doubleLink) {
+                                if (n1.selected && n2.selected) {
+                                    stroke(30);
+                                } else if (n1.selected || n2.selected) {
+                                    stroke(90);
                                 } else {
-                                    if (n1.selected && n2.selected) {
-                                        stroke(70);
-                                    } else if (n1.selected || n2.selected) {
-                                        stroke(150);
-                                    } else {
-                                        stroke(240);
-                                    }
+                                    float m = 180.0f;
+                                    float r = (255.0f-m) / 255.0f;
+                                    stroke(m+cr*r, m+cg*r, m+cb*r);
                                 }
                             } else {
-                                if (doubleLink) {
-                                    if (n1.selected && n2.selected) {
-                                        stroke(50);
-                                    } else if (n1.selected || n2.selected) {
-                                        stroke(130);
-                                    } else {
-                                        stroke((n1.r + n2.r) / 2, (n1.g + n2.g) / 2, (n1.b + n2.b) / 2);
-                                    }
+                                if (n1.selected && n2.selected) {
+                                    stroke(60);
+                                } else if (n1.selected || n2.selected) {
+                                    stroke(130);
                                 } else {
-                                    if (n1.selected && n2.selected) {
-                                        stroke(70);
-                                    } else if (n1.selected || n2.selected) {
-                                        stroke(150);
-                                    } else {
-                                        stroke((n1.r + n2.r) / 2, (n1.g + n2.g) / 2, (n1.b + n2.b) / 2);
-                                    }
+                                     float m = 210.0f;
+                                    float r = (255.0f-m) / 255.0f;
+                                    stroke(m+cr*r,m+cg*r, m+cb*r);
                                 }
                             }
 
 
                             if (v.highDefinition && !_mouseRightDrag && n1.weights != null && n2.uuid != null) {
+                                //bezierDetail(32);
                                 strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
                             } else {
+                                //bezierDetail(32);
                                 strokeWeight(1);
                             }
 
@@ -1101,7 +1100,7 @@ public class Main extends PApplet implements MouseWheelListener {
             v.highDefinition = !v.highDefinition;
             System.out.println("HD mode is now " + v.highDefinition);
         } else if (key == 'o') {
-            if ((v.attraction + 0.00001) < 0.0003) {
+            if ((v.attraction + 0.00001) < 0.0004) {
                 v.attraction += 0.00001f;
                 System.out.println("\nattraction: " + session.getView().attraction);
 

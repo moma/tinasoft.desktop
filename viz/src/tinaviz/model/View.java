@@ -36,9 +36,6 @@ public class View {
     public boolean highDefinition = false;
     public boolean spatializeWhenMoving = true;
     public boolean centerOnSelection = true;
-
-
-
     public PVector mousePosition = new PVector(0.0f, 0.0f);
     public PVector translation = new PVector(0.0f, 0.0f);
     public PVector lastPosition = new PVector(0.0f, 0.0f);
@@ -46,20 +43,14 @@ public class View {
     public float inerX;
     public float inerY;
     public float inerZ;
-
-
     public float ZOOM_CEIL = 0.7f;
     public float ZOOM_FLOOR = 25.0f;
     public float repulsion = 0.01f;
     public float attraction = 0.0001f;
-
     public Graph graph = null;
-
     public FilterChain filters = null;
     public AtomicBoolean hasBeenRead = null;
     public int prespatializeSteps = 0;
-
-
 
     public View() {
         graph = new Graph();
@@ -72,7 +63,7 @@ public class View {
 
         repulsion = 0.01f;
         attraction = 0.0001f;
-               prespatializeSteps = 0;
+        prespatializeSteps = 0;
         resetCamera();
     }
 
@@ -81,6 +72,7 @@ public class View {
         showLinks = !showLinks;
         return showLinks;
     }
+
     public synchronized boolean toggleEdges() {
         return toggleLinks();
     }
@@ -147,7 +139,6 @@ public class View {
         return filters.getFilter(filterName).getField(key);
     }
 
-
     public synchronized boolean updateFromURI(String uri) {
         return graph.updateFromURI(uri);
     }
@@ -176,11 +167,11 @@ public class View {
     public synchronized void resetCamera(float width, float height) {
 
         mousePosition = new PVector(0.0f, 0.0f);
-        translation = new PVector(width/2.0f, width/2.0f);
+        translation = new PVector(width / 2.0f, width / 2.0f);
         lastPosition = new PVector(0.0f, 0.0f);
         sceneScale = 1.0f;
 
-        
+
         // initializes zoom
         PVector box = new PVector(graph.metrics.maxX - graph.metrics.minX, graph.metrics.maxY - graph.metrics.minY);
         float ratioWidth = width / box.x;
@@ -188,19 +179,19 @@ public class View {
         if (sceneScale == 0) {
             sceneScale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
         }
-        
+
         // initializes move
         PVector semiBox = PVector.div(box, 2);
-        PVector topLeftVector = new PVector(graph.metrics.minX,graph.metrics.minY);
+        PVector topLeftVector = new PVector(graph.metrics.minX, graph.metrics.minY);
         PVector center = new PVector(width / 2f, height / 2f);
         PVector scaledCenter = PVector.add(topLeftVector, semiBox);
         translation.set(center);
         translation.sub(scaledCenter);
         lastPosition.set(translation);
         System.out.println("automatic scaling..");
-        
 
-         
+
+
 
     }
 
@@ -246,5 +237,27 @@ public class View {
 
     public void storeMousePosition(int x, int y) {
         mousePosition.set(x, y, 0);
+    }
+
+    public float setRepulsion(float a) {
+        return setAttractionRelative(a,1.0f);
+    }
+    public float setAttractionRelative(float a, float scale) {
+
+        float maxAttraction = 0.0004f;
+        float minAttraction = 1.5e-5f;
+        float ratio = maxAttraction / scale;
+
+        float newValue = minAttraction + a * ratio;
+        if (newValue > minAttraction && newValue < maxAttraction) {
+            attraction = newValue;
+        }
+        return a;
+    }
+     public float getRepulsion() {
+        return getAttractionRelative(1.0f);
+    }
+     public float getAttractionRelative(float scale) {
+        return attraction / scale;
     }
 }

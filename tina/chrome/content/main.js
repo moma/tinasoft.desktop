@@ -475,16 +475,15 @@ $(document).ready(function() {
             orientation: "vertical"
     });
         // setup master volume
-        /*
-    $("#localrepulsion").slider({
+        
+    $("#mesorepulsion").slider({
             value: 100,
-            orientation: "horizontal"
-    });*/
-    /*
-    $("#globalrepulsion").slider({
-            value: 100,
-            orientation: "horizontal"
-    });*/
+            orientation: "horizontal",
+            slide: function(event, ui) {
+				tinaviz.setRepulsion("meso", ui.value / 100.0);
+			}
+    });
+    
 
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");

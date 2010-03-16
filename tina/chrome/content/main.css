@@ -102,6 +102,12 @@ label {
     overflow:auto;
 }
 
+.repulsion {
+    width:150px; 
+    height:12px; 
+    margin:15px;
+}
+
 /*
 .htoolbar {
     position:absolute;

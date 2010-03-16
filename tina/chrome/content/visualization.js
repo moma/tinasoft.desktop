@@ -30,7 +30,7 @@ function Tinaviz() {
         // finally, once the gexf is loaded, we light the tab!
         this.logDebug("enabling applet tab..");
 
-        $("#tabs").data('disabled.tabs', [2,3,4]);
+        $("#tabs").data('disabled.tabs', []);
     },
 
     size: function(w,h) {
@@ -357,6 +357,10 @@ function Tinaviz() {
        return getAppletHeight();
     },
 
+    setRepulsion: function(level,value) {
+        if (applet == null) return;
+        return applet.getView(level).setRepulsion(value);
+    },
     search: function(txt) {
         this.logNormal("Searching is not implemented yet..");
     },
@@ -415,55 +419,7 @@ function Tinaviz() {
      <?js } ?>.\
      </p>\n", ng));
 
-     var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
-        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
-    <graph>\n\
-        <attributes class=\"node\">\n\
-        </attributes>\n\
-        <tina>\n\
-            <selected node=\""+id+"\" />\n\
-        </tina>\n\
-        <nodes>\n\
-            <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"7\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\"NGram\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { ?>\
-            <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"1.5\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\"${target_type}\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js    } ?>\
-<?js } ?>\
-        </nodes>\n\
-        <edges>\n\
-<?js var i=0; ?>\
-<?js for (var target_type in edges) { ?>\
-<?js     for (var target_node1 in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
-<?js        for (var target_node2 in edges[target_type]) { ?>\
-<?js            for (var shared in edges_data[target_type][target_node1]['edges']['NGram']) { ?>\
-<?js                if (shared==id) continue; ?>\
-<?js                if (shared in edges_data[target_type][target_node2]['edges']['NGram']) { ?>\
-            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"1.0\" />\n\
-<?js                    break; ?>\
-<?js                } ?>\
-<?js            } ?>\
-<?js        } ?>\
-<?js    } ?>\
-<?js } ?>\
-        </edges>\n\
-    </graph>\n\
-</gexf>", ng);
-     // console.log(gexf);
-     applet.clear("meso");
-     applet.getSession().updateFromString("meso",gexf);
+    this.showMesoTerm(ng,x,y,id,label,attr);
    },
    
   selectMacroDocument: function(x,y,id,label,attr) {
@@ -483,7 +439,47 @@ function Tinaviz() {
      <?js } ?>.\
      </p>\n", doc));
 
-     var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+          this.showMesoDocument(doc, x,y,id,label,attr);
+   },
+  selectMesoTerm: function(x,y,id,label,attr) {
+     this.logDebug("selectMesoTerm("+id+","+label+")");
+     var ng = this.getNGram(id);
+     if (ng==null) return;
+     
+     $('#infodiv').html(Shotenjin.render("\n\
+     <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
+     <h3 class=\"nodedetailsh3\">Linked to these projects:</h3>\n\
+     <p class=\"nodedetailsp\">\n\
+     <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
+         <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][first]['label']}</a> \
+     <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
+         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][doc]['label']}</a>\
+     <?js } ?>.\
+     </p>\n", ng));
+     
+    this.showMesoTerm(ng,x,y,id,label,attr);
+    },
+     selectMesoDocument: function(x,y,id,label,attr) {
+     this.logDebug("selectMesoDocument("+id+","+label+")");
+     var doc = this.getDocument(id);
+     if (doc==null) return;
+     
+     $('#infodiv').html(Shotenjin.render("\n\
+     <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
+     <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
+     <p class=\"nodedetailsp\">\n\
+     <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
+         <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
+     <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
+         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
+     <?js } ?>.\
+     </p>\n", doc));
+
+     this.showMesoDocument(doc, x,y,id,label,attr);
+  },
+    
+    showMesoDocument: function(doc,x,y,id,label,attr) {
+          var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
         <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
     <graph>\n\
@@ -516,10 +512,13 @@ function Tinaviz() {
 <?js     for (var target_node1 in edges[target_type]) { ?>\
             <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
 <?js        for (var target_node2 in edges[target_type]) { ?>\
+<?js            var weight = 0; ?>\
 <?js            for (var shared in edges_data[target_type][target_node1]['edges']['Document']) { ?>\
 <?js                if (shared==id) continue; ?>\
 <?js                if (shared in edges_data[target_type][target_node2]['edges']['Document']) { ?>\
-            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"1.0\" />\n\
+<?js                    weight++; ?>\
+<?js                    if (weight < 5) continue; ?>\
+            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"#{weight}\" />\n\
 <?js                    break; ?>\
 <?js                } ?>\
 <?js            } ?>\
@@ -532,31 +531,10 @@ function Tinaviz() {
      // console.log(gexf);
      applet.clear("meso");
      applet.getSession().updateFromString("meso",gexf);
-   },
-  selectMesoTerm: function(x,y,id,label,attr) {
-     this.logDebug("selectMesoTerm("+id+","+label+")");
-     var ng = this.getNGram(id);
-     if (ng==null) return;
-     
-     $('#infodiv').html(Shotenjin.render("\n\
-     <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
-     <h3 class=\"nodedetailsh3\">Linked to these projects:</h3>\n\
-     <p class=\"nodedetailsp\">\n\
-     <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
-         <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][first]['label']}</a> \
-     <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][doc]['label']}</a>\
-     <?js } ?>.\
-     </p>\n", ng));
-     
-     /*
-     $('a','#infodiv').each(function(){
-        $(this).click(function(){
-        
-        });
-     });*/
-      
-     var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+    },
+    
+     showMesoTerm: function(ng,x,y,id,label,attr) {
+            var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
         <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
     <graph>\n\
@@ -589,10 +567,13 @@ function Tinaviz() {
 <?js     for (var target_node1 in edges[target_type]) { ?>\
             <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
 <?js        for (var target_node2 in edges[target_type]) { ?>\
+<?js            var weight = 0; ?>\
 <?js            for (var shared in edges_data[target_type][target_node1]['edges']['NGram']) { ?>\
 <?js                if (shared==id) continue; ?>\
 <?js                if (shared in edges_data[target_type][target_node2]['edges']['NGram']) { ?>\
-            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"1.0\" />\n\
+<?js                    weight++; ?>\
+<?js                    if (weight < 5) continue; ?>\
+            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"#{weight}\" />\n\
 <?js                    break; ?>\
 <?js                } ?>\
 <?js            } ?>\
@@ -605,73 +586,7 @@ function Tinaviz() {
      // console.log(gexf);
      applet.clear("meso");
      applet.getSession().updateFromString("meso",gexf);
-    },
-   selectMesoDocument: function(x,y,id,label,attr) {
-     this.logDebug("selectMesoDocument("+id+","+label+")");
-     var doc = this.getDocument(id);
-     if (doc==null) return;
-     
-     $('#infodiv').html(Shotenjin.render("\n\
-     <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
-     <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
-     <p class=\"nodedetailsp\">\n\
-     <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
-         <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
-     <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
-     <?js } ?>.\
-     </p>\n", doc));
-
-     var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
-        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
-    <graph>\n\
-        <attributes class=\"node\">\n\
-        </attributes>\n\
-        <tina>\n\
-            <selected node=\""+id+"\" />\n\
-        </tina>\n\
-        <nodes>\n\
-            <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"7\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\"Document\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { ?>\
-            <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"1.5\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\"${target_type}\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js    } ?>\
-<?js } ?>\
-        </nodes>\n\
-        <edges>\n\
-<?js var i=0; ?>\
-<?js for (var target_type in edges) { ?>\
-<?js     for (var target_node1 in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
-<?js        for (var target_node2 in edges[target_type]) { ?>\
-<?js            for (var shared in edges_data[target_type][target_node1]['edges']['Document']) { ?>\
-<?js                if (shared==id) continue; ?>\
-<?js                if (shared in edges_data[target_type][target_node2]['edges']['Document']) { ?>\
-            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"1.0\" />\n\
-<?js                    break; ?>\
-<?js                } ?>\
-<?js            } ?>\
-<?js        } ?>\
-<?js    } ?>\
-<?js } ?>\
-        </edges>\n\
-    </graph>\n\
-</gexf>", doc);
-     // console.log(gexf);
-     applet.clear("meso");
-     applet.getSession().updateFromString("meso",gexf);
-   }
+    }
   };
 }
 

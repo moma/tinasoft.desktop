@@ -32,6 +32,8 @@ public class Graph {
     public AtomicBoolean locked = null;
     public AtomicBoolean needToBeReadAgain = null;
     public AtomicInteger revision;
+    public float MAX_WEIGHT = 1.0f; // alternative to scale : alpha
+    public float MAX_RADIUS = 3.5f; // empirical
 
     public Graph() {
         storedNodes = new HashMap<String, tinaviz.Node>();
@@ -137,14 +139,7 @@ System.out.println("loading GEXF from string..");
 
 
         // reset the graph metrics
-        metrics.minX = 0.0f;
-        metrics.minY = 0.0f;
-        metrics.maxX = 0.0f;
-        metrics.maxY = 0.0f;
-        metrics.minRadius = 0.0f;
-        metrics.maxRadius = 0.0f;
-        metrics.centerX = 0.0f;
-        metrics.centerY = 0.0f;
+        metrics.reset();
 
         org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
                 XPathConstants.NODESET);
@@ -318,6 +313,12 @@ System.out.println("loading GEXF from string..");
                 // add the weight
                 //System.out.println("adding edge "+i+" <"+source+","+target+">");
                 storedNodes.get(source).weights.put(target, weight);
+                if (weight > metrics.maxWeight) {
+                    metrics.maxWeight = weight;
+                }
+                if (weight < metrics.minWeight) {
+                    metrics.minWeight = weight;
+                }
             }
 
         }
@@ -325,8 +326,11 @@ System.out.println("loading GEXF from string..");
         metrics.centerX = metrics.maxX - metrics.minX;
         metrics.centerY = metrics.maxY - metrics.minY;
 
-        // now we need to configure the colors
+        // now we need to normalize the graph
         for (Node n : storedNodes.values()) {
+
+
+            // NORMALIZE COLORS
             if (n.r < 0) {
                 n.r = 255 - ((160f / metrics.maxRadius)*n.radius);
             }
@@ -336,7 +340,19 @@ System.out.println("loading GEXF from string..");
             if (n.b < 0) {
                 n.b = 255 - ((150f / metrics.maxRadius)*n.radius);
             }
+
+            // NORMALIZE RADIUS
+            n.radius *= MAX_RADIUS / metrics.maxRadius;
+
+            // NORMALIZE WEIGHTS
+            float ratio = MAX_WEIGHT / metrics.maxWeight;
+            for (String k : n.weights.keySet()) {
+                n.weights.put(k,n.weights.get(k)*ratio);
+            }
+
         }
+
+        Console.log(metrics.toString());
 
         Console.log("<graph> GEXF loaded!");
 
