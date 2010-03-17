@@ -60,8 +60,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
     float selectedX = 0.0f;
     float selectedY = 0.0f;
-
-    PVector lastMousePosition = new PVector(0,0,0);
+    PVector lastMousePosition = new PVector(0, 0, 0);
 
     private void jsNodeSelected(Node n) {
 
@@ -320,7 +319,7 @@ public class Main extends PApplet implements MouseWheelListener {
         // DEBUG MODE
         session.macro.prespatializeSteps = 0;
 
-        lastMousePosition = new PVector(width / 2.0f, height /2.0f, 0);
+        lastMousePosition = new PVector(width / 2.0f, height / 2.0f, 0);
         // fill(255, 184);
 
         Console.log("Starting visualization..");
@@ -530,6 +529,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         boolean _resetSelection = this.resetSelection.getAndSet(false);
         boolean _mouseLeftClick = this.mouseClickLeft.getAndSet(false);
+        boolean _mouseRightClick = this.mouseClickRight.getAndSet(false);
         boolean _mouseLeftDrag = this.mouseLeftDragging.get();
         boolean _mouseRightDrag = this.mouseRightDragging.get();
 
@@ -546,11 +546,11 @@ public class Main extends PApplet implements MouseWheelListener {
             v.translation.sub(lastMousePosition);
 
             if (zoomIn.get()) {
-                v.sceneScale *= 4.f/3.f;
-                v.translation.mult(4.f/3.f);
+                v.sceneScale *= 4.f / 3.f;
+                v.translation.mult(4.f / 3.f);
             } else {
-                v.sceneScale *= 3.f/4.f;
-                v.translation.mult(3.f/4.f);
+                v.sceneScale *= 3.f / 4.f;
+                v.translation.mult(3.f / 4.f);
             }
 
             v.translation.add(lastMousePosition);
@@ -578,13 +578,13 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
 
-               // VECTEUR DRAG
+        // VECTEUR DRAG
         translate(v.translation.x, v.translation.y);
 
         // finally, push to the matrix
         scale(v.sceneScale);
 
- 
+
         for (Node n1 : nodes) {
             if (_resetSelection) {
                 n1.selected = false;
@@ -698,12 +698,12 @@ public class Main extends PApplet implements MouseWheelListener {
                     //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
                     if (!v.animationPaused) {
 
-                        /*
+
                         n1.vx -= n1.radius * (1.0f / distance); //
                         n1.vy -= n1.radius * (1.0f / distance); //
                         n2.vx += n1.radius * (1.0f / distance); //
                         n2.vy += n1.radius * (1.0f / distance); // 0.01f
-                         */
+
 
                         n1.vx -= (vx / distance) * repulsion;
                         n1.vy -= (vy / distance) * repulsion;
@@ -844,6 +844,24 @@ public class Main extends PApplet implements MouseWheelListener {
                             }
                         }
                     }
+
+
+
+                } else if (_mouseRightClick) {
+                    // SWITCH TO THE OTHER PART
+                    System.out.println("right-clicked on node " + n.uuid);
+                    // deselect the node
+                    if (n.selected) {
+                        session.unselectNode(n);
+                        jsNodeSelected(null);
+                    } else {
+                        session.selectNode(n);
+                        if (!massSelectionHasBegin) {
+                            massSelectionHasBegin = true;
+                            jsNodeSelected(n);
+                        }
+                    }
+
 
 
                 } else if (_mouseLeftDrag) {
@@ -1039,7 +1057,6 @@ public class Main extends PApplet implements MouseWheelListener {
             lastMousePosition.set(mouseX, mouseY, 0);
         }
     }
-
 
     @Override
     public void keyPressed() {
