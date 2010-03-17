@@ -14,8 +14,6 @@ function Tinaviz() {
         applet = wrapper.getSubApplet();
         //this.size(this.getWidth(),this.getHeight());
 
-        //this.logDebug("loading tinaapptests-exportGraph.gexf");
-
         this.setLevel("macro");
         
         this.setGlobalProperty("layout/repulsion", 0.5);
@@ -32,10 +30,6 @@ function Tinaviz() {
         // disable the applet when on another tab (to save CPU)
         // WARNING, DISABLING THE APPLET IN OPENGL CAUSE AN INFINITE LOOP
         this.disable();
-
-        // we can already prepare the control layout
-        //$('#gui').show();
-        //$('#sidebariframe').hide();
 
         // finally, once the gexf is loaded, we light the tab!
         this.logDebug("enabling applet tab..");
@@ -97,27 +91,13 @@ function Tinaviz() {
             }
     },
 
-    toggleDocuments: function() {
-        if (applet == null) return;
-        // toggle the filter
-
-        // switch the
-        applet.filterConfig(categoryFilter, categoryFilterSwitch,
-           ! applet.filterConfig(categoryFilter, categoryFilterSwitch));
-
-    },
-
-    toggleTerms: function() {
-        if (applet == null) return;
-        applet.filterConfig(categoryFilter, "mask", "NGram");
-    },
-
     unselect: function() {
         if (applet == null) return;
         applet.unselect();
         applet.clear("meso");
         applet.resetCamera("meso");
     },
+    
     clear: function() {
         if (applet == null) return;
         try {

@@ -212,7 +212,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
-        boolean loadDefaultGlobalGraph = true;
+        boolean loadDefaultGlobalGraph = false;
         boolean generateRandomGlobalGraph = false;
 
         if (loadDefaultLocalGraph) {
