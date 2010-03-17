@@ -13,8 +13,8 @@ public class MicroView extends View {
 
  
 
-    public MicroView() {
-        super();
+    public MicroView(Session aThis) {
+        super(aThis);
             spatializeWhenMoving = true;
         centerOnSelection = true;
     }

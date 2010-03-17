@@ -10,8 +10,8 @@ package tinaviz.model;
  */
 public class MacroView extends View {
 
-    public MacroView() {
-        super();
+    public MacroView(Session aThis) {
+        super(aThis);
         prespatializeSteps = 84;
          ZOOM_CEIL = 0.8f;
          ZOOM_FLOOR = 25.0f;

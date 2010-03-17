@@ -5,22 +5,16 @@
 
 package tinaviz.filters;
 
-import java.security.KeyException;
 import java.util.List;
 import tinaviz.Node;
+import tinaviz.model.View;
 
 /**
  *
  * @author jbilcke
  */
 public interface Filter {
-  public List<Node> process(List<Node> input);
-
-  public void setField(String key, String value) throws KeyException;
-  public void setField(String key, float value) throws KeyException;
-  public void setField(String key, int value) throws KeyException;
-  public void setField(String key, boolean value) throws KeyException;
-
-  public Object getField(String key) throws KeyException;
-
+  public List<Node> process(View view, List<Node> input);
+  public boolean enabled();
+  public void setEnabled(boolean b);
 }

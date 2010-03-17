@@ -24,7 +24,7 @@ public class Node {
     public float vy = 0.0f;
     public boolean s = false; // switch
     public int degree = 0;
-    public List<Node> neighbours = new ArrayList<Node>();
+    public List<String> neighbours = new ArrayList<String>();
     public Map<String,Float> weights = new HashMap<String,Float>();
     public boolean selected = false;
     public boolean highlighted = false;
@@ -36,6 +36,7 @@ public class Node {
     public boolean fixed = false;
 
     public Map<String,Object> attributes = new HashMap<String,Object>();
+    public Node original = null;
 
     public Node(String uuid, String label,  float radius, float x, float y) {
         this.uuid = uuid;
@@ -43,6 +44,7 @@ public class Node {
         this.radius = radius;
         this.x = x;
         this.y = y;
+        this.original = this;
     }
 
     public Node(String uuid, String label,  float x, float y) {
@@ -50,6 +52,7 @@ public class Node {
         this.label = label;
         this.x = x;
         this.y = y;
+        this.original = this;
 
     }
 
@@ -57,21 +60,31 @@ public class Node {
         this.uuid = uuid;
         this.label = label;
         this.radius = radius;
+        this.original = this;
     }
 
     public Node(String uuid, String label) {
         this.uuid = uuid;
         this.label = label;
+        this.original = this;
     }
 
     public Node(String uuid) {
         this.uuid = uuid;
+        this.original = this;
+    }
+
+    public Node(Node n) {
+        this.original = n;
+        update(n);
     }
 
     public void addNeighbour(Node neighbour) {
-        neighbours.add(neighbour);
+        neighbours.add(neighbour.uuid);
     }
-
+    public void addNeighbour(String nuuid) {
+        neighbours.add(nuuid);
+    }
     public void setAttribute(String key, Object value) {
         attributes.put(key, value);
     }
@@ -82,22 +95,34 @@ public class Node {
     }
 
     public void update(Node node) {
-        this.uuid = node.uuid;
-        this.label = node.label;
-        this.radius = node.radius;
-        this.x = node.x;
-        this.y = node.y;
-        this.vx = node.vx;
-        this.vy = node.vy;
-        this.neighbours = node.neighbours;
-        this.s = node.s; // switch
-        this.degree = node.degree;
-        this.genericity = node.genericity;
-        this.selected = node.selected;
-        this.highlighted = node.highlighted;
-        this.category = node.category;
-        this.weights = node.weights;
+
+        this.uuid = new String(node.uuid);
+        this.label = new String(node.label);
+        this.radius = new Float(node.radius);
+        this.x = new Float(node.x);
+        this.y = new Float(node.y);
+        this.vx = new Float(node.vx);
+        this.vy = new Float(node.vy);
+        this.r = new Float(node.r);
+        this.g = new Float(node.g);
+        this.b = new Float(node.b);
+        this.fixed = (node.fixed);
+        this.neighbours = new ArrayList<String>();
+        for (String k : node.neighbours) {
+            this.neighbours.add(new String(k));
+        }
+        this.s = (node.s); // switch
+        this.degree = new Integer (node.degree);
+        this.genericity = new Float(node.genericity);
+        this.selected = (node.selected);
+        this.highlighted = (node.highlighted);
+        this.category = new String(node.category);
+        this.weights = new HashMap<String,Float>();
+        for (String k : node.weights.keySet()) {
+            this.weights.put(new String(k),new Float(node.weights.get(k)));
+        }
     }
+
 
 
 }

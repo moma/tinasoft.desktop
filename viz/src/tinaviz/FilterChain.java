@@ -7,19 +7,19 @@ package tinaviz;
 import java.security.KeyException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tinaviz.filters.FilterChannel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.swing.SwingUtilities;
+import tinaviz.filters.EdgeWeightThreshold;
 
-import tinaviz.filters.Channel;
 import tinaviz.filters.Filter;
 import tinaviz.filters.FilterChainListener;
-import tinaviz.model.Graph;
+import tinaviz.filters.NodeRadius;
+import tinaviz.model.View;
 
 /**
  *
@@ -33,20 +33,19 @@ public class FilterChain {
     public AtomicInteger graphRevision = new AtomicInteger(0);
     private Map<String, Filter> filters = null;
     private List<FilterChainListener> listeners = null;
-    public Graph graph = null;
+    public View view = null;
     private FilterThread thread = null;
+
 
     private class FilterThread extends Thread {
 
         private List<Node> nodes;
         private FilterChain chain;
+        private View view;
 
-        public FilterThread(FilterChain chain) {
-            this.nodes = null;
-            this.chain = chain;
-        }
 
-        public FilterThread(FilterChain chain, List<Node> nodes) {
+        public FilterThread(FilterChain chain, View view, List<Node> nodes) {
+            this.view = view;
             this.nodes = nodes;
             this.chain = chain;
         }
@@ -60,7 +59,7 @@ public class FilterChain {
                     System.out.println("we're interrupted!");
                     return;
                 }
-                result = f.process(result);
+                result = f.process(view, result);
             }
             chain.filteredNodes = result;
             System.out.println("filter finished! setting flash 'ready' to true..");
@@ -69,20 +68,25 @@ public class FilterChain {
         }
     }
 
-    public FilterChain(Graph graph) {
+    public FilterChain(View view) {
 
         filteredNodes = new ArrayList<Node>();
         popLocked = new AtomicBoolean(true);
         filters = new HashMap<String, Filter>();
         listeners = new ArrayList<FilterChainListener>();
-        thread = new FilterThread(this);
-        this.graph = graph;
+        thread = null;
+        this.view = view;
     }
 
-    public void addFilter(String filterKey, Filter filter) {
-        if (!filters.containsKey(filterKey)) {
-            filters.put(filterKey, filter);
+    public boolean addFilter(String filterName) {
+        if (filterName.equals("EdgeWeightThreshold")) {
+            filters.put("EdgeWeightThreshold "+filters.size(), new EdgeWeightThreshold());
+        } else if (filterName.equals("NodeRadius")) {
+            filters.put("NodeRadius "+filters.size(), new NodeRadius());
+        } else {
+            return false;
         }
+        return true;
     }
 
     public Filter getFilter(String filterKey) {
@@ -94,31 +98,19 @@ public class FilterChain {
 
     public void enableFilter(String key) {
         if (filters.containsKey(key)) {
-            try {
-                filters.get(key).setField("enabled", true);
-            } catch (KeyException ex) {
-                Logger.getLogger(FilterChain.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            filters.get(key).setEnabled(true);
         }
     }
 
     public void disableFilter(String key) {
         if (filters.containsKey(key)) {
-            try {
-                filters.get(key).setField("enabled", false);
-            } catch (KeyException ex) {
-                Logger.getLogger(FilterChain.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            filters.get(key).setEnabled(false);
         }
     }
 
     public boolean toggleFilter(String key) {
         if (filters.containsKey(key)) {
-            try {
-                filters.get(key).setField("enabled", !(Boolean) filters.get(key).getField("enabled"));
-            } catch (KeyException ex) {
-                Logger.getLogger(FilterChain.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            filters.get(key).setEnabled(!filters.get(key).enabled());
         }
         return false;
     }
@@ -132,7 +124,7 @@ public class FilterChain {
         }
 
         // if we are up to date,
-        if (graphRevision.get() == graph.revision.get()) {
+        if (graphRevision.get() == view.graph.revision.get()) {
             // check if we already popped
             if (!popLocked.get()) {
                 System.out.println("Filters are up to date, not running, and not popped.. we return filtered nodes!");
@@ -140,26 +132,26 @@ public class FilterChain {
                 return filteredNodes;
             } else {
                 // the most common case, so don't show this log..
-               //System.out.println("Filter is up to date, but have already been popped!..");
-               return null;
+                //System.out.println("Filter is up to date, but have already been popped!..");
+                return null;
             }
 
         }
-         System.out.println("Filter is outdated, checking if we can run a new filter thread..");
+        System.out.println("Filter is outdated, checking if we can run a new filter thread..");
 
         // we have to wait for the graph to be unlocked
-        if (graph.locked.get()) {
+        if (view.graph.locked.get()) {
             System.out.println("Graph is locked.. probably parsing some XML!");
             return null;
         }
 
         System.out.println("okay, graph looks unlocked, starting new filter thread..");
         filterIsRunning.set(true);
-        thread = new FilterThread(this, graph.getNodeList());
+        thread = new FilterThread(this, view, view.graph.getNodeList());
         thread.start();
 
-        System.out.println("updating filter revision!");
-        graphRevision.set(graph.revision.get());
+        System.out.println("updating filter's graph revision!");
+        graphRevision.set(view.graph.revision.get());
         return null;
 
     }

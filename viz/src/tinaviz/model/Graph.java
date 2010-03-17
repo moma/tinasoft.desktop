@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,7 @@ import tinaviz.Node;
  *
  * @author jbilcke
  */
-public class Graph {
+public class Graph implements Cloneable {
 
     public static final String NS = "tina";
     public Map<String, tinaviz.Node> storedNodes = null;
@@ -34,14 +36,15 @@ public class Graph {
     public AtomicInteger revision;
     public float MAX_WEIGHT = 1.0f; // alternative to scale : alpha
     public float MAX_RADIUS = 3.5f; // empirical
+    private Session session = null;
 
-    public Graph() {
+    public Graph(Session session) {
         storedNodes = new HashMap<String, tinaviz.Node>();
         attributes = new HashMap<String, Object>();
         metrics = new Metrics();
         locked = new AtomicBoolean(true);
         revision = new AtomicInteger(0);
-
+        this.session = session;
     }
 
     public boolean updateFromURI(String uri) {
@@ -160,6 +163,7 @@ System.out.println("loading GEXF from string..");
 
 
             String uuid = xmlnodeAttributes.getNamedItem("id").getNodeValue();
+
 
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
@@ -281,6 +285,15 @@ System.out.println("loading GEXF from string..");
             //    node.selected = true;
             //}
 
+            // HACK FOR BAD NGRAMS IN MESO DOCUMENTS GRAPHS
+            if (session.macro.graph != this)
+                if (node.category.equals("NGram"))
+                    if (!session.macro.graph.storedNodes.containsKey(node.uuid)) {
+                        System.out.println("Skipping node "+node.label);
+                        continue;
+                    }
+
+
             if (storedNodes.containsKey(uuid)) {
                 //System.out.println("updating node " + uuid);
                 storedNodes.get(uuid).update(node);
@@ -348,9 +361,14 @@ System.out.println("loading GEXF from string..");
             float ratio = MAX_WEIGHT / metrics.maxWeight;
             for (String k : n.weights.keySet()) {
                 n.weights.put(k,n.weights.get(k)*ratio);
+                // System.out.println(""+k+"="+n.weights.get(k)*ratio);
             }
 
         }
+
+        // TODO update metrics
+        metrics.maxRadius = MAX_RADIUS;
+        metrics.maxWeight = MAX_WEIGHT;
 
         Console.log(metrics.toString());
 
@@ -363,7 +381,11 @@ System.out.println("loading GEXF from string..");
 
     // call by the drawer when isSynced is false
     public synchronized List<tinaviz.Node> getNodeList() {
-        return new ArrayList(storedNodes.values());
+        List<tinaviz.Node> res = new ArrayList<tinaviz.Node>();
+        for (Node n : storedNodes.values()) {
+            res.add(new Node(n));
+        }
+        return res;
     }
 
     public synchronized void putNode(tinaviz.Node node) {
@@ -420,9 +442,9 @@ System.out.println("loading GEXF from string..");
         touch();
     }
 
-    private void touch() {
-       revision.incrementAndGet();
-       System.out.println("incremented graph revision to "+revision.get());
+    public int touch() {
+       System.out.println("incrementing graph revision to "+(revision.get()+1));
+       return revision.incrementAndGet();
     }
     public void selectNodeById(String id) {
         boolean changed = false;
@@ -452,4 +474,6 @@ System.out.println("loading GEXF from string..");
         }
          // if (changed) touch();
     }
+
+
 }

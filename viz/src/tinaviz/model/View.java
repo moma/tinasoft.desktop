@@ -4,24 +4,21 @@
  */
 package tinaviz.model;
 
-import java.io.IOException;
+
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.security.KeyException;
-import java.util.ArrayList;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import processing.core.PVector;
-import tinaviz.Console;
+
 import tinaviz.FilterChain;
 import tinaviz.Node;
-import tinaviz.filters.AttributeFilter;
-import tinaviz.filters.Filter;
-import tinaviz.filters.ForceVector;
+
 
 /**
  *
@@ -52,10 +49,13 @@ public class View {
     public AtomicBoolean hasBeenRead = null;
     public int prespatializeSteps = 0;
 
-    public View() {
-        graph = new Graph();
-        filters = new FilterChain(graph);
+    public Map properties = new HashMap<String,Object>();
+
+    public View(Session session) {
+        graph = new Graph(session);
+        filters = new FilterChain(this);
         hasBeenRead = new AtomicBoolean(false);
+
 
         inerX = 0f;
         inerY = 0f;
@@ -104,39 +104,15 @@ public class View {
         return Math.abs(inerX + inerY + inerZ) >= threshold;
     }
 
-    public synchronized boolean createFilter(String filterName, String model) {
-        Filter f = null;
-        if (model.equals("RegexMatch")) {
-            f = new AttributeFilter();
-        } else if (model.equals("ForceVector")) {
-            f = new ForceVector();
-        }
-        filters.addFilter(filterName, f);
+
+    public synchronized boolean setProperty(String key, Object value) throws KeyException {
+        // System.out.println("set property "+key+" to "+value+" for view "+getName());
+        properties.put(key, value);
         return true;
     }
 
-    public synchronized boolean filterConfig(String filterName, String key, String value) throws KeyException {
-        filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, float value) throws KeyException {
-        filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, int value) throws KeyException {
-        filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, boolean value) throws KeyException {
-        filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized Object filterConfig(String filterName, String key) throws KeyException {
-        return filters.getFilter(filterName).getField(key);
+    public synchronized Object getProperty(String key) throws KeyException {
+        return properties.get(key);
     }
 
     public synchronized boolean updateFromURI(String uri) {
@@ -191,8 +167,6 @@ public class View {
         System.out.println("automatic scaling..");
 
 
-
-
     }
 
     public void selectNodeById(String id) {
@@ -223,9 +197,12 @@ public class View {
     public synchronized void updateTranslationFrom(int x, int y) {
         Vector tmp = new Vector(0, 0);
         tmp.set(x, y, 0);
-        tmp.sub(mousePosition);
+        tmp.sub(mousePosition); // tmp is now the mouse delta
+
+        // ponderate the mouse delta with the current scene scale
         tmp.div(sceneScale); // ensure const. moving speed whatever the zoom is
-        tmp.add(lastPosition);
+
+        tmp.add(lastPosition); // add the delta with the last position
 
         // todo lock here
         translation.set(tmp);
@@ -237,6 +214,11 @@ public class View {
 
     public void storeMousePosition(int x, int y) {
         mousePosition.set(x, y, 0);
+    }
+
+
+    public boolean addFilter(String name) {
+        return filters.addFilter(name);
     }
 
     public float setRepulsion(float a) {

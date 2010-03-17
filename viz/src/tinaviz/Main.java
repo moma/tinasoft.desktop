@@ -2,7 +2,6 @@ package tinaviz;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.FilePermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +60,8 @@ public class Main extends PApplet implements MouseWheelListener {
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
     float selectedX = 0.0f;
     float selectedY = 0.0f;
+
+    PVector lastMousePosition = new PVector(0,0,0);
 
     private void jsNodeSelected(Node n) {
 
@@ -179,14 +180,16 @@ public class Main extends PApplet implements MouseWheelListener {
             size(screen.width, screen.height, engine);
         }
 
-        if (engine == OPENGL) {
+        if (engine.equals(OPENGL)) {
             smooth();
             frameRate(30);
             textFont(font, 96);
+            bezierDetail(48);
         } else {
             smooth();
             frameRate(20);
-            textFont(font, 24);
+            textFont(font, 26);
+            bezierDetail(24);
         }
 
         addMouseWheelListener(this);
@@ -209,7 +212,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
-        boolean loadDefaultGlobalGraph = false;
+        boolean loadDefaultGlobalGraph = true;
         boolean generateRandomGlobalGraph = false;
 
         if (loadDefaultLocalGraph) {
@@ -317,6 +320,7 @@ public class Main extends PApplet implements MouseWheelListener {
         // DEBUG MODE
         session.macro.prespatializeSteps = 0;
 
+        lastMousePosition = new PVector(width / 2.0f, height /2.0f, 0);
         // fill(255, 184);
 
         Console.log("Starting visualization..");
@@ -432,7 +436,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 vy = n2.y - n1.y;
                 len = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
 
-                if (n1.neighbours.contains(n2)) {
+                if (n1.neighbours.contains(n2.uuid)) {
                     n1.vx += (vx * len) * attraction;
                     n1.vy += (vy * len) * attraction;
                     n2.vx -= (vx * len) * attraction;
@@ -536,14 +540,20 @@ public class Main extends PApplet implements MouseWheelListener {
         stroke(150, 150, 150);
         strokeWeight(1);
 
-        bezierDetail(32);
-        
         if (zooming.getAndSet(false)) {
+
+
+            v.translation.sub(lastMousePosition);
+
             if (zoomIn.get()) {
-                v.sceneScale *= 1.5f;
+                v.sceneScale *= 4.f/3.f;
+                v.translation.mult(4.f/3.f);
             } else {
-                v.sceneScale *= 0.75f;
+                v.sceneScale *= 3.f/4.f;
+                v.translation.mult(3.f/4.f);
             }
+
+            v.translation.add(lastMousePosition);
             System.out.println("Zoom: " + v.sceneScale);
         }
 
@@ -568,29 +578,13 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
 
-
-        v.inerX = (abs(v.inerX) <= 0.14) ? 0.0f : v.inerX * 0.89f;
-        v.inerY = (abs(v.inerY) <= 0.14) ? 0.0f : v.inerY * 0.89f;
-        v.inerZ = (abs(v.inerZ) <= 0.14) ? 0.0f : v.inerZ * 0.89f;
-
-        // add some physics (will have the same effect than mouse/keyboard actions)
-        v.translation.add(v.inerX * 2.0f, v.inerY * 2.0f, 0);
-        v.sceneScale += v.inerZ * 0.015f;
-
-        // user zoom
-
-        PVector center = new PVector(width / 2f, height / 2f);
-        // center.set(mouseX, mouseY, 0);
-
-        PVector scaledCenter = PVector.mult(center, v.sceneScale);
-        PVector scaledTrans = PVector.sub(center, scaledCenter);
-        translate(scaledTrans.x, scaledTrans.y);
+               // VECTEUR DRAG
+        translate(v.translation.x, v.translation.y);
 
         // finally, push to the matrix
         scale(v.sceneScale);
-        translate(v.translation.x, v.translation.y);
 
-
+ 
         for (Node n1 : nodes) {
             if (_resetSelection) {
                 n1.selected = false;
@@ -613,7 +607,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
 
-                if (n1.neighbours.contains(n2)) {
+                if (n1.neighbours.contains(n2.uuid)) {
 
                     if (!v.animationPaused) {
 
@@ -633,7 +627,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     if (v.showLinks || n1.selected) {
                         boolean doubleLink = false;
 
-                        if (n2.neighbours.contains(n1)) {
+                        if (n2.neighbours.contains(n1.uuid)) {
                             doubleLink = true;
                         }
                         if (!doubleLink | n1.uuid.compareTo(n2.uuid) <= 0) {
@@ -654,8 +648,8 @@ public class Main extends PApplet implements MouseWheelListener {
                                     stroke(90);
                                 } else {
                                     float m = 180.0f;
-                                    float r = (255.0f-m) / 255.0f;
-                                    stroke(m+cr*r, m+cg*r, m+cb*r);
+                                    float r = (255.0f - m) / 255.0f;
+                                    stroke(m + cr * r, m + cg * r, m + cb * r);
                                 }
                             } else {
                                 if (n1.selected && n2.selected) {
@@ -663,9 +657,9 @@ public class Main extends PApplet implements MouseWheelListener {
                                 } else if (n1.selected || n2.selected) {
                                     stroke(130);
                                 } else {
-                                     float m = 210.0f;
-                                    float r = (255.0f-m) / 255.0f;
-                                    stroke(m+cr*r,m+cg*r, m+cb*r);
+                                    float m = 210.0f;
+                                    float r = (255.0f - m) / 255.0f;
+                                    stroke(m + cr * r, m + cg * r, m + cb * r);
                                 }
                             }
 
@@ -758,7 +752,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 // also set the bound box for the whole scene
                 n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
                 n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
-
+                n.original.x = n.x;
+                n.original.y = n.y;
             }
 
             n.vx = 0.0f;
@@ -938,8 +933,8 @@ public class Main extends PApplet implements MouseWheelListener {
             int maxRadColor = 80;
 
             float tRatio = 1.0f / (maxRad - minRad);
-            float nsdRatio = constrain((nsd - minRad) * tRatio,0,1);
-            fill(minRadColor + nsdRatio * (float)(maxRadColor - minRadColor));
+            float nsdRatio = constrain((nsd - minRad) * tRatio, 0, 1);
+            fill(minRadColor + nsdRatio * (float) (maxRadColor - minRadColor));
 
             if (n.selected) {
                 fill(10);
@@ -1041,8 +1036,10 @@ public class Main extends PApplet implements MouseWheelListener {
         if (e.getUnitsToScroll() != 0) {
             zooming.set(true);
             zoomIn.set(e.getWheelRotation() < 0);
+            lastMousePosition.set(mouseX, mouseY, 0);
         }
     }
+
 
     @Override
     public void keyPressed() {
@@ -1060,9 +1057,11 @@ public class Main extends PApplet implements MouseWheelListener {
         } else if (key == 'p') {
             zooming.set(true);
             zoomIn.set(true);
+            lastMousePosition.set(width / 2.0f, height / 2.0f, 0);
         } else if (key == 'm') {
             zooming.set(true);
             zoomIn.set(false);
+            lastMousePosition.set(width / 2.0f, height / 2.0f, 0);
         } else if (key == 'e') {
             if (window != null) {
                 window.eval("parent.tinaviz.toggleEdges('" + v.getName() + "');");

@@ -471,20 +471,62 @@ $(document).ready(function() {
 
     $.extend($.ui.slider.defaults, {
             range: "min",
+            min: 0,
+		    max: 100,
+            value: 100.0,
             animate: true,
-            orientation: "vertical"
-    });
-        // setup master volume
-        
-    $("#mesorepulsion").slider({
-            value: 100,
             orientation: "horizontal",
-            slide: function(event, ui) {
-				tinaviz.setRepulsion("meso", ui.value / 100.0);
-			}
     });
     
+    
+    // MESO SLIDERS
 
+    $("#meso_repulsion").slider({slide: function(event, ui) {
+		tinaviz.setProperty("meso", "layout/repulsion", ui.value / 100.0);
+	    tinaviz.touch("meso");
+	}});
+		
+    $("#meso_weight_threshold").slider({
+    	range: true,
+		values: [0, 100],
+        slide: function(event, ui) {
+		    tinaviz.setProperty("meso", "threshold/weight/min", ui.values[0] / 100.0);
+		    tinaviz.setProperty("meso", "threshold/weight/max", ui.values[1] / 100.0);
+		    tinaviz.touch("meso");
+	    }
+	});
+	
+    $("#meso_node_size").slider({
+        max: 300,
+        slide: function(event, ui) {
+		tinaviz.setProperty("meso", "node/radius", ui.value / 100.0);
+		tinaviz.touch("meso");
+	}});
+    
+    
+    // MACRO SLIDERS
+    $("#macro_repulsion").slider({slide: function(event, ui) {
+		tinaviz.setProperty("macro", "layout/repulsion", ui.value / 100.0);
+		tinaviz.touch("macro");
+	}});
+	
+    $("#macro_weight_threshold").slider({
+    	range: true,
+        values: [0, 100],
+        slide: function(event, ui) {
+		tinaviz.setProperty("macro", "threshold/weight/min", ui.values[0] / 100.0);
+		tinaviz.setProperty("macro", "threshold/weight/max", ui.values[1] / 100.0);
+		tinaviz.touch("macro");
+	}});
+
+    $("#macro_node_size").slider({
+        max: 300,
+        slide: function(event, ui) {
+		tinaviz.setProperty("macro", "node/radius", ui.value / 100.0);
+		tinaviz.touch("macro");
+	}});
+	
+    
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");
     }, function() {

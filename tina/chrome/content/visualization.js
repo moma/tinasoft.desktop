@@ -17,6 +17,16 @@ function Tinaviz() {
         //this.logDebug("loading tinaapptests-exportGraph.gexf");
 
         this.setLevel("macro");
+        
+        this.setGlobalProperty("layout/repulsion", 0.5);
+	    this.setGlobalProperty("threshold/weight/min", 0.0);
+	    this.setGlobalProperty("threshold/weight/max", 1.0);
+		this.setGlobalProperty("node/radius", 1.0);
+		
+		this.addGlobalFilter("EdgeWeightThreshold");
+		this.addGlobalFilter("NodeRadius");
+		// this.createFilter("ForceVector");
+		
         //this.loadRelativeGraph("macro","user/fet open/8_0.0-1.0.gexf");
 
         // disable the applet when on another tab (to save CPU)
@@ -353,19 +363,41 @@ function Tinaviz() {
     getWidth: function() {
         return getAppletWidth();
     },
+    
     getHeight: function() {
        return getAppletHeight();
     },
-
-    setRepulsion: function(level,value) {
+    
+    addGlobalFilter: function(name) {
         if (applet == null) return;
-        return applet.getView(level).setRepulsion(value);
+        return applet.getSession().addFilter(name);
     },
+    
+    addFilter: function(level, name) {
+        if (applet == null) return;
+        return applet.getView(level).addFilter(name);
+    },
+    
+      
+    setGlobalProperty: function(key,value) {
+        if (applet == null) return;
+        return applet.getSession().setProperty(key,value);
+    },
+    
+    setProperty: function(level,key,value) {
+        if (applet == null) return;
+        return applet.getView(level).setProperty(key,value);
+    },
+    
+    touch: function(level) {
+        applet.getView(level).getGraph().touch();
+    },
+    
     search: function(txt) {
         this.logNormal("Searching is not implemented yet..");
     },
 
-  getNGram: function(id) {
+    getNGram: function(id) {
        var ng = getNGram( id );
        this.logDebug("ng= "+ng);
        if (ng == null) return null;
@@ -415,7 +447,7 @@ function Tinaviz() {
      <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][first]['label']}</a> \
      <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMacroDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][doc]['label']}</a>\
+       <br/><a href=\"javascript:tinaviz.selectMacroDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][doc]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
 
@@ -435,7 +467,7 @@ function Tinaviz() {
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
      <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMacroTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
+      <br/><a href=\"javascript:tinaviz.selectMacroTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
      </p>\n", doc));
 
@@ -453,12 +485,16 @@ function Tinaviz() {
      <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][first]['label']}</a> \
      <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][doc]['label']}</a>\
+     <br/><a href=\"javascript:tinaviz.selectMesoDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][doc]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
      
     this.showMesoTerm(ng,x,y,id,label,attr);
     },
+    
+    
+    
+    
      selectMesoDocument: function(x,y,id,label,attr) {
      this.logDebug("selectMesoDocument("+id+","+label+")");
      var doc = this.getDocument(id);
@@ -471,12 +507,15 @@ function Tinaviz() {
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
          <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
      <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
-         ,&nbsp;<a href=\"javascript:tinaviz.selectMesoTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
+     <br/><a href=\"javascript:tinaviz.selectMesoTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
      </p>\n", doc));
 
      this.showMesoDocument(doc, x,y,id,label,attr);
   },
+    
+    
+    
     
     showMesoDocument: function(doc,x,y,id,label,attr) {
           var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
@@ -496,7 +535,7 @@ function Tinaviz() {
                 </attvalues>\n\
             </node>\n\
 <?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { ?>\
+<?js     for (var target_node in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
                 <viz:size value=\"1.7\"/>\n\
                 <attvalues>\n\
@@ -508,10 +547,10 @@ function Tinaviz() {
         </nodes>\n\
         <edges>\n\
 <?js var i=0; ?>\
-<?js for (var target_type in edges) { ?>\
+<?js for (var target_type in edges) { if (target_type=='Corpus') continue; ?>\
 <?js     for (var target_node1 in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
-<?js        for (var target_node2 in edges[target_type]) { ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"20\" />\n\
+<?js        for (var target_node2 in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
 <?js            var weight = 0; ?>\
 <?js            for (var shared in edges_data[target_type][target_node1]['edges']['Document']) { ?>\
 <?js                if (shared==id) continue; ?>\
@@ -551,7 +590,7 @@ function Tinaviz() {
                 </attvalues>\n\
             </node>\n\
 <?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { ?>\
+<?js     for (var target_node in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
             <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
                 <viz:size value=\"4.0\"/>\n\
                 <attvalues>\n\
@@ -564,9 +603,9 @@ function Tinaviz() {
         <edges>\n\
 <?js var i=0; ?>\
 <?js for (var target_type in edges) { ?>\
-<?js     for (var target_node1 in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"#{edges[target_type][target_node1]}\" />\n\
-<?js        for (var target_node2 in edges[target_type]) { ?>\
+<?js     for (var target_node1 in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"20\" />\n\
+<?js        for (var target_node2 in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
 <?js            var weight = 0; ?>\
 <?js            for (var shared in edges_data[target_type][target_node1]['edges']['NGram']) { ?>\
 <?js                if (shared==id) continue; ?>\

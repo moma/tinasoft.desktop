@@ -4,6 +4,8 @@
  */
 package tinaviz.model;
 
+import tinaviz.Node;
+
 /**
  *
  * @author jbilcke
@@ -12,8 +14,8 @@ public class MesoView extends View {
 
 
 
-    public MesoView() {
-        super();
+    MesoView(Session aThis) {
+        super(aThis);
         spatializeWhenMoving = true;
         centerOnSelection = true;
         ZOOM_CEIL = 1.0f;
@@ -28,4 +30,5 @@ public class MesoView extends View {
     public String getName() {
         return "meso";
     }
+    
 }

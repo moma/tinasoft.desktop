@@ -102,8 +102,8 @@ label {
     overflow:auto;
 }
 
-.repulsion {
-    width:150px; 
+.threshold {
+    width:400px; 
     height:12px; 
     margin:15px;
 }
