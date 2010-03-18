@@ -33,7 +33,7 @@ public class View {
     public boolean highDefinition = false;
     public boolean spatializeWhenMoving = true;
     public boolean centerOnSelection = true;
-    public PVector mousePosition = new PVector(0.0f, 0.0f);
+
     public PVector translation = new PVector(0.0f, 0.0f);
     public PVector lastPosition = new PVector(0.0f, 0.0f);
     public float sceneScale = 1.0f;
@@ -136,7 +136,6 @@ public class View {
 
     public synchronized void resetCamera() {
 
-        mousePosition = new PVector(0.0f, 0.0f);
         translation = new PVector(0.0f, 0.0f);
         lastPosition = new PVector(0.0f, 0.0f);
         sceneScale = 2.0f;
@@ -145,7 +144,6 @@ public class View {
 
     public synchronized void resetCamera(float width, float height) {
 
-        mousePosition = new PVector(0.0f, 0.0f);
         translation = new PVector(width / 2.0f, width / 2.0f);
         lastPosition = new PVector(0.0f, 0.0f);
         sceneScale = 1.0f;
@@ -196,29 +194,6 @@ public class View {
     public synchronized void clear() {
         graph.clear();
     }
-
-    public synchronized void updateTranslationFrom(int x, int y) {
-        Vector tmp = new Vector(0, 0);
-        tmp.set(x, y, 0);
-        tmp.sub(mousePosition); // tmp is now the mouse delta
-
-        // ponderate the mouse delta with the current scene scale
-        tmp.div(sceneScale); // ensure const. moving speed whatever the zoom is
-
-        tmp.add(lastPosition); // add the delta with the last position
-
-        // todo lock here
-        translation.set(tmp);
-    }
-
-    public void memorizeLastPosition() {
-        lastPosition.set(translation);
-    }
-
-    public void storeMousePosition(int x, int y) {
-        mousePosition.set(x, y, 0);
-    }
-
 
     public boolean addFilter(String name) {
         return filters.addFilter(name);

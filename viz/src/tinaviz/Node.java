@@ -6,8 +6,9 @@ package tinaviz;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import tinaviz.model.ShapeCategory;
 
 /**
@@ -26,7 +27,7 @@ public class Node {
     public float vy = 0.0f;
     public boolean s = false; // switch
     public int degree = 0;
-    public List<String> neighbours = new ArrayList<String>();
+    public Set<String> neighbours = new HashSet<String>(32);
     public Map<String,Float> weights = new HashMap<String,Float>();
     public boolean selected = false;
     public boolean highlighted = false;
@@ -126,7 +127,7 @@ public class Node {
         this.fixed = (node.fixed);
         this.shape = node.shape;
         this.visibleToScreen = node.visibleToScreen;
-        this.neighbours = new ArrayList<String>();
+        this.neighbours = new HashSet<String>(node.neighbours.size());
         for (String k : node.neighbours) {
             this.neighbours.add(new String(k));
         }

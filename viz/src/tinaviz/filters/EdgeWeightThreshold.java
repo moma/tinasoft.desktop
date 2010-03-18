@@ -5,7 +5,9 @@
 package tinaviz.filters;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import tinaviz.Node;
 import tinaviz.model.View;
 
@@ -50,7 +52,7 @@ public class EdgeWeightThreshold extends NodeFilter {
         max = max * f + view.graph.metrics.minWeight;
 
         //System.out.println("fmin:"+min+" fmax:"+max);
-        List<String> newNeighbours = new ArrayList<String>();
+        Set<String> newNeighbours = new HashSet<String>(n.neighbours.size());
 
         for (String k : n.neighbours) {
 

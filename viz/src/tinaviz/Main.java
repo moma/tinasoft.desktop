@@ -104,6 +104,11 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
 
+        boolean generateRandomLocalGraph = false;
+        boolean loadDefaultLocalGraph = false;
+        boolean loadDefaultGlobalGraph = false;
+        boolean generateRandomGlobalGraph = false;
+
         font = loadFont(DEFAULT_FONT);
         //font = createFont("Arial", 96, true);
         //String[] fontList = PFont.list();
@@ -139,6 +144,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             size(w, h, engine);
         } else {
+            loadDefaultGlobalGraph = true;
             size(screen.width, screen.height, engine);
         }
 
@@ -173,11 +179,6 @@ public class Main extends PApplet implements MouseWheelListener {
         }
          * *
          */
-
-        boolean generateRandomLocalGraph = false;
-        boolean loadDefaultLocalGraph = false;
-        boolean loadDefaultGlobalGraph = true;
-        boolean generateRandomGlobalGraph = false;
 
         if (loadDefaultLocalGraph) {
 
@@ -233,7 +234,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/uxmal/Checkout/git/TINA/tinaweb/src/100308-fetopen_8.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf"
+
                     //"file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
@@ -302,7 +304,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
-                badLayout(v);
+                fastLayout(v);
             }
             return;
         }
@@ -332,7 +334,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         } else if (v.prespatializeSteps-- > 0) {
             drawLoading(v);
-            badLayout(v);
+            fastLayout(v);
 
         } else {
             drawAndSpatializeRealtime(v);
@@ -376,7 +378,7 @@ public class Main extends PApplet implements MouseWheelListener {
         text(base, x, y);
     }
 
-    public void badLayout(View v) {
+    public void fastLayout(View v) {
         float distance = 1f;
         float vx = 1f;
         float vy = 1f;
@@ -415,26 +417,24 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 //}
             } // FOR NODE B
-        }   // FOr NODE A
-
-
-        for (Node n : nodes) {
-            // important, we limit the velocity!
-            n.vx = constrain(n.vx, -5, 5);
-            n.vy = constrain(n.vy, -5, 5);
+                        // important, we limit the velocity!
+            n1.vx = constrain(n1.vx, -5, 5);
+            n1.vy = constrain(n1.vy, -5, 5);
 
             // update the coordinate
             // also set the bound box for the whole scene
-            n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
-            n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
+            n1.x = constrain(n1.x + n1.vx * 0.5f, -30000, +30000);
+            n1.y = constrain(n1.y + n1.vy * 0.5f, -30000, +30000);
 
             // update the original, "stored" node
-            n.original.x = n.x;
-            n.original.y = n.y;
+            n1.original.x = n1.x;
+            n1.original.y = n1.y;
 
-            n.vx = 0.0f;
-            n.vy = 0.0f;
-        }
+            n1.vx = 0.0f;
+            n1.vy = 0.0f;
+        }   // FOr NODE A
+
+
 
 
     }
@@ -565,17 +565,18 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (v.animationPaused) {
             smooth();
-            bezierDetail(18);
+            bezierDetail(25);
 
         } else {
             noSmooth();
-            bezierDetail(8);
+            bezierDetail(7);
             goodLayout(v);
         }
 
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
+        noFill();
 
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
@@ -627,12 +628,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
                             if (v.highDefinition && n2.uuid != null) {
                                 strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
-                                strokeWeight(1);
+                                //strokeWeight(1);
                             }
 
                             // line(n2.x, n2.y, n1.x, n1.y);
                             // arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
-                            noFill();
+
 
                             float xa0 = (6 * n1.x + n2.x) / 7, ya0 = (6 * n1.y + n2.y) / 7;
                             float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
@@ -641,7 +642,10 @@ public class Main extends PApplet implements MouseWheelListener {
                             float xa1 = (float) xya1[0], ya1 = (float) xya1[1];
                             float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
                             bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
-
+                            if (v.highDefinition && n2.uuid != null) {
+                                //strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
+                                strokeWeight(1);
+                            }
                         }
 
                     }
@@ -791,7 +795,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mousePressed() {
-        session.getView().storeMousePosition(mouseX, mouseY);
+                    lastMousePosition.set(mouseX, mouseY, 0);
     }
 
     @Override
@@ -859,29 +863,37 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             break;
         }
-
+            lastMousePosition.set(mouseX, mouseY, 0);
 
     }
 
     @Override
     public void mouseDragged() {
         if (mouseButton == RIGHT) {
-            session.getView().updateTranslationFrom(mouseX, mouseY);
+            View v = session.getView();
+            PVector delta = PVector.sub(lastMousePosition, new PVector(mouseX, mouseY, 0));
+            delta.div(v.sceneScale);
+            v.translation.sub(delta);
+            lastMousePosition.set(mouseX, mouseY, 0);
         }
     }
 
     @Override
     public void mouseReleased() {
         if (mouseButton == RIGHT) {
-            session.getView().updateTranslationFrom(mouseX, mouseY);
+            //session.getView().updateTranslationFrom(mouseX, mouseY);
         } else if (mouseButton == LEFT) {
         }
-        session.getView().memorizeLastPosition();
+        //last
+        //session.getView().memorizeLastPosition();
     }
 
+    /*
     public void updateDrawerTranslationFromCurrentMouse() {
         session.getView().updateTranslationFrom(mouseX, mouseY);
     }
+     * */
+
 
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getUnitsToScroll() == 0) {
