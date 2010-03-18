@@ -696,9 +696,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n.shape == ShapeCategory.DISK) {
                     ellipse(n.x, n.y, rad2, rad2);
                 } else {
-                    rectMode(CENTER);
                     rect(n.x, n.y, rad2, rad2);
-                    rectMode(CORNER);
                 }
 
                 if (n.selected) {
@@ -872,30 +870,19 @@ public class Main extends PApplet implements MouseWheelListener {
     public void mouseDragged() {
         if (mouseButton == RIGHT) {
             View v = session.getView();
-            PVector delta = PVector.sub(lastMousePosition, new PVector(mouseX, mouseY, 0));
-
-            delta.mult(v.sceneScale);
-
-            v.translation.sub(delta);
+            v.translation.sub(lastMousePosition);
             lastMousePosition.set(mouseX, mouseY, 0);
+            v.translation.add(lastMousePosition);
         }
     }
 
     @Override
     public void mouseReleased() {
         if (mouseButton == RIGHT) {
-            //session.getView().updateTranslationFrom(mouseX, mouseY);
         } else if (mouseButton == LEFT) {
         }
-        //last
-        //session.getView().memorizeLastPosition();
     }
 
-    /*
-    public void updateDrawerTranslationFromCurrentMouse() {
-    session.getView().updateTranslationFrom(mouseX, mouseY);
-    }
-     * */
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getUnitsToScroll() == 0) {
             return;

@@ -35,8 +35,8 @@ public class View {
     public boolean centerOnSelection = true;
 
     public PVector translation = new PVector(0.0f, 0.0f);
-    public PVector lastPosition = new PVector(0.0f, 0.0f);
     public float sceneScale = 1.0f;
+    
     public float inerX;
     public float inerY;
     public float inerZ;
@@ -50,6 +50,7 @@ public class View {
     public int prespatializeSteps = 0;
 
     public Map properties = new HashMap<String,Object>();
+    public PVector dragDelta = new PVector(0.0f, 0.0f);
 
     public View(Session session) {
         graph = new Graph(session);
@@ -135,19 +136,14 @@ public class View {
     }
 
     public synchronized void resetCamera() {
-
         translation = new PVector(0.0f, 0.0f);
-        lastPosition = new PVector(0.0f, 0.0f);
         sceneScale = 2.0f;
-
     }
 
     public synchronized void resetCamera(float width, float height) {
 
         translation = new PVector(width / 2.0f, width / 2.0f);
-        lastPosition = new PVector(0.0f, 0.0f);
         sceneScale = 1.0f;
-
 
         // initializes zoom
         PVector box = new PVector(graph.metrics.maxX - graph.metrics.minX, graph.metrics.maxY - graph.metrics.minY);
@@ -164,9 +160,7 @@ public class View {
         PVector scaledCenter = PVector.add(topLeftVector, semiBox);
         translation.set(center);
         translation.sub(scaledCenter);
-        lastPosition.set(translation);
         System.out.println("automatic scaling..");
-
 
     }
 
