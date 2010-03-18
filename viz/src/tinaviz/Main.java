@@ -41,8 +41,6 @@ public class Main extends PApplet implements MouseWheelListener {
     // déclenche le passage dans le mode macro
     float screenRatioSelectNodeWhenZoomed = 0.3f;
     float screenRatioGoToMesoWhenZoomed = 0.65f;
-    AtomicBoolean mouseLeftDragging = new AtomicBoolean(false);
-    AtomicBoolean mouseRightDragging = new AtomicBoolean(false);
     AtomicBoolean zooming = new AtomicBoolean(false);
     AtomicBoolean zoomIn = new AtomicBoolean(false);
     private RecordingFormat recordingMode = RecordingFormat.NONE;
@@ -53,10 +51,6 @@ public class Main extends PApplet implements MouseWheelListener {
     private int recordingWidth = 100;
     private int recordingHeight = 100;
     private String DEFAULT_FONT = "ArialMT-150.vlw";
-    private AtomicBoolean screenBufferUpdated = new AtomicBoolean(false);
-    private AtomicBoolean screenBufferUpdating = new AtomicBoolean(false);
-    private AtomicBoolean resetSelection = new AtomicBoolean(false);
-    // Semaphore screenBufferLock = new Semaphore();
     private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
     float selectedX = 0.0f;
     float selectedY = 0.0f;
@@ -188,8 +182,10 @@ public class Main extends PApplet implements MouseWheelListener {
             smooth();
             frameRate(20);
             textFont(font, 26);
-            bezierDetail(24);
+            bezierDetail(18);
         }
+
+        rectMode(CENTER);
 
         addMouseWheelListener(this);
         //noStroke();
@@ -211,7 +207,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
-        boolean loadDefaultGlobalGraph = false;
+        boolean loadDefaultGlobalGraph = true;
         boolean generateRandomGlobalGraph = false;
 
         if (loadDefaultLocalGraph) {
@@ -270,11 +266,13 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
+                    "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
-                    + "/tinasoft.desktop/tina/chrome/content/applet/data/"
-                    + "map_dopamine_2002_2007_g.gexf"))*/);
+                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
+                    // + "/tinasoft.desktop/tina/chrome/content/applet/data/"
+                    // + "map_dopamine_2002_2007_g.gexf"))*/
+                    );
             //session.animationPaused = true;
         } else if (generateRandomGlobalGraph) {
 
@@ -334,16 +332,12 @@ public class Main extends PApplet implements MouseWheelListener {
         // todo replace by get network
         View v = session.getView();
 
-
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
-
                 spatialize(v);
-
             }
             return;
         }
-
 
         List<Node> n = v.popNodes();
         if (n != null) {
@@ -382,7 +376,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void drawLoading(View net) {
         background(255);
-
         fill(123);
         textSize(80);
         String base = "Loading";
@@ -527,119 +520,95 @@ public class Main extends PApplet implements MouseWheelListener {
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
-        boolean _resetSelection = this.resetSelection.getAndSet(false);
-        boolean _mouseLeftClick = this.mouseClickLeft.getAndSet(false);
-        boolean _mouseRightClick = this.mouseClickRight.getAndSet(false);
-        boolean _mouseLeftDrag = this.mouseLeftDragging.get();
-        boolean _mouseRightDrag = this.mouseRightDragging.get();
 
-        Node bestMatchForSelection = null;
-        Node bestMatchForSwitch = null;
+        if (v.animationPaused) {
+            smooth();
+            bezierDetail(18);
+
+        } else {
+            noSmooth();
+            bezierDetail(8);
+            for (Node n1 : nodes) {
+                for (Node n2 : nodes) {
+                    if (n1 == n2) {
+                        continue;
+                    }
+
+                    // todo: what happen when vx or vy are 0 ?
+                    vx = n2.x - n1.x;
+                    vy = n2.y - n1.y;
+                    distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
+
+                    //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
+                    // plutot que mettre une distance minimale,
+                    // mettre une force de repulsion, par exemple
+                    // radius * (1 / distance)   // ou distance au carré
+                    if (n1.neighbours.contains(n2.uuid)) {
+                        distance *= (n1.weights.get(n2.uuid));
+                        n1.vx += (vx * distance) * attraction;
+                        n1.vy += (vy * distance) * attraction;
+                        n2.vx -= (vx * distance) * attraction;
+                        n2.vy -= (vy * distance) * attraction;
+                    }
+
+                    // STANDARD REPULSION
+                    n1.vx -= (vx / distance) * repulsion;
+                    n1.vy -= (vy / distance) * repulsion;
+                    n2.vx += (vx / distance) * repulsion;
+                    n2.vy += (vy / distance) * repulsion;
+
+                    //}
+                } // FOR NODE B
+            }   // FOr NODE A
+
+
+            for (Node n : nodes) {
+                // important, we limit the velocity!
+                n.vx = constrain(n.vx, -5, 5);
+                n.vy = constrain(n.vy, -5, 5);
+
+                // update the coordinate
+                // also set the bound box for the whole scene
+                n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
+                n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
+
+                // update the original, "stored" node
+                n.original.x = n.x;
+                n.original.y = n.y;
+
+                n.vx = 0.0f;
+                n.vy = 0.0f;
+            }
+        }
 
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
 
-        if (zooming.getAndSet(false)) {
-
-
-            v.translation.sub(lastMousePosition);
-
-            if (zoomIn.get()) {
-                v.sceneScale *= 4.f / 3.f;
-                v.translation.mult(4.f / 3.f);
-            } else {
-                v.sceneScale *= 3.f / 4.f;
-                v.translation.mult(3.f / 4.f);
-            }
-
-            v.translation.add(lastMousePosition);
-            System.out.println("Zoom: " + v.sceneScale);
-        }
-
-        switch (session.currentLevel) {
-            case MACRO:
-                if (v.sceneScale < v.ZOOM_CEIL) {
-                    v.sceneScale = v.ZOOM_CEIL;
-                }
-                break;
-            case MESO:
-                if (v.sceneScale > v.ZOOM_FLOOR) {
-                    v.sceneScale = v.ZOOM_FLOOR;
-                    System.out.println("switch in to micro");
-                }
-                if (v.sceneScale < v.ZOOM_CEIL) {
-                    System.out.println("switch out to macro");
-                    session.getMacro().sceneScale = session.getMacro().ZOOM_FLOOR - session.getMacro().ZOOM_FLOOR * 0.5f;
-                    session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2.0f;
-                    jsSwitchToMacro();
-                }
-                break;
-        }
-
-
-        // VECTEUR DRAG
         translate(v.translation.x, v.translation.y);
-
-        // finally, push to the matrix
         scale(v.sceneScale);
 
-
         for (Node n1 : nodes) {
-            if (_resetSelection) {
-                n1.selected = false;
-            }
             for (Node n2 : nodes) {
                 if (n1 == n2) {
                     continue;
                 }
 
-
-                // todo: what happen when vx or vy are 0 ?
-                vx = n2.x - n1.x;
-                vy = n2.y - n1.y;
-                distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
-
-                //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
-                // plutot que mettre une distance minimale,
-                // mettre une force de repulsion, par exemple
-                // radius * (1 / distance)   // ou distance au carré
-
-
-
                 if (n1.neighbours.contains(n2.uuid)) {
 
-                    if (!v.animationPaused) {
-
-                        // take node ponderation into account
-                        if (n1.weights.containsKey(n2.uuid)) {
-                            distance *= (n1.weights.get(n2.uuid));
-                        }
-
-                        n1.vx += (vx * distance) * attraction;
-                        n1.vy += (vy * distance) * attraction;
-                        n2.vx -= (vx * distance) * attraction;
-                        n2.vy -= (vy * distance) * attraction;
-
-                    }
-
-
+                    // if we need to draw the links
                     if (v.showLinks || n1.selected) {
                         boolean doubleLink = false;
 
                         if (n2.neighbours.contains(n1.uuid)) {
                             doubleLink = true;
                         }
+
                         if (!doubleLink | n1.uuid.compareTo(n2.uuid) <= 0) {
 
                             float cr = (n1.r + n2.r) / 2;
                             float cg = (n1.g + n2.g) / 2;
                             float cb = (n1.b + n2.b) / 2;
-
-                            /*
-                            cr = constrain(cr, 0, 255);
-                            cg = constrain(cg, 0, 255);
-                            cb =  constrain(cb, 0, 255);*/
 
                             if (doubleLink) {
                                 if (n1.selected && n2.selected) {
@@ -664,303 +633,122 @@ public class Main extends PApplet implements MouseWheelListener {
                             }
 
 
-                            if (v.highDefinition && !_mouseRightDrag && n1.weights != null && n2.uuid != null) {
-                                //bezierDetail(32);
+                            if (v.highDefinition && n2.uuid != null) {
                                 strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
-                            } else {
-                                //bezierDetail(32);
                                 strokeWeight(1);
                             }
 
-                            if (false) {
-                                line(n2.x, n2.y, n1.x, n1.y);
-                            } else {
+                            // line(n2.x, n2.y, n1.x, n1.y);
+                            // arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
+                            noFill();
 
-                                noFill();
+                            float xa0 = (6 * n1.x + n2.x) / 7, ya0 = (6 * n1.y + n2.y) / 7;
+                            float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
+                            float[] xya1 = rotation(xa0, ya0, n1.x, n1.y, PI / 2);
+                            float[] xyb1 = rotation(xb0, yb0, n2.x, n2.y, -PI / 2);
+                            float xa1 = (float) xya1[0], ya1 = (float) xya1[1];
+                            float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
+                            bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
 
-                                float xa0 = (6 * n1.x + n2.x) / 7, ya0 = (6 * n1.y + n2.y) / 7;
-                                float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
-                                float[] xya1 = rotation(xa0, ya0, n1.x, n1.y, PI / 2);
-                                float[] xyb1 = rotation(xb0, yb0, n2.x, n2.y, -PI / 2);
-                                float xa1 = (float) xya1[0], ya1 = (float) xya1[1];
-                                float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
-                                bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
-                            }
-                            if (!v.cameraIsMoving()) {
-                                // arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
-                            }
                         }
 
                     }
 
-
-                    // NEIGHBOUR REPULSION
-                    //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
-                    if (!v.animationPaused) {
-
-
-                        n1.vx -= n1.radius * (1.0f / distance); //
-                        n1.vy -= n1.radius * (1.0f / distance); //
-                        n2.vx += n1.radius * (1.0f / distance); //
-                        n2.vy += n1.radius * (1.0f / distance); // 0.01f
-
-
-                        n1.vx -= (vx / distance) * repulsion;
-                        n1.vy -= (vy / distance) * repulsion;
-                        n2.vx += (vx / distance) * repulsion;
-                        n2.vy += (vy / distance) * repulsion;
-
-                    }
-
-                } else {
-
-                    // STANDARD REPULSION
-                    //if (v.spatializeWhenMoving | !v.cameraIsMoving() && len != 0) {
-                    if (!v.animationPaused) {
-
-
-                        n1.vx -= (vx / distance) * repulsion;
-                        n1.vy -= (vy / distance) * repulsion;
-                        n2.vx += (vx / distance) * repulsion;
-                        n2.vy += (vy / distance) * repulsion;
-
-                    }
                 }
 
-                //}
             } // FOR NODE B
         }   // FOr NODE A
 
-        stroke(20, 20, 20);
-        //if (cameraIsStopped() && stepCounter > 1) {
-        strokeWeight(1.0f);
-        //}
 
-
-
+        noStroke();
         for (Node n : nodes) {
-            float nsx = screenX(n.x, n.y), nsy = screenY(n.x, n.y);
-            boolean visible = (nsx > -(width / 2.0f) && nsx < width + (width / 2.0f) && nsy > -(height / 2.0f) && nsy < height + (height / 2.0f));
 
-            if (!n.fixed) {
+            float rad = n.radius;
+            float rad2 = rad + rad * 0.4f;
 
-                // important, we limit the velocity!
-                n.vx = constrain(n.vx, -10, 10);
-                n.vy = constrain(n.vy, -10, 10);
-
-                // update the coordinate
-                // also set the bound box for the whole scene
-                n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
-                n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
-                n.original.x = n.x;
-                n.original.y = n.y;
-            }
-
-            n.vx = 0.0f;
-            n.vy = 0.0f;
+            n.screenX = screenX(n.x, n.y);
+            n.screenY = screenY(n.x, n.y);
+            n.visibleToScreen = (n.screenX > -(width / 2.0f)
+                    && n.screenX < width + (width / 2.0f)
+                    && n.screenY > -(height / 2.0f)
+                    && n.screenY < height + (height / 2.0f));
 
             // small improvment that should enhance perfs
-            if (!visible) {
+            if (!n.visibleToScreen) {
                 continue;
             }
-            float nsd = screenX(n.x + n.radius, n.y) - screenX(n.x - n.radius, n.y);
+            float nodeScreenDiameter = screenX(n.x + rad2, n.y) - screenX(n.x - rad2, n.y);
 
-            if (nsd < 4) {
+            if (nodeScreenDiameter < 4) {
                 continue;
-            }
-
-            /*************************************************************************
-             *  SCREEN-BASED SELECTION, WHEN THE NODE IS IN THE CENTER OF THE SCREEN *
-             *************************************************************************/
-            // node coordinate at the screen
-            // diameter of the node at the screen
-            boolean massSelectionHasBegin = false;
-
-            float screenRatio = ((nsd / (float) width) + (nsd / (float) height)) / 2.0f;
-
-            if (session.currentLevel == ViewLevel.MACRO) {
-                if (screenRatio > screenRatioGoToMesoWhenZoomed) {
-                    if (bestMatchForSwitch == null) {
-                        bestMatchForSwitch = n;
-                    }
-                    if (n.radius > bestMatchForSwitch.radius) {
-                        bestMatchForSwitch = n;
-                    }
-                } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
-                    if (bestMatchForSelection == null) {
-                        bestMatchForSelection = n;
-                    }
-                    if (n.radius > bestMatchForSelection.radius) {
-                        bestMatchForSelection = n;
-                    }
-                }
-            }
-
-
-            /*******************************************************************************
-             *  MOUSE-BASED SELECTION, WHEN THE MOUSE CLICK OR DOUBLE-CLICK, LEFT OR RIGHT *
-             *******************************************************************************/
-            if (screenX(n.x - n.radius, n.y - n.radius) < mouseX && mouseX < screenX(n.x + n.radius, n.y + n.radius)
-                    && screenY(n.x - n.radius, n.y - n.radius) < mouseY && mouseY < screenY(n.x + n.radius, n.y + n.radius)) {
-                //if (distance <= n.radius * zoomRatio) {
-                // fill(200);
-                // mouseClick = false;
-                if (_mouseLeftClick) {
-                    if (mouseEvent != null && mouseEvent.getClickCount() == 2) {
-                        mouseEvent.consume();
-                        System.out.println("double-clicked on node " + n.uuid);
-
-                        if (!n.selected) {
-                            session.selectNode(n);
-                            if (!massSelectionHasBegin) {
-                                massSelectionHasBegin = true;
-                                jsNodeSelected(n);
-                            }
-                        }
-
-                        if (session.currentLevel == ViewLevel.MACRO) {
-                            System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
-
-                            session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
-                            jsSwitchToMeso();
-                        } else if (session.currentLevel == ViewLevel.MESO) {
-                            System.out.println("SWITCH TO MICRO WITH THE DOUBLE CLICK METHOD");
-                            //session.getMicro().sceneScale = session.getMicro().ZOOM_CEIL + session.getMicro().ZOOM_CEIL * 0.5f;
-                            //jsSwitchToMicro();
-                        }
-                    } else {
-
-                        System.out.println("clicked on node " + n.uuid);
-
-                        // deselect the node
-                        if (n.selected) {
-                            session.unselectNode(n);
-                            jsNodeSelected(null);
-                        } else {
-                            session.selectNode(n);
-                            if (!massSelectionHasBegin) {
-                                massSelectionHasBegin = true;
-                                jsNodeSelected(n);
-                            }
-                        }
-                    }
-
-
-
-                } else if (_mouseRightClick) {
-                    // SWITCH TO THE OTHER PART
-                    System.out.println("right-clicked on node " + n.uuid);
-                    // deselect the node
-                    if (n.selected) {
-                        session.unselectNode(n);
-                        jsNodeSelected(null);
-                    } else {
-                        session.selectNode(n);
-                        if (!massSelectionHasBegin) {
-                            massSelectionHasBegin = true;
-                            jsNodeSelected(n);
-                        }
-                    }
-
-
-
-                } else if (_mouseLeftDrag) {
-                    if (screenX(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseX && mouseX < screenX(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)
-                            && screenY(n.x - n.radius * 1.5f, n.y - n.radius * 1.5f) < mouseY && mouseY < screenY(n.x + n.radius * 1.5f, n.y + n.radius * 1.5f)) {
-                        System.out.println("dragged left mouse over node " + n.uuid);
-
-                        // old code to restore "selection only"
-                        session.selectNode(n);
-                        if (!massSelectionHasBegin) {
-                            massSelectionHasBegin = true;
-                            jsNodeSelected(n);
-                        }
-
-                    }
-                } else {
-                    n.highlighted = true;
-                }
-            } else {
-                n.highlighted = false;
             }
 
             // best match for the "screen" selection
 
-            if (!v.showNodes) {
-                continue;
-            }
-
             /****************************
              *  PROCESSING DRAWING CODE *
              ****************************/
-            strokeWeight(1.0f);
-            noStroke();
+            // if we don't want to show the nodes.. we skip
+            if (v.showNodes) {
 
-            boolean drawDisk = false;
-            if (n.category.equals("NGram")) {
-                drawDisk = true;
-            } else if (n.category.equals("Document") || n.category.equals("Project")) {
-                drawDisk = false;
-            }
+                if (n.selected) {
+                    fill(40, 40, 40);
+                } else if (n.highlighted) {
+                    fill(110, 110, 110);
+                } else {
+                    fill(180, 180, 180);
+                }
 
+                if (n.shape == ShapeCategory.DISK) {
+                    ellipse(n.x, n.y, rad2, rad2);
+                } else {
+                    rectMode(CENTER);
+                    rect(n.x, n.y, rad2, rad2);
+                    rectMode(CORNER);
+                }
 
-            if (n.selected) {
-                fill(40, 40, 40);
-            } else if (n.highlighted) {
-                fill(110, 110, 110);
-            } else {
-                fill(180, 180, 180);
-            }
+                if (n.selected) {
+                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
+                } else if (n.highlighted) {
+                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
+                } else {
+                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255));
+                }
 
-            if (drawDisk) {
-                ellipse(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
-            } else {
-                rectMode(CENTER);
-                rect(n.x, n.y, n.radius + n.radius * 0.4f, n.radius + n.radius * 0.4f);
-                rectMode(CORNER);
-            }
+                if (n.shape == ShapeCategory.DISK) {
+                    ellipse(n.x, n.y, rad, rad);
+                } else {
+                    rect(n.x, n.y, rad, rad);
+                }
 
-            if (n.selected) {
-                fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
-            } else if (n.highlighted) {
-                fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
-            } else {
-                fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255));
-            }
-
-            if (drawDisk) {
-                ellipse(n.x, n.y, n.radius, n.radius);
-            } else {
-                rectMode(CENTER);
-                rect(n.x, n.y, n.radius, n.radius);
-                rectMode(CORNER);
-            }
-
+            } // end of "if show nodes"
 
             // skip label drawing for small nodes
             // or if we have to hide labels
-            if (nsd < 13 | !v.showLabels) {
+            if (nodeScreenDiameter < 13 | !v.showLabels) {
                 continue;
             }
 
-
-            // degrade du radius [r=14 level=255, r=40 level=80]
-            float minRad = 14.0f;
-            float maxRad = 25.0f;
-            int minRadColor = 255;
-            int maxRadColor = 80;
-
-            float tRatio = 1.0f / (maxRad - minRad);
-            float nsdRatio = constrain((nsd - minRad) * tRatio, 0, 1);
-            fill(minRadColor + nsdRatio * (float) (maxRadColor - minRadColor));
 
             if (n.selected) {
                 fill(10);
             } else if (n.highlighted) {
                 fill(50);
+            } else {
+
+                // degrade du radius [r=14 level=255, r=40 level=80]
+                float minRad = 14.0f;
+                float maxRad = 25.0f;
+                int minRadColor = 255;
+                int maxRadColor = 80;
+
+                float tRatio = 1.0f / (maxRad - minRad);
+                float nsdRatio = constrain((nodeScreenDiameter - minRad) * tRatio, 0, 1);
+                fill(minRadColor + nsdRatio * (float) (maxRadColor - minRadColor));
+
             }
-            textSize(n.radius);
-            text((n.highlighted) ? n.label : reduceLabel(n.label, 40), n.x + n.radius, n.y + (n.radius / PI));
+            textSize(rad2);
+            text((n.highlighted) ? n.label : n.shortLabel, n.x + rad2, n.y + (rad2 / PI));
 
         }
 
@@ -1006,7 +794,7 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void resetSelection() {
-        resetSelection.set(true);
+        session.unselectAll();
     }
 
     @Override
@@ -1015,33 +803,86 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     @Override
-    public void mouseClicked() {
-        if (mouseButton == LEFT) {
-            mouseClickLeft.set(true);
-
-        } else if (mouseButton == RIGHT) {
-            mouseClickRight.set(true);
+    public void mouseMoved() {
+        for (Node n : nodes) {
+            n.highlighted = false;
+            float nsx = screenX(n.x, n.y);
+            float nsy = screenY(n.x, n.y);
+            float nsr = screenX(n.x + (n.radius + n.radius * 0.4f), n.y) - nsx;
+            if (nsr < 2) {
+                continue;
+            }
+            n.highlighted = (dist(mouseX, mouseY, nsx, nsy) < nsr);
         }
     }
 
     @Override
+    public void mouseClicked() {
+
+        for (Node n : nodes) {
+            float nsx = screenX(n.x, n.y);
+            float nsy = screenY(n.x, n.y);
+            float nsr = screenX(n.x + (n.radius + n.radius * 0.4f), n.y) - nsx;
+            if (nsr < 2) {
+                continue;
+            }
+            if ((dist(mouseX, mouseY, nsx, nsy) < nsr)) {
+
+                // LEFT CLICK ON NODES
+                if (mouseButton == LEFT) {
+                    if (mouseEvent != null && mouseEvent.getClickCount() == 2) {
+
+                        // double click also select nodes!
+                        if (!n.selected) {
+                            n.selected = true;
+                            session.selectNode(n);
+                            jsNodeSelected(n);
+                        }
+
+                        if (session.currentLevel == ViewLevel.MACRO) {
+                            System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
+
+                            session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
+                            jsSwitchToMeso();
+                        } else if (session.currentLevel == ViewLevel.MESO) {
+                            System.out.println("SWITCH TO MICRO WITH THE DOUBLE CLICK METHOD");
+                            //session.getMicro().sceneScale = session.getMicro().ZOOM_CEIL + session.getMicro().ZOOM_CEIL * 0.5f;
+                            //jsSwitchToMicro();
+                        }
+                    } else {
+                        if (!n.selected) {
+                            n.selected = true;
+                            session.selectNode(n);
+                            jsNodeSelected(n);
+
+                        } else {
+                            n.selected = false;
+                            session.unselectNode(n);
+                            jsNodeSelected(null);
+                        }
+                    }
+                } else {
+                    // RIGHT CLICK ON A NODE => SWITCH MODE
+                }
+            }
+            break;
+        }
+
+
+    }
+
+    @Override
     public void mouseDragged() {
-        View v = session.getView();
         if (mouseButton == RIGHT) {
-            mouseRightDragging.set(true);
             session.getView().updateTranslationFrom(mouseX, mouseY);
-        } else if (mouseButton == LEFT) {
-            mouseLeftDragging.set(true);
         }
     }
 
     @Override
     public void mouseReleased() {
         if (mouseButton == RIGHT) {
-            mouseRightDragging.set(false);
             session.getView().updateTranslationFrom(mouseX, mouseY);
         } else if (mouseButton == LEFT) {
-            mouseLeftDragging.set(false);
         }
         session.getView().memorizeLastPosition();
     }
@@ -1051,74 +892,199 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (e.getUnitsToScroll() != 0) {
-            zooming.set(true);
-            zoomIn.set(e.getWheelRotation() < 0);
-            lastMousePosition.set(mouseX, mouseY, 0);
+        if (e.getUnitsToScroll() == 0) {
+            return;
         }
+
+        View v = getView();
+        lastMousePosition.set(mouseX, mouseY, 0);
+        v.translation.sub(lastMousePosition);
+
+        if (e.getWheelRotation() < 0) {
+            v.sceneScale *= 4.f / 3.f;
+            v.translation.mult(4.f / 3.f);
+        } else {
+            v.sceneScale *= 3.f / 4.f;
+            v.translation.mult(3.f / 4.f);
+        }
+        v.translation.add(lastMousePosition);
+        System.out.println("Zoom: " + v.sceneScale);
+
+
+        Node bestMatchForSwitch = null;
+        Node bestMatchForSelection = null;
+
+        for (Node n : nodes) {
+
+            float rad = n.radius;
+            float rad2 = rad + rad * 0.4f;
+            float nsx = screenX(n.x, n.y);
+            float nsy = screenY(n.x, n.y);
+
+            if (!(nsx > -(width / 2.0f)
+                    && nsx < width + (width / 2.0f)
+                    && nsy > -(height / 2.0f)
+                    && nsy < height + (height / 2.0f))) {
+                continue;
+            }
+
+            float nsr = screenX(n.x + (n.radius + n.radius * 0.4f), n.y) - nsx;
+            if (nsr < 2) {
+                continue;
+            }
+
+            float screenRatio = ((nsr * 2.0f / (float) width) + (nsr * 2.0f / (float) height)) / 2.0f;
+
+            switch (session.currentLevel) {
+                case MACRO:
+
+                    if (screenRatio > screenRatioGoToMesoWhenZoomed) {
+                        if (bestMatchForSwitch == null) {
+                            bestMatchForSwitch = n;
+                        }
+                        if (rad2 > bestMatchForSwitch.radius) {
+                            bestMatchForSwitch = n;
+                        }
+                    } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
+                        if (bestMatchForSelection == null) {
+                            bestMatchForSelection = n;
+                        }
+                        if (rad2 > bestMatchForSelection.radius) {
+                            bestMatchForSelection = n;
+                        }
+                    }
+            }
+        }
+
+
+
+        switch (v.getLevel()) {
+            case MACRO:
+                if (v.sceneScale < v.ZOOM_CEIL) {
+                    v.sceneScale = v.ZOOM_CEIL;
+                }
+                break;
+
+            case MESO:
+                if (v.sceneScale > v.ZOOM_FLOOR) {
+                    v.sceneScale = v.ZOOM_FLOOR;
+                    System.out.println("switch in to micro");
+
+                }
+                if (v.sceneScale < v.ZOOM_CEIL) {
+                    System.out.println("switch out to macro");
+                    session.getMacro().sceneScale = session.getMacro().ZOOM_FLOOR - session.getMacro().ZOOM_FLOOR * 0.5f;
+                    session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2.0f;
+                    jsSwitchToMacro();
+                }
+                break;
+        }
+
     }
 
     @Override
     public void keyPressed() {
         View v = session.getView();
+
+
         if (key == CODED) {
             if (keyCode == UP) {
                 v.translation.add(0.0f, 10f, 0.0f);
+
+
             } else if (keyCode == DOWN) {
                 v.translation.add(0.0f, -10f, 0.0f);
+
+
             } else if (keyCode == LEFT) {
                 v.translation.add(10f, 0.0f, 0.0f);
+
+
             } else if (keyCode == RIGHT) {
                 v.translation.add(-10f, 0.0f, 0.0f);
+
+
             }
         } else if (key == 'p') {
             zooming.set(true);
             zoomIn.set(true);
             lastMousePosition.set(width / 2.0f, height / 2.0f, 0);
+
+
         } else if (key == 'm') {
             zooming.set(true);
             zoomIn.set(false);
             lastMousePosition.set(width / 2.0f, height / 2.0f, 0);
+
+
         } else if (key == 'e') {
             if (window != null) {
                 window.eval("parent.tinaviz.toggleEdges('" + v.getName() + "');");
+
+
             } else {
                 v.showLinks = !v.showLinks;
+
+
             }
             System.out.println("show links is now " + v.showLinks);
+
+
         } else if (key == 't') {
             if (window != null) {
                 window.eval("parent.tinaviz.toggleLabels('" + v.getName() + "');");
+
+
             } else {
                 v.showLabels = !v.showLabels;
+
+
             }
         } else if (key == 'n') {
             if (window != null) {
                 window.eval("parent.tinaviz.toggleNodes('" + v.getName() + "');");
+
+
             } else {
                 v.showNodes = !v.showNodes;
+
+
             }
             System.out.println("show nodes is now " + v.showNodes);
+
+
         } else if (key == 'a') {
             if (window != null) {
                 window.eval("parent.tinaviz.togglePause('" + v.getName() + "');");
+
+
             } else {
                 v.animationPaused = !v.animationPaused;
+
+
             }
             System.out.println("Animation paused is now " + v.animationPaused);
+
+
         } else if (key == 'h') {
             v.highDefinition = !v.highDefinition;
             System.out.println("HD mode is now " + v.highDefinition);
+
+
         } else if (key == 'o') {
             if ((v.attraction + 0.00001) < 0.0004) {
                 v.attraction += 0.00001f;
                 System.out.println("\nattraction: " + session.getView().attraction);
+
+
 
             }
         } else if (key == 'l') {
             if ((v.attraction - 0.00001f) > 1.5e-5) {
                 v.attraction -= 0.00001f;
                 System.out.println("\nattraction: " + session.getView().attraction);
+
+
             }
         }
 
@@ -1126,35 +1092,53 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void clear() {
         getSession().clear();
+
+
     }
 
     public void clear(String view) {
         getSession().getView(view).clear();
+
+
     }
 
     public void resetCameras() {
         getSession().resetCamera(width, height);
+
+
     }
 
     public void resetCamera(String view) {
         getSession().getView(view).resetCamera(width, height);
+
+
     }
 
     public void select(String id) {
         getSession().selectNodeById(id);
+
+
     }
 
     public void unselect() {
         getSession().unselectAll();
+
+
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {
         pushMatrix();
-        translate(x2, y2);
-        rotate(atan2(x1 - x2, y2 - y1));
-        line(0, -radius, -1, -1 - radius);
-        line(0, -radius, 1, -1 - radius);
+        translate(
+                x2, y2);
+        rotate(
+                atan2(x1 - x2, y2 - y1));
+        line(
+                0, -radius, -1, -1 - radius);
+        line(
+                0, -radius, 1, -1 - radius);
         popMatrix();
+
+
     }
 
     private void arrow(PGraphics pg, float x1, float y1, float x2, float y2, float radius) {
@@ -1164,33 +1148,38 @@ public class Main extends PApplet implements MouseWheelListener {
         pg.line(0, -radius, -1, -1 - radius);
         pg.line(0, -radius, 1, -1 - radius);
         pg.popMatrix();
+
+
     }
 
     private float logify(float x) {
         if (abs(x) < 0.01f) {
             return 0.0f;
+
+
         }
         return (x > 0) ? log100((int) (abs(x) * 100.0f)) : -log100((int) (abs(x) * 100.0f));
+
+
     }
 
     private float log100(int x) {
         return (log(x) / ((float) log(100)));
+
+
     }
 
     public static float[] rotation(float x, float y, float centerX, float centerY, float theta) {
         float[] rc = new float[2];
-        rc[0] = (float) (centerX + (x - centerX) * cos(theta) - (y - centerY) * sin(theta));
-        rc[1] = (float) (centerY + (x - centerX) * sin(theta) + (y - centerY) * cos(theta));
+        rc[
+
+0] = (float) (centerX + (x - centerX) * cos(theta) - (y - centerY) * sin(theta));
+        rc[
+
+1] = (float) (centerY + (x - centerX) * sin(theta) + (y - centerY) * cos(theta));
+
+
         return rc;
-    }
 
-    public String reduceLabel(String label) {
-        return reduceLabel(label, 30);
-    }
-
-    public String reduceLabel(String label, int len) {
-        return (label.length() > len)
-                ? label.substring(0, len - 2) + ".."
-                : label;
     }
 }

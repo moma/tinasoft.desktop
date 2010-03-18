@@ -95,6 +95,9 @@ public class View {
     public String getName() {
         return "";
     }
+    public ViewLevel getLevel() {
+        return null;
+    }
 
     public boolean cameraIsMoving() {
         return Math.abs(inerX + inerY + inerZ) != 0.0f;

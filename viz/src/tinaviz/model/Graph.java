@@ -256,6 +256,13 @@ System.out.println("loading GEXF from string..");
                         node.b = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("b").getNodeValue());
                     }
                 }
+
+                if (node.category.equals("NGram")) {
+                    node.shape = ShapeCategory.DISK;
+                } else {
+                   node.shape = ShapeCategory.SQUARE;
+                }
+                
                 // update the graph metrics
                 if (node.x < metrics.minX) {
                     metrics.minX = node.x;

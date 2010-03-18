@@ -26,4 +26,8 @@ public class MicroView extends View {
     public String getName() {
         return "micro";
     }
+    @Override
+    public ViewLevel getLevel() {
+        return ViewLevel.MICRO;
+    }
 }

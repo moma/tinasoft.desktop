@@ -30,5 +30,8 @@ public class MesoView extends View {
     public String getName() {
         return "meso";
     }
-    
+    @Override
+    public ViewLevel getLevel() {
+        return ViewLevel.MESO;
+    }
 }
