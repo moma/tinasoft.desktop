@@ -6,7 +6,6 @@ import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import tinaviz.model.*;
 import processing.opengl.*;
@@ -24,19 +23,10 @@ public class Main extends PApplet implements MouseWheelListener {
     float zoomRatio = 1.0f;
     PImage nodeIcon;
     PFont font;
-    /*lastMove.set(trans);
-    float oldmouseX = 0f;
-    float oldmouseY = 0f;*/
+
     XMLElement xml;
     Session session = new Session();
-    // this is the "magnification level"
 
-    /*
-    float MESO_UPPER = 22.0f;
-    float MESO_LOWER = 25.0f;
-
-    float MICRO_UPPER = 27.0f;
-    float MICRO_LOWER = 30.0f;*/
     // pourcentage de l'ecran pour lequel la présence des bords d'un node
     // déclenche le passage dans le mode macro
     float screenRatioSelectNodeWhenZoomed = 0.3f;
@@ -98,33 +88,12 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
-    private void jsSwitchToUpper() {
-        if (session.currentLevel == ViewLevel.MACRO) {
-            // nothing to do..
-        } else if (session.currentLevel == ViewLevel.MESO) {
-            jsSwitchToMacro();
-        } else {
-            jsSwitchToMeso();
-        }
-    }
-
-    private void jsSwitchToLower() {
-        if (session.currentLevel == ViewLevel.MACRO) {
-            jsSwitchToMeso();
-        } else if (session.currentLevel == ViewLevel.MESO) {
-            jsSwitchToMicro();
-        } else {
-            // nothing to do
-        }
-    }
-
     public enum RecordingFormat {
 
         NONE, CURRENT_PICTURE, PDF, BIG_PICTURE;
     };
 
     enum quality {
-
         FASTEST, // no stroke on circle, no stroke weight
         FASTER, // no stroke on circle, no stroke weight
         FAST, // no label
@@ -259,14 +228,13 @@ public class Main extends PApplet implements MouseWheelListener {
 
             session.getMeso().getGraph().updateFromNodeList(tmp);
 
-
-
             //session.animationPaused = true;
         }
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                    "file:///home/uxmal/Checkout/git/TINA/tinaweb/src/100308-fetopen_8.gexf"
+                    //"file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
@@ -334,7 +302,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
-                spatialize(v);
+                badLayout(v);
             }
             return;
         }
@@ -344,9 +312,6 @@ public class Main extends PApplet implements MouseWheelListener {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
             nodes.clear();
             nodes.addAll(n);
-            //System.out.println("reset camera(" + width + "," + height + ")");
-            // v.resetCamera(width, height);
-            //center(); // uncomment this later
         }
 
         //session.animationPaused = tmp; // TODO replace by a lock here
@@ -367,7 +332,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         } else if (v.prespatializeSteps-- > 0) {
             drawLoading(v);
-            spatialize(v);
+            badLayout(v);
 
         } else {
             drawAndSpatializeRealtime(v);
@@ -411,10 +376,11 @@ public class Main extends PApplet implements MouseWheelListener {
         text(base, x, y);
     }
 
-    public void spatialize(View v) {
-        float len = 1f;
-        float vx = 0f;
-        float vy = 0f;
+    public void badLayout(View v) {
+        float distance = 1f;
+        float vx = 1f;
+        float vy = 1f;
+
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
@@ -424,33 +390,116 @@ public class Main extends PApplet implements MouseWheelListener {
                     continue;
                 }
 
+                // todo: what happen when vx or vy are 0 ?
                 vx = n2.x - n1.x;
                 vy = n2.y - n1.y;
-                len = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
+                distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
 
+                //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
+                // plutot que mettre une distance minimale,
+                // mettre une force de repulsion, par exemple
+                // radius * (1 / distance)   // ou distance au carré
                 if (n1.neighbours.contains(n2.uuid)) {
-                    n1.vx += (vx * len) * attraction;
-                    n1.vy += (vy * len) * attraction;
-                    n2.vx -= (vx * len) * attraction;
-                    n2.vy -= (vy * len) * attraction;
+                    distance *= (n1.weights.get(n2.uuid));
+                    n1.vx += (vx * distance) * attraction;
+                    n1.vy += (vy * distance) * attraction;
+                    n2.vx -= (vx * distance) * attraction;
+                    n2.vy -= (vy * distance) * attraction;
                 }
-                // TODO fix this
-                n1.vx -= (vx / len) * repulsion;
-                n1.vy -= (vy / len) * repulsion;
-                n2.vx += (vx / len) * repulsion;
-                n2.vy += (vy / len) * repulsion;
 
+                // STANDARD REPULSION
+                n1.vx -= (vx / distance) * repulsion;
+                n1.vy -= (vy / distance) * repulsion;
+                n2.vx += (vx / distance) * repulsion;
+                n2.vy += (vy / distance) * repulsion;
+
+                //}
             } // FOR NODE B
         }   // FOr NODE A
 
+
         for (Node n : nodes) {
-            n.vx = constrain(n.vx, -200, 200);
-            n.vy = constrain(n.vy, -200, 200);
-            n.x += n.vx * 0.5f;
-            n.y += n.vy * 0.5f;
+            // important, we limit the velocity!
+            n.vx = constrain(n.vx, -5, 5);
+            n.vy = constrain(n.vy, -5, 5);
+
+            // update the coordinate
+            // also set the bound box for the whole scene
+            n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
+            n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
+
+            // update the original, "stored" node
+            n.original.x = n.x;
+            n.original.y = n.y;
+
             n.vx = 0.0f;
             n.vy = 0.0f;
         }
+
+
+    }
+
+    public void goodLayout(View v) {
+        float distance = 1f;
+        float vx = 1f;
+        float vy = 1f;
+
+        float repulsion = v.repulsion;
+        float attraction = v.attraction;
+
+        for (Node n1 : nodes) {
+            for (Node n2 : nodes) {
+                if (n1 == n2) {
+                    continue;
+                }
+
+                // todo: what happen when vx or vy are 0 ?
+                vx = n2.x - n1.x;
+                vy = n2.y - n1.y;
+                distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
+
+                //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
+                // plutot que mettre une distance minimale,
+                // mettre une force de repulsion, par exemple
+                // radius * (1 / distance)   // ou distance au carré
+                if (n1.neighbours.contains(n2.uuid)) {
+                    distance *= (n1.weights.get(n2.uuid));
+                    n1.vx += (vx * distance) * attraction;
+                    n1.vy += (vy * distance) * attraction;
+                    n2.vx -= (vx * distance) * attraction;
+                    n2.vy -= (vy * distance) * attraction;
+                }
+
+                // STANDARD REPULSION
+                n1.vx -= (vx / distance) * repulsion;
+                n1.vy -= (vy / distance) * repulsion;
+                n2.vx += (vx / distance) * repulsion;
+                n2.vy += (vy / distance) * repulsion;
+
+                //}
+            } // FOR NODE B
+        }   // FOr NODE A
+
+
+        for (Node n : nodes) {
+            // important, we limit the velocity!
+            n.vx = constrain(n.vx, -5, 5);
+            n.vy = constrain(n.vy, -5, 5);
+
+            // update the coordinate
+            // also set the bound box for the whole scene
+            n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
+            n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
+
+            // update the original, "stored" node
+            n.original.x = n.x;
+            n.original.y = n.y;
+
+            n.vx = 0.0f;
+            n.vy = 0.0f;
+        }
+
+
     }
 
     public void pdfDrawer(View v, int w, int h) {
@@ -513,13 +562,6 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void drawAndSpatializeRealtime(View v) {
-        float distance = 1f;
-        float vx = 1f;
-        float vy = 1f;
-
-        float repulsion = v.repulsion;
-        float attraction = v.attraction;
-
 
         if (v.animationPaused) {
             smooth();
@@ -528,57 +570,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             noSmooth();
             bezierDetail(8);
-            for (Node n1 : nodes) {
-                for (Node n2 : nodes) {
-                    if (n1 == n2) {
-                        continue;
-                    }
-
-                    // todo: what happen when vx or vy are 0 ?
-                    vx = n2.x - n1.x;
-                    vy = n2.y - n1.y;
-                    distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
-
-                    //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
-                    // plutot que mettre une distance minimale,
-                    // mettre une force de repulsion, par exemple
-                    // radius * (1 / distance)   // ou distance au carré
-                    if (n1.neighbours.contains(n2.uuid)) {
-                        distance *= (n1.weights.get(n2.uuid));
-                        n1.vx += (vx * distance) * attraction;
-                        n1.vy += (vy * distance) * attraction;
-                        n2.vx -= (vx * distance) * attraction;
-                        n2.vy -= (vy * distance) * attraction;
-                    }
-
-                    // STANDARD REPULSION
-                    n1.vx -= (vx / distance) * repulsion;
-                    n1.vy -= (vy / distance) * repulsion;
-                    n2.vx += (vx / distance) * repulsion;
-                    n2.vy += (vy / distance) * repulsion;
-
-                    //}
-                } // FOR NODE B
-            }   // FOr NODE A
-
-
-            for (Node n : nodes) {
-                // important, we limit the velocity!
-                n.vx = constrain(n.vx, -5, 5);
-                n.vy = constrain(n.vy, -5, 5);
-
-                // update the coordinate
-                // also set the bound box for the whole scene
-                n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
-                n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
-
-                // update the original, "stored" node
-                n.original.x = n.x;
-                n.original.y = n.y;
-
-                n.vx = 0.0f;
-                n.vy = 0.0f;
-            }
+            goodLayout(v);
         }
 
         background(255);
