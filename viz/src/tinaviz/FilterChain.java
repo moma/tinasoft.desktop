@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,7 +54,7 @@ public class FilterChain {
         @Override
         public void run() {
             System.out.println("filter started!..");
-            List<Node> result = (nodes != null) ? nodes : new ArrayList<Node>();
+            List<Node> result = (nodes != null) ? nodes : new LinkedList<Node>();
             for (Filter f : filters.values()) {
                 if (interrupted()) {
                     System.out.println("we're interrupted!");
@@ -70,7 +71,7 @@ public class FilterChain {
 
     public FilterChain(View view) {
 
-        filteredNodes = new ArrayList<Node>();
+        filteredNodes = new LinkedList<Node>();
         popLocked = new AtomicBoolean(true);
         filters = new HashMap<String, Filter>();
         listeners = new ArrayList<FilterChainListener>();

@@ -4,6 +4,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,10 +24,8 @@ public class Main extends PApplet implements MouseWheelListener {
     float zoomRatio = 1.0f;
     PImage nodeIcon;
     PFont font;
-
     XMLElement xml;
     Session session = new Session();
-
     // pourcentage de l'ecran pour lequel la présence des bords d'un node
     // déclenche le passage dans le mode macro
     float screenRatioSelectNodeWhenZoomed = 0.3f;
@@ -41,7 +40,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private int recordingWidth = 100;
     private int recordingHeight = 100;
     private String DEFAULT_FONT = "ArialMT-150.vlw";
-    private List<tinaviz.Node> nodes = new ArrayList<tinaviz.Node>();
+    private List<tinaviz.Node> nodes = new LinkedList<tinaviz.Node>();
     float selectedX = 0.0f;
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
@@ -94,6 +93,7 @@ public class Main extends PApplet implements MouseWheelListener {
     };
 
     enum quality {
+
         FASTEST, // no stroke on circle, no stroke weight
         FASTER, // no stroke on circle, no stroke weight
         FAST, // no label
@@ -234,9 +234,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf"
-
-                    //"file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf" //"file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
@@ -246,7 +244,7 @@ public class Main extends PApplet implements MouseWheelListener {
             //session.animationPaused = true;
         } else if (generateRandomGlobalGraph) {
 
-            List<Node> tmp = new ArrayList<Node>();
+            List<Node> tmp = new LinkedList<Node>();
             Node node;
             Console.log("Generating random graph..");
             float rx = random(width);
@@ -417,7 +415,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 //}
             } // FOR NODE B
-                        // important, we limit the velocity!
+            // important, we limit the velocity!
             n1.vx = constrain(n1.vx, -5, 5);
             n1.vy = constrain(n1.vy, -5, 5);
 
@@ -795,7 +793,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mousePressed() {
-                    lastMousePosition.set(mouseX, mouseY, 0);
+        lastMousePosition.set(mouseX, mouseY, 0);
     }
 
     @Override
@@ -815,6 +813,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseClicked() {
 
+        System.out.println("mouse clicked");
         for (Node n : nodes) {
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
@@ -822,6 +821,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (nsr < 2) {
                 continue;
             }
+
             if ((dist(mouseX, mouseY, nsx, nsy) < nsr)) {
 
                 // LEFT CLICK ON NODES
@@ -860,10 +860,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 } else {
                     // RIGHT CLICK ON A NODE => SWITCH MODE
                 }
+                break;
             }
-            break;
+
         }
-            lastMousePosition.set(mouseX, mouseY, 0);
+        lastMousePosition.set(mouseX, mouseY, 0);
 
     }
 
@@ -872,7 +873,9 @@ public class Main extends PApplet implements MouseWheelListener {
         if (mouseButton == RIGHT) {
             View v = session.getView();
             PVector delta = PVector.sub(lastMousePosition, new PVector(mouseX, mouseY, 0));
-            delta.div(v.sceneScale);
+
+            delta.mult(v.sceneScale);
+
             v.translation.sub(delta);
             lastMousePosition.set(mouseX, mouseY, 0);
         }
@@ -890,11 +893,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
     /*
     public void updateDrawerTranslationFromCurrentMouse() {
-        session.getView().updateTranslationFrom(mouseX, mouseY);
+    session.getView().updateTranslationFrom(mouseX, mouseY);
     }
      * */
-
-
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getUnitsToScroll() == 0) {
             return;
@@ -1132,14 +1133,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {
         pushMatrix();
-        translate(
-                x2, y2);
-        rotate(
-                atan2(x1 - x2, y2 - y1));
-        line(
-                0, -radius, -1, -1 - radius);
-        line(
-                0, -radius, 1, -1 - radius);
+        translate(x2, y2);
+        rotate(atan2(x1 - x2, y2 - y1));
+        line(0, -radius, -1, -1 - radius);
+        line(0, -radius, 1, -1 - radius);
         popMatrix();
 
 
@@ -1175,13 +1172,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public static float[] rotation(float x, float y, float centerX, float centerY, float theta) {
         float[] rc = new float[2];
-        rc[
-
-0] = (float) (centerX + (x - centerX) * cos(theta) - (y - centerY) * sin(theta));
-        rc[
-
-1] = (float) (centerY + (x - centerX) * sin(theta) + (y - centerY) * cos(theta));
-
+        rc[0] = (float) (centerX + (x - centerX) * cos(theta) - (y - centerY) * sin(theta));
+        rc[1] = (float) (centerY + (x - centerX) * sin(theta) + (y - centerY) * cos(theta));
 
         return rc;
 
