@@ -255,7 +255,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf" //"file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/bipartite_graph.gexf" //"file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
@@ -327,7 +327,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             return;
         }
-
+       // System.out.println("now working on view "+v);
         List<Node> n = v.popNodes();
         if (n != null) {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
@@ -445,9 +445,13 @@ public class Main extends PApplet implements MouseWheelListener {
             n1.x = constrain(n1.x + n1.vx * 0.5f, -30000, +30000);
             n1.y = constrain(n1.y + n1.vy * 0.5f, -30000, +30000);
 
-            // update the original, "stored" node
-            n1.original.x = n1.x;
-            n1.original.y = n1.y;
+            // HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK
+            // update the original, "stored" node if we're in a macro layout
+            // HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK
+            if (v.getLevel()==ViewLevel.MACRO) {
+                n1.original.x = n1.x;
+                n1.original.y = n1.y;
+            }
 
             n1.vx = 0.0f;
             n1.vy = 0.0f;
@@ -590,13 +594,16 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             noSmooth();
             bezierDetail(7);
-            goodLayout(v);
+            // goodLayout(v);
+            v.graph.touch(); // do the layout (recompute all the scene as well..)
         }
 
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
         noFill();
+
+
 
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
@@ -883,8 +890,8 @@ public class Main extends PApplet implements MouseWheelListener {
                         if (!n.selected) {
                             n.selected = true;
                             session.selectNode(n);
-                            nodeSelectedRightMouse_JS_CALLBACK(n);
                         }
+                       nodeSelectedRightMouse_JS_CALLBACK(n);
                 }
                 break;
             }

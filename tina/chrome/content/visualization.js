@@ -28,15 +28,24 @@ function Tinaviz() {
 	        
 		this.dispatchProperty("radius/value", 1.0);
 		
+		// we want to create a "batchviz's local exploration"-like behaviour?
+		//  it's trivial with the new architecture! use the "explorer" filter
+		this.setProperty("meso", "explorer/source", "macro");
+		this.setProperty("meso", "explorer/item", "");
+				
 	    // create a new "Category()" filter instance, which use the "category" namespace, and attach it to the "macro" new
 	    // and YES, you can define filters or properties at any time, it's totally asynchronous ;)
-		this.bindFilter("Category","category", "macro");
-		this.bindFilter("ThresholdWeight","weight", "macro");
-		this.bindFilter("NodeRadius","radius", "macro")
-
-		this.bindFilter("Category","category", "meso");
-		this.bindFilter("ThresholdWeight","weight", "meso");
-		this.bindFilter("NodeRadius","radius", "meso")
+		this.bindFilter("Category",         "category", "macro");
+		this.bindFilter("ThresholdWeight",  "weight",   "macro");
+		this.bindFilter("NodeRadius",       "radius",   "macro")
+        this.bindFilter("Layout",           "layout",   "macro");
+        
+        // MESO LOCAL EXPLORATION FILTERS
+		this.bindFilter("Explorer",         "explorer", "meso"); // generator;
+		this.bindFilter("Category",         "category", "meso");
+		this.bindFilter("ThresholdWeight",  "weight",   "meso");
+		this.bindFilter("NodeRadius",       "radius",   "meso");
+        this.bindFilter("Layout",           "layout",   "meso");
 
         //this.loadRelativeGraph("macro","user/fet open/8_0.0-1.0.gexf");
 
@@ -127,24 +136,39 @@ function Tinaviz() {
 
         /*if (id == null) { $('#sidebariframe').hide(); }
         else            { $('#sidebariframe').show(); }*/
-
+        if (attr=="Document") {
+            this.setProperty(level, "category/value", "NGram");
+            this.touch(level);
+            this.logNormal("right click on doc");
+        } else if (attr=="NGram") {
+            this.setProperty(level, "category/value", "Document");
+            this.touch(level);
+            this.logNormal("right click on ngram");
+        }
         if (level == "macro") {
+        
             if (attr=="Document") {
-                this.selectMacroDocument2(x,y,id,label);
+                 //this.setProperty("macro", "category/value", "Document");
+                 //this.touch("macro");
+                 this.printDocument(x,y,id,label,attr);
             } else if (attr=="NGram") {
-                this.selectMacroTerm2(x,y,id,label);
+                 //this.setProperty("macro", "category/value", "NGram");
+                 //this.touch("macro");
+                 this.printNGram(x,y,id,label,attr);
             }
-        } else if (level == "meso") {
-            if (attr=="Document") {
-                this.selectMesoDocument2(x,y,id,label);
+        } else if (level == "meso") { // si dans meso
+            if (attr=="Document") { // et clic droit sur un doc
+                //this.setProperty("meso", "category/value", "Document");
+                //this.touch("meso");
+                this.printDocument(x,y,id,label,attr);
             } else if (attr=="NGram") {
-                this.selectMesoTerm2(x,y,id,label);
+                //this.setProperty("meso", "category/value", "NGram");
+                //this.touch("meso");
+                this.printNGram(x,y,id,label,attr);
             }
         } else if (level == "micro") {
             if (attr=="Document") {
-                this.selectMicroDocument2(x,y,id,label);
             } else if (attr=="NGram") {
-                this.selectMicroTerm2(x,y,id,label);
             }
         }
     },
@@ -159,26 +183,37 @@ function Tinaviz() {
 
         this.logDebug("nodeLeftClicked called! attributes: '"+attr+"'");
 
-        /*if (id == null) { $('#sidebariframe').hide(); }
-        else            { $('#sidebariframe').show(); }*/
-
         if (level == "macro") {
             if (attr=="Document") {
-                this.selectMacroDocument(x,y,id,label);
-            } else if (attr=="NGram") {
-                this.selectMacroTerm(x,y,id,label);
+                applet.clear("meso");
+                this.setProperty("meso", "explorer/item", id);
+                this.setProperty("meso", "category/value", "Document");
+                this.touch("meso");
+                this.printDocument(x,y,id,label);
+            } else if (attr=="NGram") {  
+                applet.clear("meso");
+                this.setProperty("meso", "explorer/item", id);
+                this.setProperty("meso", "category/value", "NGram");
+                this.touch("meso");
+                this.printNGram(x,y,id,label);
             }
         } else if (level == "meso") {
             if (attr=="Document") {
-                this.selectMesoDocument(x,y,id,label);
+                applet.clear("meso");
+                this.setProperty("meso", "explorer/item", id);
+                this.setProperty("meso", "category/value", "NGram");
+                this.touch("meso");
+                this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {
-                this.selectMesoTerm(x,y,id,label);
+                applet.clear("meso");
+                this.setProperty("meso", "explorer/item", id);
+                this.setProperty("meso", "category/value", "Document");
+                this.touch("meso");
+                this.printNGram(x,y,id,label);
             }
         } else if (level == "micro") {
             if (attr=="Document") {
-                this.selectMicroDocument(x,y,id,label);
             } else if (attr=="NGram") {
-                this.selectMicroTerm(x,y,id,label);
             }
         }
     },
@@ -389,7 +424,7 @@ function Tinaviz() {
     },
     
     
-    bindFilter: function(level, name, path, level) {
+    bindFilter: function(name, path, level) {
         if (applet == null) return;
         if (level == null) return applet.getSession().addFilter(name, path);
         return applet.getView(level).addFilter(name, path);
@@ -414,103 +449,21 @@ function Tinaviz() {
         this.logNormal("Searching is not implemented yet..");
     },
 
+  
+  printNGram: function(x,y,id,label,attr) {
 
-    getNGram: function(id) {
-       var ng = getNGram( id );
-       this.logDebug("ng= "+ng);
-       if (ng == null) return null;
-       delete ng['py/object'];
-       ng["edges_data"] = { "Document" : {}, "Corpus" : {} };
-       for (var doc in ng["edges"]["Document"]) {
+     var ng = getNGram( id );
+     this.logDebug("ng= "+ng);
+     if (ng == null) return null;
+     // don't query the DB if we are on a "lambda" graph
+     
+     delete ng['py/object'];
+     ng["edges_data"] = { "Document" : {}, "Corpus" : {} };
+      for (var doc in ng["edges"]["Document"]) {
            var obj = getDocument(doc);
            if (obj == null) { delete ng["edges"]["Document"][doc];} 
            else {  ng["edges_data"]["Document"][doc] = obj;}
-       }
-       /*
-       for (var corp in ng["edges"]["Corpus"]) {
-           var obj = getCorpus(corp);
-           if (obj == null) { delete ng["edges"]["Corpus"][corp];}
-           else { ng["edges_data"]["Corpus"][corp] = obj;}
-       }*/
-       return ng;
-  },
-   getNGram2: function(id) {
-       var ng = getNGram( id );
-       this.logDebug("ng= "+ng);
-       if (ng == null) return null;
-       delete ng['py/object'];
-       ng["edges_data"] = { "NGram" : {}, "Document" : {}, "Corpus" : {} };
-       for (var doc in ng["edges"]["Document"]) {
-           var obj = getDocument(doc);
-           if (obj == null) { delete ng["edges"]["Document"][doc];} 
-           else { 
-             ng["edges_data"]["Document"][doc] = obj; 
-             for (var ng2 in obj["edges"]["NGram"]) { 
-                 var obj2 = getNGram(ng2);
-                 if (obj2 == null) { delete obj["edges"]["NGram"]; }
-                 ng["edges_data"]['NGram'][ng2] = obj2;
-             }
-           }
-       }
-       /*
-       for (var corp in ng["edges"]["Corpus"]) {
-           var obj = getCorpus(corp);
-           if (obj == null) { delete ng["edges"]["Corpus"][corp];}
-           else { ng["edges_data"]["Corpus"][corp] = obj;}
-       }
-       */
-       return ng;
-  },
-  
-  getDocument: function(id) {
-       var doc = getDocument( id );
-       this.logDebug("doc= "+doc);
-       if (doc == null) return null;
-       delete doc['py/object'];
-       doc["edges_data"] = { "NGram" : {}, "Corpus" : {} };
-       for (var ng in doc["edges"]["NGram"]) {
-           var obj = getNGram(ng);
-           if (obj == null) { delete doc["edges"]["NGram"][ng];} 
-           else {  doc["edges_data"]["NGram"][ng] = obj;}
-       }
-       /*
-       for (var corp in doc["edges"]["Corpus"]) {
-           var obj = getCorpus(corp);
-           if (obj == null) { delete doc["edges"]["Corpus"][corp];}
-           else { doc["edges_data"]["Corpus"][corp] = obj;}
-       }*/
-       return doc;
-  },
-  getDocument2: function(id) {
-       var doc = getDocument( id );
-       this.logDebug("doc= "+doc);
-       if (doc == null) return null;
-       delete doc['py/object'];
-       doc["edges_data"] = {  "Document" : {}, "NGram" : {}, "Corpus" : {} };
-       for (var ng in doc["edges"]["NGram"]) {
-           var obj = getNGram(ng);
-           if (obj == null) { delete doc["edges"]["NGram"][ng];} 
-           else { 
-             doc["edges_data"]["NGram"][ng] = obj; 
-             for (var doc2 in obj["edges"]["Document"]) { 
-                 var obj2 = getDocument(doc2);
-                 if (obj2 == null) { delete obj["edges"]["Document"]; }
-                 doc["edges_data"]['Document'][doc2] = obj2;
-             }
-           }
-       }/*
-       for (var corp in doc["edges"]["Corpus"]) {
-           var obj = getCorpus(corp);
-           if (obj == null) { delete doc["edges"]["Corpus"][corp];}
-           else { doc["edges_data"]["Corpus"][corp] = obj;}
-       }*/
-       return doc;
-  },
-  
-  selectMacroTerm: function(x,y,id,label,attr) {
-     this.logDebug("selectMacroTerm("+id+","+label+")");
-     var ng = this.getNGram(id);
-     if (ng==null) return;
+      }
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
@@ -522,18 +475,24 @@ function Tinaviz() {
        <br/><a href=\"javascript:tinaviz.selectMacroDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][doc]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
+     
 
-    this.showMesoTerm(ng,x,y,id,label,attr);
-  },
-  selectMacroTerm2: function(x,y,id,label,attr) {
-     this.logDebug("selectMacroTerm2("+id+","+label+")");
-     this.showMesoTerm2(this.getNGram2(id),x,y,id,label,attr);
-   },
-  selectMacroDocument: function(x,y,id,label,attr) {
-     if (applet == null) return;
-     this.logDebug("selectMacroDocument("+id+","+label+")");
-     var doc = this.getDocument(id);
-     if (doc==null) return;
+    },
+
+     printDocument: function(x,y,id,label,attr) {
+
+     var doc = getDocument( id );
+     this.logDebug("doc= "+doc);
+     if (doc == null) return null;
+     // don't query the DB if we are on a "lambda" graph
+          
+     delete doc['py/object'];
+     doc["edges_data"] = { "NGram" : {}, "Corpus" : {} };
+      for (var ng in ng["edges"]["NGram"]) {
+           var obj = getNGram(doc);
+           if (obj == null) { delete doc["edges"]["NGram"][ng];} 
+           else {  doc["edges_data"]["NGram"][ng] = obj;}
+      }
      
      $('#infodiv').html(Shotenjin.render("\n\
      <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
@@ -546,312 +505,10 @@ function Tinaviz() {
      <?js } ?>.\
      </p>\n", doc));
 
-          this.showMesoDocument(doc, x,y,id,label,attr);
-  },
-  selectMacroDocument2: function(x,y,id,label,attr) {
-     if (applet == null) return;
-     this.logDebug("selectMacroDocument2("+id+","+label+")");
-     this.showMesoDocument2(this.getDocument2(id), x,y,id,label,attr);
-  },
-  selectMesoTerm: function(x,y,id,label,attr) {
-     this.logDebug("selectMesoTerm("+id+","+label+")");
-     var ng = this.getNGram(id);
-     if (ng==null) return;
-     
-     $('#infodiv').html(Shotenjin.render("\n\
-     <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
-     <h3 class=\"nodedetailsh3\">Linked to these projects:</h3>\n\
-     <p class=\"nodedetailsp\">\n\
-     <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
-         <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][first]['label']}</a> \
-     <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-     <br/><a href=\"javascript:tinaviz.selectMesoDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">${edges_data['Document'][doc]['label']}</a>\
-     <?js } ?>.\
-     </p>\n", ng));
-     
-    this.showMesoTerm(ng,x,y,id,label,attr);
-    },
-     selectMesoTerm2: function(x,y,id,label,attr) {
-     this.logDebug("selectMesoTerm2("+id+","+label+")");
-     this.showMesoTerm2(this.getNGram2(id),x,y,id,label,attr);
-    },
-    
-     selectMesoDocument: function(x,y,id,label,attr) {
-     this.logDebug("selectMesoDocument("+id+","+label+")");
-     var doc = this.getDocument(id);
-     if (doc==null) return;
-     
-     $('#infodiv').html(Shotenjin.render("\n\
-     <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
-     <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
-     <p class=\"nodedetailsp\">\n\
-     <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
-         <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
-     <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
-     <br/><a href=\"javascript:tinaviz.selectMesoTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
-     <?js } ?>.\
-     </p>\n", doc));
+  }
 
-     this.showMesoDocument(doc, x,y,id,label,attr);
-  },
-    selectMesoDocument2: function(x,y,id,label,attr) {
-     this.logDebug("selectMesoDocument2("+id+","+label+")");
-     this.showMesoDocument2(this.getDocument2(id), x,y,id,label,attr);
-  },
-
-    
-    
-    showMesoDocument: function(doc,x,y,id,label,attr) {
-           if (doc == null) return;
-            var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
-        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
-    <graph>\n\
-        <attributes class=\"node\">\n\
-        </attributes>\n\
-        <tina>\n\
-            <selected node=\""+id+"\" />\n\
-        </tina>\n\
-        <nodes>\n\
-            <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"7\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\"Document\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js     for (var ng in edges['NGram']) {  ?>\
-            <node id=\"#{ng}\" label=\"${edges_data['NGram'][ng]['label']}\">\n\
-                <viz:size value=\"4.0\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\"NGram\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js } ?>\
-        </nodes>\n\
-        <edges>\n\
-<?js var i=0;                                                                               ?>\
-<?js for (var ng1 in edges['NGram']) {                                                  ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{ng1}\" weight=\"20\" />\n\
-<?js    for (var ng2 in edges['NGram']) {                                               ?>\
-<?js        var weight = 0;                                                                 ?>\
-<?js        for (var shared in edges_data['NGram'][ng1]['edges']['Document']) {            ?>\
-<?js            if (shared==id) continue;                                                   ?>\
-<?js            if (shared in edges_data['NGram'][ng2]['edges']['Document']) weight++;     ?>\
-<?js        }                                                                               ?>\
-<?js        if (weight < 2) continue;                                                       ?>\
-<?js        weight = weight / 10.0;                                                         ?>\
-            <edge id=\"#{i++}\" source=\"#{ng1}\" target=\"#{ng2}\" weight=\"#{weight}\" />\n\
-<?js    }                                                                                   ?>\
-<?js }                                                                                      ?>\
-        </edges>\n\
-    </graph>\n\
-</gexf>", doc);
-     // console.log(gexf);
-     applet.clear("meso");
-     applet.getSession().updateFromString("meso",gexf);
-    },
-        
-    showMesoDocument2: function(doc,x,y,id,label,attr) {
-        if (doc == null) return;
-        var doctype = "Document";
-      
-        var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
-        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
-    <graph>\n\
-        <attributes class=\"node\">\n\
-        </attributes>\n\
-        <tina>\n\
-            <selected node=\""+id+"\" />\n\
-        </tina>\n\
-        <nodes>\n\
-            <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"7\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\""+doctype+"\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js for (var ng in edges['NGram']) { ?>\
-<?js    for (var doc in edges_data['NGram'][doc]['edges']['"+doctype+"']) { ?>\
-            <node id=\"#{doc}\" label=\"${edges_data['"+doctype+"'][doc]['label']}\">\n\
-                <viz:size value=\"4.0\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\""+doctype+"\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js    } ?>\
-<?js } ?>\
-        </nodes>\n\
-        <edges>\n\
-<?js var i=0;                                                                                 ?>\
-<?js for (var ng in edges['NGram']) {                                                     ?>\
-<?js    for (var doc1 in edges_data['NGram'][ng]['edges']['"+doctype+"']) {                ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{doc}\" weight=\"#{20}\" />\n\
-<?js                                                                                          ?>\
-<?js        for (var doc2 in edges_data['NGram'][ng]['edges']['"+doctype+"']) {            ?>\
-<?js            if (doc1 == doc2) continue;                                                     ?>\
-<?js            var weight=0;                                                                 ?>\
-<?js            for (var shared in edges_data['Document'][doc1]['edges']['NGram']) {           ?>\
-<?js                if (shared==id) continue;                                                 ?>\
-<?js                if (shared in edges_data['Document'][doc2]['edges']['NGram']) weight++;   ?>\
-<?js            }                                                                             ?>\
-<?js        if (weight < 2) continue;                                                         ?>\
-<?js        weight = weight / 10.0;                                                         ?>\
-            <edge id=\"#{i++}\" source=\"#{doc1}\" target=\"#{doc2}\" weight=\"#{weight}\" />\n\
-<?js        }                                                                                 ?>\
-<?js    }                                                                                     ?>\
-<?js }                                                                                        ?>\
-        </edges>\n\
-    </graph>\n\
-</gexf>", doc);
-     // console.log(gexf);
-     applet.clear("meso");
-     applet.getSession().updateFromString("meso",gexf);
-    },
-     showMesoTerm: function(ng,x,y,id,label,attr) {
-            if (ng == null) return;
-            var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
-        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
-    <graph>\n\
-        <attributes class=\"node\">\n\
-        </attributes>\n\
-        <tina>\n\
-            <selected node=\""+id+"\" />\n\
-        </tina>\n\
-        <nodes>\n\
-            <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"7\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\"NGram\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js     for (var doc in edges['Document']) {  ?>\
-            <node id=\"#{doc}\" label=\"${edges_data['Document'][doc]['label']}\">\n\
-                <viz:size value=\"4.0\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\"Document\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js } ?>\
-        </nodes>\n\
-        <edges>\n\
-<?js var i=0;                                                                               ?>\
-<?js for (var doc1 in edges['Document']) {                                                  ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{doc1}\" weight=\"20\" />\n\
-<?js    for (var doc2 in edges['Document']) {                                               ?>\
-<?js        var weight = 0;                                                                 ?>\
-<?js        for (var shared in edges_data['Document'][doc1]['edges']['NGram']) {            ?>\
-<?js            if (shared==id) continue;                                                   ?>\
-<?js            if (shared in edges_data['Document'][doc2]['edges']['NGram']) weight++;     ?>\
-<?js        }                                                                               ?>\
-<?js        if (weight < 2) continue;                                                       ?>\
-<?js        weight = weight / 10.0;                                                         ?>\
-            <edge id=\"#{i++}\" source=\"#{doc1}\" target=\"#{doc2}\" weight=\"#{weight}\" />\n\
-<?js    }                                                                                   ?>\
-<?js }                                                                                      ?>\
-        </edges>\n\
-    </graph>\n\
-</gexf>", ng);
-     // console.log(gexf);
-     applet.clear("meso");
-     applet.getSession().updateFromString("meso",gexf);
-    },
-    
-     showMesoTerm2: function(ng,x,y,id,label,attr) {
-      if (ng == null) return;
-        var doctype = "NGram";
-        
-        var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
-        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
-    <graph>\n\
-        <attributes class=\"node\">\n\
-        </attributes>\n\
-        <tina>\n\
-            <selected node=\""+id+"\" />\n\
-        </tina>\n\
-        <nodes>\n\
-            <node id=\"#{id}\" label=\"${label}\">\n\
-                <viz:size value=\"7\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\""+doctype+"\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js for (var doc in edges['Document']) { ?>\
-<?js    for (var ng in edges_data['Document'][doc]['edges']['"+doctype+"']) { ?>\
-            <node id=\"#{ng}\" label=\"${edges_data['"+doctype+"'][ng]['label']}\">\n\
-                <viz:size value=\"4.0\"/>\n\
-                <attvalues>\n\
-                    <attvalue for=\"0\" value=\""+doctype+"\" />\n\
-                </attvalues>\n\
-            </node>\n\
-<?js    } ?>\
-<?js } ?>\
-        </nodes>\n\
-        <edges>\n\
-<?js var i=0;                                                                                 ?>\
-<?js for (var doc in edges['Document']) {                                                     ?>\
-<?js    for (var ng1 in edges_data['Document'][doc]['edges']['"+doctype+"']) {                ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{ng}\" weight=\"#{20}\" />\n\
-<?js                                                                                          ?>\
-<?js        for (var ng2 in edges_data['Document'][doc]['edges']['"+doctype+"']) {            ?>\
-<?js            if (ng1 == ng2) continue;                                                     ?>\
-<?js            var weight=0;                                                                 ?>\
-<?js            for (var shared in edges_data['NGram'][ng1]['edges']['Document']) {           ?>\
-<?js                if (shared==id) continue;                                                 ?>\
-<?js                if (shared in edges_data['NGram'][ng2]['edges']['Document']) weight++;    ?>\
-<?js            }                                                                             ?>\
-<?js        if (weight < 15) continue;                                                        ?>\
-<?js        weight = weight / 10.0;                                                           ?>\
-            <edge id=\"#{i++}\" source=\"#{ng1}\" target=\"#{ng2}\" weight=\"#{weight}\" />\n\
-<?js        }                                                                                 ?>\
-<?js    }                                                                                     ?>\
-<?js }                                                                                        ?>\
-        </edges>\n\
-    </graph>\n\
-</gexf>", ng);
-     // console.log(gexf);
-     applet.clear("meso");
-     applet.getSession().updateFromString("meso",gexf);
-    }
   };
 }
 
 tinaviz = new Tinaviz();
-
-//$(document).ready(function() {
-
-    /*
-    $("#searchfield").autocomplete({
-        data: labels,
-        extraSearch: function(term) {
-            applet = $('#vizframe').contents().find('#tinaviz')[0];
-            viz = applet.getLabels();
-            viz.searchLabelDynamicFocus(term);
-        }
-    });
-    */
-    /*
-    $("#altslider").slider({
-            orientation: "vertical",
-            range: true,
-            animate: true,
-            values: [1, 100],
-            slide: function(event, ui) {
-
-                //$("#amount").val('$' + ui.values[0] + ' - $' + ui.values[1]); // ui.values[1]
-                //viz.setGenericityRange(ui.values[0],ui.values[1], 100);
-                tinaviz.setGenericityRange(ui.values[0],ui.values[1]);
-
-                $("#upperThresholdInput").val(ui.values[1]/100);
-                $("#lowerThresholdInput").val(ui.values[0]/100);
-            }
-    });
-    */
-
-
-//});
-
-
 

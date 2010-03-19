@@ -13,7 +13,7 @@ public class MacroView extends View {
     public MacroView(Session aThis) {
         super(aThis);
         prespatializeSteps = 84;
-         ZOOM_CEIL = 0.4f;
+         ZOOM_CEIL = 0.2f;
          ZOOM_FLOOR = 25.0f;
     }
 

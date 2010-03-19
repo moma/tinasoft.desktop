@@ -20,6 +20,7 @@ public class MesoView extends View {
         centerOnSelection = true;
         ZOOM_CEIL = 1.0f;
         ZOOM_FLOOR = 50.0f;
+        graph.locked.set(false);
     }
 
     public void setCenterOnSelection(boolean value) {

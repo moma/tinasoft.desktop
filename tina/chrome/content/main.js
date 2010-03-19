@@ -501,7 +501,7 @@ $(document).ready(function() {
 	});
 	
     $("#meso_node_size").slider({
-        max: 300,
+        max: 600,
         slide: function(event, ui) {
 		tinaviz.setProperty("meso", "radius/value", ui.value / 100.0);
 		tinaviz.touch("meso");
@@ -524,7 +524,7 @@ $(document).ready(function() {
 	}});
 
     $("#macro_node_size").slider({
-        max: 300,
+        max: 600,
         slide: function(event, ui) {
 		tinaviz.setProperty("macro", "radius/value", ui.value / 100.0);
 		tinaviz.touch("macro");

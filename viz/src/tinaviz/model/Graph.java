@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -387,8 +388,8 @@ System.out.println("loading GEXF from string..");
     }
 
     // call by the drawer when isSynced is false
-    public synchronized List<tinaviz.Node> getNodeList() {
-        List<tinaviz.Node> res = new ArrayList<tinaviz.Node>();
+    public synchronized List<tinaviz.Node> getNodeListCopy() {
+        List<tinaviz.Node> res = new LinkedList<tinaviz.Node>();
         for (Node n : storedNodes.values()) {
             res.add(new Node(n));
         }

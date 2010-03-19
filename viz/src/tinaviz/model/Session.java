@@ -74,21 +74,24 @@ public class Session {
     public synchronized void toMacroLevel() {
         if (currentLevel != ViewLevel.MACRO) {
             currentLevel = ViewLevel.MACRO;
-            macro.filters.popLocked.set(false); // open the pop lock!
+            macro.graph.touch();
+            //macro.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
     public synchronized void toMesoLevel() {
         if (currentLevel != ViewLevel.MESO) {
             currentLevel = ViewLevel.MESO;
-            meso.filters.popLocked.set(false); // open the pop lock!
+            meso.graph.touch();
+            //meso.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
     public synchronized void toMicroLevel() {
         if (currentLevel != ViewLevel.MICRO) {
             currentLevel = ViewLevel.MICRO;
-            micro.filters.popLocked.set(false); // open the pop lock!
+            micro.graph.touch();
+            //micro.filters.popLocked.set(false); // open the pop lock!
         }
     }
 

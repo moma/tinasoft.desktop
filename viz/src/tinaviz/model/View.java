@@ -16,7 +16,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import processing.core.PVector;
 
-import tinaviz.filtering.FilterChain;
+import tinaviz.transformations.FilterChain;
 import tinaviz.Node;
 
 
@@ -54,7 +54,7 @@ public class View {
 
     public View(Session session) {
         graph = new Graph(session);
-        filters = new FilterChain(this);
+        filters = new FilterChain(session, this);
         hasBeenRead = new AtomicBoolean(false);
 
 
