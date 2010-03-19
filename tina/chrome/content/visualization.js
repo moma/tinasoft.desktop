@@ -536,7 +536,7 @@ function Tinaviz() {
 <?js                if (shared==id) continue; ?>\
 <?js                if (shared in edges_data[target_type][target_node2]['edges']['Document']) { ?>\
 <?js                    weight++; ?>\
-<?js                    if (weight < 5) continue; ?>\
+<?js                   /* if (weight < 1) continue; */?>\
             <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"#{weight}\" />\n\
 <?js                    break; ?>\
 <?js                } ?>\
@@ -591,7 +591,7 @@ function Tinaviz() {
 <?js                if (shared==id) continue; ?>\
 <?js                if (shared in edges_data[target_type][target_node2]['edges']['NGram']) { ?>\
 <?js                    weight++; ?>\
-<?js                    if (weight < 5) continue; ?>\
+<?js                    /*if (weight < 1) continue;*/ ?>\
             <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"#{weight}\" />\n\
 <?js                    break; ?>\
 <?js                } ?>\

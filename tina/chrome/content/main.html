@@ -245,9 +245,12 @@
                        </div>
                        -->
                 </div>
-                Repulsion: <div id="macro_repulsion" class="threshold"></div>
-                Weight: <div id="macro_weight_threshold" class="threshold"></div>
-                Size: <div id="macro_node_size" class="threshold"></div>
+                <div class="sliders">
+                    <!--<div id="macro_repulsion" class="threshold"></div>-->
+                    <div id="macro_weight_threshold" class="threshold"></div>
+                    <div id="macro_node_size" class="threshold"></div>
+                </div><!-- end of sliders -->
+                <div id="tabfiller" class="tabfiller"></div>
             </div>
 
             <div id="tabs-3" class="ui-corner-bottom">
@@ -323,11 +326,14 @@
                            class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
                        </div>
                        -->
-                </div>
-                Repulsion: <div id="meso_repulsion" class="threshold"></div>
-                Weight: <div id="meso_weight_threshold" class="threshold"></div>
-                Size: <div id="meso_node_size" class="threshold"></div>
-            </div>
+                </div><!-- end of toolbar -->
+                <div class="sliders">
+                    <!--<div id="meso_repulsion" class="threshold"></div>-->
+                    <div id="meso_weight_threshold" class="threshold"></div>
+                    <div id="meso_node_size" class="threshold"></div>
+                </div><!-- end of sliders -->
+                <div id="tabfiller" class="tabfiller"></div>
+            </div><!-- end of tab 3 (meso) -->
 
             <!--<div id="tabs-4" class="ui-corner-bottom">
                 Micro Level (Not Implemented)
@@ -335,7 +341,8 @@
         </div><!--tabs-->
       </div><!-- demo -->
 
-       <div id="whitebox" class="ui-widget ui-widget-content ui-corner-bottom formleft whitebox">
+       <!--<div id="whitebox" class="ui-widget ui-widget-content ui-corner-bottom formleft whitebox">-->
+      <div id="whitebox" class="invisiblebox">
               <div id="container"></div>
                 <div id="infodiv" class="ui-widget ui-widget-content ui-corner-all formleft infodiv">
                     <h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>

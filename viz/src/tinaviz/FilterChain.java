@@ -138,6 +138,16 @@ public class FilterChain {
             }
 
         }
+
+        // experimental
+        
+        if (!popLocked.get()) {
+                System.out.println("Filters are up to date, not running, and not popped.. we return filtered nodes!");
+                popLocked.set(true); // no more popping!
+                return filteredNodes;
+         }
+
+
         System.out.println("Filter is outdated, checking if we can run a new filter thread..");
 
         // we have to wait for the graph to be unlocked

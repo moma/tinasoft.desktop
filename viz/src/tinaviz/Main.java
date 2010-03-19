@@ -28,10 +28,12 @@ public class Main extends PApplet implements MouseWheelListener {
     Session session = new Session();
     // pourcentage de l'ecran pour lequel la présence des bords d'un node
     // déclenche le passage dans le mode macro
-    float screenRatioSelectNodeWhenZoomed = 0.3f;
-    float screenRatioGoToMesoWhenZoomed = 0.65f;
-    AtomicBoolean zooming = new AtomicBoolean(false);
+    float screenRatioSelectNodeWhenZoomed = 0.22f;
+    float screenRatioGoToMesoWhenZoomed = 0.55f;
+
+   AtomicBoolean zooming = new AtomicBoolean(false);
     AtomicBoolean zoomIn = new AtomicBoolean(false);
+
     private RecordingFormat recordingMode = RecordingFormat.NONE;
     private String recordPath = "graph.pdf";
     AtomicBoolean mouseClickLeft = new AtomicBoolean(false);
@@ -455,6 +457,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 vx = n2.x - n1.x;
                 vy = n2.y - n1.y;
                 distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
+
 
                 //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
                 // plutot que mettre une distance minimale,
@@ -913,35 +916,43 @@ public class Main extends PApplet implements MouseWheelListener {
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
 
-            if (!(nsx > -(width / 2.0f)
-                    && nsx < width + (width / 2.0f)
-                    && nsy > -(height / 2.0f)
-                    && nsy < height + (height / 2.0f))) {
+            if (!(nsx > width*0.2f
+                    && nsx < width*0.8f
+                    && nsy > height*0.2f
+                    && nsy < height*0.8f)) {
                 continue;
             }
 
-            float nsr = screenX(n.x + (n.radius + n.radius * 0.4f), n.y) - nsx;
+            float nsr = screenX(n.x + (rad2), n.y) - nsx;
             if (nsr < 2) {
                 continue;
             }
 
-            float screenRatio = ((nsr * 2.0f / (float) width) + (nsr * 2.0f / (float) height)) / 2.0f;
+            float screenRatio = (((nsr * 2.0f) / (float) width) + ((nsr * 2.0f) / (float) height)) / 2.0f;
+            //System.out.println("nsr: " + nsr);
+            //System.out.println("'- screen ratio: " + screenRatio);
 
             switch (session.currentLevel) {
                 case MACRO:
 
                     if (screenRatio > screenRatioGoToMesoWhenZoomed) {
-                        if (bestMatchForSwitch == null) {
-                            bestMatchForSwitch = n;
-                        }
-                        if (rad2 > bestMatchForSwitch.radius) {
+                        if (bestMatchForSwitch != null) {
+
+                            if (rad2 > bestMatchForSwitch.radius) {
+                                bestMatchForSelection = null;
+                                bestMatchForSwitch = n;
+                            }
+                        } else {
+                            bestMatchForSelection = null;
                             bestMatchForSwitch = n;
                         }
                     } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
-                        if (bestMatchForSelection == null) {
-                            bestMatchForSelection = n;
-                        }
-                        if (rad2 > bestMatchForSelection.radius) {
+                        if (bestMatchForSelection != null) {
+
+                            if (rad2 > bestMatchForSelection.radius) {
+                                bestMatchForSelection = n;
+                            }
+                        } else {
                             bestMatchForSelection = n;
                         }
                     }
@@ -949,6 +960,24 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
 
+        if (bestMatchForSwitch != null) {
+            if (!bestMatchForSwitch.selected) {
+                bestMatchForSwitch.selected = true;
+                session.selectNode(bestMatchForSwitch);
+                jsNodeSelected(bestMatchForSwitch);
+            }
+            System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
+            session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
+            jsSwitchToMeso();
+            return;
+        } else if (bestMatchForSelection != null) {
+            if (!bestMatchForSelection.selected) {
+                bestMatchForSelection.selected = true;
+                session.selectNode(bestMatchForSelection);
+                jsNodeSelected(bestMatchForSelection);
+            }
+            return;
+        }
 
         switch (v.getLevel()) {
             case MACRO:
@@ -960,7 +989,7 @@ public class Main extends PApplet implements MouseWheelListener {
             case MESO:
                 if (v.sceneScale > v.ZOOM_FLOOR) {
                     v.sceneScale = v.ZOOM_FLOOR;
-                    System.out.println("switch in to micro");
+                   System.out.println("switch in to micro");
 
                 }
                 if (v.sceneScale < v.ZOOM_CEIL) {

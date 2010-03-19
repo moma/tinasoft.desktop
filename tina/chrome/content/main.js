@@ -395,8 +395,12 @@ function switchedTo(level) {
 function resizeApplet() {
     var w = getAppletWidth();
     var h = getAppletHeight();
+    
+    $('.tabfiller').css("height",""+(h+10)+"px");
+
     $('#whitebox').css("height",""+(h)+"px");
     $('#whitebox').css("width",""+(w)+"px");
+    
     $('#vizframe').css("height",""+(h)+"px");
     $('#vizframe').css("width",""+(w-350)+"px");
     $('#infodiv').show();
