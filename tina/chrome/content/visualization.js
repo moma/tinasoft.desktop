@@ -16,15 +16,28 @@ function Tinaviz() {
 
         this.setLevel("macro");
         
-        this.setGlobalProperty("layout/repulsion", 0.5);
-	    this.setGlobalProperty("threshold/weight/min", 0.0);
-	    this.setGlobalProperty("threshold/weight/max", 1.0);
-		this.setGlobalProperty("node/radius", 1.0);
+        //this.setProperty("macro", "layout/repulsion", 0.5);
+        
+        // initial edge weight threshold
+	    this.dispatchProperty("weight/min", 0.0);
+	    this.dispatchProperty("weight/max", 1.0);
+	    
+	    // we want to keep documents
+	    this.dispatchProperty("category/value", "Document");
+	    this.dispatchProperty("category/mode", "keep");
+	        
+		this.dispatchProperty("radius/value", 1.0);
 		
-		this.addGlobalFilter("EdgeWeightThreshold");
-		this.addGlobalFilter("NodeRadius");
-		// this.createFilter("ForceVector");
-		
+	    // create a new "Category()" filter instance, which use the "category" namespace, and attach it to the "macro" new
+	    // and YES, you can define filters or properties at any time, it's totally asynchronous ;)
+		this.bindFilter("Category","category", "macro");
+		this.bindFilter("ThresholdWeight","weight", "macro");
+		this.bindFilter("NodeRadius","radius", "macro")
+
+		this.bindFilter("Category","category", "meso");
+		this.bindFilter("ThresholdWeight","weight", "meso");
+		this.bindFilter("NodeRadius","radius", "meso")
+
         //this.loadRelativeGraph("macro","user/fet open/8_0.0-1.0.gexf");
 
         // disable the applet when on another tab (to save CPU)
@@ -107,8 +120,35 @@ function Tinaviz() {
 
         }
     },
+    
+    nodeRightClicked: function(level,x,y,id,label,attr) {
+        if (applet == null) return;
+        this.logDebug("nodeRightClicked called! attributes: '"+attr+"'");
 
-    nodeSelected: function(level,x,y,id,label,attr) {
+        /*if (id == null) { $('#sidebariframe').hide(); }
+        else            { $('#sidebariframe').show(); }*/
+
+        if (level == "macro") {
+            if (attr=="Document") {
+                this.selectMacroDocument2(x,y,id,label);
+            } else if (attr=="NGram") {
+                this.selectMacroTerm2(x,y,id,label);
+            }
+        } else if (level == "meso") {
+            if (attr=="Document") {
+                this.selectMesoDocument2(x,y,id,label);
+            } else if (attr=="NGram") {
+                this.selectMesoTerm2(x,y,id,label);
+            }
+        } else if (level == "micro") {
+            if (attr=="Document") {
+                this.selectMicroDocument2(x,y,id,label);
+            } else if (attr=="NGram") {
+                this.selectMicroTerm2(x,y,id,label);
+            }
+        }
+    },
+    nodeLeftClicked: function(level,x,y,id,label,attr) {
         if (applet == null) return;
         if (id==null) {
             $('#infodiv').html("<h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>");
@@ -117,7 +157,7 @@ function Tinaviz() {
             return;
         }
 
-        this.logDebug("nodeSelected called! attributes: '"+attr+"'");
+        this.logDebug("nodeLeftClicked called! attributes: '"+attr+"'");
 
         /*if (id == null) { $('#sidebariframe').hide(); }
         else            { $('#sidebariframe').show(); }*/
@@ -348,18 +388,15 @@ function Tinaviz() {
        return getAppletHeight();
     },
     
-    addGlobalFilter: function(name) {
-        if (applet == null) return;
-        return applet.getSession().addFilter(name);
-    },
     
-    addFilter: function(level, name) {
+    bindFilter: function(level, name, path, level) {
         if (applet == null) return;
-        return applet.getView(level).addFilter(name);
+        if (level == null) return applet.getSession().addFilter(name, path);
+        return applet.getView(level).addFilter(name, path);
     },
     
       
-    setGlobalProperty: function(key,value) {
+    dispatchProperty: function(key,value) {
         if (applet == null) return;
         return applet.getSession().setProperty(key,value);
     },
@@ -377,6 +414,7 @@ function Tinaviz() {
         this.logNormal("Searching is not implemented yet..");
     },
 
+
     getNGram: function(id) {
        var ng = getNGram( id );
        this.logDebug("ng= "+ng);
@@ -388,11 +426,39 @@ function Tinaviz() {
            if (obj == null) { delete ng["edges"]["Document"][doc];} 
            else {  ng["edges_data"]["Document"][doc] = obj;}
        }
+       /*
+       for (var corp in ng["edges"]["Corpus"]) {
+           var obj = getCorpus(corp);
+           if (obj == null) { delete ng["edges"]["Corpus"][corp];}
+           else { ng["edges_data"]["Corpus"][corp] = obj;}
+       }*/
+       return ng;
+  },
+   getNGram2: function(id) {
+       var ng = getNGram( id );
+       this.logDebug("ng= "+ng);
+       if (ng == null) return null;
+       delete ng['py/object'];
+       ng["edges_data"] = { "NGram" : {}, "Document" : {}, "Corpus" : {} };
+       for (var doc in ng["edges"]["Document"]) {
+           var obj = getDocument(doc);
+           if (obj == null) { delete ng["edges"]["Document"][doc];} 
+           else { 
+             ng["edges_data"]["Document"][doc] = obj; 
+             for (var ng2 in obj["edges"]["NGram"]) { 
+                 var obj2 = getNGram(ng2);
+                 if (obj2 == null) { delete obj["edges"]["NGram"]; }
+                 ng["edges_data"]['NGram'][ng2] = obj2;
+             }
+           }
+       }
+       /*
        for (var corp in ng["edges"]["Corpus"]) {
            var obj = getCorpus(corp);
            if (obj == null) { delete ng["edges"]["Corpus"][corp];}
            else { ng["edges_data"]["Corpus"][corp] = obj;}
        }
+       */
        return ng;
   },
   
@@ -407,11 +473,37 @@ function Tinaviz() {
            if (obj == null) { delete doc["edges"]["NGram"][ng];} 
            else {  doc["edges_data"]["NGram"][ng] = obj;}
        }
+       /*
        for (var corp in doc["edges"]["Corpus"]) {
            var obj = getCorpus(corp);
            if (obj == null) { delete doc["edges"]["Corpus"][corp];}
            else { doc["edges_data"]["Corpus"][corp] = obj;}
-       }
+       }*/
+       return doc;
+  },
+  getDocument2: function(id) {
+       var doc = getDocument( id );
+       this.logDebug("doc= "+doc);
+       if (doc == null) return null;
+       delete doc['py/object'];
+       doc["edges_data"] = {  "Document" : {}, "NGram" : {}, "Corpus" : {} };
+       for (var ng in doc["edges"]["NGram"]) {
+           var obj = getNGram(ng);
+           if (obj == null) { delete doc["edges"]["NGram"][ng];} 
+           else { 
+             doc["edges_data"]["NGram"][ng] = obj; 
+             for (var doc2 in obj["edges"]["Document"]) { 
+                 var obj2 = getDocument(doc2);
+                 if (obj2 == null) { delete obj["edges"]["Document"]; }
+                 doc["edges_data"]['Document'][doc2] = obj2;
+             }
+           }
+       }/*
+       for (var corp in doc["edges"]["Corpus"]) {
+           var obj = getCorpus(corp);
+           if (obj == null) { delete doc["edges"]["Corpus"][corp];}
+           else { doc["edges_data"]["Corpus"][corp] = obj;}
+       }*/
        return doc;
   },
   
@@ -432,8 +524,11 @@ function Tinaviz() {
      </p>\n", ng));
 
     this.showMesoTerm(ng,x,y,id,label,attr);
+  },
+  selectMacroTerm2: function(x,y,id,label,attr) {
+     this.logDebug("selectMacroTerm2("+id+","+label+")");
+     this.showMesoTerm2(this.getNGram2(id),x,y,id,label,attr);
    },
-   
   selectMacroDocument: function(x,y,id,label,attr) {
      if (applet == null) return;
      this.logDebug("selectMacroDocument("+id+","+label+")");
@@ -452,7 +547,12 @@ function Tinaviz() {
      </p>\n", doc));
 
           this.showMesoDocument(doc, x,y,id,label,attr);
-   },
+  },
+  selectMacroDocument2: function(x,y,id,label,attr) {
+     if (applet == null) return;
+     this.logDebug("selectMacroDocument2("+id+","+label+")");
+     this.showMesoDocument2(this.getDocument2(id), x,y,id,label,attr);
+  },
   selectMesoTerm: function(x,y,id,label,attr) {
      this.logDebug("selectMesoTerm("+id+","+label+")");
      var ng = this.getNGram(id);
@@ -471,9 +571,10 @@ function Tinaviz() {
      
     this.showMesoTerm(ng,x,y,id,label,attr);
     },
-    
-    
-    
+     selectMesoTerm2: function(x,y,id,label,attr) {
+     this.logDebug("selectMesoTerm2("+id+","+label+")");
+     this.showMesoTerm2(this.getNGram2(id),x,y,id,label,attr);
+    },
     
      selectMesoDocument: function(x,y,id,label,attr) {
      this.logDebug("selectMesoDocument("+id+","+label+")");
@@ -493,12 +594,16 @@ function Tinaviz() {
 
      this.showMesoDocument(doc, x,y,id,label,attr);
   },
-    
-    
+    selectMesoDocument2: function(x,y,id,label,attr) {
+     this.logDebug("selectMesoDocument2("+id+","+label+")");
+     this.showMesoDocument2(this.getDocument2(id), x,y,id,label,attr);
+  },
+
     
     
     showMesoDocument: function(doc,x,y,id,label,attr) {
-          var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+           if (doc == null) return;
+            var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
         <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
     <graph>\n\
@@ -514,36 +619,30 @@ function Tinaviz() {
                     <attvalue for=\"0\" value=\"Document\" />\n\
                 </attvalues>\n\
             </node>\n\
-<?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
-            <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
-                <viz:size value=\"1.7\"/>\n\
+<?js     for (var ng in edges['NGram']) {  ?>\
+            <node id=\"#{ng}\" label=\"${edges_data['NGram'][ng]['label']}\">\n\
+                <viz:size value=\"4.0\"/>\n\
                 <attvalues>\n\
-                    <attvalue for=\"0\" value=\"${target_type}\" />\n\
+                    <attvalue for=\"0\" value=\"NGram\" />\n\
                 </attvalues>\n\
             </node>\n\
-<?js    } ?>\
 <?js } ?>\
         </nodes>\n\
         <edges>\n\
-<?js var i=0; ?>\
-<?js for (var target_type in edges) { if (target_type=='Corpus') continue; ?>\
-<?js     for (var target_node1 in edges[target_type]) { ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"20\" />\n\
-<?js        for (var target_node2 in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
-<?js            var weight = 0; ?>\
-<?js            for (var shared in edges_data[target_type][target_node1]['edges']['Document']) { ?>\
-<?js                if (shared==id) continue; ?>\
-<?js                if (shared in edges_data[target_type][target_node2]['edges']['Document']) { ?>\
-<?js                    weight++; ?>\
-<?js                   /* if (weight < 1) continue; */?>\
-            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"#{weight}\" />\n\
-<?js                    break; ?>\
-<?js                } ?>\
-<?js            } ?>\
-<?js        } ?>\
-<?js    } ?>\
-<?js } ?>\
+<?js var i=0;                                                                               ?>\
+<?js for (var ng1 in edges['NGram']) {                                                  ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{ng1}\" weight=\"20\" />\n\
+<?js    for (var ng2 in edges['NGram']) {                                               ?>\
+<?js        var weight = 0;                                                                 ?>\
+<?js        for (var shared in edges_data['NGram'][ng1]['edges']['Document']) {            ?>\
+<?js            if (shared==id) continue;                                                   ?>\
+<?js            if (shared in edges_data['NGram'][ng2]['edges']['Document']) weight++;     ?>\
+<?js        }                                                                               ?>\
+<?js        if (weight < 2) continue;                                                       ?>\
+<?js        weight = weight / 10.0;                                                         ?>\
+            <edge id=\"#{i++}\" source=\"#{ng1}\" target=\"#{ng2}\" weight=\"#{weight}\" />\n\
+<?js    }                                                                                   ?>\
+<?js }                                                                                      ?>\
         </edges>\n\
     </graph>\n\
 </gexf>", doc);
@@ -551,8 +650,66 @@ function Tinaviz() {
      applet.clear("meso");
      applet.getSession().updateFromString("meso",gexf);
     },
-    
+        
+    showMesoDocument2: function(doc,x,y,id,label,attr) {
+        if (doc == null) return;
+        var doctype = "Document";
+      
+        var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
+        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
+    <graph>\n\
+        <attributes class=\"node\">\n\
+        </attributes>\n\
+        <tina>\n\
+            <selected node=\""+id+"\" />\n\
+        </tina>\n\
+        <nodes>\n\
+            <node id=\"#{id}\" label=\"${label}\">\n\
+                <viz:size value=\"7\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\""+doctype+"\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js for (var ng in edges['NGram']) { ?>\
+<?js    for (var doc in edges_data['NGram'][doc]['edges']['"+doctype+"']) { ?>\
+            <node id=\"#{doc}\" label=\"${edges_data['"+doctype+"'][doc]['label']}\">\n\
+                <viz:size value=\"4.0\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\""+doctype+"\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js    } ?>\
+<?js } ?>\
+        </nodes>\n\
+        <edges>\n\
+<?js var i=0;                                                                                 ?>\
+<?js for (var ng in edges['NGram']) {                                                     ?>\
+<?js    for (var doc1 in edges_data['NGram'][ng]['edges']['"+doctype+"']) {                ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{doc}\" weight=\"#{20}\" />\n\
+<?js                                                                                          ?>\
+<?js        for (var doc2 in edges_data['NGram'][ng]['edges']['"+doctype+"']) {            ?>\
+<?js            if (doc1 == doc2) continue;                                                     ?>\
+<?js            var weight=0;                                                                 ?>\
+<?js            for (var shared in edges_data['Document'][doc1]['edges']['NGram']) {           ?>\
+<?js                if (shared==id) continue;                                                 ?>\
+<?js                if (shared in edges_data['Document'][doc2]['edges']['NGram']) weight++;   ?>\
+<?js            }                                                                             ?>\
+<?js        if (weight < 2) continue;                                                         ?>\
+<?js        weight = weight / 10.0;                                                         ?>\
+            <edge id=\"#{i++}\" source=\"#{doc1}\" target=\"#{doc2}\" weight=\"#{weight}\" />\n\
+<?js        }                                                                                 ?>\
+<?js    }                                                                                     ?>\
+<?js }                                                                                        ?>\
+        </edges>\n\
+    </graph>\n\
+</gexf>", doc);
+     // console.log(gexf);
+     applet.clear("meso");
+     applet.getSession().updateFromString("meso",gexf);
+    },
      showMesoTerm: function(ng,x,y,id,label,attr) {
+            if (ng == null) return;
             var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
         <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
@@ -569,36 +726,88 @@ function Tinaviz() {
                     <attvalue for=\"0\" value=\"NGram\" />\n\
                 </attvalues>\n\
             </node>\n\
-<?js for (var target_type in edges) { ?>\
-<?js     for (var target_node in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
-            <node id=\"#{target_node}\" label=\"${edges_data[target_type][target_node]['label']}\">\n\
+<?js     for (var doc in edges['Document']) {  ?>\
+            <node id=\"#{doc}\" label=\"${edges_data['Document'][doc]['label']}\">\n\
                 <viz:size value=\"4.0\"/>\n\
                 <attvalues>\n\
-                    <attvalue for=\"0\" value=\"${target_type}\" />\n\
+                    <attvalue for=\"0\" value=\"Document\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js } ?>\
+        </nodes>\n\
+        <edges>\n\
+<?js var i=0;                                                                               ?>\
+<?js for (var doc1 in edges['Document']) {                                                  ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{doc1}\" weight=\"20\" />\n\
+<?js    for (var doc2 in edges['Document']) {                                               ?>\
+<?js        var weight = 0;                                                                 ?>\
+<?js        for (var shared in edges_data['Document'][doc1]['edges']['NGram']) {            ?>\
+<?js            if (shared==id) continue;                                                   ?>\
+<?js            if (shared in edges_data['Document'][doc2]['edges']['NGram']) weight++;     ?>\
+<?js        }                                                                               ?>\
+<?js        if (weight < 2) continue;                                                       ?>\
+<?js        weight = weight / 10.0;                                                         ?>\
+            <edge id=\"#{i++}\" source=\"#{doc1}\" target=\"#{doc2}\" weight=\"#{weight}\" />\n\
+<?js    }                                                                                   ?>\
+<?js }                                                                                      ?>\
+        </edges>\n\
+    </graph>\n\
+</gexf>", ng);
+     // console.log(gexf);
+     applet.clear("meso");
+     applet.getSession().updateFromString("meso",gexf);
+    },
+    
+     showMesoTerm2: function(ng,x,y,id,label,attr) {
+      if (ng == null) return;
+        var doctype = "NGram";
+        
+        var gexf = Shotenjin.render("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<gexf xmlns=\"http://www.gephi.org/gexf\" xmlns:viz=\"http://www.gephi.org/gexf/viz\">\n\
+        <meta lastmodifieddate=\"19-Feb-2010\"><description></description></meta>\n\
+    <graph>\n\
+        <attributes class=\"node\">\n\
+        </attributes>\n\
+        <tina>\n\
+            <selected node=\""+id+"\" />\n\
+        </tina>\n\
+        <nodes>\n\
+            <node id=\"#{id}\" label=\"${label}\">\n\
+                <viz:size value=\"7\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\""+doctype+"\" />\n\
+                </attvalues>\n\
+            </node>\n\
+<?js for (var doc in edges['Document']) { ?>\
+<?js    for (var ng in edges_data['Document'][doc]['edges']['"+doctype+"']) { ?>\
+            <node id=\"#{ng}\" label=\"${edges_data['"+doctype+"'][ng]['label']}\">\n\
+                <viz:size value=\"4.0\"/>\n\
+                <attvalues>\n\
+                    <attvalue for=\"0\" value=\""+doctype+"\" />\n\
                 </attvalues>\n\
             </node>\n\
 <?js    } ?>\
 <?js } ?>\
         </nodes>\n\
         <edges>\n\
-<?js var i=0; ?>\
-<?js for (var target_type in edges) { ?>\
-<?js     for (var target_node1 in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
-            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{target_node1}\" weight=\"20\" />\n\
-<?js        for (var target_node2 in edges[target_type]) { if (target_type=='Corpus') continue; ?>\
-<?js            var weight = 0; ?>\
-<?js            for (var shared in edges_data[target_type][target_node1]['edges']['NGram']) { ?>\
-<?js                if (shared==id) continue; ?>\
-<?js                if (shared in edges_data[target_type][target_node2]['edges']['NGram']) { ?>\
-<?js                    weight++; ?>\
-<?js                    /*if (weight < 1) continue;*/ ?>\
-            <edge id=\"#{i++}\" source=\"#{target_node1}\" target=\"#{target_node2}\" weight=\"#{weight}\" />\n\
-<?js                    break; ?>\
-<?js                } ?>\
-<?js            } ?>\
-<?js        } ?>\
-<?js    } ?>\
-<?js } ?>\
+<?js var i=0;                                                                                 ?>\
+<?js for (var doc in edges['Document']) {                                                     ?>\
+<?js    for (var ng1 in edges_data['Document'][doc]['edges']['"+doctype+"']) {                ?>\
+            <edge id=\"#{i++}\" source=\"#{id}\" target=\"#{ng}\" weight=\"#{20}\" />\n\
+<?js                                                                                          ?>\
+<?js        for (var ng2 in edges_data['Document'][doc]['edges']['"+doctype+"']) {            ?>\
+<?js            if (ng1 == ng2) continue;                                                     ?>\
+<?js            var weight=0;                                                                 ?>\
+<?js            for (var shared in edges_data['NGram'][ng1]['edges']['Document']) {           ?>\
+<?js                if (shared==id) continue;                                                 ?>\
+<?js                if (shared in edges_data['NGram'][ng2]['edges']['Document']) weight++;    ?>\
+<?js            }                                                                             ?>\
+<?js        if (weight < 15) continue;                                                        ?>\
+<?js        weight = weight / 10.0;                                                           ?>\
+            <edge id=\"#{i++}\" source=\"#{ng1}\" target=\"#{ng2}\" weight=\"#{weight}\" />\n\
+<?js        }                                                                                 ?>\
+<?js    }                                                                                     ?>\
+<?js }                                                                                        ?>\
         </edges>\n\
     </graph>\n\
 </gexf>", ng);

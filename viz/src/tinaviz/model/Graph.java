@@ -450,7 +450,7 @@ System.out.println("loading GEXF from string..");
     }
 
     public int touch() {
-       System.out.println("incrementing graph revision to "+(revision.get()+1));
+       //System.out.println("incrementing graph revision to "+(revision.get()+1));
        return revision.incrementAndGet();
     }
     public void selectNodeById(String id) {

@@ -16,7 +16,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import processing.core.PVector;
 
-import tinaviz.FilterChain;
+import tinaviz.filtering.FilterChain;
 import tinaviz.Node;
 
 
@@ -189,8 +189,8 @@ public class View {
         graph.clear();
     }
 
-    public boolean addFilter(String name) {
-        return filters.addFilter(name);
+    public boolean addFilter(String name, String root) {
+        return filters.addFilter(name, root);
     }
 
     public float setRepulsion(float a) {

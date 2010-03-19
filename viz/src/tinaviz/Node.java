@@ -46,6 +46,7 @@ public class Node {
     public Node original = null;
 
     public Node(String uuid, String label,  float radius, float x, float y) {
+
         this.uuid = uuid;
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);

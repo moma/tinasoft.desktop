@@ -202,10 +202,10 @@ public class Session {
         return true;
     }
 
-    public synchronized boolean addFilter(String filterName) {
-        macro.addFilter(filterName);
-        meso.addFilter(filterName);
-        micro.addFilter(filterName);
+    public synchronized boolean addFilter(String filterName, String root) {
+        macro.addFilter(filterName, root);
+        meso.addFilter(filterName, root);
+        micro.addFilter(filterName, root);
         return true;
     }
 }

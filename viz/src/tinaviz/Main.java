@@ -47,7 +47,7 @@ public class Main extends PApplet implements MouseWheelListener {
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
 
-    private void jsNodeSelected(Node n) {
+    private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
         if (n != null) {
             selectedX = n.x;
@@ -58,15 +58,34 @@ public class Main extends PApplet implements MouseWheelListener {
             return; // in debug mode
         }
         if (n == null) {
-            window.eval("parent.tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null);");
+            window.eval("parent.tinaviz.nodeLeftClicked('" + session.getLevel() + "',0,0,null,null,null);");
         } else {
-            window.eval("parent.tinaviz.nodeSelected('" + session.getLevel() + "',"
+            window.eval("parent.tinaviz.nodeLeftClicked('" + session.getLevel() + "',"
                     + screenX(n.x, n.y) + ","
                     + screenY(n.x, n.y) + ",\""
                     + n.uuid + "\",\"" + n.label + "\", \"" + n.category + "\");");
         }
     }
 
+        private void nodeSelectedRightMouse_JS_CALLBACK(Node n) {
+
+        if (n != null) {
+            selectedX = n.x;
+            selectedY = n.y;
+        }
+
+        if (window == null) {
+            return; // in debug mode
+        }
+        if (n == null) {
+            window.eval("parent.tinaviz.nodeRightClicked('" + session.getLevel() + "',0,0,null,null,null);");
+        } else {
+            window.eval("parent.tinaviz.nodeRightClicked('" + session.getLevel() + "',"
+                    + screenX(n.x, n.y) + ","
+                    + screenY(n.x, n.y) + ",\""
+                    + n.uuid + "\",\"" + n.label + "\", \"" + n.category + "\");");
+        }
+    }
     private void jsSwitchToMacro() {
         session.toMacroLevel();
         if (window != null) {
@@ -833,7 +852,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         if (!n.selected) {
                             n.selected = true;
                             session.selectNode(n);
-                            jsNodeSelected(n);
+                            nodeSelectedLeftMouse_JS_CALLBACK(n);
                         }
 
                         if (session.currentLevel == ViewLevel.MACRO) {
@@ -850,16 +869,22 @@ public class Main extends PApplet implements MouseWheelListener {
                         if (!n.selected) {
                             n.selected = true;
                             session.selectNode(n);
-                            jsNodeSelected(n);
+                            nodeSelectedLeftMouse_JS_CALLBACK(n);
 
                         } else {
                             n.selected = false;
                             session.unselectNode(n);
-                            jsNodeSelected(null);
+                            nodeSelectedLeftMouse_JS_CALLBACK(null);
                         }
                     }
-                } else {
-                    // RIGHT CLICK ON A NODE => SWITCH MODE
+
+                 // RIGHT MOUSE
+                } else if (mouseButton == RIGHT) {
+                        if (!n.selected) {
+                            n.selected = true;
+                            session.selectNode(n);
+                            nodeSelectedRightMouse_JS_CALLBACK(n);
+                        }
                 }
                 break;
             }
@@ -964,7 +989,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (!bestMatchForSwitch.selected) {
                 bestMatchForSwitch.selected = true;
                 session.selectNode(bestMatchForSwitch);
-                jsNodeSelected(bestMatchForSwitch);
+                nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSwitch);
             }
             System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
             session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
@@ -974,7 +999,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (!bestMatchForSelection.selected) {
                 bestMatchForSelection.selected = true;
                 session.selectNode(bestMatchForSelection);
-                jsNodeSelected(bestMatchForSelection);
+                nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
             }
             return;
         }

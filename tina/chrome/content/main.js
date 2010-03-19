@@ -494,8 +494,8 @@ $(document).ready(function() {
     	range: true,
 		values: [0, 100],
         slide: function(event, ui) {
-		    tinaviz.setProperty("meso", "threshold/weight/min", ui.values[0] / 100.0);
-		    tinaviz.setProperty("meso", "threshold/weight/max", ui.values[1] / 100.0);
+		    tinaviz.setProperty("meso", "weight/min", ui.values[0] / 100.0);
+		    tinaviz.setProperty("meso", "weight/max", ui.values[1] / 100.0);
 		    tinaviz.touch("meso");
 	    }
 	});
@@ -503,7 +503,7 @@ $(document).ready(function() {
     $("#meso_node_size").slider({
         max: 300,
         slide: function(event, ui) {
-		tinaviz.setProperty("meso", "node/radius", ui.value / 100.0);
+		tinaviz.setProperty("meso", "radius/value", ui.value / 100.0);
 		tinaviz.touch("meso");
 	}});
     
@@ -518,15 +518,15 @@ $(document).ready(function() {
     	range: true,
         values: [0, 100],
         slide: function(event, ui) {
-		tinaviz.setProperty("macro", "threshold/weight/min", ui.values[0] / 100.0);
-		tinaviz.setProperty("macro", "threshold/weight/max", ui.values[1] / 100.0);
+		tinaviz.setProperty("macro", "weight/min", ui.values[0] / 100.0);
+		tinaviz.setProperty("macro", "weight/max", ui.values[1] / 100.0);
 		tinaviz.touch("macro");
 	}});
 
     $("#macro_node_size").slider({
         max: 300,
         slide: function(event, ui) {
-		tinaviz.setProperty("macro", "node/radius", ui.value / 100.0);
+		tinaviz.setProperty("macro", "radius/value", ui.value / 100.0);
 		tinaviz.touch("macro");
 	}});
 	

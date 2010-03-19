@@ -25,4 +25,5 @@ public class MacroView extends View {
     public ViewLevel getLevel() {
         return ViewLevel.MACRO;
     }
+
 }
