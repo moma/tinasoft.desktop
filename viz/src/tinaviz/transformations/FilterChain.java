@@ -4,22 +4,15 @@
  */
 package tinaviz.transformations;
 
-import java.security.KeyException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import tinaviz.Node;
 import tinaviz.transformations.filters.ThresholdWeight;
 
-import tinaviz.transformations.Filter;
-import tinaviz.transformations.FilterChainListener;
+
 import tinaviz.transformations.filters.Category;
 import tinaviz.transformations.filters.NodeRadius;
 import tinaviz.model.Session;
@@ -27,6 +20,7 @@ import tinaviz.model.View;
 import tinaviz.transformations.filters.Explorer;
 import tinaviz.transformations.filters.Layout;
 import tinaviz.transformations.filters.SubGraphCopy;
+import tinaviz.transformations.filters.ThresholdGenericity;
 
 /**
  *
@@ -38,7 +32,7 @@ public class FilterChain {
     public AtomicBoolean popLocked = null;
     public AtomicBoolean filterIsRunning = new AtomicBoolean(false);
     public AtomicInteger graphRevision = new AtomicInteger(0);
-    private Map<String, Filter> filters = null;
+    private LinkedList<Filter> filters = null;
     private List<FilterChainListener> listeners = null;
     public View view = null;
     public Session session = null;
@@ -64,7 +58,7 @@ public class FilterChain {
         public void run() {
             System.out.println("filter started!..");
             List<Node> result = (nodes != null) ? nodes : new LinkedList<Node>();
-            for (Filter f : filters.values()) {
+            for (Filter f : filters) {
                 System.out.println("processing filter "+f.getRoot());
                 if (interrupted()) {
                     System.out.println("we're interrupted!");
@@ -83,7 +77,7 @@ public class FilterChain {
 
         filteredNodes = new LinkedList<Node>();
         popLocked = new AtomicBoolean(true);
-        filters = new HashMap<String, Filter>();
+        filters = new LinkedList<Filter>();
         listeners = new ArrayList<FilterChainListener>();
         thread = null;
         this.view = view;
@@ -91,60 +85,63 @@ public class FilterChain {
     }
 
     public boolean addFilter(String filterName, String root) {
-        System.out.println("addFilter called! filter:"+filterName+" root:"+root);
+        System.out.println("adding filter "+root+" =>");
+        Filter f = null;
         if (filterName.equals("ThresholdWeight")) {
-            Filter f = new ThresholdWeight();
-            f.setRoot(root);
-            filters.put("ThresholdWeight "+filters.size(), f);
+            f = new ThresholdWeight();
         } else if (filterName.equals("NodeRadius")) {
-            Filter f = new NodeRadius();
-            f.setRoot(root);
-            filters.put("NodeRadius "+filters.size(), f);
+            f = new NodeRadius();
         } else if (filterName.equals("Category")) {
-            Filter f = new Category();
-            f.setRoot(root);
-            filters.put("Category "+filters.size(), f);
+            f = new Category();
         } else if (filterName.equals("Explorer")) {
-            Filter f = new Explorer();
-            f.setRoot(root);
-            filters.put("Explorer "+filters.size(), f);
+            f = new Explorer();
         } else if (filterName.equals("SubGraphCopy")) {
-            Filter f = new SubGraphCopy();
-            f.setRoot(root);
-            filters.put("SubGraphCopy "+filters.size(), f);
+            f = new SubGraphCopy();
         }  else if (filterName.equals("Layout")) {
-            Filter f = new Layout();
-            f.setRoot(root);
-            filters.put("Layout "+filters.size(), f);
-        }  else {
+            f = new Layout();
+
+        } else if (filterName.equals("ThresholdGenericity")) {
+             f = new ThresholdGenericity();
+    } else {
             return false;
         }
+         f.setRoot(root);
+         filters.add(f);
         System.out.println("addFilter SUCCESS!");
         return true;
     }
 
     public Filter getFilter(String filterKey) {
-        if (!filters.containsKey(filterKey)) {
-            return filters.get(filterKey);
+        for (Filter f : filters) {
+            if (f.getRoot().equals(filterKey)) return f;
         }
         return null;
     }
 
-    public void enableFilter(String key) {
-        if (filters.containsKey(key)) {
-            filters.get(key).setEnabled(true);
+    public void enableFilter(String filterKey) {
+        for (Filter f : filters) {
+            if (f.getRoot().equals(filterKey)) {
+                f.setEnabled(true);
+                break;
+            }
         }
     }
 
-    public void disableFilter(String key) {
-        if (filters.containsKey(key)) {
-            filters.get(key).setEnabled(false);
+    public void disableFilter(String filterKey) {
+        for (Filter f : filters) {
+            if (f.getRoot().equals(filterKey)) {
+                f.setEnabled(false);
+                break;
+            }
         }
     }
 
-    public boolean toggleFilter(String key) {
-        if (filters.containsKey(key)) {
-            filters.get(key).setEnabled(!filters.get(key).enabled());
+    public boolean toggleFilter(String filterKey) {
+        for (Filter f : filters) {
+            if (f.getRoot().equals(filterKey)) {
+                f.setEnabled(!f.enabled());
+                return f.enabled();
+            }
         }
         return false;
     }

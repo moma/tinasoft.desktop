@@ -36,7 +36,10 @@ public class NodeFilter implements Filter {
         if(!enabled()) {
             return input;
         }
-        for (Node n : input) output.add(node(session, view, n));
+        for (Node n : input) {
+            Node n2 = node(session, view, n);
+            if (n2 != null) output.add(n2);
+        }
         return output;
     }
 

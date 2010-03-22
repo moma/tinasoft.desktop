@@ -4,7 +4,8 @@
  */
 package tinaviz.transformations.filters;
 
-
+import java.util.LinkedList;
+import java.util.List;
 import tinaviz.Node;
 import tinaviz.transformations.NodeFilter;
 import tinaviz.model.Session;
@@ -19,20 +20,25 @@ public class NodeRadius extends NodeFilter {
     private String KEY_VALUE = "value";
 
     @Override
-    public Node node(Session session, View view, Node n) {
-        if (!view.properties.containsKey(root+KEY_VALUE)) {
-            view.properties.put(root+KEY_VALUE, 1.0f);
+    public List<Node> process(Session session, View view, List<Node> input) {
+        if (!enabled()) {
+            return input;
         }
 
-        Object o = view.properties.get(root+KEY_VALUE);
-        Float r =  (o instanceof Integer)
-                   ? new Float((Integer)o)
-                   : (o instanceof Double)
-                   ? new Float((Double)o)
-                   : (Float) o;
-        //System.out.println("radius: "+root+KEY_VALUE+" = "+r);
+        if (!view.properties.containsKey(root + KEY_VALUE)) {
+            view.properties.put(root + KEY_VALUE, 1.0f);
+        }
 
-        n.radius *= r;
-        return n;
+        Object o = view.properties.get(root + KEY_VALUE);
+        Float r = (o instanceof Integer)
+                ? new Float((Integer) o)
+                : (o instanceof Double)
+                ? new Float((Double) o)
+                : (Float) o;
+
+        for (Node n : input) {
+            n.radius *= r;
+        }
+        return input;
     }
 }

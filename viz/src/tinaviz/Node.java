@@ -32,7 +32,7 @@ public class Node {
     public boolean selected = false;
     public boolean highlighted = false;
     public float genericity = 1.0f;
-    public String category = "none";
+    public String category = "Document";
     public ShapeCategory shape = ShapeCategory.DISK;
     public float r = -1f;
     public float g = -1f;
@@ -82,6 +82,7 @@ public class Node {
 
     public Node(Node n) {
         cloneDataFrom(n);
+        original = n;
     }
 
     public void addNeighbour(Node neighbour) {
@@ -101,19 +102,19 @@ public class Node {
 
     public void cloneDataFrom(Node node) {
 
-        this.uuid = new String(node.uuid);
-        this.label = new String(node.label);
-        this.shortLabel = new String(node.shortLabel);
-        this.radius = new Float(node.radius);
-        this.x = new Float(node.x);
-        this.y = new Float(node.y);
+        this.uuid = node.uuid;
+        this.label = node.label;
+        this.shortLabel = node.shortLabel;
+        this.radius = node.radius;
+        this.x = node.x;
+        this.y = node.y;
 
-        this.vx = new Float(node.vx);
-        this.vy = new Float(node.vy);
+        this.vx = node.vx;
+        this.vy = node.vy;
 
-        this.r = new Float(node.r);
-        this.g = new Float(node.g);
-        this.b = new Float(node.b);
+        this.r = node.r;
+        this.g = node.g;
+        this.b = node.b;
 
         screenX = node.screenX;
         screenY = node.screenY;
@@ -123,28 +124,25 @@ public class Node {
         this.visibleToScreen = node.visibleToScreen;
         this.neighbours = new HashSet<String>(node.neighbours.size());
         for (String k : node.neighbours) {
-            this.neighbours.add(new String(k));
+            this.neighbours.add(k);
         }
         this.s = (node.s); // switch
-        this.degree = new Integer (node.degree);
-        this.genericity = new Float(node.genericity);
+        this.degree = node.degree;
+        this.genericity = node.genericity;
         this.selected = (node.selected);
         this.highlighted = (node.highlighted);
-        this.category = new String(node.category);
+        this.category = node.category;
         this.weights = new HashMap<String,Float>();
         for (String k : node.weights.keySet()) {
-            this.weights.put(new String(k),new Float(node.weights.get(k)));
+            this.weights.put(k,node.weights.get(k));
         }
     }
-    public Node getLinkedCopy() {
-        Node node = new Node(""+this.uuid);
-        node.cloneDataFrom(this);
-        node.original = this;
-        return node;
+    public Node getProxyClone() {
+        return new Node(this);
     }
-    public Node getCopy() {
-        Node node = new Node(""+this.uuid);
-        node.original = null;
+    public Node getDetachedClone() {
+        Node node = new Node(this.uuid);
+        node.cloneDataFrom(this);
         return node;
     }
 

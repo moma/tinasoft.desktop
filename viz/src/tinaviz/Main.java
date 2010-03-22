@@ -30,10 +30,8 @@ public class Main extends PApplet implements MouseWheelListener {
     // déclenche le passage dans le mode macro
     float screenRatioSelectNodeWhenZoomed = 0.22f;
     float screenRatioGoToMesoWhenZoomed = 0.55f;
-
-   AtomicBoolean zooming = new AtomicBoolean(false);
+    AtomicBoolean zooming = new AtomicBoolean(false);
     AtomicBoolean zoomIn = new AtomicBoolean(false);
-
     private RecordingFormat recordingMode = RecordingFormat.NONE;
     private String recordPath = "graph.pdf";
     AtomicBoolean mouseClickLeft = new AtomicBoolean(false);
@@ -67,7 +65,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
-        private void nodeSelectedRightMouse_JS_CALLBACK(Node n) {
+    private void nodeSelectedRightMouse_JS_CALLBACK(Node n) {
 
         if (n != null) {
             selectedX = n.x;
@@ -86,6 +84,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     + n.uuid + "\",\"" + n.label + "\", \"" + n.category + "\");");
         }
     }
+
     private void jsSwitchToMacro() {
         session.toMacroLevel();
         if (window != null) {
@@ -327,7 +326,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             return;
         }
-       // System.out.println("now working on view "+v);
+        // System.out.println("now working on view "+v);
         List<Node> n = v.popNodes();
         if (n != null) {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
@@ -513,8 +512,10 @@ public class Main extends PApplet implements MouseWheelListener {
             n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
 
             // update the original, "stored" node
-            n.original.x = n.x;
-            n.original.y = n.y;
+            if (n.original != null) {
+                n.original.x = n.x;
+                n.original.y = n.y;
+            }
 
             n.vx = 0.0f;
             n.vy = 0.0f;
@@ -629,29 +630,29 @@ public class Main extends PApplet implements MouseWheelListener {
 
                             if (doubleLink) {
                                 if (n1.selected && n2.selected) {
-                                    stroke(255,255,255,240);
+                                    stroke(0, 0, 0, 255);
                                 } else if (n1.selected || n2.selected) {
-                                    stroke(255,255,255,210);
+                                    stroke(0, 0, 0, 220);
                                 } else {
                                     float m = 180.0f;
                                     float r = (255.0f - m) / 255.0f;
-                                    stroke(m + cr * r, m + cg * r, m + cb * r, n1.weights.get(n2.uuid) * 255);
+                                    stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
                                 }
                             } else {
                                 if (n1.selected && n2.selected) {
-                                    stroke(255,255,255,210);
+                                    stroke(0, 0, 0, 230);
                                 } else if (n1.selected || n2.selected) {
-                                    stroke(255,255,255,180);
+                                    stroke(0, 0, 0, 200);
                                 } else {
                                     float m = 210.0f;
                                     float r = (255.0f - m) / 255.0f;
-                                    stroke(m + cr * r, m + cg * r, m + cb * r, n1.weights.get(n2.uuid) * 255);
+                                    stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
                                 }
                             }
 
 
                             if (v.highDefinition && n2.uuid != null) {
-                                strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
+                                strokeWeight(n1.weights.get(n2.uuid) * 10.0f);
 
                                 //strokeWeight(1);
                             }
@@ -704,6 +705,24 @@ public class Main extends PApplet implements MouseWheelListener {
                 continue;
             }
 
+            float alpha = 255;
+            if (n.selected) {
+                alpha = 220;
+            } else if (n.highlighted) {
+                alpha = 200;
+            } else {
+
+                // degrade du radius [r=14 level=255, r=40 level=80]
+                float minRad = 14.0f;
+                float maxRad = 25.0f;
+                int maxRadColor = 200;
+                int minRadColor = 1;
+
+                float tRatio = 1.0f / (maxRad - minRad);
+                float nsdRatio = constrain((nodeScreenDiameter - minRad) * tRatio, 0, 1);
+                alpha = minRadColor + nsdRatio * (float) (maxRadColor - minRadColor);
+
+            }
             // best match for the "screen" selection
 
             /****************************
@@ -712,12 +731,14 @@ public class Main extends PApplet implements MouseWheelListener {
             // if we don't want to show the nodes.. we skip
             if (v.showNodes) {
 
+
+
                 if (n.selected) {
-                    fill(40, 40, 40);
+                    fill(40, 40, 40, alpha);
                 } else if (n.highlighted) {
-                    fill(110, 110, 110);
+                    fill(110, 110, 110, alpha);
                 } else {
-                    fill(180, 180, 180);
+                    fill(180, 180, 180, alpha);
                 }
 
                 if (n.shape == ShapeCategory.DISK) {
@@ -727,11 +748,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
 
                 if (n.selected) {
-                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
+                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255), alpha);
                 } else if (n.highlighted) {
-                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255));
+                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255), alpha);
                 } else {
-                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255));
+                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha);
                 }
 
                 if (n.shape == ShapeCategory.DISK) {
@@ -750,21 +771,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             if (n.selected) {
-                fill(0,0,0, 255);
+                fill(0, 0, 0, 255);
             } else if (n.highlighted) {
-                fill(0,0,0, 220);
+                fill(0, 0, 0, 220);
             } else {
 
-                // degrade du radius [r=14 level=255, r=40 level=80]
-                float minRad = 14.0f;
-                float maxRad = 25.0f;
-                int maxRadColor = 200;
-                int minRadColor = 1;
-
-                float tRatio = 1.0f / (maxRad - minRad);
-                float nsdRatio = constrain((nodeScreenDiameter - minRad) * tRatio, 0, 1);
-                fill(0,0,0,minRadColor + nsdRatio * (float) (maxRadColor - minRadColor));
-
+                fill(0, 0, 0, alpha);
             }
             textSize(rad2);
             text((n.highlighted) ? n.label : n.shortLabel, n.x + rad2, n.y + (rad2 / PI));
@@ -883,13 +895,13 @@ public class Main extends PApplet implements MouseWheelListener {
                         }
                     }
 
-                 // RIGHT MOUSE
+                    // RIGHT MOUSE
                 } else if (mouseButton == RIGHT) {
-                        if (!n.selected) {
-                            n.selected = true;
-                            session.selectNode(n);
-                        }
-                       nodeSelectedRightMouse_JS_CALLBACK(n);
+                    if (!n.selected) {
+                        n.selected = true;
+                        session.selectNode(n);
+                    }
+                    nodeSelectedRightMouse_JS_CALLBACK(n);
                 }
                 break;
             }
@@ -946,10 +958,10 @@ public class Main extends PApplet implements MouseWheelListener {
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
 
-            if (!(nsx > width*0.2f
-                    && nsx < width*0.8f
-                    && nsy > height*0.2f
-                    && nsy < height*0.8f)) {
+            if (!(nsx > width * 0.2f
+                    && nsx < width * 0.8f
+                    && nsy > height * 0.2f
+                    && nsy < height * 0.8f)) {
                 continue;
             }
 
@@ -1019,7 +1031,7 @@ public class Main extends PApplet implements MouseWheelListener {
             case MESO:
                 if (v.sceneScale > v.ZOOM_FLOOR) {
                     v.sceneScale = v.ZOOM_FLOOR;
-                   System.out.println("switch in to micro");
+                    System.out.println("switch in to micro");
 
                 }
                 if (v.sceneScale < v.ZOOM_CEIL) {

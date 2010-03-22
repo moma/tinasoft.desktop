@@ -69,6 +69,8 @@ public class Metrics {
     public float centerY = 0.0f;
     public float minWeight = 0.0f;
     public float maxWeight = 0.0f;
+    public float minGenericity = 0.0f;
+    public float maxGenericity = 0.0f;
 
     public void reset() {
 
@@ -82,6 +84,8 @@ public class Metrics {
         centerY = 0.0f;
         minWeight = 0.0f;
         maxWeight = 0.0f;
+        minGenericity = 0.0f;
+        maxGenericity = 0.0f;
     }
 
     @Override
@@ -95,6 +99,8 @@ public class Metrics {
         +"centerX="+centerX+", "
         +"centerY="+centerY+", "
         +"minWeight="+minWeight+", "
-        +"maxWeight="+maxWeight+";";
+        +"maxWeight="+maxWeight+";"
+        +"minGenericity="+minGenericity+", "
+        +"maxGenericity="+maxGenericity+";";
     }
 }

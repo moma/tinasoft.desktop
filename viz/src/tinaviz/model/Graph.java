@@ -391,7 +391,7 @@ System.out.println("loading GEXF from string..");
     public synchronized List<tinaviz.Node> getNodeListCopy() {
         List<tinaviz.Node> res = new LinkedList<tinaviz.Node>();
         for (Node n : storedNodes.values()) {
-            res.add(n.getLinkedCopy());
+            res.add(n.getProxyClone());
         }
         return res;
     }

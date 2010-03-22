@@ -39,12 +39,17 @@ public class Category extends NodeFilter {
         }
 
 
+
         String category = (String) view.properties.get(root+KEY_CATEGORY);
         String mode = (String) view.properties.get(root+KEY_MODE);
 
         boolean keep = mode.equals("keep");
 
+        System.out.println("we are going to "+mode+" the category "+category+" got "+input.size()+" nodes in entry");
+
         for (Node n : input) {
+            // System.out.println("  - n category == "+n.category);
+
             if (n.category.equals(category)) {
                 if (keep) output.add(n);
             } else {

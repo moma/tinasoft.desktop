@@ -38,15 +38,17 @@ function Tinaviz() {
 	    
 		this.bindFilter("Category",         "category", "macro");
 		this.bindFilter("ThresholdWeight",  "weight",   "macro");
-		this.bindFilter("NodeRadius",       "radius",   "macro")
+		this.bindFilter("NodeRadius",       "radius",   "macro");  
         //this.bindFilter("Layout",           "layout",   "macro");
   
         // MESO LOCAL EXPLORATION FILTERS
         this.bindFilter("SubGraphCopy",     "subgraph", "meso");
 		//this.bindFilter("Explorer",         "explorer", "meso"); // generator;
+		
 		this.bindFilter("Category",         "category", "meso");
 		this.bindFilter("ThresholdWeight",  "weight",   "meso");
 		this.bindFilter("NodeRadius",       "radius",   "meso");
+		
         // this.bindFilter("Layout",           "layout",   "meso");
 
         //this.loadRelativeGraph("macro","user/fet open/8_0.0-1.0.gexf");
@@ -318,8 +320,8 @@ function Tinaviz() {
                 .createInstance(Components.interfaces.nsIConverterInputStream);
 
         fstream.init(file, -1, 0, 0);
-        // MAX filesize: 8 MB
-        cstream.init(fstream, "UTF-8", 10000000, 0); // you can use another encoding here if you wish
+
+        cstream.init(fstream, "UTF-8", 20000000, 0); // you can use another encoding here if you wish
 
         var str = {};
         cstream.readString(-1, str); // read the whole file and put it in str.value

@@ -18,7 +18,8 @@ import tinaviz.model.View;
  *
  * @author jbilcke
  */
-public class ThresholdWeight extends NodeFilter {
+public class ThresholdGenericity extends NodeFilter {
+
 
     private String KEY_MIN = "min";
     private String KEY_MAX = "max";
@@ -26,34 +27,8 @@ public class ThresholdWeight extends NodeFilter {
     private Float max = new Float(1.0f);
 
     @Override
-    public Node node(Session session, View view, Node n) {
-
-        //System.out.println("fmin:"+min+" fmax:"+max);
-        Set<String> newNeighbours = new HashSet<String>(n.neighbours.size());
-
-        for (String k : n.neighbours) {
-
-            Float w = n.weights.get(k);
-
-            if (w == null) {
-                System.out.println("weight null for <"+n+","+k+">");
-                continue;
-            }
-            if (min <= w && w <= max) {
-                newNeighbours.add(k);
-                // .. and do not remove from weights
-            } else {
-                // .. and do not add to neighbours
-                n.weights.remove(n.uuid);
-            }
-        }
-        n.neighbours = newNeighbours;
-        return n;
-    }
-
-    @Override
         public List<Node> process(Session session, View view, List<Node> input) {
-
+        List<Node> output = new LinkedList<Node>();
         if(!enabled()) {
             return input;
         }
@@ -66,10 +41,7 @@ public class ThresholdWeight extends NodeFilter {
             view.properties.put(root+KEY_MAX, 1.0f);
         }
 
-       // System.out.println("min:"+view.graph.metrics.minWeight+" max:"+view.graph.metrics.maxWeight);
-
-        float f = view.graph.metrics.maxWeight - view.graph.metrics.minWeight;
-       // System.out.println("f:"+f);
+        float f = view.graph.metrics.maxGenericity - view.graph.metrics.minGenericity;
 
         Object o = view.properties.get(root+KEY_MIN);
         min =   (o instanceof Integer)
@@ -77,7 +49,7 @@ public class ThresholdWeight extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        min = min * f + view.graph.metrics.minWeight;
+        min = min * f + view.graph.metrics.minGenericity;
 
         o = view.properties.get(root+KEY_MAX);
         max =  (o instanceof Integer)
@@ -85,11 +57,11 @@ public class ThresholdWeight extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        max = max * f + view.graph.metrics.minWeight;
-       // System.out.println("threshold weight got "+input.size()+" nodes in entry");
+        max = max * f + view.graph.metrics.minGenericity;
+
         for (Node n : input) {
-           node(session, view, n);
+            if (min <= n.genericity && n.genericity <= max) output.add(n);
         }
-        return input;
+        return output;
     }
 }
