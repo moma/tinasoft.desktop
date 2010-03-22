@@ -26,6 +26,7 @@ import tinaviz.model.Session;
 import tinaviz.model.View;
 import tinaviz.transformations.filters.Explorer;
 import tinaviz.transformations.filters.Layout;
+import tinaviz.transformations.filters.SubGraphCopy;
 
 /**
  *
@@ -106,8 +107,12 @@ public class FilterChain {
         } else if (filterName.equals("Explorer")) {
             Filter f = new Explorer();
             f.setRoot(root);
-            filters.put("Layout "+filters.size(), f);
-        } else if (filterName.equals("Layout")) {
+            filters.put("Explorer "+filters.size(), f);
+        } else if (filterName.equals("SubGraphCopy")) {
+            Filter f = new SubGraphCopy();
+            f.setRoot(root);
+            filters.put("SubGraphCopy "+filters.size(), f);
+        }  else if (filterName.equals("Layout")) {
             Filter f = new Layout();
             f.setRoot(root);
             filters.put("Layout "+filters.size(), f);

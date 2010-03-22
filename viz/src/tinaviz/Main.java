@@ -445,10 +445,7 @@ public class Main extends PApplet implements MouseWheelListener {
             n1.x = constrain(n1.x + n1.vx * 0.5f, -30000, +30000);
             n1.y = constrain(n1.y + n1.vy * 0.5f, -30000, +30000);
 
-            // HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK
-            // update the original, "stored" node if we're in a macro layout
-            // HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK
-            if (v.getLevel()==ViewLevel.MACRO) {
+            if (n1.original != null) {
                 n1.original.x = n1.x;
                 n1.original.y = n1.y;
             }
@@ -594,8 +591,8 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             noSmooth();
             bezierDetail(7);
-            // goodLayout(v);
-            v.graph.touch(); // do the layout (recompute all the scene as well..)
+            goodLayout(v);
+            //v.graph.touch(); // do the layout (recompute all the scene as well..)
         }
 
         background(255);
@@ -632,29 +629,30 @@ public class Main extends PApplet implements MouseWheelListener {
 
                             if (doubleLink) {
                                 if (n1.selected && n2.selected) {
-                                    stroke(30);
+                                    stroke(255,255,255,240);
                                 } else if (n1.selected || n2.selected) {
-                                    stroke(90);
+                                    stroke(255,255,255,210);
                                 } else {
                                     float m = 180.0f;
                                     float r = (255.0f - m) / 255.0f;
-                                    stroke(m + cr * r, m + cg * r, m + cb * r);
+                                    stroke(m + cr * r, m + cg * r, m + cb * r, n1.weights.get(n2.uuid) * 255);
                                 }
                             } else {
                                 if (n1.selected && n2.selected) {
-                                    stroke(60);
+                                    stroke(255,255,255,210);
                                 } else if (n1.selected || n2.selected) {
-                                    stroke(130);
+                                    stroke(255,255,255,180);
                                 } else {
                                     float m = 210.0f;
                                     float r = (255.0f - m) / 255.0f;
-                                    stroke(m + cr * r, m + cg * r, m + cb * r);
+                                    stroke(m + cr * r, m + cg * r, m + cb * r, n1.weights.get(n2.uuid) * 255);
                                 }
                             }
 
 
                             if (v.highDefinition && n2.uuid != null) {
                                 strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
+
                                 //strokeWeight(1);
                             }
 
@@ -752,20 +750,20 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             if (n.selected) {
-                fill(10);
+                fill(0,0,0, 255);
             } else if (n.highlighted) {
-                fill(50);
+                fill(0,0,0, 220);
             } else {
 
                 // degrade du radius [r=14 level=255, r=40 level=80]
                 float minRad = 14.0f;
                 float maxRad = 25.0f;
-                int minRadColor = 255;
-                int maxRadColor = 80;
+                int maxRadColor = 200;
+                int minRadColor = 1;
 
                 float tRatio = 1.0f / (maxRad - minRad);
                 float nsdRatio = constrain((nodeScreenDiameter - minRad) * tRatio, 0, 1);
-                fill(minRadColor + nsdRatio * (float) (maxRadColor - minRadColor));
+                fill(0,0,0,minRadColor + nsdRatio * (float) (maxRadColor - minRadColor));
 
             }
             textSize(rad2);

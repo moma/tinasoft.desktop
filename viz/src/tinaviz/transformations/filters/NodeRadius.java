@@ -30,7 +30,7 @@ public class NodeRadius extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        System.out.println("radius: "+root+KEY_VALUE+" = "+r);
+        //System.out.println("radius: "+root+KEY_VALUE+" = "+r);
 
         n.radius *= r;
         return n;

@@ -53,7 +53,6 @@ public class Node {
         this.radius = radius;
         this.x = x;
         this.y = y;
-        this.original = this;
     }
 
     public Node(String uuid, String label,  float x, float y) {
@@ -62,8 +61,6 @@ public class Node {
         this.shortLabel = reduceLabel(label, 40);
         this.x = x;
         this.y = y;
-        this.original = this;
-
     }
 
     public Node(String uuid, String label,  float radius) {
@@ -71,24 +68,20 @@ public class Node {
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
         this.radius = radius;
-        this.original = this;
     }
 
     public Node(String uuid, String label) {
         this.uuid = uuid;
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
-        this.original = this;
     }
 
     public Node(String uuid) {
         this.uuid = uuid;
-        this.original = this;
     }
 
     public Node(Node n) {
-        this.original = n;
-        update(n);
+        cloneDataFrom(n);
     }
 
     public void addNeighbour(Node neighbour) {
@@ -106,7 +99,7 @@ public class Node {
         return attributes.get(key);
     }
 
-    public void update(Node node) {
+    public void cloneDataFrom(Node node) {
 
         this.uuid = new String(node.uuid);
         this.label = new String(node.label);
@@ -142,6 +135,17 @@ public class Node {
         for (String k : node.weights.keySet()) {
             this.weights.put(new String(k),new Float(node.weights.get(k)));
         }
+    }
+    public Node getLinkedCopy() {
+        Node node = new Node(""+this.uuid);
+        node.cloneDataFrom(this);
+        node.original = this;
+        return node;
+    }
+    public Node getCopy() {
+        Node node = new Node(""+this.uuid);
+        node.original = null;
+        return node;
     }
 
 

@@ -304,7 +304,7 @@ System.out.println("loading GEXF from string..");
 
             if (storedNodes.containsKey(uuid)) {
                 //System.out.println("updating node " + uuid);
-                storedNodes.get(uuid).update(node);
+                storedNodes.get(uuid).cloneDataFrom(node);
             } else {
                 //System.out.println("adding node " + uuid);
                 storedNodes.put(uuid, node);
@@ -391,7 +391,7 @@ System.out.println("loading GEXF from string..");
     public synchronized List<tinaviz.Node> getNodeListCopy() {
         List<tinaviz.Node> res = new LinkedList<tinaviz.Node>();
         for (Node n : storedNodes.values()) {
-            res.add(new Node(n));
+            res.add(n.getLinkedCopy());
         }
         return res;
     }
@@ -400,7 +400,7 @@ System.out.println("loading GEXF from string..");
         if (storedNodes.containsKey(node.uuid)) {
             storedNodes.put(node.uuid, node);
         } else {
-            storedNodes.get(node.uuid).update(node);
+            storedNodes.get(node.uuid).cloneDataFrom(node);
         }
         touch();
     }
@@ -414,7 +414,7 @@ System.out.println("loading GEXF from string..");
 
     public synchronized void updateNode(tinaviz.Node node) {
         if (storedNodes.containsKey(node.uuid)) {
-            storedNodes.get(node.uuid).update(node);
+            storedNodes.get(node.uuid).cloneDataFrom(node);
         }
         touch();
     }

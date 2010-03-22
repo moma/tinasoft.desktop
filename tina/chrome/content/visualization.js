@@ -30,22 +30,24 @@ function Tinaviz() {
 		
 		// we want to create a "batchviz's local exploration"-like behaviour?
 		//  it's trivial with the new architecture! use the "explorer" filter
-		this.setProperty("meso", "explorer/source", "macro");
-		this.setProperty("meso", "explorer/item", "");
+		this.setProperty("meso", "subgraph/source", "macro");
+		this.setProperty("meso", "subgraph/item", "");
 				
 	    // create a new "Category()" filter instance, which use the "category" namespace, and attach it to the "macro" new
 	    // and YES, you can define filters or properties at any time, it's totally asynchronous ;)
+	    
 		this.bindFilter("Category",         "category", "macro");
 		this.bindFilter("ThresholdWeight",  "weight",   "macro");
 		this.bindFilter("NodeRadius",       "radius",   "macro")
-        this.bindFilter("Layout",           "layout",   "macro");
-        
+        //this.bindFilter("Layout",           "layout",   "macro");
+  
         // MESO LOCAL EXPLORATION FILTERS
-		this.bindFilter("Explorer",         "explorer", "meso"); // generator;
+        this.bindFilter("SubGraphCopy",     "subgraph", "meso");
+		//this.bindFilter("Explorer",         "explorer", "meso"); // generator;
 		this.bindFilter("Category",         "category", "meso");
 		this.bindFilter("ThresholdWeight",  "weight",   "meso");
 		this.bindFilter("NodeRadius",       "radius",   "meso");
-        this.bindFilter("Layout",           "layout",   "meso");
+        // this.bindFilter("Layout",           "layout",   "meso");
 
         //this.loadRelativeGraph("macro","user/fet open/8_0.0-1.0.gexf");
 
@@ -186,13 +188,13 @@ function Tinaviz() {
         if (level == "macro") {
             if (attr=="Document") {
                 applet.clear("meso");
-                this.setProperty("meso", "explorer/item", id);
+                this.setProperty("meso", "subgraph/item", id);
                 this.setProperty("meso", "category/value", "Document");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {  
                 applet.clear("meso");
-                this.setProperty("meso", "explorer/item", id);
+                this.setProperty("meso", "subgraph/item", id);
                 this.setProperty("meso", "category/value", "NGram");
                 this.touch("meso");
                 this.printNGram(x,y,id,label);
@@ -200,13 +202,13 @@ function Tinaviz() {
         } else if (level == "meso") {
             if (attr=="Document") {
                 applet.clear("meso");
-                this.setProperty("meso", "explorer/item", id);
+                this.setProperty("meso", "subgraph/item", id);
                 this.setProperty("meso", "category/value", "NGram");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {
                 applet.clear("meso");
-                this.setProperty("meso", "explorer/item", id);
+                this.setProperty("meso", "subgraph/item", id);
                 this.setProperty("meso", "category/value", "Document");
                 this.touch("meso");
                 this.printNGram(x,y,id,label);
