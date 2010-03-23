@@ -36,6 +36,7 @@ public class Graph implements Cloneable {
     public Metrics metrics = null;
     public AtomicBoolean locked = null;
     public AtomicBoolean needToBeReadAgain = null;
+    public AtomicBoolean brandNewGraph = null;
     public AtomicInteger revision;
     public float MIN_WEIGHT = 0.0f;
     public float MAX_WEIGHT = 1.0f; // desired default weight
@@ -50,6 +51,7 @@ public class Graph implements Cloneable {
         attributes = new HashMap<String, Object>();
         metrics = new Metrics();
         locked = new AtomicBoolean(true);
+        brandNewGraph = new AtomicBoolean(false);
         revision = new AtomicInteger(0);
         this.session = session;
     }
@@ -112,6 +114,7 @@ public class Graph implements Cloneable {
     }
 
     private boolean parseXML(XPathReader xml) throws XPathExpressionException {
+        brandNewGraph.set(storedNodes.size() == 0);
         locked.set(true);
         String meta = "/gexf/graph/tina/";
         Console.log("<applet> reading GEXF..");

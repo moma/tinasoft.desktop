@@ -187,9 +187,9 @@ public class Session {
     }
 
     public void resetCamera(float width, float height) {
-        macro.resetCamera(width, height);
-        meso.resetCamera(width, height);
-        micro.resetCamera(width, height);
+        macro.resetCamera();
+        meso.resetCamera();
+        micro.resetCamera();
     }
 
     public void unselectAll() {

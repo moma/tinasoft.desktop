@@ -5,6 +5,8 @@
 
 package tinaviz.model;
 
+import processing.core.PVector;
+
 /**
  *
  * @author jbilcke
@@ -16,12 +18,8 @@ public class MicroView extends View {
     public MicroView(Session aThis) {
         super(aThis);
             spatializeWhenMoving = true;
-        centerOnSelection = true;
     }
 
-   public void setCenterOnSelection(boolean value) {
-       centerOnSelection = value;
-   }
     @Override
     public String getName() {
         return "micro";
@@ -30,4 +28,5 @@ public class MicroView extends View {
     public ViewLevel getLevel() {
         return ViewLevel.MICRO;
     }
+
 }

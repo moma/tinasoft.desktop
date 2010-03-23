@@ -4,15 +4,13 @@
  */
 package tinaviz.transformations.filters;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import tinaviz.Node;
 import tinaviz.transformations.NodeFilter;
 import tinaviz.model.Session;
 import tinaviz.model.View;
+import processing.core.*;
 
 /**
  *
@@ -41,6 +39,9 @@ public class ThresholdGenericity extends NodeFilter {
             view.properties.put(root+KEY_MAX, 1.0f);
         }
 
+        // HACK HACK HACK ** POUR DAVID DEMO FET60 ** HACK HACK HACK HACK
+        view.graph.metrics.maxGenericity = 1.0f;
+
         float f = view.graph.metrics.maxGenericity - view.graph.metrics.minGenericity;
 
         Object o = view.properties.get(root+KEY_MIN);
@@ -60,7 +61,8 @@ public class ThresholdGenericity extends NodeFilter {
         max = max * f + view.graph.metrics.minGenericity;
 
         for (Node n : input) {
-            // System.out.println("n.genericity: "+n.genericity);
+             // System.out.println("genericity: ["+min+" <= "+n.genericity+" <= "+max);
+
             if (min <= n.genericity && n.genericity <= max) output.add(n);
         }
         return output;

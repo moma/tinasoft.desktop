@@ -424,6 +424,7 @@ function Tinaviz() {
     },
     disable:  function() {
         if (applet == null) return;
+        applet.storeResolution();
         applet.setEnabled(false);
     },
     

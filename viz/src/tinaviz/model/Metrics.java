@@ -4,6 +4,7 @@
  */
 package tinaviz.model;
 
+import processing.core.PVector;
 import tinaviz.Node;
 
 /**
@@ -66,8 +67,10 @@ public class Metrics {
     public float maxY;
     public float minRadius;
     public float maxRadius;
-    public float centerX;
-    public float centerY;
+    public PVector center;
+    public float graphWidth;
+    public float graphHeight;
+    public float graphRadius;
     public float minWeight;
     public float maxWeight;
     public float minGenericity;
@@ -84,12 +87,15 @@ public class Metrics {
         maxY = 0.0f;
         minRadius = 0.0f;
         maxRadius = Float.MIN_VALUE;
-        centerX = 0.0f;
-        centerY = 0.0f;
+        center = new PVector(0.0f,0.0f);
+        graphRadius = 0.0f;
+        graphWidth = 0.0f;
+        graphHeight = 0.0f;
         minWeight = Float.MAX_VALUE;
         maxWeight = Float.MIN_VALUE;
         minGenericity = Float.MAX_VALUE;
         maxGenericity = Float.MIN_VALUE;
+
     }
 
     @Override
@@ -100,8 +106,11 @@ public class Metrics {
                 + "maxY=" + maxY + ", "
                 + "minRadius=" + minRadius + ", "
                 + "maxRadius=" + maxRadius + ", "
-                + "centerX=" + centerX + ", "
-                + "centerY=" + centerY + ", "
+                + "graphWidth=" + graphWidth + ","
+                + "graphHeight=" + graphHeight+","
+                + "graphRadius="+ graphRadius+","
+                + "centerX=" + center.x + ", "
+                + "centerY=" + center.y + ", "
                 + "minWeight=" + minWeight + ", "
                 + "maxWeight=" + maxWeight + ";"
                 + "minGenericity=" + minGenericity + ", "
@@ -116,8 +125,8 @@ public class Metrics {
         newMetrics.maxY = maxY;
         newMetrics.minRadius = minRadius;
         newMetrics.maxRadius = maxRadius;
-        newMetrics.centerX = centerX;
-        newMetrics.centerY = centerY;
+        newMetrics.center.x = center.x;
+        newMetrics.center.y = center.x;
         newMetrics.minWeight = minWeight;
         newMetrics.maxWeight = maxWeight;
         newMetrics.minGenericity = minGenericity;
@@ -166,8 +175,10 @@ public class Metrics {
             }
         }
 
-        centerX = maxX - minX;
-        centerY = maxY - minY;
-
+        graphWidth = maxX - minX;
+        graphHeight = maxY - minY;
+        graphRadius = (graphWidth + graphHeight) / 2.0f;
+        center.x = (graphWidth / 2.0f) + minX;
+        center.y = (graphHeight / 2.0f) + minY;
     }
 }

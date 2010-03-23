@@ -73,11 +73,13 @@ public class SubGraphCopy extends NodeFilter {
         }
 
 
+        List<Node> newNodes = new LinkedList<Node>();
+
         List<Node> output = new LinkedList<Node>();
         
         Map<String,Node> sources = sourceView.graph.storedNodes;
         Node rootNode = sources.get(item).getDetachedClone();
-        localView.graph.storedNodes.put(item, rootNode);
+        newNodes.add(rootNode);
         output.add(rootNode.getProxyClone());
        // System.out.println("added root at x:"+rootNode.x+" y:"+rootNode.y+" with "+rootNode.neighbours.size()+" neighbours");
 
@@ -90,11 +92,13 @@ public class SubGraphCopy extends NodeFilter {
             clonedNeighbourNode.y =  (float) Math.random() * 100f;
 
             //System.out.println("  - trying to add node x:"+sources.get(neighbourId).x+" y:"+sources.get(neighbourId).y+" ("+sources.get(neighbourId).neighbours.size()+" edges)");
-            localView.graph.storedNodes.put(neighbourId, clonedNeighbourNode);
+            newNodes.add(clonedNeighbourNode);
             output.add(clonedNeighbourNode.getProxyClone());
             //System.out.println("  - added neighbour "+clonedNeighbourNode.label+ " ");
 
         }
+         localView.updateFromNodeList(newNodes);
+         localView.resetCamera();
        // System.out.println("added "+output.size()+" nodes to local view ("+localView.getName()+")");
 
         // FIXED we also need to copy the graph metrics! yeah baby!

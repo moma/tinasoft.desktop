@@ -49,6 +49,8 @@ public class Main extends PApplet implements MouseWheelListener {
     float MAX_NODE_RADIUS = 8.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     private String selectNode = null;
     private boolean selectNone = false;
+    int oldScreenWidth = 0;
+    int oldScreenHeight = 0;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -194,7 +196,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
         // currentView.showLabels = false;
 
-
         /*
         SecurityManager appsm = System.getSecurityManager();
         if (appsm != null) {
@@ -301,9 +302,6 @@ public class Main extends PApplet implements MouseWheelListener {
         //session.toMesoLevel();
 
         // in the case the reset method take the graph radius in account to zoom (but its still not the case)
-        session.meso.resetCamera(width, height);
-        session.macro.resetCamera(width, height);
-
         session.toMacroLevel();
         // session.toMesoLevel();
 
@@ -325,6 +323,11 @@ public class Main extends PApplet implements MouseWheelListener {
         // todo replace by get network
         View v = session.getView();
 
+
+        // HACK
+        v.screenWidth = width;
+        v.screenHeight = height;
+
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
                 fastLayout(v);
@@ -337,6 +340,43 @@ public class Main extends PApplet implements MouseWheelListener {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
             nodes.clear();
             nodes.addAll(n);
+
+            boolean cameraUpdateNeeded = false;
+            if (width > 0 && height > 0)
+                cameraUpdateNeeded = v.graph.brandNewGraph.getAndSet(false);
+            
+            switch (v.centeringMode) {
+                case FREE_MOVE:
+
+                   if (cameraUpdateNeeded) {
+                       System.out.println("Camera Update Needed in FREE MOVE mode!");
+                            // metrics are already recomputed
+                            v.resetZoom();
+                            v.resetToGraphBarycenter();
+                        }
+
+                    break;
+                case GLOBAL_GRAPH_BARYCENTER:
+                          System.out.println("GLOBAL_GRAPH_BARYCENTER!");
+
+                    if (cameraUpdateNeeded) {
+
+                        v.resetZoom();
+                    }
+                    v.resetToGraphBarycenter();
+
+
+                    break;
+                case SELECTED_GRAPH_BARYCENTER:
+                       System.out.println("SELECTED_GRAPH_BARYCENTER!");
+                    if (cameraUpdateNeeded) {
+
+                        v.resetZoom();
+                    }
+                    v.resetToSelectionBarycenter();
+
+                    break;
+            }
         }
 
         //session.animationPaused = tmp; // TODO replace by a lock here
@@ -606,7 +646,6 @@ public class Main extends PApplet implements MouseWheelListener {
         strokeWeight(1);
         noFill();
 
-
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
 
@@ -615,10 +654,11 @@ public class Main extends PApplet implements MouseWheelListener {
             if (selectNone) {
                 n1.selected = false;
             } else {
-            if (selectNode != null) {
-                if (selectNode.equals(n1.uuid))
+                if (selectNode != null) {
+                    if (selectNode.equals(n1.uuid)) {
                         n1.selected = true;
-            }
+                    }
+                }
             }
 
             for (Node n2 : nodes) {
@@ -895,13 +935,19 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (mouseButton == LEFT) {
                     if (mouseEvent != null && mouseEvent.getClickCount() == 2) {
 
-                        // double click also select nodes!
-                        if (!n.selected) {
-                            n.selected = true;
-                            session.selectNode(n);
-                             nodeSelectedLeftMouse_JS_CALLBACK(n);
+
+                        // cannot unselect the selected node in meso view
+                        if (n.selected && session.getView().getLevel() == ViewLevel.MESO) {
+                            return;
                         }
-                       
+
+                        // double click also select nodes!
+
+                        n.selected = true;
+                        session.selectNode(n);
+                        nodeSelectedLeftMouse_JS_CALLBACK(n);
+
+
 
                         if (session.currentLevel == ViewLevel.MACRO) {
                             System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
@@ -1184,28 +1230,23 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
+    public void storeResolution() {
+        oldScreenWidth = 0;
+        oldScreenHeight = 0;
+    }
+
     public void clear() {
         getSession().clear();
-
-
     }
 
     public void clear(String view) {
         getSession().getView(view).clear();
-
-
     }
 
-    public void resetCameras() {
-        getSession().resetCamera(width, height);
-
-
-    }
 
     public void resetCamera(String view) {
-        getSession().getView(view).resetCamera(width, height);
-
-
+        View v = getSession().getView(view);
+        v.resetCamera();
     }
 
     public void select(String id) {
