@@ -19,6 +19,7 @@ import tinaviz.model.Session;
 import tinaviz.model.View;
 import tinaviz.transformations.filters.Explorer;
 import tinaviz.transformations.filters.Layout;
+import tinaviz.transformations.filters.NodeFunction;
 import tinaviz.transformations.filters.SubGraphCopy;
 import tinaviz.transformations.filters.ThresholdGenericity;
 
@@ -56,10 +57,10 @@ public class FilterChain {
 
         @Override
         public void run() {
-            System.out.println("filter started!..");
+            //System.out.println("filter started!..");
             List<Node> result = (nodes != null) ? nodes : new LinkedList<Node>();
             for (Filter f : filters) {
-                System.out.println("processing filter "+f.getRoot());
+                //System.out.println("processing filter "+f.getRoot());
                 if (interrupted()) {
                     System.out.println("we're interrupted!");
                     return;
@@ -67,7 +68,7 @@ public class FilterChain {
                 result = f.process(session, view, result);
             }
             chain.filteredNodes = result;
-            System.out.println("filter finished to process "+result.size()+" nodes! setting flash 'ready' to true..");
+            //System.out.println("filter finished to process "+result.size()+" nodes! setting flash 'ready' to true..");
             chain.filterIsRunning.set(false);
             chain.popLocked.set(false);
         }
@@ -85,13 +86,15 @@ public class FilterChain {
     }
 
     public boolean addFilter(String filterName, String root) {
-        System.out.println("adding filter "+root+" =>");
+        System.out.println("adding filter "+root+"");
         Filter f = null;
         if (filterName.equals("ThresholdWeight")) {
             f = new ThresholdWeight();
         } else if (filterName.equals("NodeRadius")) {
             f = new NodeRadius();
-        } else if (filterName.equals("Category")) {
+        } else if (filterName.equals("NodeFunction")) {
+            f = new NodeFunction();
+        }  else if (filterName.equals("Category")) {
             f = new Category();
         } else if (filterName.equals("Explorer")) {
             f = new Explorer();
@@ -107,7 +110,7 @@ public class FilterChain {
         }
          f.setRoot(root);
          filters.add(f);
-        System.out.println("addFilter SUCCESS!");
+        //System.out.println("addFilter SUCCESS!");
         return true;
     }
 
@@ -150,7 +153,7 @@ public class FilterChain {
 
         // we are already filtering, please wait..
         if (filterIsRunning.get()) {
-            System.out.println("Filters are already running, please wait..");
+            //System.out.println("Filters are already running, please wait..");
             return null;
         }
 
@@ -158,7 +161,7 @@ public class FilterChain {
         if (graphRevision.get() == view.graph.revision.get()) {
             // check if we already popped
             if (!popLocked.get()) {
-                System.out.println("Filters are up to date, not running, and not popped.. we return filtered nodes!");
+                //System.out.println("Filters are up to date, not running, and not popped.. we return filtered nodes!");
                 popLocked.set(true); // no more popping!
                 return filteredNodes;
             } else {
@@ -172,26 +175,26 @@ public class FilterChain {
         // experimental
         
         if (!popLocked.get()) {
-                System.out.println("Filters are up to date, not running, and not popped.. we return filtered nodes!");
+                //System.out.println("Filters are up to date, not running, and not popped.. we return filtered nodes!");
                 popLocked.set(true); // no more popping!
                 return filteredNodes;
          }
 
 
-        System.out.println("Filter is outdated, checking if we can run a new filter thread..");
+        //System.out.println("Filter is outdated, checking if we can run a new filter thread..");
 
         // we have to wait for the graph to be unlocked
         if (view.graph.locked.get()) {
-            System.out.println("Graph is locked.. probably parsing some XML!");
+            //System.out.println("Graph is locked.. probably parsing some XML!");
             return null;
         }
 
-        System.out.println("okay, graph looks unlocked, starting new filter thread..");
+        //System.out.println("okay, graph looks unlocked, starting new filter thread..");
         filterIsRunning.set(true);
         thread = new FilterThread(this, session, view, view.graph.getNodeListCopy());
         thread.start();
 
-        System.out.println("updating filter's graph revision!");
+        //System.out.println("updating filter's graph revision!");
         graphRevision.set(view.graph.revision.get());
         return null;
 

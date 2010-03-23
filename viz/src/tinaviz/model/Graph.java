@@ -6,6 +6,7 @@ package tinaviz.model;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import tinaviz.Console;
 import tinaviz.Node;
+import processing.core.*;
 
 /**
  *
@@ -35,8 +37,12 @@ public class Graph implements Cloneable {
     public AtomicBoolean locked = null;
     public AtomicBoolean needToBeReadAgain = null;
     public AtomicInteger revision;
-    public float MAX_WEIGHT = 1.0f; // alternative to scale : alpha
-    public float MAX_RADIUS = 3.5f; // empirical
+    public float MIN_WEIGHT = 0.0f;
+    public float MAX_WEIGHT = 1.0f; // desired default weight
+    public float MIN_RADIUS = 0.01f;
+    public float MAX_RADIUS = 1.0f; // largely depends on the spatialization settings
+    public float MIN_GENERICITY = 0.0f;
+    public float MAX_GENERICITY = 1.0f;
     private Session session = null;
 
     public Graph(Session session) {
@@ -69,11 +75,12 @@ public class Graph implements Cloneable {
 
     public boolean updateFromString(String str) {
         //Console.log("<applet> got updateFromString(..) from " + this);
-        
+
         try {
             XPathReader xml = new XPathReader();
-System.out.println("loading GEXF from string..");
-            xml.parseFromString(str);
+            System.out.println("loading GEXF from string..");
+             xml.parseFromString(str);
+            //xml.parseFromString(new String(str.getBytes(), "UTF-8"));
 
             //Console.log("<applet> calling parse XML on "+str);
             return parseXML(xml);
@@ -81,6 +88,9 @@ System.out.println("loading GEXF from string..");
         } catch (XPathExpressionException ex) {
             Console.log(ex.toString());
         }
+       /* } catch (UnsupportedEncodingException ex) {
+             Console.log(ex.toString());
+        }*/
         return false;
     }
 
@@ -119,9 +129,6 @@ System.out.println("loading GEXF from string..");
             //upperThreshold = thresholdValue.floatValue();
         }
 
-        //System.out.println("threshold: [" + lowerThreshold + "," + upperThreshold + "]");
-
-
         String selected = (String) xml.read(meta + "select/@node", XPathConstants.STRING);
         attributes.put("selected", (selected != null) ? selected : "");
 
@@ -150,52 +157,19 @@ System.out.println("loading GEXF from string..");
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node xmlnode = nodes.item(i);
 
-            /*if (xmlnode.getNodeType() != org.w3c.dom.Node.ELEMENT_NODE){
-            continue;
-            }*/
-            //System.out.println(xmlnode.getNodeValue());
-
             org.w3c.dom.NamedNodeMap xmlnodeAttributes = xmlnode.getAttributes();
 
-
-            //String uuid = nodeAttributes.getNamedItem("id").getNodeValue();
-            //String label = nodeAttributes.getNamedItem("label").getNodeValue();
-
-
-
             String uuid = xmlnodeAttributes.getNamedItem("id").getNodeValue();
-
 
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
                     : uuid;
 
-
             Node node = new Node(uuid, label, (float) Math.random() * 2f,
                     (float) Math.random() * 100f,
-                    (float) Math.random() * 100f);//, posx, posy);
+                    (float) Math.random() * 100f);
 
-            node.category = "NGram";
-
-            // update the graph metrics
-            if (node.x < metrics.minX) {
-                metrics.minX = node.x;
-            }
-            if (node.x > metrics.maxX) {
-                metrics.maxX = node.x;
-            }
-            if (node.y < metrics.minY) {
-                metrics.minY = node.y;
-            }
-            if (node.y > metrics.maxY) {
-                metrics.maxY = node.y;
-            }
-            if (node.radius < metrics.minRadius) {
-                metrics.minRadius = node.radius;
-            }
-            if (node.radius > metrics.maxRadius) {
-                metrics.maxRadius = node.radius;
-            }
+            node.category = "Document";
 
             org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
 
@@ -211,7 +185,7 @@ System.out.println("loading GEXF from string..");
                             if (attr.getAttributes() != null) {
                                 org.w3c.dom.Node attrID = null;
                                 if (attr.getAttributes().getNamedItem("for") != null) {
-                                     attrID = attr.getAttributes().getNamedItem("for");
+                                    attrID = attr.getAttributes().getNamedItem("for");
                                 } else {
                                     // maybe this is an old gexf..
                                     attrID = attr.getAttributes().getNamedItem("id");
@@ -221,12 +195,11 @@ System.out.println("loading GEXF from string..");
                                         node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
                                         // System.out.println(" - category: "+node.category);
 
-                                    } else if (attrID.getNodeValue().equals("1")) {
-                                        //node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
-                                        // System.out.println("  - genericity: "+node.genericity );
+                                    } else if (attrID.getNodeValue().equals("4")) {
+                                        node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
                                     }
                                 }
-                                
+
                             }
                         }
 
@@ -243,7 +216,7 @@ System.out.println("loading GEXF from string..");
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("value") != null) {
                         // FIXME normalize radius by a max radius, so it is not too big
-                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue()) * 0.3f;
+                        node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue());
                     }
                 } else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
@@ -261,54 +234,26 @@ System.out.println("loading GEXF from string..");
                 if (node.category.equals("NGram")) {
                     node.shape = ShapeCategory.DISK;
                 } else {
-                   node.shape = ShapeCategory.SQUARE;
-                }
-                
-                // update the graph metrics
-                if (node.x < metrics.minX) {
-                    metrics.minX = node.x;
-                }
-                if (node.x > metrics.maxX) {
-                    metrics.maxX = node.x;
-                }
-                if (node.y < metrics.minY) {
-                    metrics.minY = node.y;
-                }
-                if (node.y > metrics.maxY) {
-                    metrics.maxY = node.y;
-                }
-                if (node.radius < metrics.minRadius) {
-                    metrics.minRadius = node.radius;
-                }
-                if (node.radius > metrics.maxRadius) {
-                    metrics.maxRadius = node.radius;
+                    node.shape = ShapeCategory.SQUARE;
                 }
 
 
             }
 
-            //System.out.println("selectedNodeID: " + selectedNodeID);
-
-            //if (selectedNodeID.equals(uuid)) {
-            //    node.selected = true;
-            //}
-
             // HACK FOR BAD NGRAMS IN MESO DOCUMENTS GRAPHS
-            if (session.macro.graph != this)
-                if (node.category.equals("NGram"))
+            if (session.macro.graph != this) {
+                if (node.category.equals("NGram")) {
                     if (!session.macro.graph.storedNodes.containsKey(node.uuid)) {
-                        System.out.println("Skipping node "+node.label);
+                        System.out.println("Skipping node " + node.label);
                         continue;
                     }
-
+                }
+            }
 
             if (storedNodes.containsKey(uuid)) {
-                //System.out.println("updating node " + uuid);
                 storedNodes.get(uuid).cloneDataFrom(node);
             } else {
-                //System.out.println("adding node " + uuid);
                 storedNodes.put(uuid, node);
-                //nodeList.add(node);
             }
 
         }
@@ -330,57 +275,56 @@ System.out.println("loading GEXF from string..");
 
             if (storedNodes.containsKey(source) && storedNodes.containsKey(target)) {
                 storedNodes.get(source).addNeighbour(storedNodes.get(target));
-
-                // add the weight
-                //System.out.println("adding edge "+i+" <"+source+","+target+">");
                 storedNodes.get(source).weights.put(target, weight);
-                if (weight > metrics.maxWeight) {
-                    metrics.maxWeight = weight;
-                }
-                if (weight < metrics.minWeight) {
-                    metrics.minWeight = weight;
-                }
             }
 
         }
 
-        metrics.centerX = metrics.maxX - metrics.minX;
-        metrics.centerY = metrics.maxY - metrics.minY;
+        metrics.compute(this);
 
         // now we need to normalize the graph
         for (Node n : storedNodes.values()) {
 
+            // NORMALIZE RADIUS
+            //System.out.println("node "+n.label+" ("+n.category+")");
+            //System.out.println(" - radius avant:"+n.radius);
 
-            // NORMALIZE COLORS
+            n.radius = PApplet.map(n.radius,
+                    metrics.minRadius, metrics.maxRadius,
+                    MIN_RADIUS, MAX_RADIUS);
+            // System.out.println(" -  normalized radius:"+n.radius);
+
+            // NORMALIZE COLORS USING RADIUS
             if (n.r < 0) {
-                n.r = 255 - ((160f / metrics.maxRadius)*n.radius);
+                n.r = 255 - 160 * n.radius;
             }
             if (n.g < 0) {
-                n.g = 255 - ((180f / metrics.maxRadius)*n.radius);
+                n.g = 255 - 160 * n.radius;
             }
             if (n.b < 0) {
-                n.b = 255 - ((150f / metrics.maxRadius)*n.radius);
+                n.b = 255 - 160 * n.radius;
             }
 
-            // NORMALIZE RADIUS
-            n.radius *= MAX_RADIUS / metrics.maxRadius;
+
+            // NORMALIZE GENERICITY
+            n.genericity = PApplet.map(n.genericity,
+                    metrics.minGenericity, metrics.maxGenericity,
+                    MIN_GENERICITY, MAX_GENERICITY);
+            //System.out.println("normalized genericity:"+n.genericity+"\n");
 
             // NORMALIZE WEIGHTS
-            float ratio = MAX_WEIGHT / metrics.maxWeight;
             for (String k : n.weights.keySet()) {
-                n.weights.put(k,n.weights.get(k)*ratio);
-                // System.out.println(""+k+"="+n.weights.get(k)*ratio);
+                n.weights.put(k, PApplet.map(n.weights.get(k),
+                        metrics.minWeight, metrics.maxWeight,
+                        MIN_WEIGHT, MAX_WEIGHT));
             }
+
 
         }
 
-        // TODO update metrics
-        metrics.maxRadius = MAX_RADIUS;
-        metrics.maxWeight = MAX_WEIGHT;
 
         Console.log(metrics.toString());
-
-        Console.log("<graph> GEXF loaded!");
+        Console.log("applet: gexf successfully imported.");
 
         locked.set(false);
         touch();
@@ -451,9 +395,10 @@ System.out.println("loading GEXF from string..");
     }
 
     public int touch() {
-       //System.out.println("incrementing graph revision to "+(revision.get()+1));
-       return revision.incrementAndGet();
+        //System.out.println("incrementing graph revision to "+(revision.get()+1));
+        return revision.incrementAndGet();
     }
+
     public void selectNodeById(String id) {
         boolean changed = false;
         if (storedNodes.containsKey(id)) {
@@ -461,17 +406,19 @@ System.out.println("loading GEXF from string..");
             changed = true;
         }
 
-        // if (changed) touch();
+        if (changed) {
+            touch();
+        }
 
     }
 
     public void unselectNodeById(String id) {
-         boolean changed = false;
+        boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
             changed = true;
         }
-        // if (changed) touch();
+        //if (changed) touch();
     }
 
     public void unselectAll() {
@@ -480,8 +427,6 @@ System.out.println("loading GEXF from string..");
             n.selected = false;
             changed = true;
         }
-         // if (changed) touch();
+        //if (changed) touch();
     }
-
-
 }

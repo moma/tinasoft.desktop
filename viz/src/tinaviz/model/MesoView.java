@@ -18,7 +18,7 @@ public class MesoView extends View {
         super(aThis);
         spatializeWhenMoving = true;
         centerOnSelection = true;
-        ZOOM_CEIL = 1.0f;
+        ZOOM_CEIL = 0.5f;
         ZOOM_FLOOR = 50.0f;
         graph.locked.set(false);
     }

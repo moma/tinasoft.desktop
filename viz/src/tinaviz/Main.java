@@ -28,8 +28,10 @@ public class Main extends PApplet implements MouseWheelListener {
     Session session = new Session();
     // pourcentage de l'ecran pour lequel la présence des bords d'un node
     // déclenche le passage dans le mode macro
-    float screenRatioSelectNodeWhenZoomed = 0.22f;
-    float screenRatioGoToMesoWhenZoomed = 0.55f;
+    //float screenRatioSelectNodeWhenZoomed = 0.22f;
+    //float screenRatioGoToMesoWhenZoomed = 0.55f;
+    float screenRatioSelectNodeWhenZoomed = 0.4f;
+    float screenRatioGoToMesoWhenZoomed = 0.7f;
     AtomicBoolean zooming = new AtomicBoolean(false);
     AtomicBoolean zoomIn = new AtomicBoolean(false);
     private RecordingFormat recordingMode = RecordingFormat.NONE;
@@ -44,6 +46,9 @@ public class Main extends PApplet implements MouseWheelListener {
     float selectedX = 0.0f;
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
+    float MAX_NODE_RADIUS = 8.0f; // node radius is normalized to 1.0 for each node, then mult with this value
+    private String selectNode = null;
+    private boolean selectNone = false;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -602,11 +607,20 @@ public class Main extends PApplet implements MouseWheelListener {
         noFill();
 
 
-
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
 
         for (Node n1 : nodes) {
+
+            if (selectNone) {
+                n1.selected = false;
+            } else {
+            if (selectNode != null) {
+                if (selectNode.equals(n1.uuid))
+                        n1.selected = true;
+            }
+            }
+
             for (Node n2 : nodes) {
                 if (n1 == n2) {
                     continue;
@@ -616,63 +630,60 @@ public class Main extends PApplet implements MouseWheelListener {
 
                     // if we need to draw the links
                     if (v.showLinks || n1.selected) {
-                        boolean doubleLink = false;
+                        boolean mutual = n2.neighbours.contains(n1.uuid);
 
-                        if (n2.neighbours.contains(n1.uuid)) {
-                            doubleLink = true;
-                        }
+                        float cr = (n1.r + n2.r) / 2;
+                        float cg = (n1.g + n2.g) / 2;
+                        float cb = (n1.b + n2.b) / 2;
 
-                        if (!doubleLink | n1.uuid.compareTo(n2.uuid) <= 0) {
-
-                            float cr = (n1.r + n2.r) / 2;
-                            float cg = (n1.g + n2.g) / 2;
-                            float cb = (n1.b + n2.b) / 2;
-
-                            if (doubleLink) {
-                                if (n1.selected && n2.selected) {
-                                    stroke(0, 0, 0, 255);
-                                } else if (n1.selected || n2.selected) {
-                                    stroke(0, 0, 0, 220);
-                                } else {
-                                    float m = 180.0f;
-                                    float r = (255.0f - m) / 255.0f;
-                                    stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
-                                }
+                        if (mutual) {
+                            if (n1.selected && n2.selected) {
+                                stroke(0, 0, 0, 255);
+                            } else if (n1.selected || n2.selected) {
+                                stroke(0, 0, 0, 220);
                             } else {
-                                if (n1.selected && n2.selected) {
-                                    stroke(0, 0, 0, 230);
-                                } else if (n1.selected || n2.selected) {
-                                    stroke(0, 0, 0, 200);
-                                } else {
-                                    float m = 210.0f;
-                                    float r = (255.0f - m) / 255.0f;
-                                    stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
-                                }
+                                float m = 180.0f;
+                                float r = (255.0f - m) / 255.0f;
+                                stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
                             }
-
-
-                            if (v.highDefinition && n2.uuid != null) {
-                                strokeWeight(n1.weights.get(n2.uuid) * 10.0f);
-
-                                //strokeWeight(1);
-                            }
-
-                            // line(n2.x, n2.y, n1.x, n1.y);
-                            // arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
-
-
-                            float xa0 = (6 * n1.x + n2.x) / 7, ya0 = (6 * n1.y + n2.y) / 7;
-                            float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
-                            float[] xya1 = rotation(xa0, ya0, n1.x, n1.y, PI / 2);
-                            float[] xyb1 = rotation(xb0, yb0, n2.x, n2.y, -PI / 2);
-                            float xa1 = (float) xya1[0], ya1 = (float) xya1[1];
-                            float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
-                            bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
-                            if (v.highDefinition && n2.uuid != null) {
-                                //strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
-                                strokeWeight(1);
+                        } else {
+                            if (n1.selected && n2.selected) {
+                                stroke(0, 0, 0, 230);
+                            } else if (n1.selected || n2.selected) {
+                                stroke(0, 0, 0, 200);
+                            } else {
+                                float m = 210.0f;
+                                float r = (255.0f - m) / 255.0f;
+                                stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
                             }
                         }
+
+
+                        if (v.highDefinition && n2.uuid != null) {
+                            strokeWeight(n1.weights.get(n2.uuid) * 10.0f);
+
+                            //strokeWeight(1);
+                        }
+
+                        // line(n2.x, n2.y, n1.x, n1.y);
+                        // arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
+
+                        if (mutual) {
+                            if (n1.weights.get(n2.uuid) > n2.weights.get(n1.uuid)) {
+                                drawCurve(n2, n1);
+                            } else {
+                                drawCurve(n1, n2);
+                            }
+                        } else {
+                            drawCurve(n2, n1);
+                        }
+
+
+                        if (v.highDefinition && n2.uuid != null) {
+                            //strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
+                            strokeWeight(1);
+                        }
+
 
                     }
 
@@ -685,7 +696,7 @@ public class Main extends PApplet implements MouseWheelListener {
         noStroke();
         for (Node n : nodes) {
 
-            float rad = n.radius;
+            float rad = n.radius * MAX_NODE_RADIUS;
             float rad2 = rad + rad * 0.4f;
 
             n.screenX = screenX(n.x, n.y);
@@ -783,6 +794,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
         }
 
+        selectNode = null;
+        selectNone = false;
     }
 
     public synchronized boolean takePicture(String path) {
@@ -835,15 +848,31 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mouseMoved() {
+        Node candidate = null;
         for (Node n : nodes) {
             n.highlighted = false;
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
-            float nsr = screenX(n.x + (n.radius + n.radius * 0.4f), n.y) - nsx;
+            float rad = n.radius * MAX_NODE_RADIUS;
+            float nsr = screenX(n.x + (rad + rad * 0.4f), n.y) - nsx;
             if (nsr < 2) {
                 continue;
             }
-            n.highlighted = (dist(mouseX, mouseY, nsx, nsy) < nsr);
+
+            if (dist(mouseX, mouseY, nsx, nsy) < nsr) {
+                if (candidate == null) {
+                    candidate = n;
+                }
+                if (n.radius > candidate.radius) {
+                    candidate = n;
+                }
+
+            }
+
+
+        }
+        if (candidate != null) {
+            candidate.highlighted = true;
         }
     }
 
@@ -854,7 +883,8 @@ public class Main extends PApplet implements MouseWheelListener {
         for (Node n : nodes) {
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
-            float nsr = screenX(n.x + (n.radius + n.radius * 0.4f), n.y) - nsx;
+            float rad = n.radius * MAX_NODE_RADIUS;
+            float nsr = screenX(n.x + (rad + rad * 0.4f), n.y) - nsx;
             if (nsr < 2) {
                 continue;
             }
@@ -869,8 +899,9 @@ public class Main extends PApplet implements MouseWheelListener {
                         if (!n.selected) {
                             n.selected = true;
                             session.selectNode(n);
-                            nodeSelectedLeftMouse_JS_CALLBACK(n);
+                             nodeSelectedLeftMouse_JS_CALLBACK(n);
                         }
+                       
 
                         if (session.currentLevel == ViewLevel.MACRO) {
                             System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
@@ -953,7 +984,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         for (Node n : nodes) {
 
-            float rad = n.radius;
+            float rad = n.radius * MAX_NODE_RADIUS;
             float rad2 = rad + rad * 0.4f;
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
@@ -1179,14 +1210,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void select(String id) {
         getSession().selectNodeById(id);
-
-
+        selectNode = id;
     }
 
     public void unselect() {
         getSession().unselectAll();
-
-
+        selectNone = true;
     }
 
     private void arrow(float x1, float y1, float x2, float y2, float radius) {
@@ -1235,5 +1264,15 @@ public class Main extends PApplet implements MouseWheelListener {
 
         return rc;
 
+    }
+
+    public void drawCurve(Node n1, Node n2) {
+        float xa0 = (6 * n1.x + n2.x) / 7, ya0 = (6 * n1.y + n2.y) / 7;
+        float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
+        float[] xya1 = rotation(xa0, ya0, n1.x, n1.y, PI / 2);
+        float[] xyb1 = rotation(xb0, yb0, n2.x, n2.y, -PI / 2);
+        float xa1 = (float) xya1[0], ya1 = (float) xya1[1];
+        float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
+        bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
     }
 }

@@ -18,9 +18,14 @@ function Tinaviz() {
         
         //this.setProperty("macro", "layout/repulsion", 0.5);
         
-        // initial edge weight threshold
+        // load default values (eg. from settings)
 	    this.dispatchProperty("weight/min", 0.0);
 	    this.dispatchProperty("weight/max", 1.0);
+	    
+	    this.dispatchProperty("genericity/min", 0.0);
+	    this.dispatchProperty("genericity/max", 1.0);
+	    
+	    this.dispatchProperty("radiusByGenericity/max", 1.0);
 	    
 	    // we want to keep documents
 	    this.dispatchProperty("category/value", "Document");
@@ -30,24 +35,37 @@ function Tinaviz() {
 		
 		// we want to create a "batchviz's local exploration"-like behaviour?
 		//  it's trivial with the new architecture! use the "explorer" filter
-		this.setProperty("meso", "subgraph/source", "macro");
-		this.setProperty("meso", "subgraph/item", "");
-				
+
 	    // create a new "Category()" filter instance, which use the "category" namespace, and attach it to the "macro" new
 	    // and YES, you can define filters or properties at any time, it's totally asynchronous ;)
 	    
-		this.bindFilter("Category",         "category", "macro");
-		this.bindFilter("ThresholdWeight",  "weight",   "macro");
-		this.bindFilter("NodeRadius",       "radius",   "macro");  
+		this.bindFilter("Category",             "category",           "macro");
+		this.bindFilter("ThresholdGenericity",  "genericity",         "macro");
+		this.bindFilter("ThresholdWeight",      "weight",             "macro");
+		this.bindFilter("NodeFunction",         "radiusByGenericity", "macro");
+		this.bindFilter("NodeRadius",           "radius",             "macro");  
         //this.bindFilter("Layout",           "layout",   "macro");
   
+  
         // MESO LOCAL EXPLORATION FILTERS
-        this.bindFilter("SubGraphCopy",     "subgraph", "meso");
-		//this.bindFilter("Explorer",         "explorer", "meso"); // generator;
+        // create a local graph in the meso view, from the macro view
+        this.bindFilter("SubGraphCopy",         "subgraph",           "meso");
+        this.setProperty("meso", "subgraph/source", "macro");
+		this.setProperty("meso", "subgraph/item", "");
+				
+		this.bindFilter("Category",             "category",           "meso");
+				
+		// filter by genericity
+		this.bindFilter("ThresholdGenericity",  "genericity",         "meso");
 		
-		this.bindFilter("Category",         "category", "meso");
-		this.bindFilter("ThresholdWeight",  "weight",   "meso");
-		this.bindFilter("NodeRadius",       "radius",   "meso");
+		// filter by edge threshold
+		this.bindFilter("ThresholdWeight",      "weight",             "meso");
+
+		// multiply the radius by the genericity
+		this.bindFilter("NodeFunction",         "radiusByGenericity", "meso");
+		
+		// multiply the radius by the GUI slider value
+		this.bindFilter("NodeRadius",           "radius",             "meso");
 		
         // this.bindFilter("Layout",           "layout",   "meso");
 
@@ -120,6 +138,7 @@ function Tinaviz() {
     unselect: function() {
         if (applet == null) return;
         applet.unselect();
+        this.setProperty("meso", "subgraph/item", "");
         applet.clear("meso");
         applet.resetCamera("meso");
     },
@@ -136,21 +155,27 @@ function Tinaviz() {
     
     nodeRightClicked: function(level,x,y,id,label,attr) {
         if (applet == null) return;
-        this.logDebug("nodeRightClicked called! attributes: '"+attr+"'");
+        this.logDebug("nodeRightClicked called on "+level+" "+label+" "+attr+"");
 
+         // here 'attr' is the category of the current selected node!
+         // and cat the current filter
         /*if (id == null) { $('#sidebariframe').hide(); }
         else            { $('#sidebariframe').show(); }*/
-        if (attr=="Document") {
-            this.setProperty(level, "category/value", "NGram");
-            this.touch(level);
-            this.logNormal("right click on doc");
-        } else if (attr=="NGram") {
-            this.setProperty(level, "category/value", "Document");
-            this.touch(level);
-            this.logNormal("right click on ngram");
-        }
+        var cat = this.getProperty(level, "category/value");
+         if (cat=="Document") {
+                this.setProperty(level, "category/value", "NGram");
+                this.touch(level);
+            } else if (cat=="NGram") {
+                this.setProperty(level, "category/value", "Document");
+                this.touch(level);
+            }
+            if (id != this.getProperty(level, "subgraph/item")) {
+                applet.clear("meso");
+                this.setProperty("meso", "subgraph/item", id);
+           }
+           
         if (level == "macro") {
-        
+
             if (attr=="Document") {
                  //this.setProperty("macro", "category/value", "Document");
                  //this.touch("macro");
@@ -161,6 +186,8 @@ function Tinaviz() {
                  this.printNGram(x,y,id,label,attr);
             }
         } else if (level == "meso") { // si dans meso
+           
+            this.touch(level);
             if (attr=="Document") { // et clic droit sur un doc
                 //this.setProperty("meso", "category/value", "Document");
                 //this.touch("meso");
@@ -185,20 +212,20 @@ function Tinaviz() {
             return;
         }
 
-        this.logDebug("nodeLeftClicked called! attributes: '"+attr+"'");
+               this.logDebug("nodeLeftClicked called on "+level+" "+label+" "+attr+"");
 
         if (level == "macro") {
             if (attr=="Document") {
-                applet.clear("meso");
+                 applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", id);
-                this.setProperty("meso", "category/value", "Document");
+                this.setProperty("meso", "category/value", "NGram");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {  
                 applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", id);
-                this.setProperty("meso", "category/value", "NGram");
-                this.touch("meso");
+                this.setProperty("meso", "category/value", "Document");
+                this.touch("meso");               
                 this.printNGram(x,y,id,label);
             }
         } else if (level == "meso") {
@@ -321,7 +348,7 @@ function Tinaviz() {
 
         fstream.init(file, -1, 0, 0);
 
-        cstream.init(fstream, "UTF-8", 20000000, 0); // you can use another encoding here if you wish
+        cstream.init(fstream, "UTF-8", 16000000, 0); // 16Mb - you can use another encoding here if you wish
 
         var str = {};
         cstream.readString(-1, str); // read the whole file and put it in str.value
@@ -443,6 +470,11 @@ function Tinaviz() {
     setProperty: function(level,key,value) {
         if (applet == null) return;
         return applet.getView(level).setProperty(key,value);
+    },
+    
+    getProperty: function(level,key,value) {
+        if (applet == null) return;
+        return applet.getView(level).getProperty(key);
     },
     
     touch: function(level) {

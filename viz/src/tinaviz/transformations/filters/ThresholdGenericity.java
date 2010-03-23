@@ -60,6 +60,7 @@ public class ThresholdGenericity extends NodeFilter {
         max = max * f + view.graph.metrics.minGenericity;
 
         for (Node n : input) {
+            // System.out.println("n.genericity: "+n.genericity);
             if (min <= n.genericity && n.genericity <= max) output.add(n);
         }
         return output;

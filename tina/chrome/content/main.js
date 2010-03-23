@@ -485,23 +485,37 @@ $(document).ready(function() {
     
     // MESO SLIDERS
 
-    $("#meso_repulsion").slider({slide: function(event, ui) {
+    $("#meso_repulsion").slider({
+                animate: true,
+                slide: function(event, ui) {
 		tinaviz.setProperty("meso", "layout/repulsion", ui.value / 100.0);
 	    tinaviz.touch("meso");
 	}});
-		
     $("#meso_weight_threshold").slider({
     	range: true,
 		values: [0, 200],
+        animate: true,
         slide: function(event, ui) {
 		    tinaviz.setProperty("meso", "weight/min", ui.values[0] / 200.0);
 		    tinaviz.setProperty("meso", "weight/max", ui.values[1] / 200.0);
 		    tinaviz.touch("meso");
 	    }
+	});	
+    $("#meso_genericity_threshold").slider({
+    	range: true,
+		values: [0, 200],
+        animate: true,
+        slide: function(event, ui) {
+		    tinaviz.setProperty("meso", "genericity/min", ui.values[0] / 200.0);
+		    tinaviz.setProperty("meso", "genericity/max", ui.values[1] / 200.0);
+		    tinaviz.touch("meso");
+	    }
 	});
 	
     $("#meso_node_size").slider({
-        max: 800,
+        value: 100,
+        max: 400,
+        animate: true,
         slide: function(event, ui) {
 		tinaviz.setProperty("meso", "radius/value", ui.value / 100.0);
 		tinaviz.touch("meso");
@@ -517,14 +531,26 @@ $(document).ready(function() {
     $("#macro_weight_threshold").slider({
     	range: true,
         values: [0, 200],
+        animate: true,
         slide: function(event, ui) {
 		tinaviz.setProperty("macro", "weight/min", ui.values[0] / 200.0);
 		tinaviz.setProperty("macro", "weight/max", ui.values[1] / 200.0);
 		tinaviz.touch("macro");
 	}});
-
+	
+    $("#macro_genericity_threshold").slider({
+    	range: true,
+        values: [0, 200],
+        animate: true,
+        slide: function(event, ui) {
+		tinaviz.setProperty("macro", "genericity/min", ui.values[0] / 200.0);
+		tinaviz.setProperty("macro", "genericity/max", ui.values[1] / 200.0);
+		tinaviz.touch("macro");
+	}});
     $("#macro_node_size").slider({
-        max: 800,
+        value: 100,
+        max: 400,
+        animate: true,
         slide: function(event, ui) {
 		tinaviz.setProperty("macro", "radius/value", ui.value / 100.0);
 		tinaviz.touch("macro");

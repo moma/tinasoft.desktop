@@ -15,10 +15,15 @@ import tinaviz.transformations.NodeFilter;
 import tinaviz.model.Session;
 import tinaviz.model.View;
 
+/* FIXME TODO WARNING : ADD SOME LOCKS..
+ * */
+
+
 /**
  *
  * @author jbilcke
  */
+
 public class SubGraphCopy extends NodeFilter {
 
     private String KEY_SOURCE = "source";
@@ -38,32 +43,32 @@ public class SubGraphCopy extends NodeFilter {
         if (!localView.properties.containsKey(root+KEY_ITEM)) {
             localView.properties.put(root+KEY_ITEM, "");
         }
-        System.out.println("SubGraphCopy called!");
+       // System.out.println("SubGraphCopy called!");
         String source = (String) localView.properties.get(root+KEY_SOURCE);
         View sourceView = session.getView(source);
         if (sourceView==null) {
-            System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got "+source);
+           // System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got "+source);
             return input;
         }
 
         String item = (String) localView.properties.get(root+KEY_ITEM);
         if (item==null) {
-            System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
+          //  System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
             return input;
         }
 
         if (sourceView.graph.size() < 1) {
-            System.out.println("original graph is zero-sized.. ");
+           // System.out.println("original graph is zero-sized.. ");
             return input;
         }
-        System.out.println("current view size: "+localView.graph.size());
+        //System.out.println("current view size: "+localView.graph.size());
         if (localView.graph.size() > 0) {
-            System.out.println("view.graph.size() > 0 is TRUE !");
+            //System.out.println("view.graph.size() > 0 is TRUE !");
             return input;
         }
 
         if (!sourceView.graph.storedNodes.containsKey(item)) {
-             System.out.println("the key doesn't exists! but that's probably not that bad.");
+            // System.out.println("the key doesn't exists! but that's probably not that bad.");
             return input;
         }
 
@@ -74,7 +79,7 @@ public class SubGraphCopy extends NodeFilter {
         Node rootNode = sources.get(item).getDetachedClone();
         localView.graph.storedNodes.put(item, rootNode);
         output.add(rootNode.getProxyClone());
-        System.out.println("added root at x:"+rootNode.x+" y:"+rootNode.y);
+       // System.out.println("added root at x:"+rootNode.x+" y:"+rootNode.y+" with "+rootNode.neighbours.size()+" neighbours");
 
         for (String neighbourId : sources.get(item).neighbours) {
 
@@ -84,13 +89,16 @@ public class SubGraphCopy extends NodeFilter {
             clonedNeighbourNode.x =  (float) Math.random() * 100f;
             clonedNeighbourNode.y =  (float) Math.random() * 100f;
 
-            System.out.println("  - trying to add node x:"+sources.get(neighbourId).x+" y:"+sources.get(neighbourId).y+" ("+sources.get(neighbourId).neighbours.size()+" edges)");
+            //System.out.println("  - trying to add node x:"+sources.get(neighbourId).x+" y:"+sources.get(neighbourId).y+" ("+sources.get(neighbourId).neighbours.size()+" edges)");
             localView.graph.storedNodes.put(neighbourId, clonedNeighbourNode);
             output.add(clonedNeighbourNode.getProxyClone());
-            System.out.println("  - added neighbour at x:"+clonedNeighbourNode.x+" y:"+clonedNeighbourNode.y+" ("+clonedNeighbourNode.neighbours.size()+" edges)");
+            //System.out.println("  - added neighbour "+clonedNeighbourNode.label+ " ");
 
         }
-        System.out.println("added "+output.size()+" nodes to local view ("+localView.getName()+")");
+       // System.out.println("added "+output.size()+" nodes to local view ("+localView.getName()+")");
+
+        // FIXED we also need to copy the graph metrics! yeah baby!
+        localView.graph.metrics = sourceView.graph.metrics.getClone();
 
         return output;
     }

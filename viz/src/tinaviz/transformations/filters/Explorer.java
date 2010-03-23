@@ -38,22 +38,22 @@ public class Explorer extends NodeFilter {
             view.properties.put(root+KEY_ITEM, "");
         }
 
-        System.out.println("Explorer called!");
+       // System.out.println("Explorer called!");
         String source = (String) view.properties.get(root+KEY_SOURCE);
         View v = session.getView(source);
         if (v==null) {
-            System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got "+source);
+            //System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got "+source);
             return output;
         }
 
         String item = (String) view.properties.get(root+KEY_ITEM);
         if (item==null) {
-            System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
+            //System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
             return output;
         }
 
         if (!session.macro.graph.storedNodes.containsKey(item)) {
-             System.out.println("the key doesn't exists! but that's probably not that bad.");
+            // System.out.println("the key doesn't exists! but that's probably not that bad.");
             return output;
         }
 
