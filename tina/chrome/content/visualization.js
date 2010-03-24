@@ -44,6 +44,7 @@ function Tinaviz() {
 		this.bindFilter("ThresholdWeight",      "weight",             "macro");
 		this.bindFilter("NodeFunction",         "radiusByGenericity", "macro");
 		this.bindFilter("NodeRadius",           "radius",             "macro");  
+		this.bindFilter("WeightSize",           "weightSize",         "macro");
         //this.bindFilter("Layout",           "layout",   "macro");
   
   
@@ -67,6 +68,8 @@ function Tinaviz() {
 		// multiply the radius by the GUI slider value
 		this.bindFilter("NodeRadius",           "radius",             "meso");
 		
+		// multiply the radius by the GUI slider value
+		this.bindFilter("WeightSize",           "weightSize",         "meso");
         // this.bindFilter("Layout",           "layout",   "meso");
 
         //this.loadRelativeGraph("macro","user/fet open/8_0.0-1.0.gexf");
