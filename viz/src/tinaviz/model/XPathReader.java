@@ -43,7 +43,7 @@ public class XPathReader {
     }
 
     public void parseFromString(String inputString)  {
-
+//new String(output.getBytes(),"UTF-8")
         this.xmlStream = new ByteArrayInputStream(inputString.getBytes());
         initObjects();
     }

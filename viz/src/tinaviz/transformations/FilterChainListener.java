@@ -3,10 +3,9 @@
  * and open the template in the editor.
  */
 
-package tinaviz.filters;
+package tinaviz.transformations;
 
 import java.util.List;
-import tinaviz.FilterChain;
 import tinaviz.Node;
 
 /**

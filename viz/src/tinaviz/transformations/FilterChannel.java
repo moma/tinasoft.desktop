@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tinaviz.filters;
+package tinaviz.transformations;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

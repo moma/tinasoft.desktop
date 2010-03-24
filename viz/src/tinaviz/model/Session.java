@@ -6,6 +6,7 @@ package tinaviz.model;
 
 import java.awt.Color;
 import java.io.InputStream;
+import java.security.KeyException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import tinaviz.Node;
@@ -30,9 +31,9 @@ public class Session {
     public Session() {
         // graph = new Graph();
 
-        macro = new MacroView();
-        meso = new MesoView();
-        micro = new MicroView();
+        macro = new MacroView(this);
+        meso = new MesoView(this);
+        micro = new MicroView(this);
     }
 
     public synchronized void clear() {
@@ -63,30 +64,34 @@ public class Session {
     public synchronized void setLevel(String level) {
         if (level.equals("macro")) {
             toMacroLevel();
-        } else if (level.equals("meso")){
+        } else if (level.equals("meso")) {
             toMesoLevel();
-        } else if (level.equals("micro")){
+        } else if (level.equals("micro")) {
             toMicroLevel();
         }
     }
+
     public synchronized void toMacroLevel() {
         if (currentLevel != ViewLevel.MACRO) {
             currentLevel = ViewLevel.MACRO;
-            macro.filters.popLocked.set(false); // open the pop lock!
+            macro.graph.touch();
+            //macro.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
     public synchronized void toMesoLevel() {
         if (currentLevel != ViewLevel.MESO) {
             currentLevel = ViewLevel.MESO;
-           meso.filters.popLocked.set(false); // open the pop lock!
+            meso.graph.touch();
+            //meso.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
     public synchronized void toMicroLevel() {
         if (currentLevel != ViewLevel.MICRO) {
             currentLevel = ViewLevel.MICRO;
-           micro.filters.popLocked.set(false); // open the pop lock!
+            micro.graph.touch();
+            //micro.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
@@ -122,7 +127,11 @@ public class Session {
         if (level.equals("macro")) {
             return macro.updateFromString(str);
         } else if (level.equals("meso")) {
-            return meso.updateFromString(str);
+            meso.updateFromString(str);
+
+
+
+            return true;
         } else if (level.equals("micro")) {
             return micro.updateFromString(str);
         } else {
@@ -130,7 +139,6 @@ public class Session {
         }
     }
 
-    
     public synchronized String getLevel() {
         return getView().getName();
     }
@@ -142,9 +150,15 @@ public class Session {
     }
 
     public synchronized View getView(String v) {
-        if (v.contains("macro")) return macro;
-        if (v.contains("meso")) return meso;
-         if (v.contains("micro")) return micro;
+        if (v.contains("macro")) {
+            return macro;
+        }
+        if (v.contains("meso")) {
+            return meso;
+        }
+        if (v.contains("micro")) {
+            return micro;
+        }
         return null;
     }
 
@@ -173,14 +187,28 @@ public class Session {
     }
 
     public void resetCamera(float width, float height) {
-        macro.resetCamera(width, height);
-        meso.resetCamera(width, height);
-        micro.resetCamera(width, height);
+        macro.resetCamera();
+        meso.resetCamera();
+        micro.resetCamera();
     }
 
     public void unselectAll() {
         macro.unselectAll();
         meso.unselectAll();
         micro.unselectAll();
+    }
+
+    public synchronized boolean setProperty(String key, Object value) throws KeyException {
+        macro.setProperty(key, value);
+        meso.setProperty(key, value);
+        micro.setProperty(key, value);
+        return true;
+    }
+
+    public synchronized boolean addFilter(String filterName, String root) {
+        macro.addFilter(filterName, root);
+        meso.addFilter(filterName, root);
+        micro.addFilter(filterName, root);
+        return true;
     }
 }

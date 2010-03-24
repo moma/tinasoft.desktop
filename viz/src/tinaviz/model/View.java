@@ -4,24 +4,19 @@
  */
 package tinaviz.model;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.security.KeyException;
-import java.util.ArrayList;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import processing.core.PVector;
-import tinaviz.Console;
-import tinaviz.FilterChain;
+
+import tinaviz.transformations.FilterChain;
 import tinaviz.Node;
-import tinaviz.filters.AttributeFilter;
-import tinaviz.filters.Filter;
-import tinaviz.filters.ForceVector;
 
 /**
  *
@@ -35,35 +30,30 @@ public class View {
     public boolean animationPaused = false;
     public boolean highDefinition = false;
     public boolean spatializeWhenMoving = true;
-    public boolean centerOnSelection = true;
-
-
-
-    public PVector mousePosition = new PVector(0.0f, 0.0f);
     public PVector translation = new PVector(0.0f, 0.0f);
-    public PVector lastPosition = new PVector(0.0f, 0.0f);
     public float sceneScale = 1.0f;
     public float inerX;
     public float inerY;
     public float inerZ;
-
-
     public float ZOOM_CEIL = 0.7f;
     public float ZOOM_FLOOR = 25.0f;
     public float repulsion = 0.01f;
     public float attraction = 0.0001f;
-
     public Graph graph = null;
-
     public FilterChain filters = null;
     public AtomicBoolean hasBeenRead = null;
     public int prespatializeSteps = 0;
+    public int screenWidth = 100;
+    public int screenHeight = 100;
+    public Map properties = new HashMap<String, Object>();
+    public PVector dragDelta = new PVector(0.0f, 0.0f);
+    public CenteringMode centeringMode = CenteringMode.FREE_MOVE;
 
+    public View(Session session) {
 
+        graph = new Graph(session);
+        filters = new FilterChain(session, this);
 
-    public View() {
-        graph = new Graph();
-        filters = new FilterChain(graph);
         hasBeenRead = new AtomicBoolean(false);
 
         inerX = 0f;
@@ -72,8 +62,8 @@ public class View {
 
         repulsion = 0.01f;
         attraction = 0.0001f;
-               prespatializeSteps = 0;
-        resetCamera();
+        prespatializeSteps = 0;
+
     }
 
     // TODO refactor these two..
@@ -81,6 +71,7 @@ public class View {
         showLinks = !showLinks;
         return showLinks;
     }
+
     public synchronized boolean toggleEdges() {
         return toggleLinks();
     }
@@ -104,6 +95,10 @@ public class View {
         return "";
     }
 
+    public ViewLevel getLevel() {
+        return null;
+    }
+
     public boolean cameraIsMoving() {
         return Math.abs(inerX + inerY + inerZ) != 0.0f;
     }
@@ -112,41 +107,15 @@ public class View {
         return Math.abs(inerX + inerY + inerZ) >= threshold;
     }
 
-    public synchronized boolean createFilter(String filterName, String model) {
-        Filter f = null;
-        if (model.equals("RegexMatch")) {
-            f = new AttributeFilter();
-        } else if (model.equals("ForceVector")) {
-            f = new ForceVector();
-        }
-        filters.addFilter(filterName, f);
+    public synchronized boolean setProperty(String key, Object value) throws KeyException {
+        // System.out.println("set property "+key+" to "+value+" for view "+getName());
+        properties.put(key, value);
         return true;
     }
 
-    public synchronized boolean filterConfig(String filterName, String key, String value) throws KeyException {
-        filters.getFilter(filterName).setField(key, value);
-        return true;
+    public synchronized Object getProperty(String key) throws KeyException {
+        return properties.get(key);
     }
-
-    public synchronized boolean filterConfig(String filterName, String key, float value) throws KeyException {
-        filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, int value) throws KeyException {
-        filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized boolean filterConfig(String filterName, String key, boolean value) throws KeyException {
-        filters.getFilter(filterName).setField(key, value);
-        return true;
-    }
-
-    public synchronized Object filterConfig(String filterName, String key) throws KeyException {
-        return filters.getFilter(filterName).getField(key);
-    }
-
 
     public synchronized boolean updateFromURI(String uri) {
         return graph.updateFromURI(uri);
@@ -162,46 +131,84 @@ public class View {
 
     public synchronized boolean updateFromNodeList(List<Node> nodes) {
         return graph.updateFromNodeList(nodes);
-    }
-
-    public synchronized void resetCamera() {
-
-        mousePosition = new PVector(0.0f, 0.0f);
-        translation = new PVector(0.0f, 0.0f);
-        lastPosition = new PVector(0.0f, 0.0f);
-        sceneScale = 2.0f;
 
     }
-
-    public synchronized void resetCamera(float width, float height) {
-
-        mousePosition = new PVector(0.0f, 0.0f);
-        translation = new PVector(width/2.0f, width/2.0f);
-        lastPosition = new PVector(0.0f, 0.0f);
-        sceneScale = 1.0f;
-
-        
-        // initializes zoom
-        PVector box = new PVector(graph.metrics.maxX - graph.metrics.minX, graph.metrics.maxY - graph.metrics.minY);
-        float ratioWidth = width / box.x;
-        float ratioHeight = height / box.y;
-        if (sceneScale == 0) {
-            sceneScale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+   
+     public void resetCamera() {
+        resetZoom();
+        switch (centeringMode) {
+            case SELECTED_GRAPH_BARYCENTER:
+                resetToSelectionBarycenter();
+                break;
+            default:
+                resetToGraphBarycenter();
         }
-        
-        // initializes move
-        PVector semiBox = PVector.div(box, 2);
-        PVector topLeftVector = new PVector(graph.metrics.minX,graph.metrics.minY);
-        PVector center = new PVector(width / 2f, height / 2f);
-        PVector scaledCenter = PVector.add(topLeftVector, semiBox);
-        translation.set(center);
-        translation.sub(scaledCenter);
-        lastPosition.set(translation);
-        System.out.println("automatic scaling..");
-        
 
-         
+    }
 
+    public void resetZoom() {
+
+        float screenRadius =
+                (screenWidth + screenHeight)
+                / 2.0f;
+
+        float zoomScale = 1.0f / (screenRadius / graph.metrics.graphRadius);
+        System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + graph.metrics.graphRadius + " = " + zoomScale);
+        sceneScale =  1.0f;
+    }
+
+
+
+    public synchronized void resetToGraphBarycenter() {
+
+        translation.set(graph.metrics.center);
+        System.out.println("translation1 x:" + translation.x + " y:" + translation.y);
+        PVector screenCenter = new PVector(screenWidth/2.0f, screenHeight/2.0f, 0);
+        //screenCenter.add(graph.metrics.center);
+
+        translation.sub(screenCenter);
+           System.out.println("translation2  x:" + translation.x + " y:" + translation.y);
+        translation.mult(sceneScale);
+           System.out.println("translation3  x:" +translation.x + " y:" + translation.y);
+        //translation.add(screenCenter);
+         //  System.out.println("translation4  x:" + translation.x + " y:" + translation.y);
+    }
+
+    public synchronized void resetToSelectionBarycenter() {
+        resetToGraphBarycenter();
+
+        float minX = 0.0f, minY = 0.0f, maxX = 0.0f, maxY = 0.0f, graphWidth = 0.0f, graphHeight = 0.0f;
+
+        boolean ok = false;
+        for (Node n : graph.storedNodes.values()) {
+
+            // update the graph metrics
+            if (!n.selected) {
+                continue;
+            }
+             ok = true;
+            if (n.x < minX) {
+                minX = n.x;
+            }
+            if (n.x > maxX) {
+                maxX = n.x;
+            }
+            if (n.y < minY) {
+                minY = n.y;
+            }
+            if (n.y > maxY) {
+                maxY = n.y;
+            }
+
+        }
+        // no selection..
+        if (!ok) return;
+
+        graphWidth = maxX - minX;
+        graphHeight = maxY - minY;
+        PVector center = new PVector((graphWidth / 2.0f) + minX, (graphHeight / 2.0f) + minY);
+        System.out.println("centering to selection with x:" + center.x + " y:" + center.y);
+        this.translation.set(center);
     }
 
     public void selectNodeById(String id) {
@@ -229,22 +236,32 @@ public class View {
         graph.clear();
     }
 
-    public synchronized void updateTranslationFrom(int x, int y) {
-        Vector tmp = new Vector(0, 0);
-        tmp.set(x, y, 0);
-        tmp.sub(mousePosition);
-        tmp.div(sceneScale); // ensure const. moving speed whatever the zoom is
-        tmp.add(lastPosition);
-
-        // todo lock here
-        translation.set(tmp);
+    public boolean addFilter(String name, String root) {
+        return filters.addFilter(name, root);
     }
 
-    public void memorizeLastPosition() {
-        lastPosition.set(translation);
+    public float setRepulsion(float a) {
+        return setAttractionRelative(a, 1.0f);
     }
 
-    public void storeMousePosition(int x, int y) {
-        mousePosition.set(x, y, 0);
+    public float setAttractionRelative(float a, float scale) {
+
+        float maxAttraction = 0.0004f;
+        float minAttraction = 1.5e-5f;
+        float ratio = maxAttraction / scale;
+
+        float newValue = minAttraction + a * ratio;
+        if (newValue > minAttraction && newValue < maxAttraction) {
+            attraction = newValue;
+        }
+        return a;
+    }
+
+    public float getRepulsion() {
+        return getAttractionRelative(1.0f);
+    }
+
+    public float getAttractionRelative(float scale) {
+        return attraction / scale;
     }
 }

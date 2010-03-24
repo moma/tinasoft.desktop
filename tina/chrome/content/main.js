@@ -395,8 +395,12 @@ function switchedTo(level) {
 function resizeApplet() {
     var w = getAppletWidth();
     var h = getAppletHeight();
+    
+    $('.tabfiller').css("height",""+(h+10)+"px");
+
     $('#whitebox').css("height",""+(h)+"px");
     $('#whitebox').css("width",""+(w)+"px");
+    
     $('#vizframe').css("height",""+(h)+"px");
     $('#vizframe').css("width",""+(w-350)+"px");
     $('#infodiv').show();
@@ -471,21 +475,88 @@ $(document).ready(function() {
 
     $.extend($.ui.slider.defaults, {
             range: "min",
+            min: 0,
+		    max: 100,
+            value: 100.0,
             animate: true,
-            orientation: "vertical"
+            orientation: "horizontal",
     });
-        // setup master volume
-        /*
-    $("#localrepulsion").slider({
-            value: 100,
-            orientation: "horizontal"
-    });*/
-    /*
-    $("#globalrepulsion").slider({
-            value: 100,
-            orientation: "horizontal"
-    });*/
+    
+    
+    // MESO SLIDERS
 
+    $("#meso_repulsion").slider({
+                animate: true,
+                slide: function(event, ui) {
+		tinaviz.setProperty("meso", "layout/repulsion", ui.value / 100.0);
+	    tinaviz.touch("meso");
+	}});
+    $("#meso_weight_threshold").slider({
+    	range: true,
+		values: [0, 200],
+        animate: true,
+        slide: function(event, ui) {
+		    tinaviz.setProperty("meso", "weight/min", ui.values[0] / 200.0);
+		    tinaviz.setProperty("meso", "weight/max", ui.values[1] / 200.0);
+		    tinaviz.touch("meso");
+	    }
+	});	
+    $("#meso_genericity_threshold").slider({
+    	range: true,
+		values: [0, 200],
+        animate: true,
+        slide: function(event, ui) {
+		    tinaviz.setProperty("meso", "genericity/min", ui.values[0] / 200.0);
+		    tinaviz.setProperty("meso", "genericity/max", ui.values[1] / 200.0);
+		    tinaviz.touch("meso");
+	    }
+	});
+	
+    $("#meso_node_size").slider({
+        value: 100,
+        max: 400,
+        animate: true,
+        slide: function(event, ui) {
+		tinaviz.setProperty("meso", "radius/value", ui.value / 100.0);
+		tinaviz.touch("meso");
+	}});
+    
+    
+    // MACRO SLIDERS
+    $("#macro_repulsion").slider({slide: function(event, ui) {
+		tinaviz.setProperty("macro", "layout/repulsion", ui.value / 100.0);
+		tinaviz.touch("macro");
+	}});
+	
+    $("#macro_weight_threshold").slider({
+    	range: true,
+        values: [0, 200],
+        animate: true,
+        slide: function(event, ui) {
+		tinaviz.setProperty("macro", "weight/min", ui.values[0] / 200.0);
+		tinaviz.setProperty("macro", "weight/max", ui.values[1] / 200.0);
+		tinaviz.touch("macro");
+	}});
+	
+    $("#macro_genericity_threshold").slider({
+    	range: true,
+        values: [0, 200],
+        animate: true,
+        slide: function(event, ui) {
+		tinaviz.setProperty("macro", "genericity/min", ui.values[0] / 200.0);
+		tinaviz.setProperty("macro", "genericity/max", ui.values[1] / 200.0);
+		tinaviz.touch("macro");
+	}});
+    $("#macro_node_size").slider({
+        value: 100,
+        max: 400,
+        animate: true,
+        slide: function(event, ui) {
+		tinaviz.setProperty("macro", "radius/value", ui.value / 100.0);
+		tinaviz.touch("macro");
+	}});
+	
+    
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");
     }, function() {
