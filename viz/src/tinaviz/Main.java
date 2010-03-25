@@ -260,13 +260,16 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/bipartite_graph.gexf" //"file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                    "file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" //"file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
                     // + "/tinasoft.desktop/tina/chrome/content/applet/data/"
                     // + "map_dopamine_2002_2007_g.gexf"))*/
                     );
+           // session.getMacro().
+           // session.getMacro().translation.set(new PVector());
+            session.getMacro().animationPaused = true;
             //session.animationPaused = true;
         } else if (generateRandomGlobalGraph) {
 
@@ -465,11 +468,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
                 if (n1.neighbours.contains(n2.uuid)) {
-                    distance *= (n1.weights.get(n2.uuid));
-                    n1.vx += (vx * distance) * attraction;
-                    n1.vy += (vy * distance) * attraction;
-                    n2.vx -= (vx * distance) * attraction;
-                    n2.vy -= (vy * distance) * attraction;
+                    float w = n1.weights.get(n2.uuid);
+                    if  (w > 0) {
+                    float d = distance * w;
+                    n1.vx += (vx * d) * attraction;
+                    n1.vy += (vy * d) * attraction;
+                    n2.vx -= (vx * d) * attraction;
+                    n2.vy -= (vy * d) * attraction;
+                    }
                 }
 
                 // STANDARD REPULSION
@@ -528,11 +534,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
                 if (n1.neighbours.contains(n2.uuid)) {
-                    distance *= (n1.weights.get(n2.uuid));
-                    n1.vx += (vx * distance) * attraction;
-                    n1.vy += (vy * distance) * attraction;
-                    n2.vx -= (vx * distance) * attraction;
-                    n2.vy -= (vy * distance) * attraction;
+                    float w = n1.weights.get(n2.uuid);
+                    if  (w > 0) {
+                    float d = distance * w;
+                    n1.vx += (vx * d) * attraction;
+                    n1.vy += (vy * d) * attraction;
+                    n2.vx -= (vx * d) * attraction;
+                    n2.vy -= (vy * d) * attraction;
+                    }
                 }
 
                 // STANDARD REPULSION
@@ -553,8 +562,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
             // update the coordinate
             // also set the bound box for the whole scene
-            n.x = constrain(n.x + n.vx * 0.5f, -30000, +30000);
-            n.y = constrain(n.y + n.vy * 0.5f, -30000, +30000);
+            n.x = constrain(n.x + n.vx * 0.5f, -3000, +3000);
+            n.y = constrain(n.y + n.vy * 0.5f, -3000, +3000);
 
             // update the original, "stored" node
             if (n.original != null) {
@@ -830,7 +839,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 fill(0, 0, 0, alpha);
             }
             textSize(rad2);
-            text((n.highlighted) ? n.label : n.shortLabel, n.x + rad2, n.y + (rad2 / PI));
+            text((n.highlighted) ? n.label : n.shortLabel, n.x + rad, n.y + (rad2 / PI));
 
         }
 
