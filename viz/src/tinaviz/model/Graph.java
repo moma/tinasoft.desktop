@@ -42,8 +42,8 @@ public class Graph implements Cloneable {
     public float MAX_WEIGHT = 1.0f; // desired default weight
     public float MIN_RADIUS = 0.01f;
     public float MAX_RADIUS = 1.0f; // largely depends on the spatialization settings
-    public float MIN_GENERICITY = 0.0f;
-    public float MAX_GENERICITY = 1.0f;
+    public float MIN_GENERICITY = 1.0f;
+    public float MAX_GENERICITY = 2.0f;
     private Session session = null;
 
     public Graph(Session session) {
@@ -210,10 +210,10 @@ public class Graph implements Cloneable {
                 } else if (n.getNodeName().equals("viz:position") || n.getNodeName().equals("position")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("x") != null) {
-                        node.x = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("x").getNodeValue());
+                        //node.x = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("x").getNodeValue());
                     }
                     if (xmlnodePositionAttributes.getNamedItem("y") != null) {
-                        node.y = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("y").getNodeValue());
+                        //node.y = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("y").getNodeValue());
                     }
                 } else if (n.getNodeName().equals("viz:size") || n.getNodeName().equals("size")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
@@ -317,9 +317,11 @@ public class Graph implements Cloneable {
 
             // NORMALIZE WEIGHTS
             for (String k : n.weights.keySet()) {
+                System.out.println("  - w1: "+n.weights.get(k));
                 n.weights.put(k, PApplet.map(n.weights.get(k),
                         metrics.minWeight, metrics.maxWeight,
                         MIN_WEIGHT, MAX_WEIGHT));
+                System.out.println("  - w2: "+n.weights.get(k));
             }
 
 

@@ -71,7 +71,7 @@ label {
     overflow:auto;
 }
 
-.threshold {
+.slider {
     position: relative;
     float:left;
     width:200px; 
