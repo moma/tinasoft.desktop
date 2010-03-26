@@ -174,13 +174,13 @@ public class Session {
         micro.unselectNodeById(n.uuid);
     }
 
-    public void selectNodeById(String id) {
+    public void selectNodeById(Long id) {
         macro.selectNodeById(id);
         meso.selectNodeById(id);
         micro.selectNodeById(id);
     }
 
-    public void unselectNodeById(String id) {
+    public void unselectNodeById(Long id) {
         macro.unselectNodeById(id);
         meso.unselectNodeById(id);
         micro.unselectNodeById(id);

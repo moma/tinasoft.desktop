@@ -41,7 +41,7 @@ public class SubGraphCopy extends NodeFilter {
         }
 
         if (!localView.properties.containsKey(root+KEY_ITEM)) {
-            localView.properties.put(root+KEY_ITEM, "");
+            localView.properties.put(root+KEY_ITEM, -1);
         }
        // System.out.println("SubGraphCopy called!");
         String source = (String) localView.properties.get(root+KEY_SOURCE);
@@ -51,11 +51,21 @@ public class SubGraphCopy extends NodeFilter {
             return input;
         }
 
-        String item = (String) localView.properties.get(root+KEY_ITEM);
-        if (item==null) {
+        Long item = 0L;
+        Object o = localView.properties.get(root+KEY_ITEM);
+             if (o==null) {
           //  System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
             return input;
         }
+        if (o instanceof Long) {
+            item = (Long)o;
+        } else if (o instanceof String) {
+            item = Long.parseLong((String)o);
+        } else {
+            System.out.println("bad item datatype");
+            return input;
+        }
+   
 
         if (sourceView.graph.size() < 1) {
            // System.out.println("original graph is zero-sized.. ");
@@ -77,13 +87,13 @@ public class SubGraphCopy extends NodeFilter {
 
         List<Node> output = new LinkedList<Node>();
         
-        Map<String,Node> sources = sourceView.graph.storedNodes;
+        Map<Long,Node> sources = sourceView.graph.storedNodes;
         Node rootNode = sources.get(item).getDetachedClone();
         newNodes.add(rootNode);
         output.add(rootNode.getProxyClone());
        // System.out.println("added root at x:"+rootNode.x+" y:"+rootNode.y+" with "+rootNode.neighbours.size()+" neighbours");
 
-        for (String neighbourId : sources.get(item).neighbours) {
+        for (Long neighbourId : sources.get(item).neighbours) {
 
             Node clonedNeighbourNode = sources.get(neighbourId).getDetachedClone();
             
