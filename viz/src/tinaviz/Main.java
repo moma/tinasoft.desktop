@@ -57,6 +57,8 @@ public class Main extends PApplet implements MouseWheelListener {
     int oldScreenHeight = 0;
     private Node oldSelected = null;
 
+ 
+
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
         if (n != null) {
@@ -177,17 +179,17 @@ public class Main extends PApplet implements MouseWheelListener {
             size(w, h, engine);
         } else {
             loadDefaultGlobalGraph = true;
-            size(screen.width, screen.height, engine);
+            size(screenWidth, screenHeight, engine);
         }
 
         if (engine.equals(OPENGL)) {
             smooth();
-            frameRate(30);
+            frameRate(60);
             textFont(font, 96);
             bezierDetail(48);
         } else {
             smooth();
-            frameRate(20);
+            frameRate(25);
             textFont(font, 26);
             bezierDetail(18);
         }
@@ -466,7 +468,17 @@ public class Main extends PApplet implements MouseWheelListener {
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
+        float gravity = 0.00001f;
+
         for (Node n1 : nodes) {
+            // gravity
+            vx = 0 - n1.x;
+            vy = 0 - n1.y;
+
+            distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
+            n1.vx += vx * distance * gravity;
+            n1.vy += vy * distance * gravity;
+
             for (Node n2 : nodes) {
                 if (n1 == n2) {
                     continue;
@@ -498,13 +510,13 @@ public class Main extends PApplet implements MouseWheelListener {
                 //}
             } // FOR NODE B
             // important, we limit the velocity!
-            n1.vx = constrain(n1.vx, -30, 30);
-            n1.vy = constrain(n1.vy, -30, 30);
+            n1.vx = constrain(n1.vx, -300, 300);
+            n1.vy = constrain(n1.vy, -300, 300);
 
             // update the coordinate
             // also set the bound box for the whole scene
-            n1.x = constrain(n1.x + n1.vx * 0.5f, -3000, +3000);
-            n1.y = constrain(n1.y + n1.vy * 0.5f, -3000, +3000);
+            n1.x = constrain(n1.x + n1.vx * 0.5f, -8000, +8000);
+            n1.y = constrain(n1.y + n1.vy * 0.5f, -8000, +8000);
 
             if (n1.original != null) {
                 n1.original.x = n1.x;
