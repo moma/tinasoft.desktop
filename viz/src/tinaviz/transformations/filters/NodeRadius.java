@@ -4,8 +4,8 @@
  */
 package tinaviz.transformations.filters;
 
-import java.util.LinkedList;
 import java.util.List;
+import processing.core.PApplet;
 import tinaviz.Node;
 import tinaviz.transformations.NodeFilter;
 import tinaviz.model.Session;
@@ -18,6 +18,10 @@ import tinaviz.model.View;
 public class NodeRadius extends NodeFilter {
 
     private String KEY_VALUE = "value";
+
+    // the range of the sliders
+    public float MIN_RADIUS_MAGNIFIER = 1.0f;
+    public float MAX_RADIUS_MAGNIFIER = 100.0f;
 
     @Override
     public List<Node> process(Session session, View view, List<Node> input) {
@@ -36,8 +40,12 @@ public class NodeRadius extends NodeFilter {
                 ? new Float((Double) o)
                 : (Float) o;
 
+       r = PApplet.map(r,0.0f,1.0f,MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
+
         for (Node n : input) {
-            n.radius *= r;
+            // we dot not want a "zero sized" node
+            n.radius = 1 + n.radius * r;
+
         }
         return input;
     }

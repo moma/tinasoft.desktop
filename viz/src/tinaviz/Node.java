@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import processing.core.PImage;
 import tinaviz.model.ShapeCategory;
 
 /**
@@ -17,7 +18,7 @@ import tinaviz.model.ShapeCategory;
  */
 public class Node {
 
-    public String uuid; // id
+    public Long uuid; // id
     public String label = "label";
     public String shortLabel = "label";
     public float radius = 1.0f; // radius
@@ -27,8 +28,8 @@ public class Node {
     public float vy = 0.0f;
     public boolean s = false; // switch
     public int degree = 0;
-    public Set<String> neighbours = new HashSet<String>(32);
-    public Map<String,Float> weights = new HashMap<String,Float>();
+    public Set<Long> neighbours = new HashSet<Long>(32);
+    public Map<Long, Float> weights = new HashMap<Long, Float>();
     public boolean selected = false;
     public boolean highlighted = false;
     public float genericity = 1.0f;
@@ -41,11 +42,12 @@ public class Node {
     public boolean visibleToScreen = false;
     public float screenX = 0.0f;
     public float screenY = 0.0f;
-
-    public Map<String,Object> attributes = new HashMap<String,Object>();
+    public Map<String, Object> attributes = new HashMap<String, Object>();
     public Node original = null;
+    PImage image = null;
+    String imageURL = "http://paradisia.net/index.php?action=dlattach;attach=835;type=avatar";
 
-    public Node(String uuid, String label,  float radius, float x, float y) {
+    public Node(Long uuid, String label, float radius, float x, float y) {
 
         this.uuid = uuid;
         this.label = label;
@@ -55,7 +57,7 @@ public class Node {
         this.y = y;
     }
 
-    public Node(String uuid, String label,  float x, float y) {
+    public Node(Long uuid, String label, float x, float y) {
         this.uuid = uuid;
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
@@ -63,20 +65,20 @@ public class Node {
         this.y = y;
     }
 
-    public Node(String uuid, String label,  float radius) {
+    public Node(Long uuid, String label, float radius) {
         this.uuid = uuid;
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
         this.radius = radius;
     }
 
-    public Node(String uuid, String label) {
+    public Node(Long uuid, String label) {
         this.uuid = uuid;
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
     }
 
-    public Node(String uuid) {
+    public Node(Long uuid) {
         this.uuid = uuid;
     }
 
@@ -85,16 +87,39 @@ public class Node {
         original = n;
     }
 
+    public void addNeighbour(Node neighbour, Float weight) {
+        if (!neighbours.contains(neighbour.uuid)) {
+            neighbours.add(neighbour.uuid);
+        }
+        // overwrite if necessary
+        weights.put(neighbour.uuid, weight);
+    }
+
+    public void addNeighbour(Long nuuid, Float weight) {
+        if (!neighbours.contains(nuuid)) {
+            neighbours.add(nuuid);
+        }
+        // overwrite if necessary
+        weights.put(nuuid, weight);
+    }
+
     public void addNeighbour(Node neighbour) {
-        neighbours.add(neighbour.uuid);
+        if (!neighbours.contains(neighbour.uuid)) {
+            neighbours.add(neighbour.uuid);
+            weights.put(neighbour.uuid, 1.0f); // put a temporary weight
+        }
     }
-    public void addNeighbour(String nuuid) {
-        neighbours.add(nuuid);
+
+    public void addNeighbour(Long nuuid) {
+        if (!neighbours.contains(nuuid)) {
+            neighbours.add(nuuid);
+            weights.put(nuuid, 1.0f); // put a temporary weight
+        }
     }
+
     public void setAttribute(String key, Object value) {
         attributes.put(key, value);
     }
-
 
     public Object getAttribute(String key) {
         return attributes.get(key);
@@ -122,8 +147,8 @@ public class Node {
         this.fixed = (node.fixed);
         this.shape = node.shape;
         this.visibleToScreen = node.visibleToScreen;
-        this.neighbours = new HashSet<String>(node.neighbours.size());
-        for (String k : node.neighbours) {
+        this.neighbours = new HashSet<Long>(node.neighbours.size());
+        for (Long k : node.neighbours) {
             this.neighbours.add(k);
         }
         this.s = (node.s); // switch
@@ -132,20 +157,21 @@ public class Node {
         this.selected = (node.selected);
         this.highlighted = (node.highlighted);
         this.category = node.category;
-        this.weights = new HashMap<String,Float>();
-        for (String k : node.weights.keySet()) {
-            this.weights.put(k,node.weights.get(k));
+        this.weights = new HashMap<Long, Float>();
+        for (Long k : node.weights.keySet()) {
+            this.weights.put(k, node.weights.get(k));
         }
     }
+
     public Node getProxyClone() {
         return new Node(this);
     }
+
     public Node getDetachedClone() {
         Node node = new Node(this.uuid);
         node.cloneDataFrom(this);
         return node;
     }
-
 
     public String reduceLabel(String label) {
         return reduceLabel(label, 30);

@@ -39,6 +39,7 @@ public class View {
     public float ZOOM_FLOOR = 25.0f;
     public float repulsion = 0.01f;
     public float attraction = 0.0001f;
+
     public Graph graph = null;
     public FilterChain filters = null;
     public AtomicBoolean hasBeenRead = null;
@@ -170,7 +171,7 @@ public class View {
            System.out.println("translation2  x:" + translation.x + " y:" + translation.y);
         translation.mult(sceneScale);
            System.out.println("translation3  x:" +translation.x + " y:" + translation.y);
-        //translation.add(screenCenter);
+        translation.add(screenCenter);
          //  System.out.println("translation4  x:" + translation.x + " y:" + translation.y);
     }
 
@@ -211,14 +212,21 @@ public class View {
         this.translation.set(center);
     }
 
-    public void selectNodeById(String id) {
+    public void selectNodeById(Long id) {
         graph.selectNodeById(id);
     }
 
-    public void unselectNodeById(String id) {
+    public void unselectNodeById(Long id) {
         graph.unselectNodeById(id);
     }
 
+    public void selectNodeById(String id) {
+        graph.selectNodeById(Long.parseLong(id));
+    }
+
+    public void unselectNodeById(String id) {
+        graph.unselectNodeById(Long.parseLong(id));
+    }
     public void unselectAll() {
         graph.unselectAll();
     }
