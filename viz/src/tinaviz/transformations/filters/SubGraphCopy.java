@@ -83,9 +83,10 @@ public class SubGraphCopy extends NodeFilter {
         output.add(rootNode.getProxyClone());
        // System.out.println("added root at x:"+rootNode.x+" y:"+rootNode.y+" with "+rootNode.neighbours.size()+" neighbours");
 
-        for (String neighbourId : sources.get(item).neighbours) {
+        for (Node potentialNeighbour : sources.values()) {
+            if (rootNode.neighbours.contains(potentialNeighbour.uuid) | potentialNeighbour.neighbours.contains(item)) {
 
-            Node clonedNeighbourNode = sources.get(neighbourId).getDetachedClone();
+            Node clonedNeighbourNode = potentialNeighbour.getDetachedClone();
             
             // a new graph, with new positions, each time we click
             clonedNeighbourNode.x =  (float) Math.random() * 100f;
@@ -96,6 +97,7 @@ public class SubGraphCopy extends NodeFilter {
             output.add(clonedNeighbourNode.getProxyClone());
             //System.out.println("  - added neighbour "+clonedNeighbourNode.label+ " ");
 
+        }
         }
          localView.updateFromNodeList(newNodes);
          localView.resetCamera();
