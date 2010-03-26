@@ -22,6 +22,7 @@ import tinaviz.transformations.filters.Layout;
 import tinaviz.transformations.filters.NodeFunction;
 import tinaviz.transformations.filters.SubGraphCopy;
 import tinaviz.transformations.filters.ThresholdGenericity;
+import tinaviz.transformations.filters.WeightSize;
 
 /**
  *
@@ -92,7 +93,9 @@ public class FilterChain {
             f = new ThresholdWeight();
         } else if (filterName.equals("NodeRadius")) {
             f = new NodeRadius();
-        } else if (filterName.equals("NodeFunction")) {
+        }else if (filterName.equals("WeightSize")) {
+            f = new WeightSize();
+        }  else if (filterName.equals("NodeFunction")) {
             f = new NodeFunction();
         }  else if (filterName.equals("Category")) {
             f = new Category();
