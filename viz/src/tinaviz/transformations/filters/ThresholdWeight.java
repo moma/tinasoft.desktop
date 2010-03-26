@@ -29,9 +29,9 @@ public class ThresholdWeight extends NodeFilter {
     public Node node(Session session, View view, Node n) {
 
         //System.out.println("fmin:"+min+" fmax:"+max);
-        Set<String> newNeighbours = new HashSet<String>(n.neighbours.size());
+        Set<Long> newNeighbours = new HashSet<Long>(n.neighbours.size());
 
-        for (String k : n.neighbours) {
+        for (Long k : n.neighbours) {
 
             Float w = n.weights.get(k);
 

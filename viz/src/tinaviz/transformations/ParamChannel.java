@@ -10,6 +10,7 @@ package tinaviz.transformations;
  */
 public class ParamChannel extends Channel {
 
+    @Override
     public Object getField(String key) {
         if (key.equals("type")) {
             switch (channelType) {
@@ -28,6 +29,7 @@ public class ParamChannel extends Channel {
         return "";
     }
 
+    @Override
     public boolean setField(String key, Object value) {
         if (key.equals("type")) {
             if (((String)value).equals("range")) {

@@ -46,7 +46,7 @@ public class Explorer extends NodeFilter {
             return output;
         }
 
-        String item = (String) view.properties.get(root+KEY_ITEM);
+        Long item = (Long) view.properties.get(root+KEY_ITEM);
         if (item==null) {
             //System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
             return output;
@@ -57,7 +57,7 @@ public class Explorer extends NodeFilter {
             return output;
         }
 
-        for (String nodeID : ((Node)session.macro.graph.storedNodes.get(item)).neighbours) {
+        for (Long nodeID : ((Node)session.macro.graph.storedNodes.get(item)).neighbours) {
             output.add(session.macro.graph.storedNodes.get(nodeID));
         }
         return output;

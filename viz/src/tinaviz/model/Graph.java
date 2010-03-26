@@ -31,7 +31,7 @@ import processing.core.*;
 public class Graph implements Cloneable {
 
     public static final String NS = "tina";
-    public Map<String, tinaviz.Node> storedNodes = null;
+    public Map<Long, tinaviz.Node> storedNodes = null;
     public Map<String, Object> attributes = null;
     public Metrics metrics = null;
     public AtomicBoolean locked = null;
@@ -47,7 +47,7 @@ public class Graph implements Cloneable {
     private Session session = null;
 
     public Graph(Session session) {
-        storedNodes = new HashMap<String, tinaviz.Node>();
+        storedNodes = new HashMap<Long, tinaviz.Node>();
         attributes = new HashMap<String, Object>();
         metrics = new Metrics();
         locked = new AtomicBoolean(true);
@@ -162,11 +162,11 @@ public class Graph implements Cloneable {
 
             org.w3c.dom.NamedNodeMap xmlnodeAttributes = xmlnode.getAttributes();
 
-            String uuid = xmlnodeAttributes.getNamedItem("id").getNodeValue();
+            Long uuid = Long.parseLong( xmlnodeAttributes.getNamedItem("id").getNodeValue() );
 
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
-                    : uuid;
+                    : ""+uuid;
 
             Node node = new Node(uuid, label, (float) Math.random() * 2f,
                     (float) Math.random() * 100f,
@@ -271,14 +271,20 @@ public class Graph implements Cloneable {
                 continue;
             }
 
-            String source = edgeAttributes.getNamedItem("source").getNodeValue();
-            String target = edgeAttributes.getNamedItem("target").getNodeValue();
+            Long source = Long.parseLong(edgeAttributes.getNamedItem("source").getNodeValue());
+            Long target = Long.parseLong(edgeAttributes.getNamedItem("target").getNodeValue());
+            
+            String type = (edgeAttributes.getNamedItem("type")!=null) ?
+                (String) edgeAttributes.getNamedItem("type").getNodeValue()
+                : "undirected";
             Float weight = (edgeAttributes.getNamedItem("weight") != null)
                     ? Float.parseFloat(edgeAttributes.getNamedItem("weight").getNodeValue()) : 1.0f;
 
             if (storedNodes.containsKey(source) && storedNodes.containsKey(target)) {
-                storedNodes.get(source).addNeighbour(storedNodes.get(target));
-                storedNodes.get(source).weights.put(target, weight);
+                storedNodes.get(source).addNeighbour(storedNodes.get(target), weight);
+                 if (type.equals("undirected") | type.equals("mutual")) {
+                    storedNodes.get(target).addNeighbour(storedNodes.get(source), weight);
+                 } 
             }
 
         }
@@ -316,12 +322,12 @@ public class Graph implements Cloneable {
             //System.out.println("normalized genericity:"+n.genericity+"\n");
 
             // NORMALIZE WEIGHTS
-            for (String k : n.weights.keySet()) {
-                System.out.println("  - w1: "+n.weights.get(k));
+            for (Long k : n.weights.keySet()) {
+                //System.out.println("  - w1: "+n.weights.get(k));
                 n.weights.put(k, PApplet.map(n.weights.get(k),
                         metrics.minWeight, metrics.maxWeight,
                         MIN_WEIGHT, MAX_WEIGHT));
-                System.out.println("  - w2: "+n.weights.get(k));
+                //System.out.println("  - w2: "+n.weights.get(k));
             }
 
 
@@ -368,13 +374,12 @@ public class Graph implements Cloneable {
         touch();
     }
 
-    public synchronized void addNeighbour(tinaviz.Node node1, tinaviz.Node node2) {
+    public synchronized void addNeighbour(tinaviz.Node node1, tinaviz.Node node2, Float weight) {
         if (storedNodes.containsKey(node1.uuid)) {
-            storedNodes.get(node1.uuid).addNeighbour(node2);
+            storedNodes.get(node1.uuid).addNeighbour(node2, weight);
         } else {
-            node1.addNeighbour(node2);
+            node1.addNeighbour(node2, weight);
             storedNodes.put(node1.uuid, node1);
-
         }
         touch();
     }
@@ -389,10 +394,9 @@ public class Graph implements Cloneable {
         return storedNodes.size();
     }
 
-    public synchronized tinaviz.Node getNode(String key) {
+    public synchronized tinaviz.Node getNode(Long key) {
         return storedNodes.get(key);
     }
-
     public synchronized void clear() {
         storedNodes.clear();
         attributes.clear();
@@ -404,7 +408,7 @@ public class Graph implements Cloneable {
         return revision.incrementAndGet();
     }
 
-    public void selectNodeById(String id) {
+    public void selectNodeById(Long id) {
         boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
@@ -416,14 +420,16 @@ public class Graph implements Cloneable {
         }
 
     }
-
-    public void unselectNodeById(String id) {
+    public void unselectNodeById(Long id) {
         boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
             changed = true;
         }
         //if (changed) touch();
+    }
+    public void unselectNodeById(String id) {
+        unselectNodeById(Long.parseLong(id));
     }
 
     public void unselectAll() {

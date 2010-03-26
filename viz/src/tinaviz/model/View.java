@@ -171,7 +171,7 @@ public class View {
            System.out.println("translation2  x:" + translation.x + " y:" + translation.y);
         translation.mult(sceneScale);
            System.out.println("translation3  x:" +translation.x + " y:" + translation.y);
-        //translation.add(screenCenter);
+        translation.add(screenCenter);
          //  System.out.println("translation4  x:" + translation.x + " y:" + translation.y);
     }
 
@@ -212,14 +212,21 @@ public class View {
         this.translation.set(center);
     }
 
-    public void selectNodeById(String id) {
+    public void selectNodeById(Long id) {
         graph.selectNodeById(id);
     }
 
-    public void unselectNodeById(String id) {
+    public void unselectNodeById(Long id) {
         graph.unselectNodeById(id);
     }
 
+    public void selectNodeById(String id) {
+        graph.selectNodeById(Long.parseLong(id));
+    }
+
+    public void unselectNodeById(String id) {
+        graph.unselectNodeById(Long.parseLong(id));
+    }
     public void unselectAll() {
         graph.unselectAll();
     }
