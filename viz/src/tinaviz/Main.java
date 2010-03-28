@@ -1,5 +1,12 @@
 package tinaviz;
 
+import com.nativelibs4java.opencl.CLBuildException;
+import java.io.IOException;
+import tinaviz.layout.Layout;
+import tinaviz.util.Console;
+import tinaviz.graph.ShapeCategory;
+import tinaviz.view.ViewLevel;
+import tinaviz.view.View;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.security.KeyException;
@@ -11,12 +18,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tinaviz.model.*;
+import tinaviz.session.*;
 import processing.opengl.*;
 import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
 import netscape.javascript.*;
+import tinaviz.graph.Node;
+import tinaviz.layout.LayoutOpenCL;
 
 public class Main extends PApplet implements MouseWheelListener {
 
@@ -24,6 +33,7 @@ public class Main extends PApplet implements MouseWheelListener {
     public PVector ref = new PVector();
     public PVector drawerTranslation = new PVector();
     public PVector drawerLastPosition = new PVector();
+    public Layout layout;
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
     PImage nodeIcon;
@@ -46,7 +56,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private int recordingWidth = 100;
     private int recordingHeight = 100;
     private String DEFAULT_FONT = "ArialMT-150.vlw";
-    private List<tinaviz.Node> nodes = new LinkedList<tinaviz.Node>();
+    private List<tinaviz.graph.Node> nodes = new LinkedList<tinaviz.graph.Node>();
     float selectedX = 0.0f;
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
@@ -56,8 +66,7 @@ public class Main extends PApplet implements MouseWheelListener {
     int oldScreenWidth = 0;
     int oldScreenHeight = 0;
     private Node oldSelected = null;
-
- 
+    private boolean useOpenCL = false;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -138,6 +147,8 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
 
+        layout = new Layout();
+
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
         boolean loadDefaultGlobalGraph = false;
@@ -147,6 +158,12 @@ public class Main extends PApplet implements MouseWheelListener {
         //font = createFont("Arial", 96, true);
         //String[] fontList = PFont.list();
         //println(fontList);
+
+        if (getParameter("opencl") != null) {
+            if (getParameter("opencl").equalsIgnoreCase("true")) {
+                 useOpenCL = true;
+            }
+        }
 
         String engine = P2D;
         if (getParameter("engine") != null) {
@@ -200,6 +217,16 @@ public class Main extends PApplet implements MouseWheelListener {
         //noStroke();
         // current sketch's "data" directory to load successfully
 
+
+       if (useOpenCL) {
+            try {
+                layout = new LayoutOpenCL();
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (CLBuildException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
         // currentView.showLabels = false;
 
@@ -267,8 +294,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
-                    //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
+                    "file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
@@ -348,7 +375,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
-                fastLayout(v);
+                layout.fast(v, nodes);
             }
             return;
         }
@@ -416,7 +443,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         } else if (v.prespatializeSteps-- > 0) {
             drawLoading(v);
-            fastLayout(v);
+            layout.fast(v, nodes);
 
         } else {
             drawAndSpatializeRealtime(v);
@@ -458,143 +485,6 @@ public class Main extends PApplet implements MouseWheelListener {
             fill(255);
         }
         text(base, x, y);
-    }
-
-    public void fastLayout(View v) {
-        float distance = 1f;
-        float vx = 1f;
-        float vy = 1f;
-
-        float repulsion = v.repulsion;
-        float attraction = v.attraction;
-
-        float gravity = 0.00001f;
-
-        for (Node n1 : nodes) {
-            // gravity
-            vx = 0 - n1.x;
-            vy = 0 - n1.y;
-
-            distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
-            n1.vx += vx * distance * gravity;
-            n1.vy += vy * distance * gravity;
-
-            for (Node n2 : nodes) {
-                if (n1 == n2) {
-                    continue;
-                }
-
-                // todo: what happen when vx or vy are 0 ?
-                vx = n2.x - n1.x;
-                vy = n2.y - n1.y;
-                distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
-
-                //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
-                // plutot que mettre une distance minimale,
-                // mettre une force de repulsion, par exemple
-                // radius * (1 / distance)   // ou distance au carré
-                if (n1.neighbours.contains(n2.uuid)) {
-                    float w = 1.0f + n1.weights.get(n2.uuid);
-                    n1.vx += vx * distance * w * attraction;
-                    n1.vy += vy * distance * w * attraction;
-                    n2.vx -= vx * distance * w * attraction;
-                    n2.vy -= vy * distance * w * attraction;
-                } else {
-                    // STANDARD REPULSION
-                    n1.vx -= (vx / distance) * repulsion;
-                    n1.vy -= (vy / distance) * repulsion;
-                    n2.vx += (vx / distance) * repulsion;
-                    n2.vy += (vy / distance) * repulsion;
-                }
-
-                //}
-            } // FOR NODE B
-            // important, we limit the velocity!
-            n1.vx = constrain(n1.vx, -300, 300);
-            n1.vy = constrain(n1.vy, -300, 300);
-
-            // update the coordinate
-            // also set the bound box for the whole scene
-            n1.x = constrain(n1.x + n1.vx * 0.5f, -8000, +8000);
-            n1.y = constrain(n1.y + n1.vy * 0.5f, -8000, +8000);
-
-            if (n1.original != null) {
-                n1.original.x = n1.x;
-                n1.original.y = n1.y;
-            }
-
-            n1.vx = 0.0f;
-            n1.vy = 0.0f;
-        }   // FOr NODE A
-
-
-
-
-    }
-
-    public void goodLayout(View v) {
-        float distance = 1f;
-        float vx = 1f;
-        float vy = 1f;
-
-        float repulsion = v.repulsion;
-        float attraction = v.attraction;
-
-        for (Node n1 : nodes) {
-            for (Node n2 : nodes) {
-                if (n1 == n2) {
-                    continue;
-                }
-                vx = n2.x - n1.x;
-                vy = n2.y - n1.y;
-                // distance = FastSquareRoot.fast_sqrt(sq(vx)+sq(vy)) +  0.0000001f;
-                distance = sqrt(sq(vx) + sq(vy)) + 0.0000001f;
-                // int badSquare = FastSquareRoot.fastSqrt((int)((sq(vx)+sq(vy))*1000));
-                //distance = ((float) badSquare) / 1000.0f;
-                //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
-                // plutot que mettre une distance minimale,
-                // mettre une force de repulsion, par exemple
-                // radius * (1 / distance)   // ou distance au carré
-                if (n1.neighbours.contains(n2.uuid)) {
-                    float w = 1.0f + n1.weights.get(n2.uuid);
-                    n1.vx += vx * distance * w * attraction;
-                    n1.vy += vy * distance * w * attraction;
-                    n2.vx -= vx * distance * w * attraction;
-                    n2.vy -= vy * distance * w * attraction;
-                }
-
-
-                // STANDARD REPULSION
-                n1.vx -= (vx / distance) * repulsion;
-                n1.vy -= (vy / distance) * repulsion;
-                n2.vx += (vx / distance) * repulsion;
-                n2.vy += (vy / distance) * repulsion;
-
-            } // FOR NODE B
-        }   // FOr NODE A
-
-
-        for (Node n : nodes) {
-            // important, we limit the velocity!
-            n.vx = constrain(n.vx, -5, 5);
-            n.vy = constrain(n.vy, -5, 5);
-
-            // update the coordinate
-            // also set the bound box for the whole scene
-            n.x = constrain(n.x + n.vx * 0.5f, -3000, +3000);
-            n.y = constrain(n.y + n.vy * 0.5f, -3000, +3000);
-
-            // update the original, "stored" node
-            if (n.original != null) {
-                n.original.x = n.x;
-                n.original.y = n.y;
-            }
-
-            n.vx = 0.0f;
-            n.vy = 0.0f;
-        }
-
-
     }
 
     public void pdfDrawer(View v, int w, int h) {
@@ -665,7 +555,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             noSmooth();
             bezierDetail(7);
-            fastLayout(v);
+            layout.fast(v, nodes);
             //v.graph.touch(); // do the layout (recompute all the scene as well..)
         }
 
@@ -767,8 +657,8 @@ public class Main extends PApplet implements MouseWheelListener {
                             float w1 = n1.weights.get(n2.uuid);
                             float w2 = n2.weights.get(n1.uuid);
                             if (v.highDefinition) {
-                               // strokeWeight((w1 + w2)  * 10.0f);
-                            strokeWeight(w1 * 7.0f);
+                                // strokeWeight((w1 + w2)  * 10.0f);
+                                strokeWeight(w1 * 7.0f);
                                 //strokeWeight(1);
                             }
                             drawCurve(n2, n1);
