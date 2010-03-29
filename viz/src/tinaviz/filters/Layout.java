@@ -5,10 +5,6 @@
 
 package tinaviz.filters;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import tinaviz.graph.Node;
 import tinaviz.view.NodeFilter;
 import tinaviz.session.Session;
@@ -22,13 +18,15 @@ public class Layout extends NodeFilter {
 
     private String KEY_CATEGORY = "value";
     private String KEY_MODE = "mode";
-
+    
     @Override
-    public List<Node> process(Session session, View v, List<Node> input) {
+    public NodeList process(Session session, View v, NodeList input) {
    
         if(!enabled()) {
             return input;
         }
+
+
 /*
         if (!view.properties.containsKey(root+KEY_CATEGORY)) {
             view.properties.put(root+KEY_CATEGORY, "Document");
@@ -51,8 +49,8 @@ public class Layout extends NodeFilter {
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
-        for (Node n1 : input) {
-            for (Node n2 : input) {
+        for (Node n1 : input.nodes) {
+            for (Node n2 : input.nodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -83,7 +81,7 @@ public class Layout extends NodeFilter {
 
             }
          } // FOR NODE B
-        for (Node n : input) {
+        for (Node n : input.nodes) {
             // important, we limit the velocity!
 
             if (n.vx < -5) n.vx = -5;

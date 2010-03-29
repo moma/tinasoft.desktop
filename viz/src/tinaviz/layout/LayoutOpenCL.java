@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import processing.core.PApplet;
+import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 import tinaviz.view.View;
 
@@ -30,7 +31,7 @@ public class LayoutOpenCL extends Layout {
     private CLFloatBuffer input;
     private CLFloatBuffer output;
     private CLProgram program;
-    private CLKernel kernel;
+    private final CLKernel kernel;
     private CLEvent kernelCompletion;
     private int dataSize = 0;
     private String kernelPath = "forceVectorLayout.c";
@@ -69,7 +70,7 @@ public class LayoutOpenCL extends Layout {
     }
 
     @Override
-    public void fast(View v, List<Node> nodes) {
+    public void fast(View v, NodeList nodes) {
         float distance = 1f;
         float vx = 1f;
         float vy = 1f;

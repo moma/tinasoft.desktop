@@ -24,8 +24,10 @@ import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
 import netscape.javascript.*;
+import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 import tinaviz.layout.LayoutOpenCL;
+import tinaviz.ui.PaintTools;
 
 public class Main extends PApplet implements MouseWheelListener {
 
@@ -56,7 +58,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private int recordingWidth = 100;
     private int recordingHeight = 100;
     private String DEFAULT_FONT = "ArialMT-150.vlw";
-    private List<tinaviz.graph.Node> nodes = new LinkedList<tinaviz.graph.Node>();
+    private NodeList nodes = new NodeList();
     float selectedX = 0.0f;
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
@@ -218,6 +220,8 @@ public class Main extends PApplet implements MouseWheelListener {
         // current sketch's "data" directory to load successfully
 
 
+        layout = new Layout();
+        /*
        if (useOpenCL) {
             try {
                 layout = new LayoutOpenCL();
@@ -226,7 +230,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } catch (CLBuildException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        }*/
 
         // currentView.showLabels = false;
 
@@ -258,7 +262,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         } else if (generateRandomLocalGraph) {
 
-            List<Node> tmp = new ArrayList<Node>();
+            NodeList tmp = new NodeList();
             Node node;
             System.out.println("Generating random graph..");
             float rx = random(width);
@@ -294,8 +298,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
-                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
-                    "file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                    //"file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
+                     "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf"
+                    //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
@@ -315,7 +320,7 @@ public class Main extends PApplet implements MouseWheelListener {
             //session.animationPaused = true;
         } else if (generateRandomGlobalGraph) {
 
-            List<Node> tmp = new LinkedList<Node>();
+            NodeList tmp = new NodeList();
             Node node;
             Console.log("Generating random graph..");
             float rx = random(width);
@@ -368,7 +373,6 @@ public class Main extends PApplet implements MouseWheelListener {
         // todo replace by get network
         View v = session.getView();
 
-
         // HACK
         v.screenWidth = width;
         v.screenHeight = height;
@@ -380,7 +384,7 @@ public class Main extends PApplet implements MouseWheelListener {
             return;
         }
         // System.out.println("now working on view "+v);
-        List<Node> n = v.popNodes();
+        NodeList n = v.popNodes();
         if (n != null) {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
             nodes.clear();
@@ -391,6 +395,30 @@ public class Main extends PApplet implements MouseWheelListener {
                 cameraUpdateNeeded = v.graph.brandNewGraph.getAndSet(false);
             }
 
+            if (cameraUpdateNeeded) {
+                float screenRadius = (screenWidth + screenHeight) / 2.0f;
+                float zoomScale = 1.0f / (screenRadius / nodes.graphRadius);
+
+                /*! TODO !*/
+                v.sceneScale = 1.0f;
+                System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + zoomScale);
+
+                PVector translate = new PVector();
+                translate.set(nodes.center);
+
+                 System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+                PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
+                //screenCenter.add(graph.metrics.center);
+
+                translate.sub(screenCenter);
+                System.out.println("translation2  x:" + translate.x + " y:" + translate.y);
+                translate.mult(v.sceneScale);
+                System.out.println("translation3  x:" + translate.x + " y:" + translate.y);
+                translate.add(screenCenter);
+                //  System.out.println("translation4  x:" + translation.x + " y:" + translation.y);
+                v.translation.set(translate);
+            }
+            /*
             switch (v.centeringMode) {
                 case FREE_MOVE:
 
@@ -422,7 +450,9 @@ public class Main extends PApplet implements MouseWheelListener {
                     v.resetToSelectionBarycenter();
 
                     break;
-            }
+            }*
+             * 
+             */
         }
 
         //session.animationPaused = tmp; // TODO replace by a lock here
@@ -571,7 +601,7 @@ public class Main extends PApplet implements MouseWheelListener {
         Node hasSelected = null;
 
 
-        for (Node n1 : nodes) {
+        for (Node n1 : nodes.nodes) {
 
             if (selectNone) {
                 n1.selected = false;
@@ -583,7 +613,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
             }
 
-            for (Node n2 : nodes) {
+            for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -661,7 +691,7 @@ public class Main extends PApplet implements MouseWheelListener {
                                 strokeWeight(w1 * 7.0f);
                                 //strokeWeight(1);
                             }
-                            drawCurve(n2, n1);
+                            PaintTools.drawCurve(this, n2, n1);
                         } else {
                             float w1 = n1.weights.get(n2.uuid);
 
@@ -670,7 +700,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                                 //strokeWeight(1);
                             }
-                            drawCurve(n2, n1);
+                            PaintTools.drawCurve(this, n2, n1);
                             // drawCurve(n1, n2);
                         }
 
@@ -690,7 +720,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
         noStroke();
-        for (Node n : nodes) {
+        for (Node n : nodes.nodes) {
 
             float rad = n.radius * MAX_NODE_RADIUS;
             float rad2 = rad + rad * 0.4f;
@@ -790,8 +820,10 @@ public class Main extends PApplet implements MouseWheelListener {
             text((n.highlighted) ? n.label : n.shortLabel, n.x + rad, n.y + (rad2 / PI));
 
         }
+        
         popMatrix();
 
+        /*
         if (hasSelected != null) {
             float sx = screenX(hasSelected.x, hasSelected.y);
             float sy = screenY(hasSelected.x, hasSelected.y);
@@ -799,6 +831,7 @@ public class Main extends PApplet implements MouseWheelListener {
             float width = 300;
             float height = 400;
             fill(0, 0, 0, 100);
+
             pushMatrix();
             translate(sx - width / 2.0f, sy - height / 2.0f);
             ellipse(0, 0, 10f, 10f);
@@ -832,7 +865,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     image(currentImg, 0, 0);
                 }
             }
-        }
+        }*/
 
         selectNode = null;
         selectNone = false;
@@ -889,7 +922,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseMoved() {
         Node candidate = null;
-        for (Node n : nodes) {
+        for (Node n : nodes.nodes) {
             n.highlighted = false;
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
@@ -906,9 +939,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n.radius > candidate.radius) {
                     candidate = n;
                 }
-
             }
-
 
         }
         if (candidate != null) {
@@ -920,7 +951,7 @@ public class Main extends PApplet implements MouseWheelListener {
     public void mouseClicked() {
 
         System.out.println("mouse clicked");
-        for (Node n : nodes) {
+        for (Node n : nodes.nodes) {
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
             float rad = n.radius * MAX_NODE_RADIUS;
@@ -942,12 +973,9 @@ public class Main extends PApplet implements MouseWheelListener {
                         }
 
                         // double click also select nodes!
-
                         n.selected = true;
                         session.selectNode(n);
                         nodeSelectedLeftMouse_JS_CALLBACK(n);
-
-
 
                         if (session.currentLevel == ViewLevel.MACRO) {
                             System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
@@ -1004,7 +1032,6 @@ public class Main extends PApplet implements MouseWheelListener {
         } else if (mouseButton == LEFT) {
         }
     }
-
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getUnitsToScroll() == 0) {
             return;
@@ -1028,7 +1055,7 @@ public class Main extends PApplet implements MouseWheelListener {
         Node bestMatchForSwitch = null;
         Node bestMatchForSelection = null;
 
-        for (Node n : nodes) {
+        for (Node n : nodes.nodes) {
 
             float rad = n.radius * MAX_NODE_RADIUS;
             float rad2 = rad + rad * 0.4f;
@@ -1196,35 +1223,23 @@ public class Main extends PApplet implements MouseWheelListener {
         } else if (key == 'a') {
             if (window != null) {
                 window.eval("parent.tinaviz.togglePause('" + v.getName() + "');");
-
-
             } else {
                 v.animationPaused = !v.animationPaused;
-
-
             }
             System.out.println("Animation paused is now " + v.animationPaused);
-
 
         } else if (key == 'h') {
             v.highDefinition = !v.highDefinition;
             System.out.println("HD mode is now " + v.highDefinition);
-
-
         } else if (key == 'o') {
             if ((v.attraction + 0.00001) < 0.0004) {
                 v.attraction += 0.00001f;
                 System.out.println("\nattraction: " + session.getView().attraction);
-
-
-
             }
         } else if (key == 'l') {
             if ((v.attraction - 0.00001f) > 1.5e-5) {
                 v.attraction -= 0.00001f;
                 System.out.println("\nattraction: " + session.getView().attraction);
-
-
             }
         }
 
@@ -1244,8 +1259,12 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void resetCamera(String view) {
+        /*
         View v = getSession().getView(view);
         v.resetCamera();
+         * 
+         */
+        System.out.println("resetCamera("+view+") called, but NOT IMPLEMENTED");
     }
 
     public void select(Long id) {
@@ -1262,61 +1281,4 @@ public class Main extends PApplet implements MouseWheelListener {
         selectNone = true;
     }
 
-    private void arrow(float x1, float y1, float x2, float y2, float radius) {
-        pushMatrix();
-        translate(x2, y2);
-        rotate(atan2(x1 - x2, y2 - y1));
-        line(0, -radius, -1, -1 - radius);
-        line(0, -radius, 1, -1 - radius);
-        popMatrix();
-
-
-    }
-
-    private void arrow(PGraphics pg, float x1, float y1, float x2, float y2, float radius) {
-        pg.pushMatrix();
-        pg.translate(x2, y2);
-        pg.rotate(atan2(x1 - x2, y2 - y1));
-        pg.line(0, -radius, -1, -1 - radius);
-        pg.line(0, -radius, 1, -1 - radius);
-        pg.popMatrix();
-
-
-    }
-
-    private float logify(float x) {
-        if (abs(x) < 0.01f) {
-            return 0.0f;
-
-
-        }
-        return (x > 0) ? log100((int) (abs(x) * 100.0f)) : -log100((int) (abs(x) * 100.0f));
-
-
-    }
-
-    private float log100(int x) {
-        return (log(x) / ((float) log(100)));
-
-
-    }
-
-    public static float[] rotation(float x, float y, float centerX, float centerY, float theta) {
-        float[] rc = new float[2];
-        rc[0] = (float) (centerX + (x - centerX) * cos(theta) - (y - centerY) * sin(theta));
-        rc[1] = (float) (centerY + (x - centerX) * sin(theta) + (y - centerY) * cos(theta));
-
-        return rc;
-
-    }
-
-    public void drawCurve(Node n1, Node n2) {
-        float xa0 = (6 * n1.x + n2.x) / 7, ya0 = (6 * n1.y + n2.y) / 7;
-        float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
-        float[] xya1 = rotation(xa0, ya0, n1.x, n1.y, PI / 2);
-        float[] xyb1 = rotation(xb0, yb0, n2.x, n2.y, -PI / 2);
-        float xa1 = (float) xya1[0], ya1 = (float) xya1[1];
-        float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
-        bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
-    }
 }

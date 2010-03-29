@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.security.KeyException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 
 //import org.w3c.dom.*;
@@ -113,7 +114,7 @@ public class Session {
         return getView().updateFromInputStream(inputStream);
     }
 
-    public boolean updateFromNodeList(List<Node> nodes) {
+    public boolean updateFromNodeList(NodeList nodes) {
         return getView().updateFromNodeList(nodes);
     }
 
@@ -193,9 +194,10 @@ public class Session {
     }
 
     public void resetCamera(float width, float height) {
+        /*
         macro.resetCamera();
         meso.resetCamera();
-        micro.resetCamera();
+        micro.resetCamera();*/
     }
 
     public void unselectAll() {

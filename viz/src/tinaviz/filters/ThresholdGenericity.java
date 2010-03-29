@@ -25,8 +25,8 @@ public class ThresholdGenericity extends NodeFilter {
     private Float max = new Float(1.0f);
 
     @Override
-        public List<Node> process(Session session, View view, List<Node> input) {
-        List<Node> output = new LinkedList<Node>();
+        public NodeList process(Session session, View view, NodeList input) {
+        NodeList output = new NodeList();
         if(!enabled()) {
             return input;
         }
@@ -40,9 +40,9 @@ public class ThresholdGenericity extends NodeFilter {
         }
 
         // HACK HACK HACK ** POUR DAVID DEMO FET60 ** HACK HACK HACK HACK
-        view.graph.metrics.maxGenericity = 1.0f;
+        input.maxGenericity = 1.0f;
 
-        float f = view.graph.metrics.maxGenericity - view.graph.metrics.minGenericity;
+        float f = input.maxGenericity - input.minGenericity;
 
         Object o = view.properties.get(root+KEY_MIN);
         min =   (o instanceof Integer)
@@ -50,7 +50,7 @@ public class ThresholdGenericity extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        min = min * f + view.graph.metrics.minGenericity;
+        min = min * f + input.minGenericity;
 
         o = view.properties.get(root+KEY_MAX);
         max =  (o instanceof Integer)
@@ -58,9 +58,9 @@ public class ThresholdGenericity extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        max = max * f + view.graph.metrics.minGenericity;
+        max = max * f + input.minGenericity;
 
-        for (Node n : input) {
+        for (Node n : input.nodes) {
              // System.out.println("genericity: ["+min+" <= "+n.genericity+" <= "+max);
 
             if (min <= n.genericity && n.genericity <= max) output.add(n);

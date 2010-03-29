@@ -52,7 +52,7 @@ public class ThresholdWeight extends NodeFilter {
     }
 
     @Override
-        public List<Node> process(Session session, View view, List<Node> input) {
+        public NodeList process(Session session, View view, NodeList input) {
 
         if(!enabled()) {
             return input;
@@ -68,7 +68,7 @@ public class ThresholdWeight extends NodeFilter {
 
        // System.out.println("min:"+view.graph.metrics.minWeight+" max:"+view.graph.metrics.maxWeight);
 
-        float f = view.graph.metrics.maxWeight - view.graph.metrics.minWeight;
+        float f = input.maxWeight - input.minWeight;
        // System.out.println("f:"+f);
 
         Object o = view.properties.get(root+KEY_MIN);
@@ -77,7 +77,7 @@ public class ThresholdWeight extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        min = min * f + view.graph.metrics.minWeight;
+        min = min * f + input.minWeight;
 
         o = view.properties.get(root+KEY_MAX);
         max =  (o instanceof Integer)
@@ -85,9 +85,9 @@ public class ThresholdWeight extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        max = max * f + view.graph.metrics.minWeight;
+        max = max * f + input.minWeight;
        // System.out.println("threshold weight got "+input.size()+" nodes in entry");
-        for (Node n : input) {
+        for (Node n : input.nodes) {
            node(session, view, n);
         }
         return input;

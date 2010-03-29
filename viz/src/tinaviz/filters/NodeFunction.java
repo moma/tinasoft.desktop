@@ -22,7 +22,7 @@ public class NodeFunction extends NodeFilter {
     private String KEY_TARGET = "none";
 
     @Override
-    public List<Node> process(Session session, View view, List<Node> input) {
+    public NodeList process(Session session, View view, NodeList input) {
         if (!enabled()) {
             return input;
         }
@@ -47,7 +47,7 @@ public class NodeFunction extends NodeFilter {
        String source = (String) view.properties.get(root+KEY_SOURCE);
        String target = (String) view.properties.get(root+KEY_TARGET);
 
-        for (Node n : input) {
+        for (Node n : input.nodes) {
              //System.out.println(" node funct: "+(n.radius * n.genericity)+ " = "+n.radius+" * "+n.genericity);
             n.radius *= n.genericity;
 

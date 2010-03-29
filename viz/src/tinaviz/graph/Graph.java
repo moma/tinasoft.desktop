@@ -23,6 +23,8 @@ import javax.xml.xpath.XPathExpressionException;
 import tinaviz.util.Console;
 import tinaviz.graph.Node;
 import processing.core.*;
+import tinaviz.filters.NodeList;
+import tinaviz.session.Attribute;
 import tinaviz.session.Session;
 import tinaviz.util.XPathReader;
 
@@ -34,24 +36,22 @@ public class Graph implements Cloneable {
 
     public static final String NS = "tina";
     public Map<Long, tinaviz.graph.Node> storedNodes = null;
-    public Map<String, Object> attributes = null;
-    public Metrics metrics = null;
+    public Map<String, Attribute> nodeAttributes = null;
+    public Map<String, Attribute> edgeAttributes = null;
+    public Map<String, Object> sessionAttributes = null;
     public AtomicBoolean locked = null;
     public AtomicBoolean needToBeReadAgain = null;
     public AtomicBoolean brandNewGraph = null;
     public AtomicInteger revision;
-    public float MIN_WEIGHT = 0.0f;
-    public float MAX_WEIGHT = 1.0f; // desired default weight
-    public float MIN_RADIUS = 0.01f;
-    public float MAX_RADIUS = 1.0f; // largely depends on the spatialization settings
-    public float MIN_GENERICITY = 1.0f;
-    public float MAX_GENERICITY = 2.0f;
+
     private Session session = null;
+    //public Map<String,Metrics> categorizedMetrics = new HashMap<String,Metrics>();
 
     public Graph(Session session) {
         storedNodes = new HashMap<Long, tinaviz.graph.Node>();
-        attributes = new HashMap<String, Object>();
-        metrics = new Metrics();
+        sessionAttributes = new HashMap<String, Object>();
+        nodeAttributes = new HashMap<String, Attribute>();
+        edgeAttributes = new HashMap<String, Attribute>();
         locked = new AtomicBoolean(true);
         brandNewGraph = new AtomicBoolean(false);
         revision = new AtomicInteger(0);
@@ -110,7 +110,7 @@ public class Graph implements Cloneable {
         return false;
     }
 
-    public boolean updateFromNodeList(List<Node> nodes) {
+    public boolean updateFromNodeList(NodeList nodes) {
         addNodes(nodes);
         return true;
     }
@@ -122,7 +122,7 @@ public class Graph implements Cloneable {
         Console.log("<applet> reading GEXF..");
 
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
-        attributes.put("zoom", (zoomValue != null) ? zoomValue.floatValue() : 1.0f);
+        sessionAttributes.put("zoom", (zoomValue != null) ? zoomValue.floatValue() : 1.0f);
 
         Double thresholdValue = (Double) xml.read(meta + "threshold/@min", XPathConstants.NUMBER);
         if (thresholdValue != null) {
@@ -135,36 +135,65 @@ public class Graph implements Cloneable {
         }
 
         String selected = (String) xml.read(meta + "select/@node", XPathConstants.STRING);
-        attributes.put("selected", (selected != null) ? selected : "");
+        sessionAttributes.put("selected", (selected != null) ? selected : "");
 
         Boolean cond = (Boolean) xml.read(meta + "labels/@show", XPathConstants.BOOLEAN);
-        attributes.put("showLabels", (cond != null) ? cond : true);
+        sessionAttributes.put("showLabels", (cond != null) ? cond : true);
 
         cond = (Boolean) xml.read(meta + "nodes/@show", XPathConstants.BOOLEAN);
-        attributes.put("showNodes", (cond != null) ? cond : true);
+        sessionAttributes.put("showNodes", (cond != null) ? cond : true);
 
         cond = (Boolean) xml.read(meta + "links/@show", XPathConstants.BOOLEAN);
-        attributes.put("showLinks", (cond != null) ? cond : true);
+        sessionAttributes.put("showLinks", (cond != null) ? cond : true);
 
 
         cond = (Boolean) xml.read(meta + "layout/@show", XPathConstants.BOOLEAN);
-        attributes.put("animationPaused", (cond != null) ? cond : true);
+        sessionAttributes.put("animationPaused", (cond != null) ? cond : true);
 
         cond = (Boolean) xml.read(meta + "layout/@prespatialize", XPathConstants.BOOLEAN);
-        attributes.put("prespatialize", (cond != null) ? cond : true);
+        sessionAttributes.put("prespatialize", (cond != null) ? cond : true);
 
-
-        // reset the graph metrics
-        metrics.reset();
-
-        org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
+        org.w3c.dom.NodeList attributesXML = (org.w3c.dom.NodeList) xml.read(
+                "/gexf/graph/attributes",
                 XPathConstants.NODESET);
-        for (int i = 0; i < nodes.getLength(); i++) {
-            org.w3c.dom.Node xmlnode = nodes.item(i);
+
+        for (int i = 0; i < attributesXML.getLength(); i++) {
+            org.w3c.dom.Node attributeXML = attributesXML.item(i);
+            org.w3c.dom.NamedNodeMap nodeAttributesXML = attributeXML.getAttributes();
+            String attrsClass = nodeAttributesXML.getNamedItem("class").getNodeValue();
+            if (attrsClass.equalsIgnoreCase("node")) {
+                org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) attributeXML.getChildNodes();
+                for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
+                    org.w3c.dom.Node n = xmlnodeChildren.item(j);
+                    if (n.getNodeName().equalsIgnoreCase("attribute")) {
+                        Attribute attr = new Attribute(n);
+                        this.nodeAttributes.put(attr.id, attr);
+                    }
+                }
+            } else if (attrsClass.equalsIgnoreCase("edge")) {
+                org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) attributeXML.getChildNodes();
+                for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
+                    org.w3c.dom.Node n = xmlnodeChildren.item(j);
+                    if (n.getNodeName().equalsIgnoreCase("attribute")) {
+                        Attribute attr = new Attribute(n);
+                        this.edgeAttributes.put(attr.id, attr);
+                    }
+                }
+            }
+
+        }
+
+
+        org.w3c.dom.NodeList nodesXML = (org.w3c.dom.NodeList) xml.read("/gexf/graph/nodes/node",
+                XPathConstants.NODESET);
+        for (int i = 0; i < nodesXML.getLength(); i++) {
+            org.w3c.dom.Node xmlnode = nodesXML.item(i);
 
             org.w3c.dom.NamedNodeMap xmlnodeAttributes = xmlnode.getAttributes();
 
-            Long uuid = Long.parseLong( xmlnodeAttributes.getNamedItem("id").getNodeValue() );
+            String xmlid = (String) xmlnodeAttributes.getNamedItem("id").getNodeValue();
+            String cat = xmlid.split("::")[0];
+            Long uuid = Long.parseLong( xmlid.split("::")[1] );
 
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
@@ -180,28 +209,32 @@ public class Graph implements Cloneable {
 
             for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
                 org.w3c.dom.Node n = xmlnodeChildren.item(j);
-                if (n.getNodeName().equals("attvalues")) {
+                if (n.getNodeName().equalsIgnoreCase("attvalues")) {
                     // System.out.println("in attributes tag");
                     org.w3c.dom.NodeList xmlattribs = n.getChildNodes();
                     for (int k = 0; k < xmlattribs.getLength(); k++) {
                         org.w3c.dom.Node attr = xmlattribs.item(k);
-                        if (attr.getNodeName().equals("attvalue")) {
+                        if (attr.getNodeName().equalsIgnoreCase("attvalue")) {
                             // System.out.println("in attribute tag");
                             if (attr.getAttributes() != null) {
-                                org.w3c.dom.Node attrID = null;
+                                org.w3c.dom.Node AttributeIdXML = null;
                                 if (attr.getAttributes().getNamedItem("for") != null) {
-                                    attrID = attr.getAttributes().getNamedItem("for");
+                                    AttributeIdXML = attr.getAttributes().getNamedItem("for");
                                 } else {
                                     // maybe this is an old gexf..
-                                    attrID = attr.getAttributes().getNamedItem("id");
+                                    AttributeIdXML = attr.getAttributes().getNamedItem("id");
                                 }
-                                if (attrID != null) {
-                                    if (attrID.getNodeValue().equals("0")) {
-                                        node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
-                                        // System.out.println(" - category: "+node.category);
+                                if (AttributeIdXML != null) {
+                                    String attributeId = AttributeIdXML.getNodeValue();
 
-                                    } else if (attrID.getNodeValue().equals("4")) {
-                                        node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                    Attribute attrib = nodeAttributes.get(attributeId);
+                                    //System.out.println("found attribute "+attrib.toString()+" !");
+                                    if (attrib.key.equalsIgnoreCase("genericity")) {
+                                        if (attrib.type == Float.class)
+                                         node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                    } else if (attrib.key.equalsIgnoreCase("category")) {
+                                       if (attrib.type == String.class)
+                                           node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
                                     }
                                 }
 
@@ -209,21 +242,21 @@ public class Graph implements Cloneable {
                         }
 
                     }
-                } else if (n.getNodeName().equals("viz:position") || n.getNodeName().equals("position")) {
+                }  else if (n.getNodeName().equalsIgnoreCase("viz:position") || n.getNodeName().equalsIgnoreCase("position")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("x") != null) {
-                        //node.x = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("x").getNodeValue());
+                        node.x = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("x").getNodeValue());
                     }
                     if (xmlnodePositionAttributes.getNamedItem("y") != null) {
-                        //node.y = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("y").getNodeValue());
+                        node.y = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("y").getNodeValue());
                     }
-                } else if (n.getNodeName().equals("viz:size") || n.getNodeName().equals("size")) {
+                } else if (n.getNodeName().equalsIgnoreCase("viz:size") || n.getNodeName().equalsIgnoreCase("size")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("value") != null) {
                         // FIXME normalize radius by a max radius, so it is not too big
                         node.radius = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("value").getNodeValue());
                     }
-                } else if (n.getNodeName().equals("viz:color") || n.getNodeName().equals("color")) {
+                } else if (n.getNodeName().equalsIgnoreCase("viz:color") || n.getNodeName().equalsIgnoreCase("color")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("r") != null) {
                         node.r = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("r").getNodeValue());
@@ -267,76 +300,41 @@ public class Graph implements Cloneable {
                 XPathConstants.NODESET);
         for (int i = 0; i < edges.getLength(); i++) {
             org.w3c.dom.Node xmledge = edges.item(i);
-            org.w3c.dom.NamedNodeMap edgeAttributes = xmledge.getAttributes();
-            if (edgeAttributes.getNamedItem("source") == null
-                    || edgeAttributes.getNamedItem("target") == null) {
+            org.w3c.dom.NamedNodeMap edgeAttributesXML = xmledge.getAttributes();
+            if (edgeAttributesXML.getNamedItem("source") == null
+                    || edgeAttributesXML.getNamedItem("target") == null) {
                 continue;
             }
 
-            Long source = Long.parseLong(edgeAttributes.getNamedItem("source").getNodeValue());
-            Long target = Long.parseLong(edgeAttributes.getNamedItem("target").getNodeValue());
-            
-            String type = (edgeAttributes.getNamedItem("type")!=null) ?
-                (String) edgeAttributes.getNamedItem("type").getNodeValue()
+
+            String sourcexmlid = (String) edgeAttributesXML.getNamedItem("source").getNodeValue();
+            String sourcecat = sourcexmlid.split("::")[0];
+            Long source = Long.parseLong( sourcexmlid.split("::")[1] );
+
+            String targetxmlid = (String) edgeAttributesXML.getNamedItem("target").getNodeValue();
+            String targetcat = targetxmlid.split("::")[0];
+            Long target = Long.parseLong( targetxmlid.split("::")[1] );
+
+            String type = (edgeAttributesXML.getNamedItem("type")!=null) ?
+                (String) edgeAttributesXML.getNamedItem("type").getNodeValue()
                 : "undirected";
-            Float weight = (edgeAttributes.getNamedItem("weight") != null)
-                    ? Float.parseFloat(edgeAttributes.getNamedItem("weight").getNodeValue()) : 1.0f;
+            Float weight = (edgeAttributesXML.getNamedItem("weight") != null)
+                    ? Float.parseFloat(edgeAttributesXML.getNamedItem("weight").getNodeValue()) : 1.0f;
 
             if (storedNodes.containsKey(source) && storedNodes.containsKey(target)) {
                 storedNodes.get(source).addNeighbour(storedNodes.get(target), weight);
-                 if (type.equals("undirected") | type.equals("mutual")) {
+                 if (type.equalsIgnoreCase("undirected") | type.equalsIgnoreCase("mutual")) {
                     storedNodes.get(target).addNeighbour(storedNodes.get(source), weight);
                  } 
             }
 
         }
 
-        metrics.compute(this);
-
-        // now we need to normalize the graph
-        for (Node n : storedNodes.values()) {
-
-            // NORMALIZE RADIUS
-            //System.out.println("node "+n.label+" ("+n.category+")");
-            //System.out.println(" - radius avant:"+n.radius);
-
-            n.radius = PApplet.map(n.radius,
-                    metrics.minRadius, metrics.maxRadius,
-                    MIN_RADIUS, MAX_RADIUS);
-            // System.out.println(" -  normalized radius:"+n.radius);
-
-            // NORMALIZE COLORS USING RADIUS
-            if (n.r < 0) {
-                n.r = 255 - 160 * n.radius;
-            }
-            if (n.g < 0) {
-                n.g = 255 - 160 * n.radius;
-            }
-            if (n.b < 0) {
-                n.b = 255 - 160 * n.radius;
-            }
-
-
-            // NORMALIZE GENERICITY
-            n.genericity = PApplet.map(n.genericity,
-                    metrics.minGenericity, metrics.maxGenericity,
-                    MIN_GENERICITY, MAX_GENERICITY);
-            //System.out.println("normalized genericity:"+n.genericity+"\n");
-
-            // NORMALIZE WEIGHTS
-            for (Long k : n.weights.keySet()) {
-                //System.out.println("  - w1: "+n.weights.get(k));
-                n.weights.put(k, PApplet.map(n.weights.get(k),
-                        metrics.minWeight, metrics.maxWeight,
-                        MIN_WEIGHT, MAX_WEIGHT));
-                //System.out.println("  - w2: "+n.weights.get(k));
-            }
-
-
-        }
-
-
-        Console.log(metrics.toString());
+        /*
+        metrics = new Metrics(storedNodes.values());
+        metrics.normalize();
+        */
+        
         Console.log("applet: gexf successfully imported.");
 
         locked.set(false);
@@ -345,11 +343,13 @@ public class Graph implements Cloneable {
     }
 
     // call by the drawer when isSynced is false
-    public synchronized List<tinaviz.graph.Node> getNodeListCopy() {
-        List<tinaviz.graph.Node> res = new LinkedList<tinaviz.graph.Node>();
+    public synchronized NodeList getNodeListCopy() {
+        NodeList res = new NodeList();
         for (Node n : storedNodes.values()) {
             res.add(n.getProxyClone());
         }
+        res.computeExtremums();
+        res.normalize();
         return res;
     }
 
@@ -386,10 +386,14 @@ public class Graph implements Cloneable {
         touch();
     }
 
-    public synchronized void addNodes(List<tinaviz.graph.Node> nodes) {
-        for (tinaviz.graph.Node node : nodes) {
+    public synchronized void addNodes(NodeList nodes) {
+        for (tinaviz.graph.Node node : nodes.nodes) {
             addNode(node);
         }
+        // TODO touch?
+        System.out.println("Graph.addNodes() and touch() but not computed new metrics!");
+        touch();
+
     }
 
     public synchronized int size() {
@@ -401,7 +405,9 @@ public class Graph implements Cloneable {
     }
     public synchronized void clear() {
         storedNodes.clear();
-        attributes.clear();
+        nodeAttributes.clear();
+        edgeAttributes.clear();
+        sessionAttributes.clear();
         touch();
     }
 
@@ -442,4 +448,6 @@ public class Graph implements Cloneable {
         }
         //if (changed) touch();
     }
+
+
 }

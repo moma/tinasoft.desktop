@@ -4,22 +4,17 @@
  */
 package tinaviz.view;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import tinaviz.graph.Node;
 import tinaviz.filters.ThresholdWeight;
-
 
 import tinaviz.filters.Category;
 import tinaviz.filters.NodeRadius;
 import tinaviz.session.Session;
-import tinaviz.view.View;
-import tinaviz.filters.Explorer;
 import tinaviz.filters.Layout;
 import tinaviz.filters.NodeFunction;
+import tinaviz.filters.NodeList;
 import tinaviz.filters.SubGraphCopy;
 import tinaviz.filters.ThresholdGenericity;
 import tinaviz.filters.WeightSize;
@@ -30,12 +25,11 @@ import tinaviz.filters.WeightSize;
  */
 public class FilterChain {
 
-    public List<Node> filteredNodes = null;
+    public NodeList filteredNodes = null;
     public AtomicBoolean popLocked = null;
     public AtomicBoolean filterIsRunning = new AtomicBoolean(false);
     public AtomicInteger graphRevision = new AtomicInteger(0);
     private LinkedList<Filter> filters = null;
-    private List<FilterChainListener> listeners = null;
     public View view = null;
     public Session session = null;
     private FilterThread thread = null;
@@ -43,13 +37,13 @@ public class FilterChain {
 
     private class FilterThread extends Thread {
 
-        private List<Node> nodes;
+        private NodeList nodes;
         private FilterChain chain;
         private View view;
         private Session session;
 
 
-        public FilterThread(FilterChain chain, Session session, View view, List<Node> nodes) {
+        public FilterThread(FilterChain chain, Session session, View view, NodeList nodes) {
             this.session = session;
             this.view = view;
             this.nodes = nodes;
@@ -58,16 +52,18 @@ public class FilterChain {
 
         @Override
         public void run() {
-            //System.out.println("filter started!..");
-            List<Node> result = (nodes != null) ? nodes : new LinkedList<Node>();
+            System.out.println("filter started!..");
+            NodeList result = (nodes != null) ? nodes : new NodeList();
             for (Filter f : filters) {
-                //System.out.println("processing filter "+f.getRoot());
+                System.out.println("processing filter "+f.getRoot());
                 if (interrupted()) {
                     System.out.println("we're interrupted!");
                     return;
                 }
                 result = f.process(session, view, result);
             }
+            result.computeExtremums();
+            result.normalize();
             chain.filteredNodes = result;
             //System.out.println("filter finished to process "+result.size()+" nodes! setting flash 'ready' to true..");
             chain.filterIsRunning.set(false);
@@ -77,10 +73,9 @@ public class FilterChain {
 
     public FilterChain(Session session, View view) {
 
-        filteredNodes = new LinkedList<Node>();
+        filteredNodes = new NodeList();
         popLocked = new AtomicBoolean(true);
         filters = new LinkedList<Filter>();
-        listeners = new ArrayList<FilterChainListener>();
         thread = null;
         this.view = view;
         this.session = session;
@@ -99,8 +94,6 @@ public class FilterChain {
             f = new NodeFunction();
         }  else if (filterName.equals("Category")) {
             f = new Category();
-        } else if (filterName.equals("Explorer")) {
-            f = new Explorer();
         } else if (filterName.equals("SubGraphCopy")) {
             f = new SubGraphCopy();
         }  else if (filterName.equals("Layout")) {
@@ -152,7 +145,7 @@ public class FilterChain {
         return false;
     }
 
-    public synchronized List<Node> popNodes() {
+    public synchronized NodeList popNodes() {
 
         // we are already filtering, please wait..
         if (filterIsRunning.get()) {
@@ -203,7 +196,5 @@ public class FilterChain {
 
     }
 
-    public void addFilterChainListener(FilterChainListener listener) {
-        listeners.add(listener);
-    }
+
 }

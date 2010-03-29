@@ -19,7 +19,7 @@ public class WeightSize extends NodeFilter {
     private String KEY_VALUE = "value";
 
     @Override
-    public List<Node> process(Session session, View view, List<Node> input) {
+    public NodeList process(Session session, View view, NodeList input) {
         if (!enabled()) {
             return input;
         }
@@ -35,7 +35,7 @@ public class WeightSize extends NodeFilter {
                 ? new Float((Double) o)
                 : (Float) o;
 
-        for (Node n : input) {
+        for (Node n : input.nodes) {
             for (Long k : n.weights.keySet()) {
                 n.weights.put(k,n.weights.get(k) * r);
             }

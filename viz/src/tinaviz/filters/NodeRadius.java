@@ -24,7 +24,7 @@ public class NodeRadius extends NodeFilter {
     public float MAX_RADIUS_MAGNIFIER = 100.0f;
 
     @Override
-    public List<Node> process(Session session, View view, List<Node> input) {
+    public NodeList process(Session session, View view, NodeList input) {
         if (!enabled()) {
             return input;
         }
@@ -42,7 +42,7 @@ public class NodeRadius extends NodeFilter {
 
        r = PApplet.map(r,0.0f,1.0f,MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
 
-        for (Node n : input) {
+        for (Node n : input.nodes) {
             // we dot not want a "zero sized" node
             n.radius = 1 + n.radius * r;
 

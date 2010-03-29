@@ -1,4 +1,7 @@
-#!/bin/bash
+#/bin/bash
 export LD_LIBRARY_PATH=`pwd`/platform/Linux_x86_64-gcc3/lib
 export NLTK_DATA=`pwd`/shared/nltk_data
+export JAVA_HOME=`pwd`/java
+export PATH=`pwd`/java/bin
 ./tina-stub
+#xulrunner application.ini

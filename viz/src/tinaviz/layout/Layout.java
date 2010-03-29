@@ -6,6 +6,7 @@ package tinaviz.layout;
 
 import java.util.List;
 import processing.core.PApplet;
+import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 import tinaviz.view.View;
 
@@ -15,7 +16,8 @@ import tinaviz.view.View;
  */
 public class Layout {
 
-    public void fast(View v, List<Node> nodes) {
+
+    public void fast(View v, NodeList nodes) {
         float distance = 1f;
         float vx = 1f;
         float vy = 1f;
@@ -23,18 +25,23 @@ public class Layout {
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
-        float gravity = 0.00001f;
+        float gravity =   0.00001f;
+        //float gravity = 0.00001f;
 
-        for (Node n1 : nodes) {
+        for (Node n1 : nodes.nodes) {
             // gravity
+            
             vx = 0 - n1.x;
             vy = 0 - n1.y;
+            
 
             distance = PApplet.sqrt(PApplet.sq(vx) + PApplet.sq(vy)) + 0.0000001f;
             n1.vx += vx * distance * gravity;
             n1.vy += vy * distance * gravity;
 
-            for (Node n2 : nodes) {
+           
+
+            for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -83,7 +90,7 @@ public class Layout {
         }   // FOr NODE A
     }
 
-    public void precise(View v, List<Node> nodes) {
+    public void precise(View v, NodeList nodes) {
         float distance = 1f;
         float vx = 1f;
         float vy = 1f;
@@ -91,8 +98,8 @@ public class Layout {
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
-        for (Node n1 : nodes) {
-            for (Node n2 : nodes) {
+        for (Node n1 : nodes.nodes) {
+            for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
                     continue;
                 }
@@ -125,7 +132,7 @@ public class Layout {
         }   // FOr NODE A
 
 
-        for (Node n : nodes) {
+        for (Node n : nodes.nodes) {
             // important, we limit the velocity!
             n.vx = PApplet.constrain(n.vx, -5, 5);
             n.vy = PApplet.constrain(n.vy, -5, 5);

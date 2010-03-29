@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 import tinaviz.session.Session;
 import tinaviz.view.View;
@@ -31,12 +32,12 @@ public class NodeFilter implements Filter {
         return n;
     }
     
-    public List<Node> process(Session session, View view, List<Node> input) {
-        List<Node> output = new LinkedList<Node>();
+    public NodeList process(Session session, View view, NodeList input) {
+        NodeList output = new NodeList();
         if(!enabled()) {
             return input;
         }
-        for (Node n : input) {
+        for (Node n : input.nodes) {
             Node n2 = node(session, view, n);
             if (n2 != null) output.add(n2);
         }

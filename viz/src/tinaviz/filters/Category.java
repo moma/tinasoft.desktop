@@ -24,12 +24,14 @@ public class Category extends NodeFilter {
     private String KEY_MODE = "mode";
 
     @Override
-    public List<Node> process(Session session, View view, List<Node> input) {
-        List<Node> output = new LinkedList<Node>();
+    public NodeList process(Session session, View view, NodeList input) {
+
+        System.out.println("CATEGORY FILTER 1");
+        NodeList output = new NodeList();
         if (!enabled()) {
             return input;
         }
-
+        System.out.println("CATEGORY FILTER 2");
         if (!view.properties.containsKey(root + KEY_CATEGORY)) {
             view.properties.put(root + KEY_CATEGORY, "Document");
         }
@@ -39,7 +41,6 @@ public class Category extends NodeFilter {
         }
 
 
-
         String category = (String) view.properties.get(root + KEY_CATEGORY);
         String mode = (String) view.properties.get(root + KEY_MODE);
 
@@ -47,8 +48,8 @@ public class Category extends NodeFilter {
 
         //System.out.println("we are going to " + mode + " the category " + category + " got " + input.size() + " nodes in entry");
 
-        for (Node n : input) {
-          //  System.out.println("  - n category == "+n.category);
+        for (Node n : input.nodes) {
+            //  System.out.println("  - n category == "+n.category);
             // HACK the category selector doesn't remove selecte dnodes
             if (view.getLevel() == ViewLevel.MESO && n.selected) {
                 output.add(n);
@@ -62,11 +63,15 @@ public class Category extends NodeFilter {
                 } else {
                     if (!keep) {
                         output.add(n);
-                         //System.out.println("  - n category == "+n.category+" added!\n");
+                        //System.out.println("  - n category == "+n.category+" added!\n");
                     }
                 }
             }
         }
+
+        System.out.println("NORMALIZING NODEs WIEGHTS AFTEr CATEGORY FILTERING");
+        output.normalize();
+        System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
         return output;
     }
 }

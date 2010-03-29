@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import processing.core.PVector;
+import tinaviz.filters.NodeList;
 
 import tinaviz.graph.Node;
 import tinaviz.graph.Graph;
@@ -131,11 +132,12 @@ public class View {
         return graph.updateFromInputStream(inputStream);
     }
 
-    public synchronized boolean updateFromNodeList(List<Node> nodes) {
+    public synchronized boolean updateFromNodeList(NodeList nodes) {
         return graph.updateFromNodeList(nodes);
 
     }
-   
+
+    /*
      public void resetCamera() {
         resetZoom();
         switch (centeringMode) {
@@ -160,10 +162,9 @@ public class View {
     }
 
 
-
     public synchronized void resetToGraphBarycenter() {
 
-        translation.set(graph.metrics.center);
+        translation.set(graph..center);
         System.out.println("translation1 x:" + translation.x + " y:" + translation.y);
         PVector screenCenter = new PVector(screenWidth/2.0f, screenHeight/2.0f, 0);
         //screenCenter.add(graph.metrics.center);
@@ -212,6 +213,7 @@ public class View {
         System.out.println("centering to selection with x:" + center.x + " y:" + center.y);
         this.translation.set(center);
     }
+    */
 
     public void selectNodeById(Long id) {
         graph.selectNodeById(id);
@@ -237,7 +239,7 @@ public class View {
     }
     // call by the drawer when isSynced is false
 
-    public synchronized List<tinaviz.graph.Node> popNodes() {
+    public synchronized NodeList popNodes() {
         return filters.popNodes();
     }
 

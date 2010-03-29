@@ -2,6 +2,9 @@
 pref("general.startup.tina",true);
 pref("toolkit.defaultChromeURI", "chrome://tina/content/tina.xul");
 
+/* hack to stop system-wide java plugin scans */
+pref("plugin.scan.SunJRE", "1.9"); 
+
 /* magic hack */
 pref("capability.principal.codebase.p0.granted", "UniversalXPConnect");
 pref("capability.principal.codebase.p0.id", "file:///"); 
