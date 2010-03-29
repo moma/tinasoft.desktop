@@ -4,7 +4,6 @@
  */
 package tinaviz.graph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,6 +20,8 @@ public class Node {
     public String label = "label";
     public String shortLabel = "label";
     public float radius = 1.0f; // radius
+    public float boxWidth = 1.0f;
+    public float boxHeight = 1.0f;
     public float x = 0.0f; // rect xposition
     public float y = 0.0f; // rect yposition
     public float vx = 0.0f;
@@ -29,6 +30,7 @@ public class Node {
     public int degree = 0;
     public Set<Long> neighbours = new HashSet<Long>(32);
     public Map<Long, Float> weights = new HashMap<Long, Float>();
+    public HashMap<Long, EdgeDirection> directions = new HashMap<Long, EdgeDirection>();
     public boolean selected = false;
     public boolean highlighted = false;
     public float genericity = 1.0f;
@@ -159,6 +161,10 @@ public class Node {
         this.weights = new HashMap<Long, Float>();
         for (Long k : node.weights.keySet()) {
             this.weights.put(k, node.weights.get(k));
+        }
+        this.directions = new HashMap<Long, EdgeDirection>();
+        for (Long k : node.directions.keySet()) {
+            this.directions.put(k, node.directions.get(k));
         }
     }
 

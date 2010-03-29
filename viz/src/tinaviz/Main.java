@@ -62,7 +62,8 @@ public class Main extends PApplet implements MouseWheelListener {
     float selectedX = 0.0f;
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
-    float MAX_NODE_RADIUS = 8.0f; // node radius is normalized to 1.0 for each node, then mult with this value
+    float MAX_NODE_RADIUS = 0.5f; // node radius is normalized to 1.0 for each node, then mult with this value
+    float MAX_EDGE_WEIGHT = 20.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     private Long selectNode = null;
     private boolean selectNone = false;
     int oldScreenWidth = 0;
@@ -397,25 +398,20 @@ public class Main extends PApplet implements MouseWheelListener {
 
             if (cameraUpdateNeeded) {
                 float screenRadius = (screenWidth + screenHeight) / 2.0f;
-                float zoomScale = 1.0f / (screenRadius / nodes.graphRadius);
+                float zoomScale = (screenRadius / nodes.graphRadius);
 
                 /*! TODO !*/
-                v.sceneScale = 1.0f;
+                v.sceneScale = zoomScale;
                 System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + zoomScale);
 
-                PVector translate = new PVector();
-                translate.set(nodes.center);
+                PVector translate = new PVector(nodes.center.x, nodes.center.y);
 
                  System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
-                PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
-                //screenCenter.add(graph.metrics.center);
 
-                translate.sub(screenCenter);
-                System.out.println("translation2  x:" + translate.x + " y:" + translate.y);
-                translate.mult(v.sceneScale);
-                System.out.println("translation3  x:" + translate.x + " y:" + translate.y);
-                translate.add(screenCenter);
-                //  System.out.println("translation4  x:" + translation.x + " y:" + translation.y);
+                PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
+                translate.add(PVector.div(screenCenter, v.sceneScale));
+                System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+
                 v.translation.set(translate);
             }
             /*
@@ -585,7 +581,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             noSmooth();
             bezierDetail(7);
-            layout.fast(v, nodes);
+            layout.precise(v, nodes);
             //v.graph.touch(); // do the layout (recompute all the scene as well..)
         }
 
@@ -688,7 +684,7 @@ public class Main extends PApplet implements MouseWheelListener {
                             float w2 = n2.weights.get(n1.uuid);
                             if (v.highDefinition) {
                                 // strokeWeight((w1 + w2)  * 10.0f);
-                                strokeWeight(w1 * 7.0f);
+                                strokeWeight(w1 * MAX_EDGE_WEIGHT);
                                 //strokeWeight(1);
                             }
                             PaintTools.drawCurve(this, n2, n1);
@@ -696,7 +692,7 @@ public class Main extends PApplet implements MouseWheelListener {
                             float w1 = n1.weights.get(n2.uuid);
 
                             if (v.highDefinition) {
-                                strokeWeight(w1 * 7.0f);
+                                strokeWeight(w1 * MAX_EDGE_WEIGHT);
 
                                 //strokeWeight(1);
                             }
@@ -723,7 +719,7 @@ public class Main extends PApplet implements MouseWheelListener {
         for (Node n : nodes.nodes) {
 
             float rad = n.radius * MAX_NODE_RADIUS;
-            float rad2 = rad + rad * 0.4f;
+            float rad2 = rad + rad * 0.3f;
 
             n.screenX = screenX(n.x, n.y);
             n.screenY = screenY(n.x, n.y);
@@ -817,6 +813,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 fill(0, 0, 0, alpha);
             }
             textSize(rad2);
+            n.boxHeight = rad2*2.0f;
+            n.boxWidth = (rad2*2.0f + rad2*0.3f) + textWidth((n.highlighted) ? n.label : n.shortLabel) * 1.0f;
             text((n.highlighted) ? n.label : n.shortLabel, n.x + rad, n.y + (rad2 / PI));
 
         }
@@ -1077,6 +1075,7 @@ public class Main extends PApplet implements MouseWheelListener {
             float screenRatio = (((nsr * 2.0f) / (float) width) + ((nsr * 2.0f) / (float) height)) / 2.0f;
             //System.out.println("nsr: " + nsr);
             //System.out.println("'- screen ratio: " + screenRatio);
+            if (v.showNodes) {
 
             switch (session.currentLevel) {
                 case MACRO:
@@ -1084,45 +1083,50 @@ public class Main extends PApplet implements MouseWheelListener {
                     if (screenRatio > screenRatioGoToMesoWhenZoomed) {
                         if (bestMatchForSwitch != null) {
 
-                            if (rad2 > bestMatchForSwitch.radius) {
+                                if (rad2 > bestMatchForSwitch.radius) {
+                                    bestMatchForSelection = null;
+                                    bestMatchForSwitch = n;
+                                }
+                            } else {
                                 bestMatchForSelection = null;
                                 bestMatchForSwitch = n;
                             }
-                        } else {
-                            bestMatchForSelection = null;
-                            bestMatchForSwitch = n;
-                        }
-                    } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
-                        if (bestMatchForSelection != null) {
+                        } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
+                            if (bestMatchForSelection != null) {
 
-                            if (rad2 > bestMatchForSelection.radius) {
+                                if (rad2 > bestMatchForSelection.radius) {
+                                    bestMatchForSelection = n;
+                                }
+                            } else {
                                 bestMatchForSelection = n;
                             }
-                        } else {
-                            bestMatchForSelection = n;
                         }
-                    }
+                }
             }
-        }
 
 
-        if (bestMatchForSwitch != null) {
-            if (!bestMatchForSwitch.selected) {
-                bestMatchForSwitch.selected = true;
-                session.selectNode(bestMatchForSwitch);
-                nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSwitch);
+            if (bestMatchForSwitch != null) {
+
+                // disable the macro to meso switch when the nodes can't be shown
+
+                if (!bestMatchForSwitch.selected) {
+                    bestMatchForSwitch.selected = true;
+                    session.selectNode(bestMatchForSwitch);
+                    nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSwitch);
+                }
+                System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
+                session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
+                jsSwitchToMeso();
+                return;
+
+            } else if (bestMatchForSelection != null) {
+                if (!bestMatchForSelection.selected) {
+                    bestMatchForSelection.selected = true;
+                    session.selectNode(bestMatchForSelection);
+                    nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
+                }
+                return;
             }
-            System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
-            session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
-            jsSwitchToMeso();
-            return;
-        } else if (bestMatchForSelection != null) {
-            if (!bestMatchForSelection.selected) {
-                bestMatchForSelection.selected = true;
-                session.selectNode(bestMatchForSelection);
-                nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
-            }
-            return;
         }
 
         switch (v.getLevel()) {

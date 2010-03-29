@@ -69,7 +69,7 @@ public class Category extends NodeFilter {
             }
         }
 
-        System.out.println("NORMALIZING NODEs WIEGHTS AFTEr CATEGORY FILTERING");
+        System.out.println("NORMALIZING NODES WEIGHTS AFTER CATEGORY FILTERING");
         output.normalize();
         System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
         return output;

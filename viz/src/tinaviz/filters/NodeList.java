@@ -166,6 +166,7 @@ public class NodeList {
         aftermath();
     }
 
+    // TODO MOYENNE
     private void aftermath() {
         // simple heuristic to correct the values, just in case we didn't found anything
         if (minWeight == Float.MAX_VALUE) minWeight = (maxWeight!=Float.MIN_VALUE) ? maxWeight -1 : Float.MIN_VALUE + 1;

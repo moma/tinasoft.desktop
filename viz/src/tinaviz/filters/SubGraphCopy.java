@@ -48,18 +48,20 @@ public class SubGraphCopy extends NodeFilter {
             return input;
         }
 
+
         Long item = 0L;
+        String cat = "";
         Object o = localView.properties.get(root + KEY_ITEM);
         if (o == null) {
             //  System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
             return input;
         }
-        if (o instanceof Long) {
-            item = (Long) o;
-        } else if (o instanceof String) {
-            item = Long.parseLong((String) o);
+        if (o instanceof String) {
+            cat = ((String) o).split("::")[0];
+            item = Long.parseLong( ((String) o).split("::")[1] );
+
         } else {
-            System.out.println("bad item datatype");
+            System.out.println("bad type for "+root + KEY_SOURCE+", expected this pattern: '[a-zA-Z]+::[0_9]+'");
             return input;
         }
 
