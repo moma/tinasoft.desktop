@@ -24,8 +24,8 @@ public class Layout {
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
+
         float gravity = 0.00001f;
-        //float gravity = 0.00001f;
 
         for (Node n1 : nodes.nodes) {
             // gravity
@@ -33,12 +33,10 @@ public class Layout {
             vx = 0 - n1.x;
             vy = 0 - n1.y;
 
-            /*
             distance = PApplet.sqrt(PApplet.sq(vx) + PApplet.sq(vy)) + 0.0000001f;
             n1.vx += vx * distance * gravity;
             n1.vy += vy * distance * gravity;
-             */
-
+         
             for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
                     continue;
@@ -55,7 +53,7 @@ public class Layout {
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
                 if (n1.neighbours.contains(n2.uuid)) {
-                    float w = n1.weights.get(n2.uuid);
+                    float w = 1.0f + n1.weights.get(n2.uuid);
                     //System.out.println("w: "+w);
                     n1.vx += vx * distance * w * attraction;
                     n1.vy += vy * distance * w * attraction;
@@ -72,13 +70,13 @@ public class Layout {
                 //}
             } // FOR NODE B
             // important, we limit the velocity!
-            n1.vx = PApplet.constrain(n1.vx, -300, 300);
-            n1.vy = PApplet.constrain(n1.vy, -300, 300);
+            n1.vx = PApplet.constrain(n1.vx, -5, 5);
+            n1.vy = PApplet.constrain(n1.vy, -5, 5);
 
             // update the coordinate
             // also set the bound box for the whole scene
-            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -8000, +8000);
-            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -8000, +8000);
+            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -3000, +3000);
+            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -3000, +3000);
 
             if (n1.original != null) {
                 n1.original.x = n1.x;

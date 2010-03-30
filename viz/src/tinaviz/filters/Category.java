@@ -7,6 +7,7 @@ package tinaviz.filters;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 import tinaviz.graph.Node;
 import tinaviz.view.NodeFilter;
@@ -26,12 +27,15 @@ public class Category extends NodeFilter {
     @Override
     public NodeList process(Session session, View view, NodeList input) {
 
-        System.out.println("CATEGORY FILTER 1");
+        //System.out.println("CATEGORY FILTER 1");
         NodeList output = new NodeList();
         if (!enabled()) {
             return input;
         }
-        System.out.println("CATEGORY FILTER 2");
+        //System.out.println("CATEGORY FILTER 2");
+        for (String k : view.properties.keySet()) {
+            System.out.println("prop "+k+" "+view.properties.get(k));
+        }
         if (!view.properties.containsKey(root + KEY_CATEGORY)) {
             view.properties.put(root + KEY_CATEGORY, "Document");
         }
@@ -46,7 +50,7 @@ public class Category extends NodeFilter {
 
         boolean keep = mode.equals("keep");
 
-        //System.out.println("we are going to " + mode + " the category " + category + " got " + input.size() + " nodes in entry");
+        System.out.println("we are going to " + mode + " the category " + category + " got " + input.size() + " nodes in entry");
 
         for (Node n : input.nodes) {
             //  System.out.println("  - n category == "+n.category);
@@ -58,7 +62,7 @@ public class Category extends NodeFilter {
                 if (n.category.equals(category)) {
                     if (keep) {
                         output.add(n);
-                        System.out.println("  - kept "+n.category+" "+n.uuid+" = "+n.genericity+"\n");
+                        //System.out.println("  - kept "+n.category+" "+n.uuid+" = "+n.genericity+"\n");
                     }
                 } else {
                     if (!keep) {
