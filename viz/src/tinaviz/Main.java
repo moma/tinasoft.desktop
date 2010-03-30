@@ -167,7 +167,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (getParameter("opencl") != null) {
             if (getParameter("opencl").equalsIgnoreCase("true")) {
-                 useOpenCL = true;
+                useOpenCL = true;
             }
         }
 
@@ -226,14 +226,14 @@ public class Main extends PApplet implements MouseWheelListener {
 
         layout = new Layout();
         /*
-       if (useOpenCL) {
-            try {
-                layout = new LayoutOpenCL();
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (CLBuildException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (useOpenCL) {
+        try {
+        layout = new LayoutOpenCL();
+        } catch (IOException ex) {
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CLBuildException ex) {
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         }*/
 
         // currentView.showLabels = false;
@@ -304,8 +304,7 @@ public class Main extends PApplet implements MouseWheelListener {
             session.getMacro().getGraph().updateFromURI(
                     //"file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf"
-                     "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf"
-                    //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
@@ -407,14 +406,14 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 float zoomScale = nodes.graphRadius > 0 ? screenRadius / nodes.graphRadius : 1.0f;
 
-                System.out.println("got " + nodes.size()+ " nodes");
+                System.out.println("got " + nodes.size() + " nodes");
                 /*! TODO !*/
                 v.sceneScale = zoomScale;
                 System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + zoomScale);
 
                 PVector translate = new PVector(nodes.center.x, nodes.center.y);
 
-                 System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+                System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
 
                 PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
                 translate.add(PVector.div(screenCenter, v.sceneScale));
@@ -424,36 +423,36 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             /*
             switch (v.centeringMode) {
-                case FREE_MOVE:
+            case FREE_MOVE:
 
-                    if (cameraUpdateNeeded) {
-                        System.out.println("Camera Update Needed in FREE MOVE mode!");
-                        // metrics are already recomputed
-                        v.resetZoom();
-                        v.resetToGraphBarycenter();
-                    }
+            if (cameraUpdateNeeded) {
+            System.out.println("Camera Update Needed in FREE MOVE mode!");
+            // metrics are already recomputed
+            v.resetZoom();
+            v.resetToGraphBarycenter();
+            }
 
-                    break;
-                case GLOBAL_GRAPH_BARYCENTER:
-                    System.out.println("GLOBAL_GRAPH_BARYCENTER!");
+            break;
+            case GLOBAL_GRAPH_BARYCENTER:
+            System.out.println("GLOBAL_GRAPH_BARYCENTER!");
 
-                    if (cameraUpdateNeeded) {
+            if (cameraUpdateNeeded) {
 
-                        v.resetZoom();
-                    }
-                    v.resetToGraphBarycenter();
+            v.resetZoom();
+            }
+            v.resetToGraphBarycenter();
 
 
-                    break;
-                case SELECTED_GRAPH_BARYCENTER:
-                    System.out.println("SELECTED_GRAPH_BARYCENTER!");
-                    if (cameraUpdateNeeded) {
+            break;
+            case SELECTED_GRAPH_BARYCENTER:
+            System.out.println("SELECTED_GRAPH_BARYCENTER!");
+            if (cameraUpdateNeeded) {
 
-                        v.resetZoom();
-                    }
-                    v.resetToSelectionBarycenter();
+            v.resetZoom();
+            }
+            v.resetToSelectionBarycenter();
 
-                    break;
+            break;
             }*
              * 
              */
@@ -596,7 +595,7 @@ public class Main extends PApplet implements MouseWheelListener {
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
-        
+
 
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
@@ -604,29 +603,29 @@ public class Main extends PApplet implements MouseWheelListener {
         //pushMatrix();
         Node hasSelected = null;
 
-/*
+        /*
 
         int x=0;
         float[][] points = new float[nodes.nodes.size()][2];
-         for (Node n : nodes.nodes) {
-            if (n.selected) {
-                points[x][0] = n.x;
-                points[x][1] = n.b;
-                x++;
-            }
-         }
+        for (Node n : nodes.nodes) {
+        if (n.selected) {
+        points[x][0] = n.x;
+        points[x][1] = n.b;
+        x++;
+        }
+        }
 
         Hull myHull = new Hull( points );
-   fill(0,130,200);
-   points = myHull.getRegion().getCoords();
-   beginShape();
-   for (int i=0;i<points.length;i++) {
-    curveVertex(points[i][0], points[i][1]);
-   }
-   endShape();
-   */
-   noFill();
-   
+        fill(0,130,200);
+        points = myHull.getRegion().getCoords();
+        beginShape();
+        for (int i=0;i<points.length;i++) {
+        curveVertex(points[i][0], points[i][1]);
+        }
+        endShape();
+         */
+        noFill();
+
         for (Node n1 : nodes.nodes) {
 
             if (selectNone) {
@@ -708,7 +707,7 @@ public class Main extends PApplet implements MouseWheelListener {
                             }
                              * *
                              */
-                           
+
                             float w1 = n1.weights.get(n2.uuid);
                             float w2 = n2.weights.get(n1.uuid);
                             if (v.highDefinition) {
@@ -830,63 +829,63 @@ public class Main extends PApplet implements MouseWheelListener {
                 fill(0, 0, 0, alpha);
             }
             textSize(rad2);
-            n.boxHeight = rad2*2.0f;
-            n.boxWidth = (rad2*2.0f + rad2*0.3f) + textWidth((n.highlighted) ? n.label : n.shortLabel) * 1.0f;
+            n.boxHeight = rad2 * 2.0f;
+            n.boxWidth = (rad2 * 2.0f + rad2 * 0.3f) + textWidth((n.highlighted) ? n.label : n.shortLabel) * 1.0f;
             text((n.highlighted) ? n.label : n.shortLabel, n.x + rad, n.y + (rad2 / PI));
 
         }
-        
+
         //popMatrix();
 
         /*
         if (hasSelected != null) {
-            float sx = screenX(hasSelected.x, hasSelected.y);
-            float sy = screenY(hasSelected.x, hasSelected.y);
+        float sx = screenX(hasSelected.x, hasSelected.y);
+        float sy = screenY(hasSelected.x, hasSelected.y);
 
-            float width = 300;
-            float height = 400;
-            fill(0, 0, 0, 100);
+        float width = 300;
+        float height = 400;
+        fill(0, 0, 0, 100);
 
-            pushMatrix();
-            translate(sx - width / 2.0f, sy - height / 2.0f);
-            ellipse(0, 0, 10f, 10f);
-            ellipse(width, 0, 10f, 10f);
-            ellipse(0, height, 10f, 10f);
-            ellipse(width, height, 10f, 10f);
-            rect(0, 0, width, height);
-            fill(230, 230, 234, 230);
-            ellipse(0, 0, 10f, 10f);
-            ellipse(width, 0, 10f, 10f);
-            ellipse(0, height, 10f, 10f);
-            ellipse(width, height, 10f, 10f);
-            rect(0, 0, width, height);
-            fill(80, 80, 80, 230);
-            textSize(18);
-            text(hasSelected.label, 100, 15);
+        pushMatrix();
+        translate(sx - width / 2.0f, sy - height / 2.0f);
+        ellipse(0, 0, 10f, 10f);
+        ellipse(width, 0, 10f, 10f);
+        ellipse(0, height, 10f, 10f);
+        ellipse(width, height, 10f, 10f);
+        rect(0, 0, width, height);
+        fill(230, 230, 234, 230);
+        ellipse(0, 0, 10f, 10f);
+        ellipse(width, 0, 10f, 10f);
+        ellipse(0, height, 10f, 10f);
+        ellipse(width, height, 10f, 10f);
+        rect(0, 0, width, height);
+        fill(80, 80, 80, 230);
+        textSize(18);
+        text(hasSelected.label, 100, 15);
 
-            if (hasSelected != oldSelected) {
-                currentImg = null;
-                oldSelected = hasSelected;
-            }
-            if (currentImg == null) {
-                currentImg = requestImage(hasSelected.imageURL);
-            } else {
-                if (currentImg.width == 0) {
-                    // Image is not yet loaded
-                } else if (currentImg.width == -1) {
-                    // This means an error occurred during image loading
-                } else {
-                    // Image is ready to go, draw it
-                    image(currentImg, 0, 0);
-                }
-            }
+        if (hasSelected != oldSelected) {
+        currentImg = null;
+        oldSelected = hasSelected;
+        }
+        if (currentImg == null) {
+        currentImg = requestImage(hasSelected.imageURL);
+        } else {
+        if (currentImg.width == 0) {
+        // Image is not yet loaded
+        } else if (currentImg.width == -1) {
+        // This means an error occurred during image loading
+        } else {
+        // Image is ready to go, draw it
+        image(currentImg, 0, 0);
+        }
+        }
         }*/
 
         selectNode = null;
         selectNone = false;
     }
 
-        public void drawCurve(Node n1, Node n2) {
+    public void drawCurve(Node n1, Node n2) {
         float xa0 = (6 * n1.x + n2.x) / 7, ya0 = (6 * n1.y + n2.y) / 7;
         float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
         float[] xya1 = MathFunctions.rotation(xa0, ya0, n1.x, n1.y, PApplet.PI / 2);
@@ -895,6 +894,7 @@ public class Main extends PApplet implements MouseWheelListener {
         float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
         bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
     }
+
     public synchronized boolean takePicture(String path) {
         recordPath = path;
         recordingWidth = width;
@@ -963,7 +963,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
             if (dist(mouseX, mouseY, nsx, nsy) < nsr) {
-              
+
                 if (candidate == null) {
                     candidate = n;
                 }
@@ -1065,6 +1065,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else if (mouseButton == LEFT) {
         }
     }
+
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getUnitsToScroll() == 0) {
             return;
@@ -1112,11 +1113,11 @@ public class Main extends PApplet implements MouseWheelListener {
             //System.out.println("'- screen ratio: " + screenRatio);
             if (v.showNodes) {
 
-            switch (session.currentLevel) {
-                case MACRO:
+                switch (session.currentLevel) {
+                    case MACRO:
 
-                    if (screenRatio > screenRatioGoToMesoWhenZoomed) {
-                        if (bestMatchForSwitch != null) {
+                        if (screenRatio > screenRatioGoToMesoWhenZoomed) {
+                            if (bestMatchForSwitch != null) {
 
                                 if (rad2 > bestMatchForSwitch.radius) {
                                     bestMatchForSelection = null;
@@ -1136,9 +1137,9 @@ public class Main extends PApplet implements MouseWheelListener {
                                 bestMatchForSelection = n;
                             }
                         }
+                        break;
                 }
             }
-
 
             if (bestMatchForSwitch != null) {
 
@@ -1170,12 +1171,10 @@ public class Main extends PApplet implements MouseWheelListener {
                     v.sceneScale = v.ZOOM_CEIL;
                 }
                 break;
-
             case MESO:
                 if (v.sceneScale > v.ZOOM_FLOOR) {
                     v.sceneScale = v.ZOOM_FLOOR;
                     System.out.println("switch in to micro");
-
                 }
                 if (v.sceneScale < v.ZOOM_CEIL) {
                     System.out.println("switch out to macro");
@@ -1185,80 +1184,49 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
                 break;
         }
-
     }
 
     @Override
     public void keyPressed() {
         View v = session.getView();
-
-
         if (key == CODED) {
             if (keyCode == UP) {
                 v.translation.add(0.0f, 10f, 0.0f);
-
-
             } else if (keyCode == DOWN) {
                 v.translation.add(0.0f, -10f, 0.0f);
-
-
             } else if (keyCode == LEFT) {
                 v.translation.add(10f, 0.0f, 0.0f);
-
-
             } else if (keyCode == RIGHT) {
                 v.translation.add(-10f, 0.0f, 0.0f);
-
-
             }
         } else if (key == 'p') {
             zooming.set(true);
             zoomIn.set(true);
             lastMousePosition.set(width / 2.0f, height / 2.0f, 0);
-
-
         } else if (key == 'm') {
             zooming.set(true);
             zoomIn.set(false);
             lastMousePosition.set(width / 2.0f, height / 2.0f, 0);
-
-
         } else if (key == 'e') {
             if (window != null) {
                 window.eval("parent.tinaviz.toggleEdges('" + v.getName() + "');");
-
-
             } else {
                 v.showLinks = !v.showLinks;
-
-
             }
             System.out.println("show links is now " + v.showLinks);
-
-
         } else if (key == 't') {
             if (window != null) {
                 window.eval("parent.tinaviz.toggleLabels('" + v.getName() + "');");
-
-
             } else {
                 v.showLabels = !v.showLabels;
-
-
             }
         } else if (key == 'n') {
             if (window != null) {
                 window.eval("parent.tinaviz.toggleNodes('" + v.getName() + "');");
-
-
             } else {
                 v.showNodes = !v.showNodes;
-
-
             }
             System.out.println("show nodes is now " + v.showNodes);
-
-
         } else if (key == 'a') {
             if (window != null) {
                 window.eval("parent.tinaviz.togglePause('" + v.getName() + "');");
@@ -1303,7 +1271,7 @@ public class Main extends PApplet implements MouseWheelListener {
         v.resetCamera();
          * 
          */
-        System.out.println("resetCamera("+view+") called, but NOT IMPLEMENTED");
+        System.out.println("resetCamera(" + view + ") called, but NOT IMPLEMENTED");
     }
 
     public void select(Long id) {
@@ -1319,5 +1287,4 @@ public class Main extends PApplet implements MouseWheelListener {
         getSession().unselectAll();
         selectNone = true;
     }
-
 }

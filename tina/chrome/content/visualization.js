@@ -16,6 +16,12 @@ function Tinaviz() {
 
         this.setLevel("macro");
         
+        var v = "macro";
+        this.toggleLabels(v);
+        this.toggleNodes(v);
+        this.toggleEdges(v);
+        this.togglePause(v);
+        
         //this.setProperty("macro", "layout/repulsion", 0.5);
         
         // load default values (eg. from settings)
@@ -108,34 +114,26 @@ function Tinaviz() {
     },
 
     toggleLabels: function(view) {
-            if (applet != null && applet.getView(view).toggleLabels()) {
-                 $('.toggle-labels .'+view).addClass("ui-state-active");
-            } else {
-                 $('.toggle-labels .'+view).removeClass("ui-state-active");
-            }
+        if (applet == null) return;
+        applet.getView(view).toggleLabels();
+        $('.toggle-labels .'+view).toggleClass("ui-state-active");
     },
 
     toggleNodes: function(view) {
-            if (applet != null && applet.getView(view).toggleNodes()) {
-                 $('.toggle-nodes .'+view).addClass("ui-state-active");
-            } else {
-                 $('.toggle-nodes .'+view).removeClass("ui-state-active");
-            }
+        if (applet == null) return;
+        applet.getView(view).toggleNodes();
+        $('.toggle-nodes .'+view).toggleClass("ui-state-active");
     },
     toggleEdges: function(view) {
-            if (applet != null && applet.getView(view).toggleEdges()) {
-                 $('.toggle-edges .'+view).addClass("ui-state-active");
-            } else {
-                 $('.toggle-edges .'+view).removeClass("ui-state-active");
-            }
+        if (applet == null) return;
+        applet.getView(view).toggleEdges();
+        $('.toggle-edges .'+view).toggleClass("ui-state-active");
     },
 
     togglePause: function(view) {
-            if (applet != null && applet.getView(view).togglePause()) {
-                 $('.toggle-pause .'+view).addClass("ui-state-active");
-            } else {
-                 $('.toggle-pause .'+view).removeClass("ui-state-active");
-            }
+        if (applet == null) return;
+        applet.getView(view).togglePause();
+        $('.toggle-pause .'+view).toggleClass("ui-state-active");
     },
 
     unselect: function() {

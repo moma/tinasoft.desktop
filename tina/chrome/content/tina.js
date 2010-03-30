@@ -80,6 +80,10 @@ function openAddons() {
   openWindowForType("Extension:Manager",
                     "chrome://mozapps/content/extensions/extensions.xul");
 }
+function openAboutPlugins() {
+   openWindowForType("about:plugins","about:plugins");
+}
+openAboutPlugins();
 
 function openErrorConsole() {
   openWindowForType("global:console", "chrome://global/content/console.xul");
