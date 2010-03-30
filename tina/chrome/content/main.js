@@ -19,7 +19,7 @@ if ( typeof(TinaService) == "undefined" ) {
 
 var tinasoftTaskObserver = {
     observe : function ( subject , topic , data ){
-        console.log(topic + "\nDATA = " + data);
+        //console.log(topic + "\nDATA = " + data);
         //data = JSON.parse(data);
         // traitements en fonction du topic...
         if(topic == "tinasoft_runImportFile_finish_status"){
@@ -28,6 +28,8 @@ var tinasoftTaskObserver = {
                 $('#importFile button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
                 return;
             }
+            // data contains json encoded list of duplicate documents found
+            displayDuplicateDocs( JSON.parse(data) );
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             $('#importFile button').html( "Launch" );
             displayListCorpora( "corpora_table" );
@@ -103,6 +105,12 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_running_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_running_status" , false );
+
+/* Duplicate document in data set controler */
+var displayDuplicateDocs = function(data) {
+    var div = $( "#duplicate_docs" ).empty();
+    div.append( JSON.stringify( data ) );
+};
 
 /**************************
  * Tinasoft FORM ACTIONS

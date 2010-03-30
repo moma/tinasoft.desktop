@@ -102,7 +102,7 @@
                     <!--<label><h3>Overwrite</h3></label><br/>
                     <span class="ui-state-highlight">OFF updates the data set only with the non-existing documents</span><br/>
                     <span class="ui-state-highlight">ON overwrites all the existing objects</span><br/>-->
-                    <input id="overwrite" type="checkbox" name="overwrite" disabled />
+                    <!--<input id="overwrite" type="checkbox" name="overwrite" disabled />-->
                     <br/>
                     <!--<label>Extraction export file path (csv)</label>
                     <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv' /><br/>-->
@@ -111,8 +111,10 @@
                     <div id="importFile">
                         <button class="ui-state-default ui-corner-all">Launch</button>
                     </div>
+                    <div id="duplicate_docs">
+                    </div>
                 </div>
-                <div id="exportForm" class="ui-widget ui-widget-content ui-corner-all formleft export-form">
+                <!--<div id="exportForm" class="ui-widget ui-widget-content ui-corner-all formleft export-form">
                     <h1>Export a data set</h1>
                     <h3>Select a data set and the periods you want to export, then select ngrams setting the status to 's'</h3>
                     <table id="corpora_table" class="corpora_table">
@@ -136,7 +138,7 @@
                     <div id="exportCorpora">
                         <button class="ui-state-default ui-corner-all" >Launch</button>
                     </div>
-                </div>
+                </div>-->
                 <div style="clear:both;"></div>
             </div>
             <!-- IMPORTING NGRAM WHITELIST AND CREATE GRAPH TABULATION -->
@@ -181,14 +183,14 @@
             <div id="tabs-2" class="ui-corner-bottom">
               <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
 
-              
+
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                    <a href="#"
                       onclick="#"
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
-               
+
 
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a
@@ -259,14 +261,14 @@
 
                <div id="htoolbar2" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
 
-               
+
                 <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                    <a href="#"
                       onclick="#"
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
-                
+
 
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a
