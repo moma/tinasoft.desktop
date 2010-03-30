@@ -3,6 +3,7 @@ from tinasoft import TinaApp, ThreadPool
 from tinasoft.pytextminer import stopwords
 
 import jsonpickle
+import json
 
 import sys
 import os
@@ -52,6 +53,7 @@ class Tinasoft(TinaApp, ThreadPool):
         ThreadPool.__init__(self, 1)
         cb = TinasoftCallback()
         self.callback = cb
+        # overwriting notify() to use nsIObserverService
         TinaApp.notify = _observerProxy.notifyObservers
 
     def runImportFile(self, *args, **kwargs):
@@ -127,12 +129,17 @@ class Tinasoft(TinaApp, ThreadPool):
 
             # threshold param parsing
             if args[4] == '':
-                threshold = None
+                opts = None
             else:
-                threshold = map( float,  args[4].split(',') )
-            gexfpath = self.getGraphPath( corporaid, periods, threshold )
+                optdict = json.loads( args[4] )
+                opts = {}
+                for key in optdict.keys():
+                    opts[str(key)] = optdict[key]
+                del optdict
+            self.logger.debug(opts)
+            gexfpath = self.getGraphPath( corporaid, periods )
             # second step : graph generation
-            return self.exportGraph( gexfpath, periods, threshold, whitelist, **kwargs )
+            return self.exportGraph( gexfpath, periods, opts, whitelist, **kwargs )
         # queue this task
         self.queueTask(taskCoocGraph, args, kwargs, self.callback.processCoocGraph)
 
@@ -174,7 +181,7 @@ class Tinasoft(TinaApp, ThreadPool):
             return self.serialize( [] )
         return self.serialize( [join( path, file ) for file in os.listdir( path )] )
 
-    def getGraphPath(self, corporaid, periods, threshold):
+    def getGraphPath(self, corporaid, periods, threshold=[0.0,1.0]):
         """returns the relative path for a given graph in the graph dir tree"""
         path = join( self.config['user'], corporaid )
         if not exists( path ):

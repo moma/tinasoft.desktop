@@ -15,11 +15,11 @@ if ( typeof(TinaService) == "undefined" ) {
     var TinaService = cls.getService(Ci.ITinasoft);
 }
 
-/* Tinasoft observers handler */
+/* Tinasoft observers handlers */
 
 var tinasoftTaskObserver = {
     observe : function ( subject , topic , data ){
-        console.log(topic + "\nDATA = " + data);
+        //console.log(topic + "\nDATA = " + data);
         //data = JSON.parse(data);
         // traitements en fonction du topic...
         if(topic == "tinasoft_runImportFile_finish_status"){
@@ -28,6 +28,8 @@ var tinasoftTaskObserver = {
                 $('#importFile button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
                 return;
             }
+            // data contains json encoded list of duplicate documents found
+            displayDuplicateDocs( JSON.parse(data) );
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             $('#importFile button').html( "Launch" );
             displayListCorpora( "corpora_table" );
@@ -104,6 +106,12 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_running_status" , false );
 
+/* Duplicate document in data set controler */
+var displayDuplicateDocs = function(data) {
+    var div = $( "#duplicate_docs" ).empty();
+    div.append( JSON.stringify( data ) );
+};
+
 /**************************
  * Tinasoft FORM ACTIONS
 ***************************/
@@ -159,14 +167,21 @@ var submitprocessCoocGraph = function(event) {
         return false;
     }
     // DEBUG VALUE
-    threshold = [0,1];
+    var opts = {
+        'DocumentGraph': {
+            'threshold': [0.0, 2.0]
+        },
+        'NGramGraph': {
+            'threshold': [0.0, 1.0]
+        }
+    };
     for (corpora in corporaAndPeriods) {
         TinaService.runProcessCoocGraph(
             whitelistpath.val(),
             corpora,
             corporaAndPeriods[corpora],
             userfilterspath.val(),
-            threshold
+            JSON.stringify( opts )
         );
     }
     return true;
@@ -395,12 +410,12 @@ function switchedTo(level) {
 function resizeApplet() {
     var w = getAppletWidth();
     var h = getAppletHeight();
-    
+
     $('.tabfiller').css("height",""+(h+10)+"px");
 
     $('#whitebox').css("height",""+(h)+"px");
     $('#whitebox').css("width",""+(w)+"px");
-    
+
     $('#vizframe').css("height",""+(h)+"px");
     $('#vizframe').css("width",""+(w-350)+"px");
     $('#infodiv').show();
@@ -476,90 +491,90 @@ $(document).ready(function() {
     $.extend($.ui.slider.defaults, {
             range: "min",
             min: 0,
-		    max: 100,
+            max: 100,
             value: 100.0,
             animate: true,
             orientation: "horizontal",
     });
-    
-    
+
+
     // MESO SLIDERS
 
     $("#meso_repulsion").slider({
                 animate: true,
                 slide: function(event, ui) {
-		tinaviz.setProperty("meso", "layout/repulsion", ui.value / 100.0);
-	    tinaviz.touch("meso");
-	}});
+        tinaviz.setProperty("meso", "layout/repulsion", ui.value / 100.0);
+        tinaviz.touch("meso");
+    }});
     $("#meso_weight_threshold").slider({
-    	range: true,
-	values: [0, 200],
+        range: true,
+    values: [0, 200],
         animate: true,
         slide: function(event, ui) {
-		    tinaviz.setProperty("meso", "weight/min", ui.values[0] / 200.0);
-		    tinaviz.setProperty("meso", "weight/max", ui.values[1] / 200.0);
-		    tinaviz.touch("meso");
-	    }
-	});	
+            tinaviz.setProperty("meso", "weight/min", ui.values[0] / 200.0);
+            tinaviz.setProperty("meso", "weight/max", ui.values[1] / 200.0);
+            tinaviz.touch("meso");
+        }
+    });
     $("#meso_genericity_threshold").slider({
-    	range: true,
-	values: [0, 200],
+        range: true,
+    values: [0, 200],
         animate: true,
         slide: function(event, ui) {
-		    tinaviz.setProperty("meso", "genericity/min", ui.values[0] / 200.0);
-		    tinaviz.setProperty("meso", "genericity/max", ui.values[1] / 200.0);
-		    tinaviz.touch("meso");
-	    }
-	});
-	
+            tinaviz.setProperty("meso", "genericity/min", ui.values[0] / 200.0);
+            tinaviz.setProperty("meso", "genericity/max", ui.values[1] / 200.0);
+            tinaviz.touch("meso");
+        }
+    });
+
     $("#meso_node_size").slider({
         value: 100,
         max: 200,
         animate: true,
         slide: function(event, ui) {
-		tinaviz.setProperty("meso", "radius/value", ui.value / 200.0);
-		tinaviz.touch("meso");
-	}});
-    
-    
+        tinaviz.setProperty("meso", "radius/value", ui.value / 200.0);
+        tinaviz.touch("meso");
+    }});
+
+
     // MACRO SLIDERS
     $("#macro_repulsion").slider({
      value: 100,
      max: 200,
      slide: function(event, ui) {
-		tinaviz.setProperty("macro", "layout/repulsion", ui.value / 200.0);
-		tinaviz.touch("macro");
-	}});
-	
+        tinaviz.setProperty("macro", "layout/repulsion", ui.value / 200.0);
+        tinaviz.touch("macro");
+    }});
+
     $("#macro_weight_threshold").slider({
-    	range: true,
+        range: true,
         values: [0, 200],
         animate: true,
         slide: function(event, ui) {
-		tinaviz.setProperty("macro", "weight/min", ui.values[0] / 200.0);
-		tinaviz.setProperty("macro", "weight/max", ui.values[1] / 200.0);
-		tinaviz.touch("macro");
-	}});
-	
+        tinaviz.setProperty("macro", "weight/min", ui.values[0] / 200.0);
+        tinaviz.setProperty("macro", "weight/max", ui.values[1] / 200.0);
+        tinaviz.touch("macro");
+    }});
+
     $("#macro_genericity_threshold").slider({
-    	range: true,
+        range: true,
         values: [0, 200],
         animate: true,
         slide: function(event, ui) {
-		tinaviz.setProperty("macro", "genericity/min", ui.values[0] / 200.0);
-		tinaviz.setProperty("macro", "genericity/max", ui.values[1] / 200.0);
-		tinaviz.touch("macro");
-	}});
+        tinaviz.setProperty("macro", "genericity/min", ui.values[0] / 200.0);
+        tinaviz.setProperty("macro", "genericity/max", ui.values[1] / 200.0);
+        tinaviz.touch("macro");
+    }});
     $("#macro_node_size").slider({
         value: 200,
         max: 600,
         animate: true,
         slide: function(event, ui) {
-		tinaviz.setProperty("macro", "radius/value", ui.value / 200.0);
-		tinaviz.touch("macro");
-	}});
-	
-    
+        tinaviz.setProperty("macro", "radius/value", ui.value / 200.0);
+        tinaviz.touch("macro");
+    }});
+
+
     /*$("#disable-widgets").toggle(function() {
     buttons.button("disable");
     }, function() {
