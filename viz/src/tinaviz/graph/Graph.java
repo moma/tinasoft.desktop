@@ -228,10 +228,14 @@ public class Graph implements Cloneable {
                                     String attributeId = AttributeIdXML.getNodeValue();
 
                                     Attribute attrib = nodeAttributes.get(attributeId);
-                                    //System.out.println("found attribute "+attrib.toString()+" !");
+                                    System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
+
                                     if (attrib.key.equalsIgnoreCase("genericity")) {
-                                        if (attrib.type == Float.class)
+                                        System.out.println("attrib.key.equalsIgnoreCase(\"genericity\")");
+                                        if (attrib.type == Float.class) {
                                          node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                         System.out.println("got genericity: "+node.genericity);
+                                        }
                                     } else if (attrib.key.equalsIgnoreCase("category")) {
                                        if (attrib.type == String.class)
                                            node.category = attr.getAttributes().getNamedItem("value").getNodeValue();

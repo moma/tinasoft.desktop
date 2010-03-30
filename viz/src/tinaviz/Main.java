@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import megamu.mesh.Hull;
 
 import tinaviz.session.*;
 import processing.opengl.*;
@@ -391,6 +392,8 @@ public class Main extends PApplet implements MouseWheelListener {
             nodes.clear();
             nodes.addAll(n);
 
+            //if (nodes.size() < 1) return;
+
             boolean cameraUpdateNeeded = false;
             if (width > 0 && height > 0) {
                 cameraUpdateNeeded = v.graph.brandNewGraph.getAndSet(false);
@@ -398,8 +401,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
             if (cameraUpdateNeeded) {
                 float screenRadius = (screenWidth + screenHeight) / 2.0f;
-                float zoomScale = (screenRadius / nodes.graphRadius);
 
+                float zoomScale = nodes.graphRadius > 0 ? screenRadius / nodes.graphRadius : 1.0f;
+
+                System.out.println("got " + nodes.size()+ " nodes");
                 /*! TODO !*/
                 v.sceneScale = zoomScale;
                 System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + zoomScale);
@@ -588,15 +593,36 @@ public class Main extends PApplet implements MouseWheelListener {
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
-        noFill();
-
-        pushMatrix();
+        
+             pushMatrix();
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
 
         Node hasSelected = null;
 
+/*
 
+        int x=0;
+        float[][] points = new float[nodes.nodes.size()][2];
+         for (Node n : nodes.nodes) {
+            if (n.selected) {
+                points[x][0] = n.x;
+                points[x][1] = n.b;
+                x++;
+            }
+         }
+
+        Hull myHull = new Hull( points );
+   fill(0,130,200);
+   points = myHull.getRegion().getCoords();
+   beginShape();
+   for (int i=0;i<points.length;i++) {
+    curveVertex(points[i][0], points[i][1]);
+   }
+   endShape();
+   */
+   noFill();
+   
         for (Node n1 : nodes.nodes) {
 
             if (selectNone) {

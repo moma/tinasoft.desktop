@@ -40,9 +40,9 @@ function Tinaviz() {
 	    // and YES, you can define filters or properties at any time, it's totally asynchronous ;)
 	    
 		this.bindFilter("Category",             "category",           "macro");
-		this.bindFilter("ThresholdGenericity",  "genericity",         "macro");
+		//this.bindFilter("ThresholdGenericity",  "genericity",         "macro");
 		this.bindFilter("ThresholdWeight",      "weight",             "macro");
-		this.bindFilter("NodeFunction",         "radiusByGenericity", "macro");
+		//this.bindFilter("NodeFunction",         "radiusByGenericity", "macro");
 		this.bindFilter("NodeRadius",           "radius",             "macro");  
 		this.bindFilter("WeightSize",           "weightSize",         "macro");
         //this.bindFilter("Layout",           "layout",   "macro");
@@ -57,13 +57,13 @@ function Tinaviz() {
 		this.bindFilter("Category",             "category",           "meso");
 				
 		// filter by genericity
-		this.bindFilter("ThresholdGenericity",  "genericity",         "meso");
+		//this.bindFilter("ThresholdGenericity",  "genericity",         "meso");
 		
 		// filter by edge threshold
 		this.bindFilter("ThresholdWeight",      "weight",             "meso");
 
 		// multiply the radius by the genericity
-		this.bindFilter("NodeFunction",         "radiusByGenericity", "meso");
+		//this.bindFilter("NodeFunction",         "radiusByGenericity", "meso");
 		
 		// multiply the radius by the GUI slider value
 		this.bindFilter("NodeRadius",           "radius",             "meso");

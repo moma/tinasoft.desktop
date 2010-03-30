@@ -58,7 +58,7 @@ public class Category extends NodeFilter {
                 if (n.category.equals(category)) {
                     if (keep) {
                         output.add(n);
-                        // System.out.println("  - n category == "+n.category+" added!\n");
+                        System.out.println("  - kept "+n.category+" "+n.uuid+" = "+n.genericity+"\n");
                     }
                 } else {
                     if (!keep) {
