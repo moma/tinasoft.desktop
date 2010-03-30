@@ -28,7 +28,7 @@ function Tinaviz() {
 	    this.dispatchProperty("radiusByGenericity/max", 1.0);
 	    
 	    // we want to keep documents
-	    this.dispatchProperty("category/value", "Document");
+	    this.dispatchProperty("category/value", "NGram");
 	    this.dispatchProperty("category/mode", "keep");
 	        
 		this.dispatchProperty("radius/value", 1.0);

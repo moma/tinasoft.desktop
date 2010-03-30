@@ -203,7 +203,7 @@ public class Graph implements Cloneable {
                     (float) Math.random() * 10f,
                     (float) Math.random() * 10f);
 
-            node.category = "Document";
+            node.category = cat;
 
             org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
 
@@ -228,10 +228,10 @@ public class Graph implements Cloneable {
                                     String attributeId = AttributeIdXML.getNodeValue();
 
                                     Attribute attrib = nodeAttributes.get(attributeId);
-                                    System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
+                                   // System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
 
                                     if (attrib.key.equalsIgnoreCase("genericity")) {
-                                        System.out.println("attrib.key.equalsIgnoreCase(\"genericity\")");
+                                        //System.out.println("attrib.key.equalsIgnoreCase(\"genericity\")");
                                         if (attrib.type == Float.class) {
                                          node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
                                          System.out.println("got genericity: "+node.genericity);

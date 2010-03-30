@@ -48,7 +48,7 @@ public class View {
     public int prespatializeSteps = 0;
     public int screenWidth = 100;
     public int screenHeight = 100;
-    public Map properties = new HashMap<String, Object>();
+    public Map<String,Object> properties = new HashMap<String, Object>();
     public PVector dragDelta = new PVector(0.0f, 0.0f);
     public CenteringMode centeringMode = CenteringMode.FREE_MOVE;
 
@@ -111,7 +111,7 @@ public class View {
     }
 
     public synchronized boolean setProperty(String key, Object value) throws KeyException {
-        // System.out.println("set property "+key+" to "+value+" for view "+getName());
+         System.out.println("set property "+key+" to "+value+" for view "+getName());
         properties.put(key, value);
         return true;
     }

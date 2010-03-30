@@ -551,8 +551,8 @@ $(document).ready(function() {
 		tinaviz.touch("macro");
 	}});
     $("#macro_node_size").slider({
-        value: 100,
-        max: 200,
+        value: 200,
+        max: 600,
         animate: true,
         slide: function(event, ui) {
 		tinaviz.setProperty("macro", "radius/value", ui.value / 200.0);

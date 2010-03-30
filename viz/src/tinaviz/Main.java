@@ -29,6 +29,7 @@ import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 import tinaviz.layout.LayoutOpenCL;
 import tinaviz.ui.PaintTools;
+import tinaviz.util.MathFunctions;
 
 public class Main extends PApplet implements MouseWheelListener {
 
@@ -64,7 +65,8 @@ public class Main extends PApplet implements MouseWheelListener {
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
     float MAX_NODE_RADIUS = 0.5f; // node radius is normalized to 1.0 for each node, then mult with this value
-    float MAX_EDGE_WEIGHT = 20.0f; // node radius is normalized to 1.0 for each node, then mult with this value
+    float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
+    float MAX_EDGE_THICKNESS = 100.0f;
     private Long selectNode = null;
     private boolean selectNone = false;
     int oldScreenWidth = 0;
@@ -301,7 +303,8 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
                     //"file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
-                     "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf"
+                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf"
+                     "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf"
                     //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
@@ -586,7 +589,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             noSmooth();
             bezierDetail(7);
-            layout.precise(v, nodes);
+            layout.fast(v, nodes);
             //v.graph.touch(); // do the layout (recompute all the scene as well..)
         }
 
@@ -594,10 +597,11 @@ public class Main extends PApplet implements MouseWheelListener {
         stroke(150, 150, 150);
         strokeWeight(1);
         
-             pushMatrix();
+
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
 
+        //pushMatrix();
         Node hasSelected = null;
 
 /*
@@ -652,27 +656,25 @@ public class Main extends PApplet implements MouseWheelListener {
 
                         if (mutual) {
                             if (n1.selected && n2.selected) {
-                                stroke(0, 0, 0, 255);
+                                stroke(0, 0, 0, 230);
                             } else if (n1.selected || n2.selected) {
-                                stroke(0, 0, 0, 220);
+                                stroke(0, 0, 0, 210);
                             } else {
-                                float m = 180.0f;
+                                float m = 200.0f;
                                 float r = (255.0f - m) / 255.0f;
                                 stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
                             }
                         } else {
                             if (n1.selected && n2.selected) {
-                                stroke(0, 0, 0, 230);
-                            } else if (n1.selected || n2.selected) {
                                 stroke(0, 0, 0, 200);
+                            } else if (n1.selected || n2.selected) {
+                                stroke(0, 0, 0, 180);
                             } else {
-                                float m = 210.0f;
+                                float m = 170.0f;
                                 float r = (255.0f - m) / 255.0f;
                                 stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
                             }
                         }
-
-
 
 
                         // line(n2.x, n2.y, n1.x, n1.y);
@@ -706,40 +708,29 @@ public class Main extends PApplet implements MouseWheelListener {
                             }
                              * *
                              */
+                           
                             float w1 = n1.weights.get(n2.uuid);
                             float w2 = n2.weights.get(n1.uuid);
                             if (v.highDefinition) {
-                                // strokeWeight((w1 + w2)  * 10.0f);
-                                strokeWeight(w1 * MAX_EDGE_WEIGHT);
-                                //strokeWeight(1);
+                                strokeWeight(w1 * MAX_EDGE_THICKNESS);
                             }
-                            PaintTools.drawCurve(this, n2, n1);
+                            drawCurve(n2, n1);
                         } else {
                             float w1 = n1.weights.get(n2.uuid);
-
                             if (v.highDefinition) {
-                                strokeWeight(w1 * MAX_EDGE_WEIGHT);
-
-                                //strokeWeight(1);
+                                strokeWeight(w1 * MAX_EDGE_THICKNESS);
                             }
-                            PaintTools.drawCurve(this, n2, n1);
-                            // drawCurve(n1, n2);
+                            drawCurve(n2, n1);
                         }
-
 
                         if (v.highDefinition && n2.uuid != null) {
                             //strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
                             strokeWeight(1);
                         }
-
-
                     }
-
                 }
-
             } // FOR NODE B
         }   // FOr NODE A
-
 
         noStroke();
         for (Node n : nodes.nodes) {
@@ -760,7 +751,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             float nodeScreenDiameter = screenX(n.x + rad2, n.y) - screenX(n.x - rad2, n.y);
 
-            if (nodeScreenDiameter < 4) {
+            if (nodeScreenDiameter < 2) {
                 continue;
             }
 
@@ -845,7 +836,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         }
         
-        popMatrix();
+        //popMatrix();
 
         /*
         if (hasSelected != null) {
@@ -895,6 +886,15 @@ public class Main extends PApplet implements MouseWheelListener {
         selectNone = false;
     }
 
+        public void drawCurve(Node n1, Node n2) {
+        float xa0 = (6 * n1.x + n2.x) / 7, ya0 = (6 * n1.y + n2.y) / 7;
+        float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
+        float[] xya1 = MathFunctions.rotation(xa0, ya0, n1.x, n1.y, PApplet.PI / 2);
+        float[] xyb1 = MathFunctions.rotation(xb0, yb0, n2.x, n2.y, -PApplet.PI / 2);
+        float xa1 = (float) xya1[0], ya1 = (float) xya1[1];
+        float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
+        bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
+    }
     public synchronized boolean takePicture(String path) {
         recordPath = path;
         recordingWidth = width;
@@ -950,13 +950,20 @@ public class Main extends PApplet implements MouseWheelListener {
             n.highlighted = false;
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
+            //System.out.println("got candidate at x:"+nsx+",y:"+nsy+"");
             float rad = n.radius * MAX_NODE_RADIUS;
-            float nsr = screenX(n.x + (rad + rad * 0.4f), n.y) - nsx;
-            if (nsr < 2) {
+
+            //System.out.println("rad: "+(n.radius * MAX_NODE_RADIUS)+"= "+n.radius+" * "+MAX_NODE_RADIUS+" = n.radius * MAX_NODE_RADIUS");
+            float rad2 = rad + rad * 0.4f;
+            float nsr = screenX(n.x + rad2, n.y) - nsx;
+
+            //System.out.println("node ratio "+nsr);
+            if (nsr < 0.02) {
                 continue;
             }
 
             if (dist(mouseX, mouseY, nsx, nsy) < nsr) {
+              
                 if (candidate == null) {
                     candidate = n;
                 }
@@ -979,7 +986,8 @@ public class Main extends PApplet implements MouseWheelListener {
             float nsx = screenX(n.x, n.y);
             float nsy = screenY(n.x, n.y);
             float rad = n.radius * MAX_NODE_RADIUS;
-            float nsr = screenX(n.x + (rad + rad * 0.4f), n.y) - nsx;
+            float rad2 = rad + rad * 0.4f;
+            float nsr = screenX(n.x + rad2, n.y) - nsx;
             if (nsr < 2) {
                 continue;
             }
@@ -988,6 +996,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 // LEFT CLICK ON NODES
                 if (mouseButton == LEFT) {
+                    //System.out.println("left mouse clicked!");
                     if (mouseEvent != null && mouseEvent.getClickCount() == 2) {
 
 
