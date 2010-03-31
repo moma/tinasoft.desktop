@@ -53,14 +53,14 @@ function Tinaviz() {
 		//this.bindFilter("ThresholdGenericity",  "genericity",         "macro");
 		// filter by genericity
 		
-		/*
-		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
+		
+		//this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
 		
 		// filter by edge threshold
 		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
 		
-		this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
-		*/
+		//this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
+		
 		
 		this.bindFilter("NodeRadius",           "radius",             "macro");  
 		this.bindFilter("WeightSize",           "weightSize",         "macro");

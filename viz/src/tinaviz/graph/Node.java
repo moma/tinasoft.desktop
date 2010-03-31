@@ -46,7 +46,7 @@ public class Node {
     public Map<String, Object> attributes = new HashMap<String, Object>();
     public Node original = null;
     public PImage image = null;
-    public String imageURL = "http://paradisia.net/index.php?action=dlattach;attach=835;type=avatar";
+    public String imageURL = "http://cssociety.org/tiki-show_user_avatar.php?user=";
 
     public Node(Long uuid, String label, float radius, float x, float y) {
 

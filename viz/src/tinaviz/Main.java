@@ -305,7 +305,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
                     //"file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
-                     "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf"
+                     "file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf"
                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
@@ -318,7 +318,7 @@ public class Main extends PApplet implements MouseWheelListener {
             //session.getMacro().translation.set(new PVector());
             //session.getMacro().animationPaused = true;
             try {
-                session.getMacro().setProperty("cat/value", "Document");
+                session.getMacro().setProperty("cat/value", "NGram");
             } catch (KeyException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
