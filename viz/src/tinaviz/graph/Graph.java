@@ -167,7 +167,11 @@ public class Graph implements Cloneable {
                     org.w3c.dom.Node n = xmlnodeChildren.item(j);
                     if (n.getNodeName().equalsIgnoreCase("attribute")) {
                         Attribute attr = new Attribute(n);
+                        if (n.getFirstChild()!=null)
+                            if (n.getFirstChild().getFirstChild()!=null)
+                                attr.setDefaultValue(n.getFirstChild().getFirstChild().getNodeValue());
                         this.nodeAttributes.put(attr.id, attr);
+
                     }
                 }
             } else if (attrsClass.equalsIgnoreCase("edge")) {
@@ -176,6 +180,9 @@ public class Graph implements Cloneable {
                     org.w3c.dom.Node n = xmlnodeChildren.item(j);
                     if (n.getNodeName().equalsIgnoreCase("attribute")) {
                         Attribute attr = new Attribute(n);
+                        if (n.getFirstChild()!=null)
+                            if (n.getFirstChild().getFirstChild()!=null)
+                                attr.setDefaultValue(n.getFirstChild().getFirstChild().getNodeValue());
                         this.edgeAttributes.put(attr.id, attr);
                     }
                 }
@@ -230,11 +237,11 @@ public class Graph implements Cloneable {
                                     Attribute attrib = nodeAttributes.get(attributeId);
                                    // System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
 
-                                    if (attrib.key.equalsIgnoreCase("genericity")) {
+                                    if (attrib.key.equalsIgnoreCase("weight")) {
                                         //System.out.println("attrib.key.equalsIgnoreCase(\"genericity\")");
                                         if (attrib.type == Float.class) {
-                                         node.genericity = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
-                                         System.out.println("got genericity: "+node.genericity);
+                                         node.weight = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                         System.out.println("got weight: "+node.weight);
                                         }
                                     } else if (attrib.key.equalsIgnoreCase("category")) {
                                        if (attrib.type == String.class)

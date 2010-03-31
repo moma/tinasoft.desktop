@@ -49,7 +49,7 @@ public class NodeFunction extends NodeFilter {
 
         for (Node n : input.nodes) {
              //System.out.println(" node funct: "+(n.radius * n.genericity)+ " = "+n.radius+" * "+n.genericity);
-            n.radius *= n.genericity;
+            n.radius *= n.weight;
 
         }
         return input;

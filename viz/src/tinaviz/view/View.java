@@ -4,6 +4,7 @@
  */
 package tinaviz.view;
 
+import tinaviz.filters.FilterChain;
 import java.io.InputStream;
 import java.security.KeyException;
 
@@ -29,7 +30,8 @@ public class View {
     public boolean showLabels = true;
     public boolean showNodes = true;
     public boolean showLinks = true;
-    public boolean animationPaused = false;
+    public boolean paused = false;
+    
     public boolean highDefinition = false;
     public boolean spatializeWhenMoving = true;
     public PVector translation = new PVector(0.0f, 0.0f);
@@ -90,8 +92,8 @@ public class View {
     }
 
     public synchronized boolean togglePause() {
-        animationPaused = !animationPaused;
-        return animationPaused;
+        paused = !paused;
+        return paused;
     }
 
     public String getName() {

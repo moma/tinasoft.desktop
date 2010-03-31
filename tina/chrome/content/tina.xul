@@ -98,6 +98,7 @@
     <keyset>
         <key id="close_key" modifiers="alt" key="q" oncommand="window.close();"/>
         <key id="reload_key" keycode="VK_F5" oncommand="window.location.reload();"/>
+        <!--<key id="reload_key"  modifiers="alt" key="q" keycode="VK_F5" oncommand="window.location.reload();"/>-->
     </keyset>
 
 </window>

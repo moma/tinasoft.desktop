@@ -193,29 +193,29 @@
 
 
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a
+                        <a id="toggle-labels-macro"
                            href="#"
                            onclick="tinaviz.toggleLabels('macro')"
-                           class="fg-button ui-state-default fg-button-icon-solo ui-corner-left toggle-labels macro"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
                            title="labels"><span class="ui-icon ui-icon-label"></span> Labels</a>
-                        <a
+                        <a id="toggle-nodes-macro"
                            href="#"
                            onclick="tinaviz.toggleNodes('macro')"
-                           class="fg-button ui-state-default fg-button-icon-solo toggle-nodes macro"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
                            title="nodes"><span class="ui-icon ui-icon-nodes"></span> Nodes</a>
-                        <a
+                        <a id="toggle-edges-macro"
                            href="#"
                            onclick="tinaviz.toggleEdges('macro')"
-                           class="fg-button ui-state-default fg-button-icon-solo ui-corner-right toggle-edges macro"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
                            title="edges"><span class="ui-icon ui-icon-edges"></span> Edges</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
 
-                        <a
+                        <a id="toggle-pause-macro"
                            href="#"
                            onclick="tinaviz.togglePause('macro')"
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all toggle-pause macro"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
                            title="pause"><span class="ui-icon ui-icon-pause"></span> Pause</a>
                     </div>
 
@@ -249,10 +249,10 @@
                 </div>
                 <div class="sliders">
                     <!--<div id="macro_repulsion" class="threshold"></div>-->
-                    <div id="macro_weight_threshold" class="slider"></div>
-                    <div id="macro_genericity_threshold" class="slider"></div>
-                    <div id="macro_node_size" class="slider"></div>
-                   <div id="meso_weight_size" class="slider"></div>
+                    <div id="macroSlider_nodeWeight" class="slider"></div>
+                    <div id="macroSlider_edgeWeight" class="slider"></div>
+                    <div id="macroSlider_nodeSize" class="slider"></div>
+                    <div id="macroSlider_edgeSize" class="slider"></div>
                 </div><!-- end of sliders -->
                 <div id="tabfiller" class="tabfiller"></div>
             </div>
@@ -271,28 +271,28 @@
 
 
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a
+                        <a id="toggle-labels-meso"
                            href="#"
                            onclick="tinaviz.toggleLabels('meso')"
-                           class="fg-button ui-state-default fg-button-icon-solo ui-corner-left toggle-labels macro"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
                            title="labels"><span class="ui-icon ui-icon-label"></span> Labels</a>
-                        <a
+                        <a id="toggle-nodes-meso"
                            href="#"
                            onclick="tinaviz.toggleNodes('meso')"
-                           class="fg-button ui-state-default fg-button-icon-solo toggle-nodes macro"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
                            title="nodes"><span class="ui-icon ui-icon-nodes"></span> Nodes</a>
-                        <a
+                        <a id="toggle-edges-meso"
                            href="#"
                            onclick="tinaviz.toggleEdges('meso')"
-                           class="fg-button ui-state-default fg-button-icon-solo ui-corner-right toggle-edges macro"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
                            title="edges"><span class="ui-icon ui-icon-edges"></span> Edges</a>
                     </div>
 
                     <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a
+                        <a id="toggle-pause-meso"
                            href="#"
                            onclick="tinaviz.togglePause('meso')"
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all toggle-pause macro"
+                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
                            title="pause"><span class="ui-icon ui-icon-pause"></span> Pause</a>
                     </div>
 
@@ -333,10 +333,10 @@
                 </div><!-- end of toolbar -->
                 <div class="sliders">
                     <!--<div id="meso_repulsion" class="threshold"></div>-->
-                    <div id="meso_weight_threshold" class="slider"></div>
-                    <div id="meso_genericity_threshold" class="slider"></div>
-                    <div id="meso_node_size" class="slider"></div>
-                    <div id="meso_weight_size" class="slider"></div>
+                    <div id="mesoSlider_nodeWeight" class="slider"></div>
+                    <div id="mesoSlider_edgeWeight" class="slider"></div>
+                    <div id="mesoSlider_nodeSize" class="slider"></div>
+                    <div id="mesoSlider_edgeSize" class="slider"></div>
                 </div><!-- end of sliders -->
                 <div id="tabfiller" class="tabfiller"></div>
             </div><!-- end of tab 3 (meso) -->

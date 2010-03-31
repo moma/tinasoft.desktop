@@ -33,7 +33,7 @@ public class Node {
     public HashMap<Long, EdgeDirection> directions = new HashMap<Long, EdgeDirection>();
     public boolean selected = false;
     public boolean highlighted = false;
-    public float genericity = 1.0f;
+    public float weight = 1.0f;
     public String category = "Document";
     public ShapeCategory shape = ShapeCategory.DISK;
     public float r = -1f;
@@ -154,7 +154,7 @@ public class Node {
         }
         this.s = (node.s); // switch
         this.degree = node.degree;
-        this.genericity = node.genericity;
+        this.weight = node.weight;
         this.selected = (node.selected);
         this.highlighted = (node.highlighted);
         this.category = node.category;

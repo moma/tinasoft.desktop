@@ -18,7 +18,7 @@ import tinaviz.view.View;
  *
  * @author jbilcke
  */
-public class ThresholdWeight extends NodeFilter {
+public class ThresholdEdgeWeight extends NodeFilter {
 
     private String KEY_MIN = "min";
     private String KEY_MAX = "max";
@@ -68,7 +68,7 @@ public class ThresholdWeight extends NodeFilter {
 
        // System.out.println("min:"+view.graph.metrics.minWeight+" max:"+view.graph.metrics.maxWeight);
 
-        float f = input.maxWeight - input.minWeight;
+        float f = input.maxEdgeWeight - input.minEdgeWeight;
        // System.out.println("f:"+f);
 
         Object o = view.properties.get(root+KEY_MIN);
@@ -77,7 +77,7 @@ public class ThresholdWeight extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        min = min * f + input.minWeight;
+        min = min * f + input.minEdgeWeight;
 
         o = view.properties.get(root+KEY_MAX);
         max =  (o instanceof Integer)
@@ -85,7 +85,7 @@ public class ThresholdWeight extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        max = max * f + input.minWeight;
+        max = max * f + input.minEdgeWeight;
        // System.out.println("threshold weight got "+input.size()+" nodes in entry");
         for (Node n : input.nodes) {
            node(session, view, n);

@@ -183,6 +183,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 engine = JAVA2D;
 
             }
+            
             window = JSObject.getWindow(this);
             int w = 200;
             int h = 200;
@@ -200,6 +201,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }*/
 
             size(w, h, engine);
+
         } else {
             loadDefaultGlobalGraph = true;
             size(screenWidth, screenHeight, engine);
@@ -274,7 +276,7 @@ public class Main extends PApplet implements MouseWheelListener {
             float radius = 15.0f;
 
             Node root = new Node(0L, "root node", radius, 0, 0);
-            root.genericity = random(1.0f);
+            root.weight = random(1.0f);
             root.category = (random(1.0f) > 0.5f) ? "Document" : "NGram";
             root.label = root.category + " " + root.label;
             root.fixed = true;
@@ -282,7 +284,7 @@ public class Main extends PApplet implements MouseWheelListener {
             for (long i = 0; i < 50; i++) {
                 radius = random(3.0f, 5.0f);
                 node = new Node(i, "node " + i, radius, random(-20), random(20));
-                node.genericity = random(1.0f);
+                node.weight = random(1.0f);
                 node.category = (random(1.0f) > 0.5f) ? "Document" : "NGram";
                 node.label = node.category + " " + node.label;
                 tmp.add(node);
@@ -303,8 +305,9 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
                     //"file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
-                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/8_0.0-1.0.gexf"
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                     "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf"
+                   // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
+                   // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
@@ -334,7 +337,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 radius = random(3.0f, 10.0f);
 
                 node = new Node(i, "node " + i, radius, random(width / 2), random(height / 2));
-                node.genericity = random(1.0f);
+                node.weight = random(1.0f);
                 node.category = (random(1.0f) > 0.5f) ? "Document" : "NGram";
                 node.label = node.category + " " + node.label;
                 tmp.add(node);
@@ -581,7 +584,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void drawAndSpatializeRealtime(View v) {
 
-        if (v.animationPaused) {
+        if (v.paused) {
             smooth();
             bezierDetail(25);
 
@@ -1231,9 +1234,9 @@ public class Main extends PApplet implements MouseWheelListener {
             if (window != null) {
                 window.eval("parent.tinaviz.togglePause('" + v.getName() + "');");
             } else {
-                v.animationPaused = !v.animationPaused;
+                v.paused = !v.paused;
             }
-            System.out.println("Animation paused is now " + v.animationPaused);
+            System.out.println("Animation paused is now " + v.paused);
 
         } else if (key == 'h') {
             v.highDefinition = !v.highDefinition;

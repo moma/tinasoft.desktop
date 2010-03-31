@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tinaviz.view;
+package tinaviz.filters;
 
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import tinaviz.filters.ThresholdWeight;
+import tinaviz.filters.ThresholdEdgeWeight;
 
 import tinaviz.filters.Category;
 import tinaviz.filters.NodeRadius;
@@ -16,8 +16,10 @@ import tinaviz.filters.Layout;
 import tinaviz.filters.NodeFunction;
 import tinaviz.filters.NodeList;
 import tinaviz.filters.SubGraphCopy;
-import tinaviz.filters.ThresholdGenericity;
+import tinaviz.filters.ThresholdNodeWeight;
 import tinaviz.filters.WeightSize;
+import tinaviz.view.Filter;
+import tinaviz.view.View;
 
 /**
  *
@@ -84,8 +86,8 @@ public class FilterChain {
     public boolean addFilter(String filterName, String root) {
         System.out.println("adding filter "+root+"");
         Filter f = null;
-        if (filterName.equals("ThresholdWeight")) {
-            f = new ThresholdWeight();
+        if (filterName.equals("ThresholdEdgeWeight")) {
+            f = new ThresholdEdgeWeight();
         } else if (filterName.equals("NodeRadius")) {
             f = new NodeRadius();
         }else if (filterName.equals("WeightSize")) {
@@ -99,8 +101,8 @@ public class FilterChain {
         }  else if (filterName.equals("Layout")) {
             f = new Layout();
 
-        } else if (filterName.equals("ThresholdGenericity")) {
-             f = new ThresholdGenericity();
+        } else if (filterName.equals("ThresholdNodeWeight")) {
+             f = new ThresholdNodeWeight();
     } else {
             return false;
         }

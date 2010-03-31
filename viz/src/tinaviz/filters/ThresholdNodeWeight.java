@@ -16,7 +16,7 @@ import processing.core.*;
  *
  * @author jbilcke
  */
-public class ThresholdGenericity extends NodeFilter {
+public class ThresholdNodeWeight extends NodeFilter {
 
 
     private String KEY_MIN = "min";
@@ -40,9 +40,9 @@ public class ThresholdGenericity extends NodeFilter {
         }
 
         // HACK HACK HACK ** POUR DAVID DEMO FET60 ** HACK HACK HACK HACK
-        input.maxGenericity = 1.0f;
+        input.maxNodeWeight = 1.0f;
 
-        float f = input.maxGenericity - input.minGenericity;
+        float f = input.maxNodeWeight - input.minNodeWeight;
 
         Object o = view.properties.get(root+KEY_MIN);
         min =   (o instanceof Integer)
@@ -50,7 +50,7 @@ public class ThresholdGenericity extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        min = min * f + input.minGenericity;
+        min = min * f + input.minNodeWeight;
 
         o = view.properties.get(root+KEY_MAX);
         max =  (o instanceof Integer)
@@ -58,12 +58,12 @@ public class ThresholdGenericity extends NodeFilter {
                    : (o instanceof Double)
                    ? new Float((Double)o)
                    : (Float) o;
-        max = max * f + input.minGenericity;
+        max = max * f + input.minNodeWeight;
 
         for (Node n : input.nodes) {
              // System.out.println("genericity: ["+min+" <= "+n.genericity+" <= "+max);
 
-            if (min <= n.genericity && n.genericity <= max) output.add(n);
+            if (min <= n.weight && n.weight <= max) output.add(n);
         }
         return output;
     }

@@ -17,11 +17,15 @@ function Tinaviz() {
         this.setLevel("macro");
         
         var v = "macro";
+        
+        // activate
+        /*
         this.toggleLabels(v);
         this.toggleNodes(v);
         this.toggleEdges(v);
         this.togglePause(v);
-        
+        */
+
         //this.setProperty("macro", "layout/repulsion", 0.5);
         
         // load default values (eg. from settings)
@@ -31,7 +35,7 @@ function Tinaviz() {
 	    this.dispatchProperty("genericity/min", 0.0);
 	    this.dispatchProperty("genericity/max", 1.0);
 	    
-	    this.dispatchProperty("radiusByGenericity/max", 1.0);
+	    this.dispatchProperty("radiusByWeight/max", 1.0);
 	    
 	    // we want to keep documents
 	    this.dispatchProperty("category/value", "NGram");
@@ -47,8 +51,17 @@ function Tinaviz() {
 	    
 		this.bindFilter("Category",             "category",           "macro");
 		//this.bindFilter("ThresholdGenericity",  "genericity",         "macro");
-		this.bindFilter("ThresholdWeight",      "weight",             "macro");
-		//this.bindFilter("NodeFunction",         "radiusByGenericity", "macro");
+		// filter by genericity
+		
+		/*
+		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
+		
+		// filter by edge threshold
+		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
+		
+		this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
+		*/
+		
 		this.bindFilter("NodeRadius",           "radius",             "macro");  
 		this.bindFilter("WeightSize",           "weightSize",         "macro");
         //this.bindFilter("Layout",           "layout",   "macro");
@@ -61,16 +74,17 @@ function Tinaviz() {
 		this.setProperty("meso", "subgraph/item", "");
 				
 		this.bindFilter("Category",             "category",           "meso");
-				
+				/*
 		// filter by genericity
-		//this.bindFilter("ThresholdGenericity",  "genericity",         "meso");
+		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
 		
 		// filter by edge threshold
-		this.bindFilter("ThresholdWeight",      "weight",             "meso");
+		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "meso");
+
 
 		// multiply the radius by the genericity
-		//this.bindFilter("NodeFunction",         "radiusByGenericity", "meso");
-		
+		this.bindFilter("NodeFunction",         "radiusByWeight",     "meso");
+		*/
 		// multiply the radius by the GUI slider value
 		this.bindFilter("NodeRadius",           "radius",             "meso");
 		
@@ -114,26 +128,16 @@ function Tinaviz() {
     },
 
     toggleLabels: function(view) {
-        if (applet == null) return;
-        applet.getView(view).toggleLabels();
-        $('.toggle-labels .'+view).toggleClass("ui-state-active");
+        if (applet != null) $('#toggle-labels-'+view).toggleClass("ui-state-active", applet.getView(view).toggleLabels());
     },
-
     toggleNodes: function(view) {
-        if (applet == null) return;
-        applet.getView(view).toggleNodes();
-        $('.toggle-nodes .'+view).toggleClass("ui-state-active");
+        if (applet != null) $('#toggle-nodes-'+view).toggleClass("ui-state-active", applet.getView(view).toggleNodes());
     },
     toggleEdges: function(view) {
-        if (applet == null) return;
-        applet.getView(view).toggleEdges();
-        $('.toggle-edges .'+view).toggleClass("ui-state-active");
+        if (applet != null) $('#toggle-edges-'+view).toggleClass("ui-state-active", applet.getView(view).toggleEdges());
     },
-
     togglePause: function(view) {
-        if (applet == null) return;
-        applet.getView(view).togglePause();
-        $('.toggle-pause .'+view).toggleClass("ui-state-active");
+        if (applet != null) $('#toggle-pause-'+view).toggleClass("ui-state-active", applet.getView(view).togglePause());
     },
 
     unselect: function() {

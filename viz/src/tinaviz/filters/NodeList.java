@@ -17,12 +17,12 @@ import tinaviz.graph.Node;
 public class NodeList {
 
     public List<Node> nodes;
-    public float NORMALIZED_MIN_WEIGHT = 0.0f;
-    public float NORMALIZED_MAX_WEIGHT = 1.0f; // desired default weight
+    public float NORMALIZED_MIN_EDGE_WEIGHT = 0.0f;
+    public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f; // desired default weight
     public float NORMALIZED_MIN_RADIUS = 0.01f;
     public float NORMALIZED_MAX_RADIUS = 1.0f; // largely depends on the spatialization settings
-    public float NORMALIZED_MIN_GENERICITY = 1.0f;
-    public float NORMALIZED_MAX_GENERICITY = 2.0f;
+    public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
+    public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;
     public float minX;
     public float minY;
     public float maxX;
@@ -33,10 +33,10 @@ public class NodeList {
     public float graphWidth;
     public float graphHeight;
     public float graphRadius;
-    public float minWeight;
-    public float maxWeight;
-    public float minGenericity;
-    public float maxGenericity;
+    public float minEdgeWeight;
+    public float maxEdgeWeight;
+    public float minNodeWeight;
+    public float maxNodeWeight;
 
     public NodeList(List<Node> nodes) {
         this.nodes = nodes;
@@ -71,10 +71,10 @@ public class NodeList {
         graphRadius = 0.0f;
         graphWidth = 0.0f;
         graphHeight = 0.0f;
-        minWeight = Float.MAX_VALUE;
-        maxWeight = Float.MIN_VALUE;
-        minGenericity = Float.MAX_VALUE;
-        maxGenericity = Float.MIN_VALUE;
+        minEdgeWeight = Float.MAX_VALUE;
+        maxEdgeWeight = Float.MIN_VALUE;
+        minNodeWeight = Float.MAX_VALUE;
+        maxNodeWeight = Float.MIN_VALUE;
     }
 
     public int size() {
@@ -94,10 +94,10 @@ public class NodeList {
                 + "graphRadius=" + graphRadius + ","
                 + "centerX=" + center.x + ", "
                 + "centerY=" + center.y + ", "
-                + "minWeight=" + minWeight + ", "
-                + "maxWeight=" + maxWeight + ";"
-                + "minGenericity=" + minGenericity + ", "
-                + "maxGenericity=" + maxGenericity + ";";
+                + "minEdgeWeight=" + minEdgeWeight + ", "
+                + "maxEdgeWeight=" + maxEdgeWeight + ";"
+                + "minNodeWeight=" + minNodeWeight + ", "
+                + "maxNodeWeight=" + maxNodeWeight + ";";
     }
 
     public void add(Node node) {
@@ -135,18 +135,18 @@ public class NodeList {
             }
 
 
-            // NORMALIZE GENERICITY
-            n.genericity = PApplet.map(n.genericity,
-                    minGenericity, maxGenericity,
-                    NORMALIZED_MIN_GENERICITY, NORMALIZED_MAX_GENERICITY);
+            // NORMALIZE WEIGHT
+            n.weight = PApplet.map(n.weight,
+                    minNodeWeight, maxNodeWeight,
+                    NORMALIZED_MIN_NODE_WEIGHT, NORMALIZED_MAX_NODE_WEIGHT);
             //System.out.println("normalized genericity:"+n.genericity+"\n");
 
             // NORMALIZE WEIGHTS
             for (Long k : n.weights.keySet()) {
                 //System.out.println("  - w1: "+n.weights.get(k));
                 n.weights.put(k, PApplet.map(n.weights.get(k),
-                        minWeight, maxWeight,
-                        NORMALIZED_MIN_WEIGHT, NORMALIZED_MAX_WEIGHT));
+                        minEdgeWeight, maxEdgeWeight,
+                        NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT));
                 //System.out.println("  - w2: "+n.weights.get(k));
             }
 
@@ -169,10 +169,10 @@ public class NodeList {
     // TODO MOYENNE
     private void aftermath() {
         // simple heuristic to correct the values, just in case we didn't found anything
-        if (minWeight == Float.MAX_VALUE) minWeight = (maxWeight!=Float.MIN_VALUE) ? maxWeight -1 : Float.MIN_VALUE + 1;
-        if (maxWeight == Float.MIN_VALUE) maxWeight = (minWeight!=Float.MAX_VALUE) ? minWeight +1 : Float.MAX_VALUE - 1;
-        if (minGenericity == Float.MAX_VALUE) minGenericity = (maxGenericity!=Float.MIN_VALUE) ? maxGenericity -1 : Float.MIN_VALUE + 1;
-        if (maxGenericity == Float.MIN_VALUE) maxGenericity = (minGenericity!=Float.MAX_VALUE) ? minGenericity +1 : Float.MAX_VALUE - 1;
+        if (minEdgeWeight == Float.MAX_VALUE) minEdgeWeight = (maxEdgeWeight!=Float.MIN_VALUE) ? maxEdgeWeight -1 : Float.MIN_VALUE + 1;
+        if (maxEdgeWeight == Float.MIN_VALUE) maxEdgeWeight = (minEdgeWeight!=Float.MAX_VALUE) ? minEdgeWeight +1 : Float.MAX_VALUE - 1;
+        if (minNodeWeight == Float.MAX_VALUE) minNodeWeight = (maxNodeWeight!=Float.MIN_VALUE) ? maxNodeWeight -1 : Float.MIN_VALUE + 1;
+        if (maxNodeWeight == Float.MIN_VALUE) maxNodeWeight = (minNodeWeight!=Float.MAX_VALUE) ? minNodeWeight +1 : Float.MAX_VALUE - 1;
 
         graphWidth = maxX - minX;
         graphHeight = maxY - minY;
@@ -199,20 +199,20 @@ public class NodeList {
         if (n.radius > maxRadius) {
             maxRadius = n.radius;
         }
-        if (n.genericity < minGenericity) {
-            minGenericity = n.genericity;
+        if (n.weight < minNodeWeight) {
+            minNodeWeight = n.weight;
         }
-        if (n.genericity > maxGenericity) {
-            maxGenericity = n.genericity;
+        if (n.weight > maxNodeWeight) {
+            maxNodeWeight = n.weight;
         }
 
 
         for (Float weight : n.weights.values()) {
-            if (weight > maxWeight) {
-                maxWeight = weight;
+            if (weight > maxEdgeWeight) {
+                maxEdgeWeight = weight;
             }
-            if (weight < minWeight) {
-                minWeight = weight;
+            if (weight < minEdgeWeight) {
+                minEdgeWeight = weight;
             }
         }
     }
