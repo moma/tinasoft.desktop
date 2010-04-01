@@ -30,6 +30,7 @@ public class NodeList {
     public float minRadius;
     public float maxRadius;
     public PVector center;
+    public PVector baryCenter;
     public float graphWidth;
     public float graphHeight;
     public float graphRadius;
@@ -68,6 +69,7 @@ public class NodeList {
         minRadius = 0.0f;
         maxRadius = Float.MIN_VALUE;
         center = new PVector(0.0f, 0.0f);
+        baryCenter = new PVector(0.0f,0.0f);
         graphRadius = 0.0f;
         graphWidth = 0.0f;
         graphHeight = 0.0f;
@@ -94,6 +96,8 @@ public class NodeList {
                 + "graphRadius=" + graphRadius + ","
                 + "centerX=" + center.x + ", "
                 + "centerY=" + center.y + ", "
+                + "baryCenterX=" + baryCenter.x + ", "
+                + "baryCenterY=" + baryCenter.y + ", "
                 + "minEdgeWeight=" + minEdgeWeight + ", "
                 + "maxEdgeWeight=" + maxEdgeWeight + ";"
                 + "minNodeWeight=" + minNodeWeight + ", "
@@ -155,9 +159,14 @@ public class NodeList {
 
     public synchronized void computeExtremums() {
         reset();
+        Float mx=null;
+        Float my=null;
         for (Node n : nodes) {
             computeExtremumsKernel(n);
+            mx=(mx==null)?n.x:mx+n.x;
+            my=(my==null)?n.y:my+n.y;
         }
+        baryCenter.set(mx / nodes.size(),my /=nodes.size(),0);
         aftermath();
     }
 
