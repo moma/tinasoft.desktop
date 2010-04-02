@@ -9,17 +9,17 @@
 
 
     <!-- JQUERY -->
-    <script type="text/javascript" src="lib/js/jquery/jquery-1.3.js" language="javascript"></script>
-
+    <script type="text/javascript" src="lib/js/jquery-ui-1.8/jquery-1.4.2.js" language="javascript"></script>
     <!-- JQUERY UI -->
-    <script type="text/javascript" src="lib/js/jquery/jquery.ui.all.js" language="javascript"></script>
+    <script type="text/javascript" src="lib/js/jquery-ui-1.8/ui/jquery-ui.js" language="javascript"></script>
+    <!-- JQUERY UI CSS -->
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
 
     <!-- JQUERY UI ADD-ONS -->
     <script type="text/javascript"  src="lib/js/jquery/jquery.rating.pack.js"        language="javascript"></script>
     <link type="text/css" rel="stylesheet" href="lib/js/jquery/jquery.rating.css"/>
 
-    <!-- UTILITIES -->
+    <!-- Homemade Mozilla UTILITIES -->
     <script type="text/javascript" src="console.js" language="javascript"></script>
     <script type="text/javascript" src="prefman.js" language="javascript"></script>
     <script type="text/javascript" src="xmlhttprequester.js" language="javascript"></script>
@@ -81,8 +81,8 @@
                 <!--<li><a title="" href="#tabs-4">Micro view</a></li>-->
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
-            <div id="tabs-0">
-                <div id="importForm" class="ui-widget ui-widget-content ui-corner-all formleft import-form">
+            <div id="tabs-0" class="ui-corner-bottom">
+                <div id="importForm" class="ui-corner-all formleft import-form">
                     <h1>Import a data set</h1>
                     <h3>Select a source file and an identifier name to import</h3>
                     <label><h3>Data set source file (csv, required)</h3></label><br/>
@@ -114,72 +114,59 @@
                     <div id="duplicate_docs">
                     </div>
                 </div>
-                <!--<div id="exportForm" class="ui-widget ui-widget-content ui-corner-all formleft export-form">
-                    <h1>Export a data set</h1>
-                    <h3>Select a data set and the periods you want to export, then select ngrams setting the status to 's'</h3>
-                    <table id="corpora_table" class="corpora_table">
-                          <thead class="ui-widget-header">
-                            <tr>
-                              <th>Available data sets</th>
-                              <th>Select periods</th>
-                              <th>Available graphs ('path/to/period_proxMin-proxMax.gexf')</th>
-                            </tr>
-                          </thead>
-                        <tbody class="ui-widget-content"></tbody>
-                    </table>
-                    <label><h3>Export path (csv file, required)</h3></label>
-                    <input id="exportfile" class="field" type="file" name="exportfile"/><br/>
-                    <label><h3>Pre-selected ngrams white list path (optional, only used to preset the status)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input the same file format as exported (example in the 'tests' directory)</span><br/>
-                    <input id="prewhitelistfile" class="field" type="file" name="whitelistfile"/><br/>
-                    <label><h3>User defined stopwords path (optional, only used to preset the status)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input a file with one stop-ngram on each line (example in the 'tests' directory)</span><br/>
-                    <input id="preuserstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
-                    <div id="exportCorpora">
-                        <button class="ui-state-default ui-corner-all" >Launch</button>
-                    </div>
-                </div>-->
                 <div style="clear:both;"></div>
             </div>
-            <!-- IMPORTING NGRAM WHITELIST AND CREATE GRAPH TABULATION -->
-            <div id="tabs-1">
-                <div class="ui-widget ui-widget-content ui-corner-all formleft">
-                    <h1>Index thematic fields and generate graphs</h1>
-                    <h3>Select a data set and the periods you want to index</h3>
+            <!-- NGRAM WHITELIST AND GRAPH TAB-->
+            <div id="tabs-1" class="ui-corner-bottom">
+                <div id="tabs-1-accordion" class="ui-corner-all formleft">
+                    <h3><a href="#">data set and periods</a></h3>
                     <div class="session_select">
                         <table id="graph_table" class="corpora_table">
-                              <thead class="ui-widget-header">
+                            <thead class="ui-widget-header">
                                 <tr>
-                                  <th>Available data sets</th>
-                                  <th>Select periods</th>
-                                  <th>Available graphs</th>
+                                    <th>Available data sets</th>
+                                    <th>Select periods</th>
+                                    <th>Available graphs</th>
                                 </tr>
-                              </thead>
+                            </thead>
                             <tbody class="ui-widget-content"></tbody>
                         </table>
                     </div>
-                    <label><h3>Ngrams white list (required)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input the same file format as exported previously (example in the 'tests' directory)</span><br/>
-                    <span class="ui-state-highlight"></span><br/>
-                        <input id="whitelistfile" type="file" class="field"
-                        name="whitelistfile" value='' /><br/>
-                    <label><h3>User-defined stopwords (optional)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input a file with one ngram on each line. Applied only to white listed ngram (example in the 'tests' directory)</span><br/>
-                        <input id="userfiltersfile" type="file" class="field"
-                        name="userfiltersfile" value='' /><br/>
-                    <div id="processCooc" >
-                        <button class="ui-state-default ui-corner-all">Generate a graph</button>
+
+                    <h3><a href="#">n-grams white list</a></h3>
+                    <div>
+                        <label><h4>Create a new white list</h4></label>
+                        <input id="exportfile" type="file" class="field" name="exportfile" value='' />
+                        <div id="exportCorpora">
+                            <button class="ui-state-default ui-corner-all" >New white list</button>
+                        </div>
+                        <label><h4>Or create a new graph a white list</h4></label>
+                        <p class="ui-state-active">
+                        Choose a white list file, preserving previously exported file format
+                        </p>
+                        <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
+                        <div id="processCooc" >
+                        <button class="ui-state-default ui-corner-all">New graph</button>
+                        </div>
                     </div>
-                    <!--<div id="exportCoocMatrix">
-                        <button class="ui-state-disabled ui-corner-all" >Export matrix</button>
-                    </div>-->
-                    <!--<div id="exportGraph">
-                        <button class="ui-state-default ui-state-disabled ui-corner-all" >Generate graph</button>
-                    </div>-->
+
+                    <h3><a href="#">options</a></h3>
+                    <div>
+                        <label><h4>User defined stopwords file</h4></label>
+                        <p class="ui-state-active">
+                        This file must have one ngram on each line<br/>Stopwords applied only on white listed ngrams or used to prepare the status of a new white list
+                        </p>
+                        <input id="userstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
+                        <label><h4>Extra n-grams white list file</h4></label>
+                        <p class="ui-state-active">
+                        Preserving previously exported file format<br/>Used to prepare the status of a new whitelist
+                        </p>
+                        <input id="prewhitelistfile" class="field" type="file" name="prewhitelistfile"/><br/>
+                    </div>
+
                 </div>
                 <div style="clear:both;"></div>
             </div>
-
             <div id="tabs-2" class="ui-corner-bottom">
               <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
 
@@ -190,7 +177,6 @@
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                 </div>
-
 
                 <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
                         <a id="toggle-labels-macro"
@@ -354,6 +340,5 @@
                     <h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>
               </div><!-- / INFODIV -->
        </div> <!-- / WHITEBOX -->
-
 </body>
 </html>

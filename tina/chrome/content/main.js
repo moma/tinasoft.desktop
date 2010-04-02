@@ -160,7 +160,7 @@ var submitImportfile = function(event) {
 var submitprocessCoocGraph = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     var whitelistpath = $("#whitelistfile")
-    var userfilterspath  = $("#userfiltersfile")
+    var userfilterspath  = $("#userstopwordsfile")
     if ( whitelistpath.val() == '' ) {
         whitelistpath.addClass('ui-state-error');
         console.log( "missing the white list path field" );
@@ -218,7 +218,7 @@ var submitExportGraph = function(event) {
 var submitExportCorpora = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     var whitelistpath = $("#prewhitelistfile");
-    var userstopwordspath = $("#preuserstopwordsfile");
+    var userstopwordspath = $("#userstopwordsfile");
     var exportpath = $("#exportfile");
     if ( exportpath.val() == '' ) {
         exportpath.addClass('ui-state-error');
@@ -430,10 +430,14 @@ $(document).ready(function() {
     $("#tabs").data('disabled.tabs', [0, 1, 2, 3, 4]);
 
     $('#infodiv').hide();
-
+    /* restores cache vars */
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-
-
+    /*$('.accordion .head').click(function() {
+        alert("");
+        $(this).next().toggle('slow');
+        return false;
+    }).next().hide();
+    */
     $("#tabs").bind('tabsselect', function(event, ui) {
 
         // MAGIC TRICK FOR THE JAVA IFRAME
@@ -499,7 +503,7 @@ $(document).ready(function() {
 
 
     // MACRO SLIDERS
-      
+
 
     $("#macroSlider_edgeWeight").slider({
         range: true,
@@ -563,21 +567,8 @@ $(document).ready(function() {
         tinaviz.touch("meso");
     }});
 
-
-
-
-
-    /*$("#disable-widgets").toggle(function() {
-    buttons.button("disable");
-    }, function() {
-    buttons.button("enable");
-    });
-    $("#toggle-widgets").toggle(function() {
-    buttons.button();
-    }, function() {
-    buttons.button("destroy");
-    }).click();*/
-    displayListCorpora( "corpora_table" );
+    /* Fetch data into table */
+    //displayListCorpora( "corpora_table" );
     displayListCorpora( "graph_table" );
 
     $('.hover-star').rating({
@@ -596,16 +587,19 @@ $(document).ready(function() {
     });
 
 
-       var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-        var appletPath;
-        if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
-        else { appletPath = path + "/content/applet/index.html" }
-        var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        appletFile.initWithPath(appletPath);
-        var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
-        var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no"  frameborder="1" src="'+appletURL+'"></iframe>';
+    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+    var appletPath;
+    if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
+    else { appletPath = path + "/content/applet/index.html" }
+    var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    appletFile.initWithPath(appletPath);
+    var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
+    var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no"  frameborder="1" src="'+appletURL+'"></iframe>';
+    window.setTimeout("$('#container').html('"+iframehtml+"');", 2000);
 
-        window.setTimeout("$('#container').html('"+iframehtml+"');", 2000);
-
+    $("#tabs-1-accordion").accordion({
+        autoHeight: false,
+        clearStyle: true,
+    });
 });

@@ -83,14 +83,15 @@ function openAddons() {
 function openAboutPlugins() {
    openWindowForType("about:plugins","about:plugins");
 }
-openAboutPlugins();
+// DEBUGGING
+//openAboutPlugins();
 
 function openErrorConsole() {
   openWindowForType("global:console", "chrome://global/content/console.xul");
 }
 
 // DEBUGGING
-openErrorConsole();
+//openErrorConsole();
 
 function openConfig() {
   openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
