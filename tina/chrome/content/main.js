@@ -25,14 +25,13 @@ var tinasoftTaskObserver = {
         if(topic == "tinasoft_runImportFile_finish_status"){
             if (data == TinaService.STATUS_ERROR) {
                 $('#importFile button').toggleClass("ui-state-error", 1);
-                $('#importFile button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
+                $('#importFile button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors or log directory" );
                 return;
             }
             // data contains json encoded list of duplicate documents found
             displayDuplicateDocs( JSON.parse(data) );
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             $('#importFile button').html( "Launch" );
-            displayListCorpora( "corpora_table" );
             displayListCorpora( "graph_table" );
             $( "#corpora_table" ).toggleClass("ui-state-highlight", 1);
         }
@@ -44,17 +43,27 @@ var tinasoftTaskObserver = {
             }
             $('#importFile button').html( "imported "+data+" lines" );
         }
+
         if(topic == "tinasoft_runProcessCoocGraph_finish_status"){
+            var button = $('#processCooc button');
             if (data == TinaService.STATUS_ERROR) {
-                $('#processCooc button').toggleClass("ui-state-error", 1);
-                $('#processCooc button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
+                button.toggleClass("ui-state-error", 1);
+                button.html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors or log directory" );
                 return;
             }
-            $('#processCooc button').html( "Launch" );
-            $('#processCooc button').toggleClass("ui-state-disabled", 1);
-            displayListCorpora( "corpora_table" );
+            else {
+                button.html( "Loading macro view" );
+                tinaviz.clear();
+                console.log( "opening " + data );
+                $("#tabs").data('disabled.tabs', [4]);
+                if (tinaviz.loadRelativeGraph("macro",JSON.parse(data)) == true) {
+                    switchedTo( "macro" );
+                }
+            }
+            button.html("New graph");
+            button.toggleClass("ui-state-disabled", 1);
             displayListCorpora( "graph_table" );
-            $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
+            //$( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
 
         if (topic == "tinasoft_runProcessCoocGraph_running_status") {
@@ -64,15 +73,14 @@ var tinasoftTaskObserver = {
             }
             $('#processCooc button').html( data );
         }
-
+        /*
         if(topic == "tinasoft_runExportGraph_finish_status"){
-            displayListCorpora( "corpora_table" );
             displayListCorpora( "graph_table" );
             $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
 
         if (topic == "tinasoft_runExportGraph_running_status") {
-        }
+        }*/
 
         if(topic == "tinasoft_runExportCorpora_finish_status"){
             if (data == TinaService.STATUS_ERROR) {
@@ -169,10 +177,12 @@ var submitprocessCoocGraph = function(event) {
     // DEBUG VALUE
     var opts = {
         'DocumentGraph': {
-            'threshold': [0.0, 2.0]
+            'edgethreshold': [0.0, 2.0],
+            'nodethreshold': [1, 'inf']
         },
         'NGramGraph': {
-            'threshold': [0.0, 1.0]
+            'edgethreshold': [0.0, 1.0],
+            'nodethreshold': [2, 'inf']
         }
     };
     for (corpora in corporaAndPeriods) {
@@ -568,7 +578,6 @@ $(document).ready(function() {
     }});
 
     /* Fetch data into table */
-    //displayListCorpora( "corpora_table" );
     displayListCorpora( "graph_table" );
 
     $('.hover-star').rating({

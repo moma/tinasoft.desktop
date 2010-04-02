@@ -82,6 +82,51 @@
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-0" class="ui-corner-bottom">
+                <div id="importForm" class="ui-corner-all formleft">
+                    <h3><a href="#">data set and periods</a></h3>
+                    <div class="session_select">
+                        <table id="graph_table" class="corpora_table">
+                            <thead class="ui-widget-header">
+                                <tr>
+                                    <th>Available data sets</th>
+                                    <th>Select periods</th>
+                                    <th>Available graphs</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ui-widget-content"></tbody>
+                        </table>
+                    </div>
+
+                    <h3><a href="#">n-grams white list</a></h3>
+                    <div>
+                        <label><h4>Create a new white list</h4></label>
+                        <input id="exportfile" type="file" class="field" name="exportfile" value='' />
+                        <div id="exportCorpora">
+                            <button class="ui-state-default ui-corner-all" >New white list</button>
+                        </div>
+                        <label><h4>or create a new graph from an existing white list</h4></label>
+                        <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
+                        <div id="processCooc" >
+                        <button class="ui-state-default ui-corner-all">New graph</button>
+                        </div>
+                    </div>
+
+                    <h3><a href="#">options</a></h3>
+                    <div>
+                        <label><h4>User defined stopwords file</h4></label>
+                        <p class="ui-state-active">
+                        This file must have one ngram on each line<br/>Used to prepare the status of a new white list
+                        </p>
+                        <input id="userstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
+                        <label><h4>Extra n-grams white list file</h4></label>
+                        <p class="ui-state-active">
+                        Preserve previously exported file format<br/>Used to prepare the status of a new whitelist
+                        </p>
+                        <input id="prewhitelistfile" class="field" type="file" name="prewhitelistfile"/><br/>
+                    </div>
+
+                </div>
+                <div style="clear:both;"></div>
                 <div id="importForm" class="ui-corner-all formleft import-form">
                     <h1>Import a data set</h1>
                     <h3>Select a source file and an identifier name to import</h3>
@@ -140,10 +185,7 @@
                         <div id="exportCorpora">
                             <button class="ui-state-default ui-corner-all" >New white list</button>
                         </div>
-                        <label><h4>Or create a new graph a white list</h4></label>
-                        <p class="ui-state-active">
-                        Choose a white list file, preserving previously exported file format
-                        </p>
+                        <label><h4>or create a new graph from an existing white list</h4></label>
                         <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
                         <div id="processCooc" >
                         <button class="ui-state-default ui-corner-all">New graph</button>
@@ -154,12 +196,12 @@
                     <div>
                         <label><h4>User defined stopwords file</h4></label>
                         <p class="ui-state-active">
-                        This file must have one ngram on each line<br/>Stopwords applied only on white listed ngrams or used to prepare the status of a new white list
+                        This file must have one ngram on each line<br/>Used to prepare the status of a new white list
                         </p>
                         <input id="userstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
                         <label><h4>Extra n-grams white list file</h4></label>
                         <p class="ui-state-active">
-                        Preserving previously exported file format<br/>Used to prepare the status of a new whitelist
+                        Preserve previously exported file format<br/>Used to prepare the status of a new whitelist
                         </p>
                         <input id="prewhitelistfile" class="field" type="file" name="prewhitelistfile"/><br/>
                     </div>
