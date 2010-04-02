@@ -113,6 +113,11 @@ function Tinaviz() {
         //$('.htoolbar').css('left', (  (wrapper.width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
     },
 
+    recenter: function() {
+        if (applet == null) return false;
+        return applet.recenter();
+    },
+    
     // Public methods
     loadFromURI: function(uri) {
         if (applet == null) return false;

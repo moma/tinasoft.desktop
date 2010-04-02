@@ -78,10 +78,12 @@ label {
     height:12px; 
     margin: 15px;
 }
+
 .sliders {
    position: absolute;
-   left: 450px;
-   top: 56px;
+   left: 550px;
+   top: 46px;
+   color: #ffffee;
 }
 
 .tabfiller {

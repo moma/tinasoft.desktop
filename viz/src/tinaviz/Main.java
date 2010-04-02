@@ -74,6 +74,7 @@ public class Main extends PApplet implements MouseWheelListener {
     int oldScreenHeight = 0;
     private Node oldSelected = null;
     private boolean useOpenCL = false;
+    private boolean recenter = false;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -416,7 +417,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 cameraUpdateNeeded = v.graph.brandNewGraph.getAndSet(false);
             }
 
-            if (cameraUpdateNeeded) {
+            if (cameraUpdateNeeded | recenter) {
+                recenter = false;
                 float screenRadius = (screenWidth + screenHeight) / 2.0f;
 
                 float zoomScale = nodes.graphRadius > 0 ? screenRadius / nodes.graphRadius : 1.0f;
@@ -1278,6 +1280,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void clear(String view) {
         getSession().getView(view).clear();
+    }
+
+    public void recenter() {
+        recenter = true;
     }
 
     public void resetCamera(String view) {
