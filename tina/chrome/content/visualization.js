@@ -3,10 +3,10 @@ function Tinaviz() {
   var applet = null;
   var width = null;
   var height = null;
-  var categoryFilter = "keepCategoryFilter";
-  var categoryFilterSwitch = "including";
 
-
+  var currentMacroViewSame = true;
+  var currentMesoViewSame = true;
+  
   return {
     init: function() {
         if (wrapper != null || applet != null) return;
@@ -72,8 +72,9 @@ function Tinaviz() {
         this.bindFilter("SubGraphCopy",         "subgraph",           "meso");
         this.setProperty("meso", "subgraph/source", "macro");
 		this.setProperty("meso", "subgraph/item", "");
+		this.setProperty("meso", "subgraph/category", "NGram");
 				
-		this.bindFilter("Category",             "category",           "meso");
+		//this.bindFilter("Category",             "category",           "meso");
 				/*
 		// filter by genericity
 		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
@@ -167,6 +168,7 @@ function Tinaviz() {
         /*if (id == null) { $('#sidebariframe').hide(); }
         else            { $('#sidebariframe').show(); }*/
         var cat = this.getProperty(level, "category/value");
+        /*
          if (cat=="Document") {
                 this.setProperty(level, "category/value", "NGram");
                 this.touch(level);
@@ -178,14 +180,22 @@ function Tinaviz() {
                 applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", id);
            }
-           
+           */
         if (level == "macro") {
 
             if (attr=="Document") {
+            
+                if (currentMacroFilter=="Document") {
+                   
+                }
                  //this.setProperty("macro", "category/value", "Document");
                  //this.touch("macro");
                  this.printDocument(x,y,id,label,attr);
             } else if (attr=="NGram") {
+            
+                 if (currentMacroFilter=="Document") {
+                
+                  }
                  //this.setProperty("macro", "category/value", "NGram");
                  //this.touch("macro");
                  this.printNGram(x,y,id,label,attr);
@@ -194,10 +204,18 @@ function Tinaviz() {
            
             this.touch(level);
             if (attr=="Document") { // et clic droit sur un doc
+            
+                 if (currentMacroFilter=="Document") {
+                
+                 }
                 //this.setProperty("meso", "category/value", "Document");
                 //this.touch("meso");
                 this.printDocument(x,y,id,label,attr);
             } else if (attr=="NGram") {
+            
+                if (currentMacroFilter=="Document") {
+                
+                }
                 //this.setProperty("meso", "category/value", "NGram");
                 //this.touch("meso");
                 this.printNGram(x,y,id,label,attr);
@@ -223,13 +241,13 @@ function Tinaviz() {
             if (attr=="Document") {
                  applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", id);
-                this.setProperty("meso", "category/value", "NGram");
+		        this.setProperty("meso", "subgraph/category", "NGram");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {  
                 applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", id);
-                this.setProperty("meso", "category/value", "Document");
+		        this.setProperty("meso", "subgraph/category", "Document");
                 this.touch("meso");               
                 this.printNGram(x,y,id,label);
             }
@@ -237,13 +255,13 @@ function Tinaviz() {
             if (attr=="Document") {
                 applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", id);
-                this.setProperty("meso", "category/value", "NGram");
+                this.setProperty("meso", "subgraph/category", "NGram");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {
                 applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", id);
-                this.setProperty("meso", "category/value", "Document");
+		        this.setProperty("meso", "subgraph/category", "Document");
                 this.touch("meso");
                 this.printNGram(x,y,id,label);
             }
