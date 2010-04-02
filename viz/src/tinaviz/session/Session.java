@@ -4,6 +4,7 @@
  */
 package tinaviz.session;
 
+import tinaviz.browser.Browser;
 import tinaviz.graph.Graph;
 import tinaviz.view.MicroView;
 import tinaviz.view.ViewLevel;
@@ -34,10 +35,11 @@ public class Session {
     public Color background = new Color(12, 12, 12);
     public int fontsize = 12;
     public AtomicBoolean hasBeenRead = new AtomicBoolean(false);
+    public Browser browser = null;
 
     public Session() {
         // graph = new Graph();
-
+        browser = new Browser();
         macro = new MacroView(this);
         meso = new MesoView(this);
         micro = new MicroView(this);
@@ -218,5 +220,9 @@ public class Session {
         meso.addFilter(filterName, root);
         micro.addFilter(filterName, root);
         return true;
+    }
+
+    public void setBrowser(Browser browser) {
+        this.browser = browser;
     }
 }

@@ -25,6 +25,7 @@ import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
 import netscape.javascript.*;
+import tinaviz.browser.Browser;
 import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 import tinaviz.layout.LayoutOpenCL;
@@ -73,6 +74,7 @@ public class Main extends PApplet implements MouseWheelListener {
     int oldScreenHeight = 0;
     private Node oldSelected = null;
     private boolean useOpenCL = false;
+    private boolean recenter = false;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -194,6 +196,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             
             window = JSObject.getWindow(this);
+            session.setBrowser(new Browser(window));
             int w = 200;
             int h = 200;
             /*Object o = window.call("parent.tinaviz.getWidth", null);
@@ -212,6 +215,7 @@ public class Main extends PApplet implements MouseWheelListener {
             size(w, h, engine);
 
         } else {
+            session.setBrowser(new Browser());
             loadDefaultGlobalGraph = true;
             size(screenWidth, screenHeight, engine);
         }
@@ -413,7 +417,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 cameraUpdateNeeded = v.graph.brandNewGraph.getAndSet(false);
             }
 
-            if (cameraUpdateNeeded) {
+            if (cameraUpdateNeeded | recenter) {
+                recenter = false;
                 float screenRadius = (screenWidth + screenHeight) / 2.0f;
 
                 float zoomScale = nodes.graphRadius > 0 ? screenRadius / nodes.graphRadius : 1.0f;
@@ -1275,6 +1280,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void clear(String view) {
         getSession().getView(view).clear();
+    }
+
+    public void recenter() {
+        recenter = true;
     }
 
     public void resetCamera(String view) {
