@@ -152,8 +152,17 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void setup() {
-
         layout = new Layout();
+        /*
+        try {
+            layout = new LayoutOpenCL();
+        } catch (CLBuildException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        
 
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;

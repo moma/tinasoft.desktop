@@ -25,6 +25,7 @@ public class SubGraphCopy extends NodeFilter {
 
     private String KEY_SOURCE = "source";
     private String KEY_ITEM = "item";
+    private String KEY_CATEGORY = "category";
 
     @Override
     public NodeList process(Session session, View localView, NodeList input) {
@@ -37,6 +38,10 @@ public class SubGraphCopy extends NodeFilter {
             localView.properties.put(root + KEY_SOURCE, "macro");
         }
 
+        if (!localView.properties.containsKey(root + KEY_CATEGORY)) {
+            localView.properties.put(root + KEY_CATEGORY, "NGram");
+        }
+
         if (!localView.properties.containsKey(root + KEY_ITEM)) {
             localView.properties.put(root + KEY_ITEM, -1);
         }
@@ -44,8 +49,13 @@ public class SubGraphCopy extends NodeFilter {
         String source = (String) localView.properties.get(root + KEY_SOURCE);
         View sourceView = session.getView(source);
         if (sourceView == null) {
-            // System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got "+source);
+             System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got "+source);
             return input;
+        }
+
+        String category = (String) localView.properties.get(root + KEY_CATEGORY);
+        if (category==null | category.isEmpty()) {
+              System.out.println("uh oh! i am a source and my 'category' parameter is totally wrong! got "+category);
         }
 
 
@@ -95,7 +105,8 @@ public class SubGraphCopy extends NodeFilter {
         for (Long potentialNeighbourId : sources.get(item).neighbours) {
             Node potentialNeighbour = sources.get(potentialNeighbourId);
             if (rootNode.neighbours.contains(potentialNeighbourId) | potentialNeighbour.neighbours.contains(item)) {
-
+                if (!potentialNeighbour.category.equalsIgnoreCase(category))
+                    continue;
                 Node clonedNeighbourNode = potentialNeighbour.getDetachedClone();
 
                 // a new graph, with new positions, each time we click

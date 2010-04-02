@@ -18,7 +18,7 @@ dateEndField: '29/12/1990'
 # csv reader
 delimiter: ','
 quotechar: '"'
-locale: 'en_US.UTF-8'
+locale: ''
 ngramMin: 1
 ngramMax: 4
 stopwords: 'shared\stopwords\en.txt'

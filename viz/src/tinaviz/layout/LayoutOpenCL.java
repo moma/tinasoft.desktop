@@ -38,8 +38,8 @@ public class LayoutOpenCL extends Layout {
 
     public LayoutOpenCL() throws CLBuildException, IOException {
         context = JavaCL.createBestContext();
-         queue = context.createDefaultQueue();
-         
+        queue = context.createDefaultQueue();
+
         dataSize = 128;
 
         input = context.createFloatBuffer(CLMem.Usage.Input, dataSize);
@@ -47,17 +47,16 @@ public class LayoutOpenCL extends Layout {
 
         String sources = "__kernel void  myKernel() {}";
 
-       sources = loadKernelFile(kernelPath);
+        //sources = loadKernelFile(kernelPath);
 
         program = context.createProgram(sources).build();
         kernel = program.createKernel("myKernel");
 
     }
 
-  private String loadKernelFile(String filePath) throws java.io.IOException {
+    private String loadKernelFile(String filePath) throws java.io.IOException {
         StringBuffer fileData = new StringBuffer(1000);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(this
-            .getClass().getClassLoader().getResourceAsStream(filePath)));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filePath)));
         char[] buf = new char[1024];
         int numRead = 0;
         while ((numRead = reader.read(buf)) != -1) {
@@ -75,6 +74,7 @@ public class LayoutOpenCL extends Layout {
         float vx = 1f;
         float vy = 1f;
 
+        /*
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
@@ -90,6 +90,6 @@ public class LayoutOpenCL extends Layout {
         }
         kernelCompletion.waitFor(); // better not to wait for it but to pass it as a dependent event to some other queuable operation (CLBuffer.read, for instance)
 
-
+*/
     }
 }
