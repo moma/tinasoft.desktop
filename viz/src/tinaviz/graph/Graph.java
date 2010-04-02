@@ -43,7 +43,6 @@ public class Graph implements Cloneable {
     public AtomicBoolean needToBeReadAgain = null;
     public AtomicBoolean brandNewGraph = null;
     public AtomicInteger revision;
-
     private Session session = null;
     //public Map<String,Metrics> categorizedMetrics = new HashMap<String,Metrics>();
 
@@ -83,7 +82,7 @@ public class Graph implements Cloneable {
         try {
             XPathReader xml = new XPathReader();
             System.out.println("loading GEXF from string..");
-             xml.parseFromString(str);
+            xml.parseFromString(str);
             //xml.parseFromString(new String(str.getBytes(), "UTF-8"));
 
             //Console.log("<applet> calling parse XML on "+str);
@@ -92,8 +91,8 @@ public class Graph implements Cloneable {
         } catch (XPathExpressionException ex) {
             Console.log(ex.toString());
         }
-       /* } catch (UnsupportedEncodingException ex) {
-             Console.log(ex.toString());
+        /* } catch (UnsupportedEncodingException ex) {
+        Console.log(ex.toString());
         }*/
         return false;
     }
@@ -167,9 +166,11 @@ public class Graph implements Cloneable {
                     org.w3c.dom.Node n = xmlnodeChildren.item(j);
                     if (n.getNodeName().equalsIgnoreCase("attribute")) {
                         Attribute attr = new Attribute(n);
-                        if (n.getFirstChild()!=null)
-                            if (n.getFirstChild().getFirstChild()!=null)
+                        if (n.getFirstChild() != null) {
+                            if (n.getFirstChild().getFirstChild() != null) {
                                 attr.setDefaultValue(n.getFirstChild().getFirstChild().getNodeValue());
+                            }
+                        }
                         this.nodeAttributes.put(attr.id, attr);
 
                     }
@@ -180,9 +181,11 @@ public class Graph implements Cloneable {
                     org.w3c.dom.Node n = xmlnodeChildren.item(j);
                     if (n.getNodeName().equalsIgnoreCase("attribute")) {
                         Attribute attr = new Attribute(n);
-                        if (n.getFirstChild()!=null)
-                            if (n.getFirstChild().getFirstChild()!=null)
+                        if (n.getFirstChild() != null) {
+                            if (n.getFirstChild().getFirstChild() != null) {
                                 attr.setDefaultValue(n.getFirstChild().getFirstChild().getNodeValue());
+                            }
+                        }
                         this.edgeAttributes.put(attr.id, attr);
                     }
                 }
@@ -200,11 +203,11 @@ public class Graph implements Cloneable {
 
             String xmlid = (String) xmlnodeAttributes.getNamedItem("id").getNodeValue();
             String cat = xmlid.split("::")[0];
-            Long uuid = Long.parseLong( xmlid.split("::")[1] );
+            Long uuid = Long.parseLong(xmlid.split("::")[1]);
 
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
-                    : ""+uuid;
+                    : "" + uuid;
 
             Node node = new Node(uuid, label, (float) Math.random() * 2f,
                     (float) Math.random() * 10f,
@@ -235,17 +238,18 @@ public class Graph implements Cloneable {
                                     String attributeId = AttributeIdXML.getNodeValue();
 
                                     Attribute attrib = nodeAttributes.get(attributeId);
-                                   // System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
+                                    // System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
 
                                     if (attrib.key.equalsIgnoreCase("weight")) {
                                         //System.out.println("attrib.key.equalsIgnoreCase(\"genericity\")");
                                         if (attrib.type == Float.class) {
-                                         node.weight = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
-                                         System.out.println("got weight: "+node.weight);
+                                            node.weight = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                            System.out.println("got weight: " + node.weight);
                                         }
                                     } else if (attrib.key.equalsIgnoreCase("category")) {
-                                       if (attrib.type == String.class)
-                                           node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
+                                        if (attrib.type == String.class) {
+                                            node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
+                                        }
                                     }
                                 }
 
@@ -253,7 +257,7 @@ public class Graph implements Cloneable {
                         }
 
                     }
-                }  else if (n.getNodeName().equalsIgnoreCase("viz:position") || n.getNodeName().equalsIgnoreCase("position")) {
+                } else if (n.getNodeName().equalsIgnoreCase("viz:position") || n.getNodeName().equalsIgnoreCase("position")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("x") != null) {
                         node.x = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("x").getNodeValue());
@@ -277,6 +281,16 @@ public class Graph implements Cloneable {
                     }
                     if (xmlnodePositionAttributes.getNamedItem("b") != null) {
                         node.b = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("b").getNodeValue());
+                    }
+                } else {
+                    if (node.category.equals("NGram")) {
+                        node.r = 110;
+                        node.g = 100;
+                        node.b = 150;
+                    } else {
+                        node.r = 150;
+                        node.g = 100;
+                        node.b = 110;
                     }
                 }
 
@@ -320,23 +334,23 @@ public class Graph implements Cloneable {
 
             String sourcexmlid = (String) edgeAttributesXML.getNamedItem("source").getNodeValue();
             String sourcecat = sourcexmlid.split("::")[0];
-            Long source = Long.parseLong( sourcexmlid.split("::")[1] );
+            Long source = Long.parseLong(sourcexmlid.split("::")[1]);
 
             String targetxmlid = (String) edgeAttributesXML.getNamedItem("target").getNodeValue();
             String targetcat = targetxmlid.split("::")[0];
-            Long target = Long.parseLong( targetxmlid.split("::")[1] );
+            Long target = Long.parseLong(targetxmlid.split("::")[1]);
 
-            String type = (edgeAttributesXML.getNamedItem("type")!=null) ?
-                (String) edgeAttributesXML.getNamedItem("type").getNodeValue()
-                : "undirected";
+            String type = (edgeAttributesXML.getNamedItem("type") != null)
+                    ? (String) edgeAttributesXML.getNamedItem("type").getNodeValue()
+                    : "undirected";
             Float weight = (edgeAttributesXML.getNamedItem("weight") != null)
                     ? Float.parseFloat(edgeAttributesXML.getNamedItem("weight").getNodeValue()) : 1.0f;
 
             if (storedNodes.containsKey(source) && storedNodes.containsKey(target)) {
                 storedNodes.get(source).addNeighbour(storedNodes.get(target), weight);
-                 if (type.equalsIgnoreCase("undirected") | type.equalsIgnoreCase("mutual")) {
+                if (type.equalsIgnoreCase("undirected") | type.equalsIgnoreCase("mutual")) {
                     storedNodes.get(target).addNeighbour(storedNodes.get(source), weight);
-                 } 
+                }
             }
 
         }
@@ -344,8 +358,8 @@ public class Graph implements Cloneable {
         /*
         metrics = new Metrics(storedNodes.values());
         metrics.normalize();
-        */
-        
+         */
+
         Console.log("applet: gexf successfully imported.");
 
         locked.set(false);
@@ -414,6 +428,7 @@ public class Graph implements Cloneable {
     public synchronized tinaviz.graph.Node getNode(Long key) {
         return storedNodes.get(key);
     }
+
     public synchronized void clear() {
         storedNodes.clear();
         nodeAttributes.clear();
@@ -439,6 +454,7 @@ public class Graph implements Cloneable {
         }
 
     }
+
     public void unselectNodeById(Long id) {
         boolean changed = false;
         if (storedNodes.containsKey(id)) {
@@ -447,6 +463,7 @@ public class Graph implements Cloneable {
         }
         //if (changed) touch();
     }
+
     public void unselectNodeById(String id) {
         unselectNodeById(Long.parseLong(id));
     }
@@ -459,6 +476,4 @@ public class Graph implements Cloneable {
         }
         //if (changed) touch();
     }
-
-
 }

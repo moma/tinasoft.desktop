@@ -75,9 +75,9 @@ function Tinaviz() {
 		this.setProperty("meso", "subgraph/category", "NGram");
 				
 		//this.bindFilter("Category",             "category",           "meso");
-				/*
+				
 		// filter by genericity
-		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
+		//this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
 		
 		// filter by edge threshold
 		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "meso");
@@ -85,7 +85,7 @@ function Tinaviz() {
 
 		// multiply the radius by the genericity
 		this.bindFilter("NodeFunction",         "radiusByWeight",     "meso");
-		*/
+		
 		// multiply the radius by the GUI slider value
 		this.bindFilter("NodeRadius",           "radius",             "meso");
 		
@@ -189,22 +189,14 @@ function Tinaviz() {
         if (level == "macro") {
 
             if (attr=="Document") {
-            
-                if (currentMacroFilter=="Document") {
-                   
-                }
-                 //this.setProperty("macro", "category/value", "Document");
-                 //this.touch("macro");
-                 this.printDocument(x,y,id,label,attr);
+                this.setProperty("macro", "category/value", "NGram");
+                this.touch("macro");
+                this.printDocument(x,y,id,label,attr);
             } else if (attr=="NGram") {
-            
-                 if (currentMacroFilter=="Document") {
-                
-                  }
-                 //this.setProperty("macro", "category/value", "NGram");
-                 //this.touch("macro");
-                 this.printNGram(x,y,id,label,attr);
-            }
+                this.setProperty("macro", "category/value", "Document");
+                this.touch("macro");
+                this.printNGram(x,y,id,label,attr);
+            } 
         } else if (level == "meso") { // si dans meso
            
             this.touch(level);
@@ -258,13 +250,13 @@ function Tinaviz() {
             }
         } else if (level == "meso") {
             if (attr=="Document") {
-                applet.clear("meso");
+                //applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", attr+'::'+id);
                 this.setProperty("meso", "subgraph/category", "NGram");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {
-                applet.clear("meso");
+                //applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", attr+'::'+id);
 		        this.setProperty("meso", "subgraph/category", "Document");
                 this.touch("meso");
@@ -548,7 +540,10 @@ function Tinaviz() {
         this.logNormal("Searching is not implemented yet..");
     },
 
-  
+  selectNode: function(id) {
+    applet.selectFromId(id);
+  },
+
   printNGram: function(x,y,id,label,attr) {
 
      var ng = getNGram( id );
@@ -569,9 +564,9 @@ function Tinaviz() {
      <h3 class=\"nodedetailsh3\">Linked to these projects:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
-         <a href=\"\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][first]['label']}</a> \
+         <a href=\"javascript:tinaviz.selectNode('#{doc}')\">#{edges_data['Document'][first]['label']}</a> \
      <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-       <br/><a href=\"javascript:tinaviz.selectMacroDocument('#{doc}')\" class=\"ui-widget-content ui-state-default\">#{edges_data['Document'][doc]['label']}</a>\
+       <br/><a href=\"javascript:tinaviz.selectNode('#{doc}')\" >#{edges_data['Document'][doc]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
      
@@ -598,9 +593,9 @@ function Tinaviz() {
      <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
-         <a href=\"\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a> \
+         <a href=\"javascript:tinaviz.selectNode('#{ng}')\">${edges_data['NGram'][ng]['label']}</a> \
      <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
-      <br/><a href=\"javascript:tinaviz.selectMacroTerm('#{ng}')\" class=\"ui-widget-content ui-state-default\">${edges_data['NGram'][ng]['label']}</a>\
+      <br/><a href=\"javascript:tinaviz.selectNode('#{ng}')\" >${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
      </p>\n", doc));
 
