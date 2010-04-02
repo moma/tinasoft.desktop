@@ -82,6 +82,8 @@
                   label="&updates.label;" accesskey="&updates.accesskey;"/>
         <menuitem id="aboutName" oncommand="openAbout()"
                   label="&about.label;" accesskey="&about.accesskey;"/>
+        <menuitem id="fullScreen" oncommand="switchFullScreen()"
+                  label="fullscreen" accesskey="f" key="fullscreen_key"/>
       </menupopup>
     </menu>
 
@@ -97,6 +99,7 @@
     </statusbar>
     <keyset>
         <key id="close_key" modifiers="alt" key="q" oncommand="window.close();"/>
+        <key id="fullscreen_key"  keycode="VK_F11" oncommand="switchFullScreen()"/>
         <key id="reload_key" keycode="VK_F5" oncommand="window.location.reload();"/>
         <!--<key id="reload_key"  modifiers="alt" key="q" keycode="VK_F5" oncommand="window.location.reload();"/>-->
     </keyset>

@@ -166,7 +166,7 @@ public class NodeList {
             mx=(mx==null)?n.x:mx+n.x;
             my=(my==null)?n.y:my+n.y;
         }
-        baryCenter.set(mx / nodes.size(),my /=nodes.size(),0);
+        if (mx!=null && my!=null) baryCenter.set(mx / nodes.size(),my / nodes.size(),0);
         aftermath();
     }
 

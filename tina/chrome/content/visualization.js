@@ -235,18 +235,18 @@ function Tinaviz() {
             return;
         }
 
-               this.logDebug("nodeLeftClicked called on "+level+" "+label+" "+attr+"");
-
+         this.logDebug("nodeLeftClicked called on level: "+level+" id: "+id+" label: "+label+" attr: "+attr+"");
+        
         if (level == "macro") {
             if (attr=="Document") {
                  applet.clear("meso");
-                this.setProperty("meso", "subgraph/item", id);
+                this.setProperty("meso", "subgraph/item", attr+'::'+id);
 		        this.setProperty("meso", "subgraph/category", "NGram");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {  
                 applet.clear("meso");
-                this.setProperty("meso", "subgraph/item", id);
+                this.setProperty("meso", "subgraph/item", attr+'::'+id);
 		        this.setProperty("meso", "subgraph/category", "Document");
                 this.touch("meso");               
                 this.printNGram(x,y,id,label);
@@ -254,13 +254,13 @@ function Tinaviz() {
         } else if (level == "meso") {
             if (attr=="Document") {
                 applet.clear("meso");
-                this.setProperty("meso", "subgraph/item", id);
+                this.setProperty("meso", "subgraph/item", attr+'::'+id);
                 this.setProperty("meso", "subgraph/category", "NGram");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {
                 applet.clear("meso");
-                this.setProperty("meso", "subgraph/item", id);
+                this.setProperty("meso", "subgraph/item", attr+'::'+id);
 		        this.setProperty("meso", "subgraph/category", "Document");
                 this.touch("meso");
                 this.printNGram(x,y,id,label);
@@ -296,6 +296,39 @@ function Tinaviz() {
         }
         this.logDebug('Saving to '+outputFilePath+'</p>');
         setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
+    },
+    
+
+   getNeighbours: function(node_category, node_id, neighbours_category) {
+       this.logDebug("getNeighbours: function("+node_category+", "+node_id+", "+neighbours_category+")");
+       if (node_category=="NGram") {
+           var ng = getNGram( node_id );
+           this.logDebug("ng= "+JSON.stringify(ng));
+           if (ng == null) return null;
+           var neighbours = ng["edges"][neighbours_category];
+           
+           //if ((neighbours.constructor.toString().indexOf("Array") != -1)) {
+            var keys = [];
+            for (var k in neighbours)keys.push(""+k+","+neighbours[k]);
+            return keys.join(";");
+           /*} else {
+             this.logDebug("error, database returned "+JSON.stringify(neighbours));
+           }*/
+       } else if (node_category=="Document") {
+           var doc = getDocument( node_id );
+           this.logDebug("doc= "+JSON.stringify(doc));
+           if (doc == null) return null;
+           var neighbours = doc["edges"][neighbours_category];
+           
+           //if ((neighbours.constructor.toString().indexOf("Array") != -1)) {
+            var keys = [];
+            for (var k in neighbours)keys.push(""+k+","+neighbours[k]);
+            return keys.join(";");
+           /*} else {
+             this.logDebug("error, database returned "+JSON.stringify(neighbours));
+           }*/
+       }
+       return "";
     },
 
     downloadFile: function(outputFilePath, timeout) {
@@ -379,6 +412,7 @@ function Tinaviz() {
         this.logDebug("calling this.loadFromString(..) with a big file!");
         return this.loadFromString(view,str.value);
     },
+    
      // using string technique
     loadAbsoluteGraph: function(view,filename) {
 
