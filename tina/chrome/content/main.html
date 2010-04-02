@@ -114,31 +114,6 @@
                     <div id="duplicate_docs">
                     </div>
                 </div>
-                <!--<div id="exportForm" class="ui-widget ui-widget-content ui-corner-all formleft export-form">
-                    <h1>Export a data set</h1>
-                    <h3>Select a data set and the periods you want to export, then select ngrams setting the status to 's'</h3>
-                    <table id="corpora_table" class="corpora_table">
-                          <thead class="ui-widget-header">
-                            <tr>
-                              <th>Available data sets</th>
-                              <th>Select periods</th>
-                              <th>Available graphs ('path/to/period_proxMin-proxMax.gexf')</th>
-                            </tr>
-                          </thead>
-                        <tbody class="ui-widget-content"></tbody>
-                    </table>
-                    <label><h3>Export path (csv file, required)</h3></label>
-                    <input id="exportfile" class="field" type="file" name="exportfile"/><br/>
-                    <label><h3>Pre-selected ngrams white list path (optional, only used to preset the status)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input the same file format as exported (example in the 'tests' directory)</span><br/>
-                    <input id="prewhitelistfile" class="field" type="file" name="whitelistfile"/><br/>
-                    <label><h3>User defined stopwords path (optional, only used to preset the status)</h3></label><br/>
-                    <span class="ui-state-highlight">Please input a file with one stop-ngram on each line (example in the 'tests' directory)</span><br/>
-                    <input id="preuserstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
-                    <div id="exportCorpora">
-                        <button class="ui-state-default ui-corner-all" >Launch</button>
-                    </div>
-                </div>-->
                 <div style="clear:both;"></div>
             </div>
             <!-- NGRAM WHITELIST AND GRAPH TAB-->
@@ -160,20 +135,33 @@
 
                     <h3><a href="#">n-grams white list</a></h3>
                     <div>
+                        <label><h4>Create a new white list</h4></label>
+                        <input id="exportfile" type="file" class="field" name="exportfile" value='' />
+                        <div id="exportCorpora">
+                            <button class="ui-state-default ui-corner-all" >New white list</button>
+                        </div>
+                        <label><h4>Or create a new graph a white list</h4></label>
                         <p class="ui-state-active">
-                        Please input a file with one ngram on each line. Applied only to white listed ngram (example in the 'tests' directory)
+                        Choose a white list file, preserving previously exported file format
                         </p>
                         <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
+                        <div id="processCooc" >
+                        <button class="ui-state-default ui-corner-all">New graph</button>
+                        </div>
                     </div>
 
                     <h3><a href="#">options</a></h3>
                     <div>
-                        <p class="ui-state-highlight">
-                        Please input a file with one ngram on each line. Applied only to white listed ngram (example in the 'tests' directory)
+                        <label><h4>User defined stopwords file</h4></label>
+                        <p class="ui-state-active">
+                        This file must have one ngram on each line<br/>Stopwords applied only on white listed ngrams or used to prepare the status of a new white list
                         </p>
-                        <!--<div id="processCooc" >-->
-                        <button class="ui-state-default ui-corner-all">Generate a graph</button>
-                        <!--</div>-->
+                        <input id="userstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
+                        <label><h4>Extra n-grams white list file</h4></label>
+                        <p class="ui-state-active">
+                        Preserving previously exported file format<br/>Used to prepare the status of a new whitelist
+                        </p>
+                        <input id="prewhitelistfile" class="field" type="file" name="prewhitelistfile"/><br/>
                     </div>
 
                 </div>

@@ -160,7 +160,7 @@ var submitImportfile = function(event) {
 var submitprocessCoocGraph = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     var whitelistpath = $("#whitelistfile")
-    var userfilterspath  = $("#userfiltersfile")
+    var userfilterspath  = $("#userstopwordsfile")
     if ( whitelistpath.val() == '' ) {
         whitelistpath.addClass('ui-state-error');
         console.log( "missing the white list path field" );
@@ -218,7 +218,7 @@ var submitExportGraph = function(event) {
 var submitExportCorpora = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     var whitelistpath = $("#prewhitelistfile");
-    var userstopwordspath = $("#preuserstopwordsfile");
+    var userstopwordspath = $("#userstopwordsfile");
     var exportpath = $("#exportfile");
     if ( exportpath.val() == '' ) {
         exportpath.addClass('ui-state-error');
