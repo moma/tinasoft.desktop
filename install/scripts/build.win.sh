@@ -6,7 +6,7 @@ echo "########################################"
 echo ""
 
 name="Tinasoft"
-version="1.0alpha"
+version="1.0alpha2"
 arch="WINNT_x86"
 xulrunner="xulrunner-1.9.1"
 platform="$arch-msvc"
@@ -74,7 +74,7 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
 fi
 
 if [ -e ".packaging/$arch/$xulrunner/platform" ]
-  then 
+  then
     echo " - platform-specific libraries found"
   else
     echo " - platform-specific libraries not found, downloading.."

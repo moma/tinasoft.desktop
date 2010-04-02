@@ -33,6 +33,7 @@ var tinasoftTaskObserver = {
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             $('#importFile button').html( "Launch" );
             displayListCorpora( "graph_table" );
+            displayListCorpora( "corpora_table" );
             $( "#corpora_table" ).toggleClass("ui-state-highlight", 1);
         }
 
@@ -63,6 +64,7 @@ var tinasoftTaskObserver = {
             button.html("New graph");
             button.toggleClass("ui-state-disabled", 1);
             displayListCorpora( "graph_table" );
+            displayListCorpora( "corpora_table" );
             //$( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
 
@@ -117,7 +119,10 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_runni
 /* Duplicate document in data set controler */
 var displayDuplicateDocs = function(data) {
     var div = $( "#duplicate_docs" ).empty();
-    div.append( JSON.stringify( data ) );
+    div.append( "<h3>Duplicate documents found</h3>" );
+    for ( var i=0; i < data.length; i++ ) {
+        div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
+    }
 };
 
 /**************************
@@ -442,12 +447,7 @@ $(document).ready(function() {
     $('#infodiv').hide();
     /* restores cache vars */
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-    /*$('.accordion .head').click(function() {
-        alert("");
-        $(this).next().toggle('slow');
-        return false;
-    }).next().hide();
-    */
+
     $("#tabs").bind('tabsselect', function(event, ui) {
 
         // MAGIC TRICK FOR THE JAVA IFRAME
@@ -527,7 +527,7 @@ $(document).ready(function() {
     });
     $("#macroSlider_nodeWeight").slider({
         range: true,
-    values: [0, 200],
+        values: [0, 200],
         animate: true,
         slide: function(event, ui) {
             tinaviz.setProperty("macro", "nodeWeight/min", ui.values[0] / 200.0);
@@ -579,6 +579,7 @@ $(document).ready(function() {
 
     /* Fetch data into table */
     displayListCorpora( "graph_table" );
+    displayListCorpora( "corpora_table" );
 
     $('.hover-star').rating({
         callback: function(value, link){
@@ -608,6 +609,10 @@ $(document).ready(function() {
     window.setTimeout("$('#container').html('"+iframehtml+"');", 2000);
 
     $("#tabs-1-accordion").accordion({
+        autoHeight: false,
+        clearStyle: true,
+    });
+    $("#importForm").accordion({
         autoHeight: false,
         clearStyle: true,
     });
