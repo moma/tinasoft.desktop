@@ -27,6 +27,7 @@ tina/import.yaml
 tina/tmp/*
 tina/chrome/content/applet/tinaviz.jar
 tina/graph.pdf
+tina/shared/gexf/gexf.template.cache
 tina/log/*
 tina/db/*
 tina/index/*
