@@ -75,6 +75,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private Node oldSelected = null;
     private boolean useOpenCL = false;
     private boolean recenter = false;
+    private boolean doUnselection = false;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -157,14 +158,14 @@ public class Main extends PApplet implements MouseWheelListener {
         layout = new Layout();
         /*
         try {
-            layout = new LayoutOpenCL();
+        layout = new LayoutOpenCL();
         } catch (CLBuildException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+
         } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }*/
-        
+
 
         boolean generateRandomLocalGraph = false;
         boolean loadDefaultLocalGraph = false;
@@ -194,7 +195,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 engine = JAVA2D;
 
             }
-            
+
             window = JSObject.getWindow(this);
             session.setBrowser(new Browser(window));
             int w = 200;
@@ -318,9 +319,8 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             session.getMacro().getGraph().updateFromURI(
                     //"file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
-                     "file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf"
-                   // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
-                   // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
+                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
@@ -403,6 +403,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             return;
         }
+        boolean cameraUpdateNeeded = false;
         // System.out.println("now working on view "+v);
         NodeList n = v.popNodes();
         if (n != null) {
@@ -412,68 +413,68 @@ public class Main extends PApplet implements MouseWheelListener {
 
             //if (nodes.size() < 1) return;
 
-            boolean cameraUpdateNeeded = false;
+
             if (width > 0 && height > 0) {
                 cameraUpdateNeeded = v.graph.brandNewGraph.getAndSet(false);
             }
-
-            if (cameraUpdateNeeded | recenter) {
-                recenter = false;
-                float screenRadius = (screenWidth + screenHeight) / 2.0f;
-
-                float zoomScale = nodes.graphRadius > 0 ? screenRadius / nodes.graphRadius : 1.0f;
-
-                System.out.println("got " + nodes.size() + " nodes");
-                /*! TODO !*/
-                v.sceneScale = zoomScale;
-                System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + zoomScale);
-
-                PVector translate = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
-
-                System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
-
-                PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
-                translate.add(PVector.div(screenCenter, v.sceneScale));
-                System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
-
-                v.translation.set(translate);
-            }
-            /*
-            switch (v.centeringMode) {
-            case FREE_MOVE:
-
-            if (cameraUpdateNeeded) {
-            System.out.println("Camera Update Needed in FREE MOVE mode!");
-            // metrics are already recomputed
-            v.resetZoom();
-            v.resetToGraphBarycenter();
-            }
-
-            break;
-            case GLOBAL_GRAPH_BARYCENTER:
-            System.out.println("GLOBAL_GRAPH_BARYCENTER!");
-
-            if (cameraUpdateNeeded) {
-
-            v.resetZoom();
-            }
-            v.resetToGraphBarycenter();
-
-
-            break;
-            case SELECTED_GRAPH_BARYCENTER:
-            System.out.println("SELECTED_GRAPH_BARYCENTER!");
-            if (cameraUpdateNeeded) {
-
-            v.resetZoom();
-            }
-            v.resetToSelectionBarycenter();
-
-            break;
-            }*
-             * 
-             */
         }
+        if (cameraUpdateNeeded | recenter) {
+            recenter = false;
+            float screenRadius = (screenWidth + screenHeight) / 2.0f;
+
+            float zoomScale = nodes.graphRadius > 0 ? screenRadius / nodes.graphRadius : 1.0f;
+
+            System.out.println("got " + nodes.size() + " nodes");
+            /*! TODO !*/
+            v.sceneScale = zoomScale;
+            System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + zoomScale);
+
+            PVector translate = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
+
+            System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+
+            PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
+            translate.add(PVector.div(screenCenter, v.sceneScale));
+            System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+
+            v.translation.set(translate);
+        }
+        /*
+        switch (v.centeringMode) {
+        case FREE_MOVE:
+
+        if (cameraUpdateNeeded) {
+        System.out.println("Camera Update Needed in FREE MOVE mode!");
+        // metrics are already recomputed
+        v.resetZoom();
+        v.resetToGraphBarycenter();
+        }
+
+        break;
+        case GLOBAL_GRAPH_BARYCENTER:
+        System.out.println("GLOBAL_GRAPH_BARYCENTER!");
+
+        if (cameraUpdateNeeded) {
+
+        v.resetZoom();
+        }
+        v.resetToGraphBarycenter();
+
+
+        break;
+        case SELECTED_GRAPH_BARYCENTER:
+        System.out.println("SELECTED_GRAPH_BARYCENTER!");
+        if (cameraUpdateNeeded) {
+
+        v.resetZoom();
+        }
+        v.resetToSelectionBarycenter();
+
+        break;
+        }*
+         *
+         */
+
 
         //session.animationPaused = tmp; // TODO replace by a lock here
         //preSpatialize = 60;
@@ -655,6 +656,10 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
             }
 
+            if (doUnselection) {
+                n1.selected = false;
+            }
+
             for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
                     continue;
@@ -672,21 +677,21 @@ public class Main extends PApplet implements MouseWheelListener {
 
                         if (mutual) {
                             if (n1.selected && n2.selected) {
-                                stroke(0, 0, 0, 230);
+                                stroke(0, 0, 0, 200);
                             } else if (n1.selected || n2.selected) {
-                                stroke(0, 0, 0, 210);
+                                stroke(0, 0, 0, 180);
                             } else {
-                                float m = 200.0f;
+                                float m = 180.0f;
                                 float r = (255.0f - m) / 255.0f;
                                 stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
                             }
                         } else {
                             if (n1.selected && n2.selected) {
-                                stroke(0, 0, 0, 200);
-                            } else if (n1.selected || n2.selected) {
                                 stroke(0, 0, 0, 180);
+                            } else if (n1.selected || n2.selected) {
+                                stroke(0, 0, 0, 160);
                             } else {
-                                float m = 170.0f;
+                                float m = 160.0f;
                                 float r = (255.0f - m) / 255.0f;
                                 stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
                             }
@@ -815,9 +820,9 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
 
                 if (n.selected) {
-                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255), alpha);
+                    fill(constrain(n.r , 0, 255), constrain(n.g, 0, 255), constrain(n.b , 0, 255), alpha);
                 } else if (n.highlighted) {
-                    fill(constrain(n.r - 10, 0, 255), constrain(n.g - 10, 0, 255), constrain(n.b - 10, 0, 255), alpha);
+                    fill(constrain(n.r + 40, 0, 255), constrain(n.g + 40, 0, 255), constrain(n.b + 40, 0, 255), alpha);
                 } else {
                     fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha);
                 }
@@ -900,6 +905,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
         selectNode = null;
         selectNone = false;
+
+        doUnselection = false;
     }
 
     public void drawCurve(Node n1, Node n2) {
@@ -952,6 +959,7 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void resetSelection() {
+        doUnselection = true;
         session.unselectAll();
     }
 
@@ -1295,15 +1303,20 @@ public class Main extends PApplet implements MouseWheelListener {
         System.out.println("resetCamera(" + view + ") called, but NOT IMPLEMENTED");
     }
 
-    public void select(Long id) {
+
+    public void selectFromDbId(String str) {
+        System.out.println("str:"+str);
+        String category = (String)str.split("::")[0];
+        Long id = Long.parseLong(str.split("::")[1]);
         getSession().selectNodeById(id);
         selectNode = id;
     }
 
-    public void select(String id) {
-        select(Long.parseLong(id));
+    public void selectFromId(String str) {
+        Long id = Long.parseLong(str);
+        getSession().selectNodeById(id);
+        selectNode = id;
     }
-
     public void unselect() {
         getSession().unselectAll();
         selectNone = true;
