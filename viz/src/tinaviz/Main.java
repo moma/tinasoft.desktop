@@ -87,12 +87,12 @@ public class Main extends PApplet implements MouseWheelListener {
             return; // in debug mode
         }
         if (n == null) {
-            window.eval("parent.tinaviz.nodeLeftClicked('" + session.getLevel() + "',0,0,null,null,null);");
+            window.eval("setTimeout(\"parent.tinaviz.nodeLeftClicked('" + session.getLevel() + "',0,0,null,null,null);\",1);");
         } else {
-            window.eval("parent.tinaviz.nodeLeftClicked('" + session.getLevel() + "',"
+            window.eval("setTimeout(\"parent.tinaviz.nodeLeftClicked('" + session.getLevel() + "',"
                     + screenX(n.x, n.y) + ","
-                    + screenY(n.x, n.y) + ",\""
-                    + n.uuid + "\",\"" + n.label + "\", \"" + n.category + "\");");
+                    + screenY(n.x, n.y) + ",'"
+                    + n.uuid + "','" + n.label + "', '" + n.category + "');\",1);");
         }
     }
 
@@ -107,19 +107,19 @@ public class Main extends PApplet implements MouseWheelListener {
             return; // in debug mode
         }
         if (n == null) {
-            window.eval("parent.tinaviz.nodeRightClicked('" + session.getLevel() + "',0,0,null,null,null);");
+            window.eval("setTimeout(\"parent.tinaviz.nodeRightClicked('" + session.getLevel() + "',0,0,null,null,null);\",1);");
         } else {
-            window.eval("parent.tinaviz.nodeRightClicked('" + session.getLevel() + "',"
+            window.eval("setTimeout(\"parent.tinaviz.nodeRightClicked('" + session.getLevel() + "',"
                     + screenX(n.x, n.y) + ","
-                    + screenY(n.x, n.y) + ",\""
-                    + n.uuid + "\",\"" + n.label + "\", \"" + n.category + "\");");
+                    + screenY(n.x, n.y) + ",'"
+                    + n.uuid + "','" + n.label + "', '" + n.category + "');\",1);");
         }
     }
 
     private void jsSwitchToMacro() {
         session.toMacroLevel();
         if (window != null) {
-            window.eval("parent.tinaviz.switchedTo('macro');");
+            window.eval("setTimeout(\"parent.tinaviz.switchedTo('macro');\"),1);");
         }
 
     }
@@ -127,14 +127,14 @@ public class Main extends PApplet implements MouseWheelListener {
     private void jsSwitchToMeso() {
         session.toMesoLevel();
         if (window != null) {
-            window.eval("parent.tinaviz.switchedTo('meso');");
+            window.eval("setTimeout(\"parent.tinaviz.switchedTo('meso');\"),1);");
         }
     }
 
     private void jsSwitchToMicro() {
         session.toMicroLevel();
         if (window != null) {
-            window.eval("parent.tinaviz.switchedTo('micro');");
+            window.eval("setTimeout(\"parent.tinaviz.switchedTo('micro');\"),1);");
         }
     }
 
