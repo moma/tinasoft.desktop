@@ -414,7 +414,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 v.sceneScale = zoomScale;
                 System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + zoomScale);
 
-                PVector translate = new PVector(nodes.center.x, nodes.center.y);
+                PVector translate = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
 
                 System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
 

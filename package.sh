@@ -5,6 +5,8 @@ echo "# TINASOFT BUILD SCRIPT 1.0 #"
 echo "#############################"
 echo ""
 
+rm tina/log/*.txt
+
 #cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
 applet="viz/dist/tinaviz.jar"    # /   (root directory)
 if [ -e "$applet" ]
@@ -21,9 +23,9 @@ else
   mkdir dist
 fi
 
-install/scripts/build.x86_64.sh
+#install/scripts/build.x86_64.sh
 #install/scripts/build.i686.sh
-#install/scripts/build.win.sh
+install/scripts/build.win.sh
 
 
 #mount -o loop -t hfs tinasoft.dmg /mnt/mydmg
