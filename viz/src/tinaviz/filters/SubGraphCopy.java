@@ -156,9 +156,7 @@ public class SubGraphCopy extends NodeFilter {
                 float neighbourWeight = Float.parseFloat(neigh[1]);
                 System.out.println("  - "+neighbourID+": "+neighbourWeight);
                 if (!localView.graph.storedNodes.containsKey(neighbourID)) {
-                    for (Long k : sources.keySet()) {
-                        System.out.println("--"+k);
-                    }
+
                     if (!sources.containsKey(neighbourID)) {
                         //System.out.println("Error, creating new nodes is not implemented");
                         continue;
