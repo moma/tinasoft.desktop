@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="description" content="">
     <meta name="keywords" content="Tinasoft,CREA">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
 
     <!-- JQUERY -->
@@ -82,38 +82,42 @@
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-0" class="ui-corner-bottom">
-                <div id="importForm" class="ui-corner-all formleft import-form">
-                    <h1>Import a data set</h1>
-                    <h3>Select a source file and an identifier name to import</h3>
-                    <label><h3>Data set source file (csv, required)</h3></label><br/>
-                    <span class="ui-state-highlight">Please follow the template file given in the 'tests' directory</span><br/>
-                    <span class="ui-state-highlight">
+                <div id="importForm" class="ui-corner-all formleft">
+                    <h3><a href="#">import a file</a></h3>
+                    <div>
+                        <label><h4>source csv file</h4><label>
+                        <p class="ui-state-active">
                         'doc_num' and 'corp_num' are <b>unique</b> id names<br/>
                         'corp_num' represents a <b>period</b> id name
-                    </span><br/>
-                    <input id="csvfile" class="field" type="file" name="csvfile" /><br/>
-                    <!--<label>Extraction configuration file (yaml)</label>-->
-                    <input id="configfile" class="field" type="hidden" name="configfile" value='import.yaml' /><br/>
-                    <label><h3>Data set name identifier (required)</h3></label><br/>
-                    <span class="ui-state-highlight">
-                    Please choose a <b>unique</b> name for each data set
-                    </span><br/>
-                    <input id="corpora" type="text" name="corpora" size="24"/><br/><br/>
-                    <!--<label><h3>Overwrite</h3></label><br/>
-                    <span class="ui-state-highlight">OFF updates the data set only with the non-existing documents</span><br/>
-                    <span class="ui-state-highlight">ON overwrites all the existing objects</span><br/>-->
-                    <!--<input id="overwrite" type="checkbox" name="overwrite" disabled />-->
-                    <br/>
-                    <!--<label>Extraction export file path (csv)</label>
-                    <input id="exportfile" type="file" class="field" name="exportfile" value='ngrams-export.csv' /><br/>-->
-                    <!--<label>Index full-text</label>
-                    <input type="checkbox" name="Check3" /><br/>-->
-                    <div id="importFile">
-                        <button class="ui-state-default ui-corner-all">Launch</button>
+                        </p>
+                        <input id="csvfile" type="file" class="field" name="csvfile" value='' />
+                        <input id="configfile" class="field" type="hidden" name="configfile" value='import.yaml' />
                     </div>
-                    <div id="duplicate_docs">
+                    <h3><a href="#">choose an name</a></h3>
+                    <div>
+                        <label><h4>data set name (unique identifier)</h4><label>
+                        <p class="ui-state-active">
+                        choosing an existing name will update the data set
+                        </p>
+                        <input id="corpora" type="text" name="corpora" size="24"/>
+                        <div id="importFile">
+                            <button class="ui-state-default ui-corner-all">Launch</button>
+                        </div>
                     </div>
                 </div>
+                <div id="data_sets" class="ui-corner-all formleft">
+                    <table id="corpora_table" class="corpora_table">
+                            <thead class="ui-widget-header">
+                                <tr>
+                                    <th>data sets</th>
+                                    <th>periods</th>
+                                    <th>Available graphs</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ui-widget-content"></tbody>
+                    </table>
+                </div>
+                <div id="duplicate_docs" class="ui-corner-all formleft"></div>
                 <div style="clear:both;"></div>
             </div>
             <!-- NGRAM WHITELIST AND GRAPH TAB-->
@@ -140,10 +144,7 @@
                         <div id="exportCorpora">
                             <button class="ui-state-default ui-corner-all" >New white list</button>
                         </div>
-                        <label><h4>Or create a new graph a white list</h4></label>
-                        <p class="ui-state-active">
-                        Choose a white list file, preserving previously exported file format
-                        </p>
+                        <label><h4>or create a new graph from an existing white list</h4></label>
                         <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
                         <div id="processCooc" >
                         <button class="ui-state-default ui-corner-all">New graph</button>
@@ -154,12 +155,12 @@
                     <div>
                         <label><h4>User defined stopwords file</h4></label>
                         <p class="ui-state-active">
-                        This file must have one ngram on each line<br/>Stopwords applied only on white listed ngrams or used to prepare the status of a new white list
+                        This file must have one ngram on each line<br/>Used to prepare the status of a new white list
                         </p>
                         <input id="userstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
                         <label><h4>Extra n-grams white list file</h4></label>
                         <p class="ui-state-active">
-                        Preserving previously exported file format<br/>Used to prepare the status of a new whitelist
+                        Preserve previously exported file format<br/>Used to prepare the status of a new whitelist
                         </p>
                         <input id="prewhitelistfile" class="field" type="file" name="prewhitelistfile"/><br/>
                     </div>

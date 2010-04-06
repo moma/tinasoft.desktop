@@ -25,15 +25,15 @@ var tinasoftTaskObserver = {
         if(topic == "tinasoft_runImportFile_finish_status"){
             if (data == TinaService.STATUS_ERROR) {
                 $('#importFile button').toggleClass("ui-state-error", 1);
-                $('#importFile button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
+                $('#importFile button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors or log directory" );
                 return;
             }
             // data contains json encoded list of duplicate documents found
             displayDuplicateDocs( JSON.parse(data) );
             $('#importFile button').toggleClass("ui-state-disabled", 1);
             $('#importFile button').html( "Launch" );
-            displayListCorpora( "corpora_table" );
             displayListCorpora( "graph_table" );
+            displayListCorpora( "corpora_table" );
             $( "#corpora_table" ).toggleClass("ui-state-highlight", 1);
         }
 
@@ -44,17 +44,28 @@ var tinasoftTaskObserver = {
             }
             $('#importFile button').html( "imported "+data+" lines" );
         }
+
         if(topic == "tinasoft_runProcessCoocGraph_finish_status"){
+            var button = $('#processCooc button');
             if (data == TinaService.STATUS_ERROR) {
-                $('#processCooc button').toggleClass("ui-state-error", 1);
-                $('#processCooc button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
+                button.toggleClass("ui-state-error", 1);
+                button.html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors or log directory" );
                 return;
             }
-            $('#processCooc button').html( "Launch" );
-            $('#processCooc button').toggleClass("ui-state-disabled", 1);
-            displayListCorpora( "corpora_table" );
+            else {
+                button.html( "Loading macro view" );
+                tinaviz.clear();
+                console.log( "opening " + data );
+                $("#tabs").data('disabled.tabs', [4]);
+                if (tinaviz.loadRelativeGraph("macro",JSON.parse(data)) == true) {
+                    switchedTo( "macro" );
+                }
+            }
+            button.html("New graph");
+            button.toggleClass("ui-state-disabled", 1);
             displayListCorpora( "graph_table" );
-            $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
+            displayListCorpora( "corpora_table" );
+            //$( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
 
         if (topic == "tinasoft_runProcessCoocGraph_running_status") {
@@ -64,15 +75,14 @@ var tinasoftTaskObserver = {
             }
             $('#processCooc button').html( data );
         }
-
+        /*
         if(topic == "tinasoft_runExportGraph_finish_status"){
-            displayListCorpora( "corpora_table" );
             displayListCorpora( "graph_table" );
             $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
         }
 
         if (topic == "tinasoft_runExportGraph_running_status") {
-        }
+        }*/
 
         if(topic == "tinasoft_runExportCorpora_finish_status"){
             if (data == TinaService.STATUS_ERROR) {
@@ -109,7 +119,10 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_runni
 /* Duplicate document in data set controler */
 var displayDuplicateDocs = function(data) {
     var div = $( "#duplicate_docs" ).empty();
-    div.append( JSON.stringify( data ) );
+    div.append( "<h3>Duplicate documents found</h3>" );
+    for ( var i=0; i < data.length; i++ ) {
+        div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
+    }
 };
 
 /**************************
@@ -169,10 +182,12 @@ var submitprocessCoocGraph = function(event) {
     // DEBUG VALUE
     var opts = {
         'DocumentGraph': {
-            'threshold': [0.0, 2.0]
+            'edgethreshold': [0.0, 2.0],
+            'nodethreshold': [1, 'inf']
         },
         'NGramGraph': {
-            'threshold': [0.0, 1.0]
+            'edgethreshold': [0.0, 1.0],
+            'nodethreshold': [2, 'inf']
         }
     };
     for (corpora in corporaAndPeriods) {
@@ -432,12 +447,7 @@ $(document).ready(function() {
     $('#infodiv').hide();
     /* restores cache vars */
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-    /*$('.accordion .head').click(function() {
-        alert("");
-        $(this).next().toggle('slow');
-        return false;
-    }).next().hide();
-    */
+
     $("#tabs").bind('tabsselect', function(event, ui) {
 
         // MAGIC TRICK FOR THE JAVA IFRAME
@@ -517,7 +527,7 @@ $(document).ready(function() {
     });
     $("#macroSlider_nodeWeight").slider({
         range: true,
-    values: [0, 200],
+        values: [0, 200],
         animate: true,
         slide: function(event, ui) {
             tinaviz.setProperty("macro", "nodeWeight/min", ui.values[0] / 200.0);
@@ -568,8 +578,8 @@ $(document).ready(function() {
     }});
 
     /* Fetch data into table */
-    //displayListCorpora( "corpora_table" );
     displayListCorpora( "graph_table" );
+    displayListCorpora( "corpora_table" );
 
     $('.hover-star').rating({
         callback: function(value, link){
@@ -599,6 +609,10 @@ $(document).ready(function() {
     window.setTimeout("$('#container').html('"+iframehtml+"');", 2000);
 
     $("#tabs-1-accordion").accordion({
+        autoHeight: false,
+        clearStyle: true,
+    });
+    $("#importForm").accordion({
         autoHeight: false,
         clearStyle: true,
     });
