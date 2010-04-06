@@ -34,4 +34,4 @@ tina/index/*
 tina/user/*
 tina/plugins/*
 tina/pylib/tinasoft/*
-tina/java
+tina/java/*
