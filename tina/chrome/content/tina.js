@@ -84,7 +84,7 @@ function openAboutPlugins() {
    openWindowForType("about:plugins","about:plugins");
 }
 // DEBUGGING
-//openAboutPlugins();
+openAboutPlugins();
 
 function openErrorConsole() {
   openWindowForType("global:console", "chrome://global/content/console.xul");

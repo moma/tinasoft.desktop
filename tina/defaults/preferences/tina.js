@@ -2,16 +2,16 @@
 pref("general.startup.tina",true);
 pref("toolkit.defaultChromeURI", "chrome://tina/content/tina.xul");
 
-pref("plugin.expose_full_path","true");
+pref("plugin.expose_full_path",true);
 
 /* hack to stop system-wide java plugin scans */
 //pref("plugin.scan.SunJRE", "1.9"); 
-pref("plugin.scan.4xPluginFolder", "false");
-pref("plugin.scan.plid.all", "false");
-pref("plugin.scan.WindowsMediaPlayer", "19.0");
+//pref("plugin.scan.4xPluginFolder", false);
+//pref("plugin.scan.plid.all", false);
+//pref("plugin.scan.WindowsMediaPlayer", "19.0");
 
-//pref("java.default_java_location_others","java");
-//pref("java.java_plugin_library_name","javaplugin_oji");
+pref("java.default_java_location_others","/home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/java");
+//pref("java.java_plugin_library_name","libnpjp2");
 
 /* magic hack */
 pref("capability.principal.codebase.p0.granted", "UniversalXPConnect");
