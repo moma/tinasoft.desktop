@@ -6,7 +6,7 @@ echo "########################################"
 echo ""
 
 name="Tinasoft"
-version="1.0alpha2"
+version="1.0alpha2_julian"
 arch="WINNT_x86"
 xulrunner="xulrunner-1.9.1"
 platform="$arch-msvc"
@@ -89,9 +89,19 @@ echo " - moving files around to create the windows build.."
 cp -R tina $outpath
 rm -Rf $outpath/xulrunner
 rm -Rf $outpath/platform
+if [ -e $outpath/plugins ]
+  then
+    rm -Rf $outpath/plugins
+fi
 rm -Rf $outpath/db
-rm -Rf $outpath/user
-rm -Rf $outpath/index
+if [ -e $outpath/user ]
+  then
+    rm -Rf $outpath/user
+fi
+if [ -e $outpath/index ]
+  then
+    rm -Rf $outpath/index
+fi
 rm -Rf $outpath/*.yaml
 cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina

@@ -32,5 +32,6 @@ tina/log/*
 tina/db/*
 tina/index/*
 tina/user/*
+tina/plugins/*
 tina/pylib/tinasoft/*
 tina/java

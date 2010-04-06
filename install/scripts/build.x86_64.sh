@@ -25,6 +25,7 @@ echo " - copying xulrunner files to output distribution.."
 cp -R tina $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
+rm -Rf $outpath/plugins
 rm -Rf $outpath/db
 rm -Rf $outpath/user
 rm -Rf $outpath/index

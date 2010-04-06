@@ -1,9 +1,22 @@
-#/bin/bash
+#/bin/sh
+if [ -e plugins ]
+  then
+    echo "found plugins dir"
+  else
+    mkdir plugins
+fi
+if [ -e plugins/libnpjp2.so ]
+  then
+    echo "found java plugin!"
+  else
+    ln -s `pwd`/java/lib/amd64/libnpjp2.so plugins/libnpjp2.so
+fi
+
 export LD_LIBRARY_PATH=`pwd`/platform/Linux_x86_64-gcc3/lib
 export NLTK_DATA=`pwd`/shared/nltk_data
-export JAVA_HOME=`pwd`/java
-export PATH=`pwd`/java:`pwd`/xulrunner
-echo $JAVA_HOME
+#export JAVA_HOME=`pwd`/java
+export PATH=`pwd`/java
+#echo $JAVA_HOME
 echo $PATH
 ./tina-stub
 #xulrunner application.ini

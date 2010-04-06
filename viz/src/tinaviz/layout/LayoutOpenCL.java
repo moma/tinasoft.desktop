@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 package tinaviz.layout;
-
+/*
 import com.nativelibs4java.opencl.*;
 
 import static com.nativelibs4java.opencl.OpenCL4Java.*;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import processing.core.PApplet;
 import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
-import tinaviz.view.View;
+import tinaviz.view.View;*/
 
 /**
  * Hardware-accelerated layout engine
@@ -25,7 +25,7 @@ import tinaviz.view.View;
  * @author Julian Bilcke
  */
 public class LayoutOpenCL extends Layout {
-
+/*
     private CLContext context;
     private CLQueue queue;
     private CLFloatBuffer input;
@@ -74,7 +74,7 @@ public class LayoutOpenCL extends Layout {
         float vx = 1f;
         float vy = 1f;
 
-        /*
+        
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
@@ -90,6 +90,8 @@ public class LayoutOpenCL extends Layout {
         }
         kernelCompletion.waitFor(); // better not to wait for it but to pass it as a dependent event to some other queuable operation (CLBuffer.read, for instance)
 
-*/
+
     }
+ 
+ */
 }

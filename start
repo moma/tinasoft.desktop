@@ -1,4 +1,18 @@
-cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
+#!/bin/bash
+if [ -e tina/java ]
+  then 
+    echo "found java!"
+  else
+    wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86_64.tar.gz
+    tar xjf java-x86_64.tar.gz
+    rm java-x86_64.tar.gz
+    mv java tina/java
+fi
+
+if [ -e viz/dist/tinaviz ]
+  then
+    cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
+fi
 cp -R ../Tinasoft*/tinasoft tina/pylib/
 cp ../Tinasoft*/*.yaml tina/
 #cp ../Tinasoft*/*.yaml install/skeletons/windows/
