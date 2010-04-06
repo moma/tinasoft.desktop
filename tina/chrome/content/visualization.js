@@ -564,9 +564,9 @@ function Tinaviz() {
      <h3 class=\"nodedetailsh3\">Linked to these projects:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
-         <a href=\"javascript:tinaviz.selectNode('#{doc}')\">#{edges_data['Document'][first]['label']}</a> \
+         <a href=\"javascript:tinaviz.selectNode('#{doc}')\" class=\"detailtext\">#{edges_data['Document'][first]['label']}</a> \
      <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-       <br/><a href=\"javascript:tinaviz.selectNode('#{doc}')\" >#{edges_data['Document'][doc]['label']}</a>\
+       <br/><a href=\"javascript:tinaviz.selectNode('#{doc}')\" class=\"detailtext\">#{edges_data['Document'][doc]['label']}</a>\
      <?js } ?>.\
      </p>\n", ng));
      
@@ -593,9 +593,9 @@ function Tinaviz() {
      <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
-         <a href=\"javascript:tinaviz.selectNode('#{ng}')\">${edges_data['NGram'][ng]['label']}</a> \
+         <a href=\"javascript:tinaviz.selectNode('#{ng}')\" class=\"detailtext\">${edges_data['NGram'][ng]['label']}</a> \
      <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
-      <br/><a href=\"javascript:tinaviz.selectNode('#{ng}')\" >${edges_data['NGram'][ng]['label']}</a>\
+      <br/><a href=\"javascript:tinaviz.selectNode('#{ng}')\" class=\"detailtext\">${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
      </p>\n", doc));
 

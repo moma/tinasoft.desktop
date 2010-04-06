@@ -5,7 +5,7 @@ pref("toolkit.defaultChromeURI", "chrome://tina/content/tina.xul");
 pref("plugin.expose_full_path","true");
 
 /* hack to stop system-wide java plugin scans */
-pref("plugin.scan.SunJRE", "1.9"); 
+//pref("plugin.scan.SunJRE", "1.9"); 
 pref("plugin.scan.4xPluginFolder", "false");
 pref("plugin.scan.plid.all", "false");
 pref("plugin.scan.WindowsMediaPlayer", "19.0");

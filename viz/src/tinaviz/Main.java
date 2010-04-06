@@ -28,7 +28,7 @@ import netscape.javascript.*;
 import tinaviz.browser.Browser;
 import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
-import tinaviz.layout.LayoutOpenCL;
+//import tinaviz.layout.LayoutOpenCL;
 import tinaviz.ui.PaintTools;
 import tinaviz.util.MathFunctions;
 

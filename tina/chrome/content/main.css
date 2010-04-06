@@ -90,6 +90,9 @@ label {
    height:500px; 
 }
 
+.detailtext {
+    color: #000000;
+}
 /*
 .htoolbar {
     position:absolute;
