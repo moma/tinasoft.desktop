@@ -4,9 +4,14 @@ if [ -e tina/java ]
     echo "found java!"
   else
     wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86_64.tar.gz
-    tar xjf java-x86_64.tar.gz
-    rm java-x86_64.tar.gz
+    tar xf java-x86_64.tar.gz
     mv java tina/java
+    if [ -e tina/java] 
+      then
+        rm java-x86_64.tar.gz
+      else
+        echo "couldn't extract java, please do it manually"
+    fi
 fi
 
 if [ -e viz/dist/tinaviz ]
