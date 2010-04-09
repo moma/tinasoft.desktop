@@ -1,6 +1,6 @@
 package tinaviz;
 
-import com.nativelibs4java.opencl.CLBuildException;
+//import com.nativelibs4java.opencl.CLBuildException;
 import java.io.IOException;
 import tinaviz.layout.Layout;
 import tinaviz.util.Console;
@@ -74,8 +74,10 @@ public class Main extends PApplet implements MouseWheelListener {
     int oldScreenHeight = 0;
     private Node oldSelected = null;
     private boolean useOpenCL = false;
-    private boolean recenter = false;
+    private boolean recenter = true;
     private boolean doUnselection = false;
+    private boolean alwaysAntiAliasing = false;
+    private float oldZoomScale = -1f;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -172,8 +174,8 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean loadDefaultGlobalGraph = false;
         boolean generateRandomGlobalGraph = false;
 
-        font = loadFont(DEFAULT_FONT);
-        //font = createFont("Arial", 96, true);
+        // font = loadFont(DEFAULT_FONT);
+        font = createFont("Arial", 100, true);
         //String[] fontList = PFont.list();
         //println(fontList);
 
@@ -317,9 +319,9 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
         if (loadDefaultGlobalGraph) {
+            Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    //"file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/CSS_bipartite_graph.gexf"
-                    "file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/bipartite_graph_mixed_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
@@ -385,13 +387,14 @@ public class Main extends PApplet implements MouseWheelListener {
         if (window != null) {
             window.eval("parent.tinaviz.init();");
         }
-
+        Console.log("Visualization started..");
     }
 
     @Override
     public void draw() {
         // todo replace by get network
         View v = session.getView();
+
 
         // HACK
         v.screenWidth = width;
@@ -403,7 +406,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             return;
         }
-        boolean cameraUpdateNeeded = false;
+        //boolean cameraUpdateNeeded = false;
         // System.out.println("now working on view "+v);
         NodeList n = v.popNodes();
         if (n != null) {
@@ -415,29 +418,55 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             if (width > 0 && height > 0) {
-                cameraUpdateNeeded = v.graph.brandNewGraph.getAndSet(false);
+                if (!recenter) {
+                    recenter = v.graph.brandNewGraph.getAndSet(false);
+                    if (recenter) {
+                        oldZoomScale = -1f;
+                    }
+                }
             }
         }
-        if (cameraUpdateNeeded | recenter) {
-            recenter = false;
+
+
+        if (recenter) {
+
             float screenRadius = (screenWidth + screenHeight) / 2.0f;
+            nodes.computeExtremums();
 
-            float zoomScale = nodes.graphRadius > 0 ? screenRadius / nodes.graphRadius : 1.0f;
+            v.sceneScale = nodes.graphRadius > 0 ? (screenRadius * 0.5f / nodes.graphRadius) : 1.0f;
 
-            System.out.println("got " + nodes.size() + " nodes");
+
+            if (abs(oldZoomScale - v.sceneScale) <= 0.3) {
+                recenter = false;
+                System.out.println("stabilization reached, disabling recentering");
+
+            } else {
+                oldZoomScale = v.sceneScale;
+
+
+                //System.out.println("got " + nodes.size() + " nodes");
             /*! TODO !*/
-            v.sceneScale = zoomScale;
-            System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + zoomScale);
 
-            PVector translate = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
+                System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + v.sceneScale);
+                PVector baryCenter = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
+                PVector translate = new PVector();
+                translate.set(baryCenter);
+                System.out.println("baryCenter x:" + nodes.baryCenter.x + " y:" + nodes.baryCenter.y);
 
-            System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+                System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
 
-            PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
-            translate.add(PVector.div(screenCenter, v.sceneScale));
-            System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+                translate.set(PVector.div(translate, v.sceneScale));
 
-            v.translation.set(translate);
+                PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
+                //PVector screenCenterScaled = PVector.div(screenCenter);
+                translate.add(screenCenter);
+
+                //PVector screenCenterScaled = PVector.div(screenCenter, v.sceneScale);
+
+                System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+
+                v.translation.set(translate);
+            }
         }
         /*
         switch (v.centeringMode) {
@@ -604,7 +633,11 @@ public class Main extends PApplet implements MouseWheelListener {
             bezierDetail(25);
 
         } else {
-            noSmooth();
+            if (alwaysAntiAliasing) {
+                smooth();
+            } else {
+                noSmooth();
+            }
             bezierDetail(7);
             layout.fast(v, nodes);
             //v.graph.touch(); // do the layout (recompute all the scene as well..)
@@ -677,23 +710,23 @@ public class Main extends PApplet implements MouseWheelListener {
 
                         if (mutual) {
                             if (n1.selected && n2.selected) {
-                                stroke(0, 0, 0, 200);
-                            } else if (n1.selected || n2.selected) {
-                                stroke(0, 0, 0, 180);
-                            } else {
-                                float m = 180.0f;
-                                float r = (255.0f - m) / 255.0f;
-                                stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
-                            }
-                        } else {
-                            if (n1.selected && n2.selected) {
                                 stroke(0, 0, 0, 180);
                             } else if (n1.selected || n2.selected) {
                                 stroke(0, 0, 0, 160);
                             } else {
+                                float m = 180.0f;
+                                float r = (255.0f - m) / 255.0f;
+                                stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
+                            }
+                        } else {
+                            if (n1.selected && n2.selected) {
+                                stroke(0, 0, 0, 160);
+                            } else if (n1.selected || n2.selected) {
+                                stroke(0, 0, 0, 140);
+                            } else {
                                 float m = 160.0f;
                                 float r = (255.0f - m) / 255.0f;
-                                stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 60, 255));
+                                stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
                             }
                         }
 
@@ -772,7 +805,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             float nodeScreenDiameter = screenX(n.x + rad2, n.y) - screenX(n.x - rad2, n.y);
 
-            if (nodeScreenDiameter < 2) {
+            if (nodeScreenDiameter < 1) {
                 continue;
             }
 
@@ -820,7 +853,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
 
                 if (n.selected) {
-                    fill(constrain(n.r , 0, 255), constrain(n.g, 0, 255), constrain(n.b , 0, 255), alpha);
+                    fill(constrain(n.r, 0, 255), constrain(n.g, 0, 255), constrain(n.b, 0, 255), alpha);
                 } else if (n.highlighted) {
                     fill(constrain(n.r + 40, 0, 255), constrain(n.g + 40, 0, 255), constrain(n.b + 40, 0, 255), alpha);
                 } else {
@@ -970,6 +1003,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mouseMoved() {
+
         Node candidate = null;
         for (Node n : nodes.nodes) {
             n.highlighted = false;
@@ -1076,6 +1110,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mouseDragged() {
+        recenter = false;
         if (mouseButton == RIGHT) {
             View v = session.getView();
             v.translation.sub(lastMousePosition);
@@ -1092,6 +1127,8 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
+
+
         if (e.getUnitsToScroll() == 0) {
             return;
         }
@@ -1100,6 +1137,7 @@ public class Main extends PApplet implements MouseWheelListener {
         lastMousePosition.set(mouseX, mouseY, 0);
         v.translation.sub(lastMousePosition);
 
+        // TODO check for limits before
         if (e.getWheelRotation() < 0) {
             v.sceneScale *= 4.f / 3.f;
             v.translation.mult(4.f / 3.f);
@@ -1294,19 +1332,39 @@ public class Main extends PApplet implements MouseWheelListener {
         recenter = true;
     }
 
+    public void touch(String level) {
+        getView(level).getGraph().touch();
+    }
+
+    public boolean dispatchProperty(String key, Object value) throws KeyException {
+        return getSession().setProperty(key, value);
+    }
+
+    public boolean setProperty(String level, String key, Object value) throws KeyException {
+        return getView(level).setProperty(key, value);
+    }
+
+    public Object getProperty(String level, String key) throws KeyException {
+        return getView(level).getProperty(key);
+    }
+
+    public boolean setAntiAliasing(boolean a) {
+        alwaysAntiAliasing = a;
+        return a;
+    }
+
     public void resetCamera(String view) {
         /*
         View v = getSession().getView(view);
         v.resetCamera();
-         * 
+         *
          */
         System.out.println("resetCamera(" + view + ") called, but NOT IMPLEMENTED");
     }
 
-
     public void selectFromDbId(String str) {
-        System.out.println("str:"+str);
-        String category = (String)str.split("::")[0];
+        System.out.println("str:" + str);
+        String category = (String) str.split("::")[0];
         Long id = Long.parseLong(str.split("::")[1]);
         getSession().selectNodeById(id);
         selectNode = id;
@@ -1317,6 +1375,7 @@ public class Main extends PApplet implements MouseWheelListener {
         getSession().selectNodeById(id);
         selectNode = id;
     }
+
     public void unselect() {
         getSession().unselectAll();
         selectNone = true;
