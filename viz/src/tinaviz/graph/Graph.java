@@ -361,7 +361,7 @@ public class Graph implements Cloneable {
             } else {
                 target = Long.parseLong(targetxmlid);
             }
-            System.out.println("("+source+","+target+")");
+
 
             String type = (edgeAttributesXML.getNamedItem("type") != null)
                     ? (String) edgeAttributesXML.getNamedItem("type").getNodeValue()

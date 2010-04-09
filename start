@@ -14,7 +14,7 @@ if [ -e tina/java ]
     fi
 fi
 
-if [ -e viz/dist/tinaviz.jar ]
+if [ -e viz/dist/tinaviz ]
   then
     cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
 fi
