@@ -66,11 +66,11 @@
         <menuitem id="menu-reload" oncommand="window.location.reload();" class="menuitem-iconic"
                   label="&reload.label;" accesskey="&reload.accesskey;" key="reload_key"/>
         <menuitem label="Close" accesskey="c" key="close_key" oncommand="window.close();"/>
-        <menuitem id="pyshell_menuitem"
+        <!--<menuitem id="pyshell_menuitem"
                   label="pyshell"
                   accesskey="p"
                   class="menuitem-iconic"
-                  oncommand="pyshell_launch();"/>
+                  oncommand="pyshell_launch();"/>-->
       </menupopup>
     </menu>
 

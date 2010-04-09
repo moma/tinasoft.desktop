@@ -58,11 +58,17 @@ fi
 echo " - copying xulrunner files to output distribution.."
 
 cp -R tina $outpath
+rm -Rf $outpath/db
+rm -Rf $outpath/platform
+rm -Rf $outpath/extensions/*
+rm -Rf $outpath/log/*
+rm -Rf $outpath/shared/gexf/gexf.template.*
+find $outpath -name *.pyo -delete
+find $outpath -name *.pyc -delete
+
 rm $outpath/tina
 rm $outpath/tina-stub
 rm -Rf $outpath/xulrunner
-rm -Rf $outpath/db
-rm -Rf $outpath/user
 rm -Rf $outpath/index
 rm -Rf $outpath/*.yaml
 cp install/skeletons/$arch/* $outpath
