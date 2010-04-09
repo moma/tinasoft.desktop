@@ -540,7 +540,7 @@ $(document).ready(function() {
 
     $("#macroSlider_nodeSize").slider({
         value: 25.0,
-        max: 200.0,
+        max: 200.0,// precision/size
         animate: true,
         slide: function(event, ui) {
         tinaviz.setProperty("macro", "radius/value", ui.value / 200.0);
@@ -573,7 +573,7 @@ $(document).ready(function() {
     $("#mesoSlider_nodeSize").slider({
     
         value: 25.0,
-        max: 200.0,
+        max: 200.0,// precision/size
         animate: true,
         slide: function(event, ui) {
         tinaviz.setProperty("meso", "radius/value", ui.value / 200.0);

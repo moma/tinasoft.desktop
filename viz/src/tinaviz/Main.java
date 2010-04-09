@@ -415,10 +415,16 @@ public class Main extends PApplet implements MouseWheelListener {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
 
           
-            nodes = n;
-
-            //nodes.clear();
-            //nodes.addAll(n);
+            /*
+            for (Node nd : n.nodes) {
+                if (nd.original != null) {
+                    nd.x = nd.original.x;
+                    nd.y = nd.original.y;
+                }
+            }
+             */
+            nodes.clear();
+            nodes.addAll(n);
 
             //if (nodes.size() < 1) return;
 

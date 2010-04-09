@@ -35,7 +35,7 @@ function Tinaviz() {
 	    this.dispatchProperty("genericity/min", 0.0);
 	    this.dispatchProperty("genericity/max", 1.0);
 	    
-	    this.dispatchProperty("radiusByWeight/max", 1.0);
+	    this.dispatchProperty("radiusByWeight/max", 100.0/200.0);
 	    
 	    // we want to keep documents
 	    this.dispatchProperty("category/value", "NGram");
@@ -54,12 +54,12 @@ function Tinaviz() {
 		// filter by genericity
 		
 		
-		//this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
+		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
 		
 		// filter by edge threshold
 		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
 		
-		//this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
+	    this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
 		
 		
 		this.bindFilter("NodeRadius",           "radius",             "macro");  
@@ -77,14 +77,14 @@ function Tinaviz() {
 		//this.bindFilter("Category",             "category",           "meso");
 				
 		// filter by genericity
-		//this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
+		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
 		
 		// filter by edge threshold
 		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "meso");
 
 
 		// multiply the radius by the genericity
-		//this.bindFilter("NodeFunction",         "radiusByWeight",     "meso");
+		this.bindFilter("NodeFunction",         "radiusByWeight",     "meso");
 		
 		// multiply the radius by the GUI slider value
 		this.bindFilter("NodeRadius",           "radius",             "meso");

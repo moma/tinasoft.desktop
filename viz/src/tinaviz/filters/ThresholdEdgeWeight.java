@@ -36,7 +36,7 @@ public class ThresholdEdgeWeight extends NodeFilter {
             Float w = n.weights.get(k);
 
             if (w == null) {
-                System.out.println("weight null for <"+n+","+k+">");
+                //System.out.println("weight null for <"+n+","+k+">");
                 continue;
             }
             if (min <= w && w <= max) {
@@ -66,10 +66,9 @@ public class ThresholdEdgeWeight extends NodeFilter {
             view.properties.put(root+KEY_MAX, 1.0f);
         }
 
-       // System.out.println("min:"+view.graph.metrics.minWeight+" max:"+view.graph.metrics.maxWeight);
 
         float f = input.maxEdgeWeight - input.minEdgeWeight;
-       // System.out.println("f:"+f);
+        System.out.println("f:"+f);
 
         Object o = view.properties.get(root+KEY_MIN);
         min =   (o instanceof Integer)
@@ -86,7 +85,10 @@ public class ThresholdEdgeWeight extends NodeFilter {
                    ? new Float((Double)o)
                    : (Float) o;
         max = max * f + input.minEdgeWeight;
-       // System.out.println("threshold weight got "+input.size()+" nodes in entry");
+               System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
+       System.out.println("min:"+min+" max:"+max);
+
+         System.out.println("threshold weight got "+input.size()+" nodes in entry");
         for (Node n : input.nodes) {
            node(session, view, n);
         }

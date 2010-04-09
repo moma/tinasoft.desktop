@@ -78,11 +78,13 @@ public class Layout {
             n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -3000, +3000);
             n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -3000, +3000);
 
+            
             if (n1.original != null) {
                 n1.original.x = n1.x;
                 n1.original.y = n1.y;
             }
-
+            
+            
             n1.vx = 0.0f;
             n1.vy = 0.0f;
         }   // FOr NODE A

@@ -247,10 +247,10 @@ public class Graph implements Cloneable {
                                     // System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
 
                                     if (attrib.key.equalsIgnoreCase("weight")) {
-                                        //System.out.println("attrib.key.equalsIgnoreCase(\"genericity\")");
-                                        if (attrib.type == Float.class) {
+                             
+                                        if (attrib.type == Float.class | attrib.type == Integer.class | attrib.type == Double.class) {
                                             node.weight = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
-                                            System.out.println("got weight: " + node.weight);
+                                            //System.out.println("got weight: " + node.weight);
                                         }
                                     } else if (attrib.key.equalsIgnoreCase("category")) {
                                         if (attrib.type == String.class) {
