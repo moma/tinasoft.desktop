@@ -65,7 +65,7 @@ public class Main extends PApplet implements MouseWheelListener {
     float selectedX = 0.0f;
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
-    float MAX_NODE_RADIUS = 0.5f; // node radius is normalized to 1.0 for each node, then mult with this value
+    float MAX_NODE_RADIUS = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_THICKNESS = 100.0f;
     private Long selectNode = null;
@@ -78,6 +78,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean doUnselection = false;
     private boolean alwaysAntiAliasing = false;
     private float oldZoomScale = -1f;
+    private float realWidth = 0.0f;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -430,42 +431,45 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (recenter) {
 
-            float screenRadius = (screenWidth + screenHeight) / 2.0f;
+            float screenRadius = (width + height) / 2.0f;
             nodes.computeExtremums();
 
             v.sceneScale = nodes.graphRadius > 0 ? (screenRadius * 0.5f / nodes.graphRadius) : 1.0f;
 
+
+
+
+            //System.out.println("got " + nodes.size() + " nodes");
+            /*! TODO !*/
+            System.out.println("width: " + width + " heihgt: " + height );
+            System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + v.sceneScale);
+            PVector baryCenter = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
+            PVector translate = new PVector();
+            translate.set(baryCenter);
+            System.out.println("baryCenter x:" + nodes.baryCenter.x + " y:" + nodes.baryCenter.y);
+
+            System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+
+            translate.set(PVector.div(translate, v.sceneScale));
+
+            PVector screenCenter = new PVector(width / 2.0f, height / 2.0f, 0);
+            //PVector screenCenterScaled = PVector.div(screenCenter);
+            translate.add(screenCenter);
+
+            //PVector screenCenterScaled = PVector.div(screenCenter, v.sceneScale);
+
+            System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+
+            v.translation.set(translate);
 
             if (abs(oldZoomScale - v.sceneScale) <= 0.3) {
                 recenter = false;
                 System.out.println("stabilization reached, disabling recentering");
 
             } else {
+
                 oldZoomScale = v.sceneScale;
 
-
-                //System.out.println("got " + nodes.size() + " nodes");
-            /*! TODO !*/
-
-                System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + v.sceneScale);
-                PVector baryCenter = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
-                PVector translate = new PVector();
-                translate.set(baryCenter);
-                System.out.println("baryCenter x:" + nodes.baryCenter.x + " y:" + nodes.baryCenter.y);
-
-                System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
-
-                translate.set(PVector.div(translate, v.sceneScale));
-
-                PVector screenCenter = new PVector(screenWidth / 2.0f, screenHeight / 2.0f, 0);
-                //PVector screenCenterScaled = PVector.div(screenCenter);
-                translate.add(screenCenter);
-
-                //PVector screenCenterScaled = PVector.div(screenCenter, v.sceneScale);
-
-                System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
-
-                v.translation.set(translate);
             }
         }
         /*
@@ -1329,6 +1333,7 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void recenter() {
+        System.out.println("calling recenter()");
         recenter = true;
     }
 

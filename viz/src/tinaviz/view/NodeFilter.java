@@ -25,7 +25,7 @@ public class NodeFilter implements Filter {
     
     public NodeFilter() {
         enabled.set(true);
-        System.out.println("Filter "+this+" created!");
+        // System.out.println("Filter "+this+" created!");
     }
 
     protected Node node(Session session, View view, Node n) {
