@@ -202,8 +202,14 @@ public class Graph implements Cloneable {
             org.w3c.dom.NamedNodeMap xmlnodeAttributes = xmlnode.getAttributes();
 
             String xmlid = (String) xmlnodeAttributes.getNamedItem("id").getNodeValue();
-            String cat = xmlid.split("::")[0];
-            Long uuid = Long.parseLong(xmlid.split("::")[1]);
+            String cat = "BAD_CATEGORY";
+            Long uuid = 0L;
+            if (xmlid.contains("::")) {
+                cat = xmlid.split("::")[0];
+                uuid = Long.parseLong(xmlid.split("::")[1]);
+            } else {
+                uuid = Long.parseLong(xmlid);
+            }
 
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
@@ -333,12 +339,29 @@ public class Graph implements Cloneable {
 
 
             String sourcexmlid = (String) edgeAttributesXML.getNamedItem("source").getNodeValue();
-            String sourcecat = sourcexmlid.split("::")[0];
-            Long source = Long.parseLong(sourcexmlid.split("::")[1]);
+            String sourcecat = "BAD_CATEGORY";
+            Long source = 0L;
+
+            if (sourcexmlid.contains("::")) {
+                sourcecat = sourcexmlid.split("::")[0];
+                source = Long.parseLong(sourcexmlid.split("::")[1]);
+
+            } else {
+                source = Long.parseLong(sourcexmlid);
+            }
 
             String targetxmlid = (String) edgeAttributesXML.getNamedItem("target").getNodeValue();
-            String targetcat = targetxmlid.split("::")[0];
-            Long target = Long.parseLong(targetxmlid.split("::")[1]);
+            String targetcat = "BAD_CATEGORY";
+            Long target = 0L;
+
+            if (targetxmlid.contains("::")) {
+                targetcat = targetxmlid.split("::")[0];
+                target = Long.parseLong(targetxmlid.split("::")[1]);
+
+            } else {
+                target = Long.parseLong(targetxmlid);
+            }
+            System.out.println("("+source+","+target+")");
 
             String type = (edgeAttributesXML.getNamedItem("type") != null)
                     ? (String) edgeAttributesXML.getNamedItem("type").getNodeValue()
