@@ -19,6 +19,7 @@ public class MicroView extends View {
     public MicroView(Session aThis) {
         super(aThis);
             spatializeWhenMoving = true;
+            graph.locked.set(false);
     }
 
     @Override

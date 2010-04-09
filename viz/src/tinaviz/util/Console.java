@@ -65,22 +65,22 @@ public class Console {
 
     public static void error(String s) {
         if (Main.window != null) {
-            Main.window.eval("parent.tinaviz.logError(\"" + s + "\");");
+            Main.window.eval("parent.tinaviz.logError('" + s + "');");
         }
-        System.out.println("ERROR "+s);
+        System.out.println("[APPLET] ERROR "+s);
     }
 
     public static void log(String s) {
         if (Main.window != null) {
-            Main.window.eval("parent.tinaviz.logNormal(\"" + s + "\");");
+            Main.window.eval("parent.tinaviz.logNormal('" + s + "');");
         }
-        System.out.println("LOG "+s);
+        System.out.println("[APPLET] LOG "+s);
     }
 
     public static void debug(String s) {
         if (Main.window != null) {
-            Main.window.eval("parent.tinaviz.logDebug(\"" + s + "\");");
+            Main.window.eval("parent.tinaviz.logDebug('" + s + "');");
         }
-        System.out.println("DEBUG "+s);
+        System.out.println("[APPLET] DEBUG "+s);
     }
 }

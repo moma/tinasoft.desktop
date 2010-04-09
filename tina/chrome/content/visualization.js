@@ -41,7 +41,7 @@ function Tinaviz() {
 	    this.dispatchProperty("category/value", "NGram");
 	    this.dispatchProperty("category/mode", "keep");
 	        
-		this.dispatchProperty("radius/value", 1.0);
+		this.dispatchProperty("radius/value",  25.0/200.0); // because we set default value to 25/200 in the GUI
 		
 		// we want to create a "batchviz's local exploration"-like behaviour?
 		//  it's trivial with the new architecture! use the "explorer" filter
@@ -92,8 +92,6 @@ function Tinaviz() {
 		// multiply the radius by the GUI slider value
 		this.bindFilter("WeightSize",           "weightSize",         "meso");
         // this.bindFilter("Layout",           "layout",   "meso");
-
-        //this.loadRelativeGraph("macro","user/fet open/8_0.0-1.0.gexf");
 
         // disable the applet when on another tab (to save CPU)
         // WARNING, DISABLING THE APPLET IN OPENGL CAUSE AN INFINITE LOOP

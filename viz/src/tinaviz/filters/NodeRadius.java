@@ -21,7 +21,7 @@ public class NodeRadius extends NodeFilter {
 
     // the range of the sliders
     public float MIN_RADIUS_MAGNIFIER = 1.0f;
-    public float MAX_RADIUS_MAGNIFIER = 100.0f;
+    public float MAX_RADIUS_MAGNIFIER = 10.0f;
 
     @Override
     public NodeList process(Session session, View view, NodeList input) {
@@ -30,7 +30,7 @@ public class NodeRadius extends NodeFilter {
         }
 
         if (!view.properties.containsKey(root + KEY_VALUE)) {
-            view.properties.put(root + KEY_VALUE, 1.0f);
+            view.properties.put(root + KEY_VALUE, 0.125f);
         }
 
         Object o = view.properties.get(root + KEY_VALUE);
@@ -42,9 +42,13 @@ public class NodeRadius extends NodeFilter {
 
        r = PApplet.map(r,0.0f,1.0f,MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
 
+       //System.out.println("radius magnifier: "+r);
+
         for (Node n : input.nodes) {
+
             // we dot not want a "zero sized" node
-            n.radius = 1 + n.radius * r;
+            //System.out.println("n.radius = n.radius * r ---- "+(n.radius*r)+" = "+n.radius+" * "+r);
+            n.radius = n.radius * r;
 
         }
         return input;

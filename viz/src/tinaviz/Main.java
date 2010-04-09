@@ -65,7 +65,7 @@ public class Main extends PApplet implements MouseWheelListener {
     float selectedX = 0.0f;
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
-    float MAX_NODE_RADIUS = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
+    float MAX_NODE_RADIUS = 0.7f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_THICKNESS = 100.0f;
     private Long selectNode = null;
@@ -79,7 +79,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean alwaysAntiAliasing = false;
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
-    private PVector cameraDelta = new PVector(0.0f,0.0f,0.0f);
+    private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -124,7 +124,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private void jsSwitchToMacro() {
         session.toMacroLevel();
         if (window != null) {
-            window.eval("setTimeout(\"parent.tinaviz.switchedTo('macro');\"),1);");
+            window.eval("setTimeout(\"parent.tinaviz.switchedTo('macro');\",1);");
         }
 
     }
@@ -132,14 +132,14 @@ public class Main extends PApplet implements MouseWheelListener {
     private void jsSwitchToMeso() {
         session.toMesoLevel();
         if (window != null) {
-            window.eval("setTimeout(\"parent.tinaviz.switchedTo('meso');\"),1);");
+            window.eval("setTimeout(\"parent.tinaviz.switchedTo('meso');\",1);");
         }
     }
 
     private void jsSwitchToMicro() {
         session.toMicroLevel();
         if (window != null) {
-            window.eval("setTimeout(\"parent.tinaviz.switchedTo('micro');\"),1);");
+            window.eval("setTimeout(\"parent.tinaviz.switchedTo('micro');\",1);");
         }
     }
 
@@ -385,7 +385,7 @@ public class Main extends PApplet implements MouseWheelListener {
         lastMousePosition = new PVector(width / 2.0f, height / 2.0f, 0);
         // fill(255, 184);
 
-        Console.log("Starting visualization..");
+        //Console.log("Starting visualization..");
         if (window != null) {
             window.eval("parent.tinaviz.init();");
         }
@@ -413,8 +413,9 @@ public class Main extends PApplet implements MouseWheelListener {
         NodeList n = v.popNodes();
         if (n != null) {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
-            nodes.clear();
-            nodes.addAll(n);
+            nodes = n;
+            //nodes.clear();
+            //nodes.addAll(n);
 
             //if (nodes.size() < 1) return;
 
@@ -435,21 +436,19 @@ public class Main extends PApplet implements MouseWheelListener {
             float screenRadius = (width + height) / 2.0f;
             nodes.computeExtremums();
 
-            v.sceneScale = nodes.graphRadius > 0 ? (screenRadius * 0.5f / nodes.graphRadius) : 1.0f;
-
-
+            v.sceneScale = nodes.graphRadius > 0 ? (screenRadius * 0.3f / nodes.graphRadius) : 1.0f;
 
 
             //System.out.println("got " + nodes.size() + " nodes");
             /*! TODO !*/
-            System.out.println("width: " + width + " heihgt: " + height );
-            System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + v.sceneScale);
+            //System.out.println("width: " + width + " heihgt: " + height );
+            //System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + nodes.graphRadius + " = " + v.sceneScale);
             PVector baryCenter = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
             PVector translate = new PVector();
             translate.set(baryCenter);
-            System.out.println("baryCenter x:" + nodes.baryCenter.x + " y:" + nodes.baryCenter.y);
+            //System.out.println("baryCenter x:" + nodes.baryCenter.x + " y:" + nodes.baryCenter.y);
 
-            System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+            //System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
 
             translate.set(PVector.div(translate, v.sceneScale));
 
@@ -459,7 +458,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             //PVector screenCenterScaled = PVector.div(screenCenter, v.sceneScale);
 
-            System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
+            //System.out.println("translation1 x:" + translate.x + " y:" + translate.y);
 
             v.translation.set(translate);
 
@@ -1118,12 +1117,12 @@ public class Main extends PApplet implements MouseWheelListener {
         recenter = false;
         if (mouseButton == RIGHT) {
             View v = session.getView();
-            PVector oldTranslation = new PVector(v.translation.x,v.translation.y,0.0f);
+            PVector oldTranslation = new PVector(v.translation.x, v.translation.y, 0.0f);
 
             v.translation.sub(lastMousePosition);
             lastMousePosition.set(mouseX, mouseY, 0);
             v.translation.add(lastMousePosition);
-            
+
             cameraDelta.set(oldTranslation.x - v.translation.x, oldTranslation.y - v.translation.y, 0.0f);
         }
     }
@@ -1155,85 +1154,91 @@ public class Main extends PApplet implements MouseWheelListener {
             v.translation.mult(3.f / 4.f);
         }
         v.translation.add(lastMousePosition);
-        System.out.println("Zoom: " + v.sceneScale);
+        // System.out.println("Zoom: " + v.sceneScale);
 
 
-        Node bestMatchForSwitch = null;
-        Node bestMatchForSelection = null;
+        if (e.getWheelRotation() < 0) {
 
-        for (Node n : nodes.nodes) {
 
-            float rad = n.radius * MAX_NODE_RADIUS;
-            float rad2 = rad + rad * 0.4f;
-            float nsx = screenX(n.x, n.y);
-            float nsy = screenY(n.x, n.y);
 
-            if (!(nsx > width * 0.2f
-                    && nsx < width * 0.8f
-                    && nsy > height * 0.2f
-                    && nsy < height * 0.8f)) {
-                continue;
-            }
+            Node bestMatchForSwitch = null;
+            Node bestMatchForSelection = null;
 
-            float nsr = screenX(n.x + (rad2), n.y) - nsx;
-            if (nsr < 2) {
-                continue;
-            }
 
-            float screenRatio = (((nsr * 2.0f) / (float) width) + ((nsr * 2.0f) / (float) height)) / 2.0f;
-            //System.out.println("nsr: " + nsr);
-            //System.out.println("'- screen ratio: " + screenRatio);
-            if (v.showNodes) {
+            for (Node n : nodes.nodes) {
 
-                switch (session.currentLevel) {
-                    case MACRO:
+                float rad = n.radius * MAX_NODE_RADIUS;
+                float rad2 = rad + rad * 0.4f;
+                float nsx = screenX(n.x, n.y);
+                float nsy = screenY(n.x, n.y);
 
-                        if (screenRatio > screenRatioGoToMesoWhenZoomed) {
-                            if (bestMatchForSwitch != null) {
+                if (!(nsx > width * 0.2f
+                        && nsx < width * 0.8f
+                        && nsy > height * 0.2f
+                        && nsy < height * 0.8f)) {
+                    continue;
+                }
 
-                                if (rad2 > bestMatchForSwitch.radius) {
+                float nsr = screenX(n.x + (rad2), n.y) - nsx;
+                if (nsr < 2) {
+                    continue;
+                }
+
+                float screenRatio = (((nsr * 2.0f) / (float) width) + ((nsr * 2.0f) / (float) height)) / 2.0f;
+                //System.out.println("nsr: " + nsr);
+                //System.out.println("'- screen ratio: " + screenRatio);
+                if (v.showNodes) {
+
+                    switch (session.currentLevel) {
+                        case MACRO:
+
+                            if (screenRatio > screenRatioGoToMesoWhenZoomed) {
+                                if (bestMatchForSwitch != null) {
+
+                                    if (rad2 > bestMatchForSwitch.radius) {
+                                        bestMatchForSelection = null;
+                                        bestMatchForSwitch = n;
+                                    }
+                                } else {
                                     bestMatchForSelection = null;
                                     bestMatchForSwitch = n;
                                 }
-                            } else {
-                                bestMatchForSelection = null;
-                                bestMatchForSwitch = n;
-                            }
-                        } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
-                            if (bestMatchForSelection != null) {
+                            } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
+                                if (bestMatchForSelection != null) {
 
-                                if (rad2 > bestMatchForSelection.radius) {
+                                    if (rad2 > bestMatchForSelection.radius) {
+                                        bestMatchForSelection = n;
+                                    }
+                                } else {
                                     bestMatchForSelection = n;
                                 }
-                            } else {
-                                bestMatchForSelection = n;
                             }
-                        }
-                        break;
+                            break;
+                    }
                 }
-            }
 
-            if (bestMatchForSwitch != null) {
+                if (bestMatchForSwitch != null) {
 
-                // disable the macro to meso switch when the nodes can't be shown
+                    // disable the macro to meso switch when the nodes can't be shown
 
-                if (!bestMatchForSwitch.selected) {
-                    bestMatchForSwitch.selected = true;
-                    session.selectNode(bestMatchForSwitch);
-                    nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSwitch);
+                    if (!bestMatchForSwitch.selected) {
+                        bestMatchForSwitch.selected = true;
+                        session.selectNode(bestMatchForSwitch);
+                        nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSwitch);
+                    }
+                    System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
+                    session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
+                    jsSwitchToMeso();
+                    return;
+
+                } else if (bestMatchForSelection != null) {
+                    if (!bestMatchForSelection.selected) {
+                        bestMatchForSelection.selected = true;
+                        session.selectNode(bestMatchForSelection);
+                        nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
+                    }
+                    return;
                 }
-                System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
-                session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
-                jsSwitchToMeso();
-                return;
-
-            } else if (bestMatchForSelection != null) {
-                if (!bestMatchForSelection.selected) {
-                    bestMatchForSelection.selected = true;
-                    session.selectNode(bestMatchForSelection);
-                    nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
-                }
-                return;
             }
         }
 

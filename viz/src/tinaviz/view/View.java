@@ -35,7 +35,7 @@ public class View {
     public boolean highDefinition = false;
     public boolean spatializeWhenMoving = true;
     public PVector translation = new PVector(0.0f, 0.0f);
-    public float sceneScale = 1.0f;
+    public float sceneScale = 10.0f;
     public float inerX;
     public float inerY;
     public float inerZ;
@@ -55,20 +55,22 @@ public class View {
     public CenteringMode centeringMode = CenteringMode.FREE_MOVE;
 
     public View(Session session) {
-
         graph = new Graph(session);
         filters = new FilterChain(session, this);
-
         hasBeenRead = new AtomicBoolean(false);
-
-        inerX = 0f;
-        inerY = 0f;
-        inerZ = 0f;
 
         repulsion = 0.01f;
         attraction = 0.0001f;
         prespatializeSteps = 0;
 
+        resetParams();
+    }
+
+    protected void resetParams() {
+        inerX = 0f;
+        inerY = 0f;
+        inerZ = 0f;
+        sceneScale = 10.0f;
     }
 
     // TODO refactor these two..
@@ -246,6 +248,7 @@ public class View {
     }
 
     public synchronized void clear() {
+    resetParams();
         graph.clear();
     }
 
