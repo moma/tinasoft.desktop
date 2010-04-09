@@ -79,6 +79,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean alwaysAntiAliasing = false;
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
+    private PVector cameraDelta = new PVector(0.0f,0.0f,0.0f);
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -403,7 +404,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
-                layout.fast(v, nodes);
+                layout.fastAndLabel(v, nodes);
             }
             return;
         }
@@ -822,7 +823,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } else {
 
                 // degrade du radius [r=14 level=255, r=40 level=80]
-                float minRad = 14.0f;
+                float minRad = 12.0f;
                 float maxRad = 25.0f;
                 int maxRadColor = 200;
                 int minRadColor = 1;
@@ -874,7 +875,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             // skip label drawing for small nodes
             // or if we have to hide labels
-            if (nodeScreenDiameter < 13 | !v.showLabels) {
+            if (nodeScreenDiameter < 12 | !v.showLabels) {
                 continue;
             }
 
@@ -1117,9 +1118,13 @@ public class Main extends PApplet implements MouseWheelListener {
         recenter = false;
         if (mouseButton == RIGHT) {
             View v = session.getView();
+            PVector oldTranslation = new PVector(v.translation.x,v.translation.y,0.0f);
+
             v.translation.sub(lastMousePosition);
             lastMousePosition.set(mouseX, mouseY, 0);
             v.translation.add(lastMousePosition);
+            
+            cameraDelta.set(oldTranslation.x - v.translation.x, oldTranslation.y - v.translation.y, 0.0f);
         }
     }
 
