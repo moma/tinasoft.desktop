@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ -e tina/java ]
-  then 
+  then
     echo "found java!"
   else
     wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86_64.tar.gz
@@ -14,7 +14,7 @@ if [ -e tina/java ]
     fi
 fi
 
-if [ -e viz/dist/tinaviz ]
+if [ -e viz/dist/tinaviz.jar ]
   then
     cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
 fi

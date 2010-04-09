@@ -502,8 +502,9 @@ $(document).ready(function() {
         submitExportGraph(event)
     });*/
 
+
     $.extend($.ui.slider.defaults, {
-            range: "min",
+            //range: "min",
             min: 0,
             max: 100,
             value: 100.0,
@@ -569,6 +570,7 @@ $(document).ready(function() {
     });
 
     $("#mesoSlider_nodeSize").slider({
+    
         value: 100,
         max: 200,
         animate: true,

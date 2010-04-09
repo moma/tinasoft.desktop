@@ -59,7 +59,7 @@ public class FilterChain {
             for (Filter f : filters) {
                 System.out.println("processing filter "+f.getRoot());
                 if (interrupted()) {
-                    System.out.println("we're interrupted!");
+                    //System.out.println("we're interrupted!");
                     return;
                 }
                 result = f.process(session, view, result);
@@ -84,7 +84,7 @@ public class FilterChain {
     }
 
     public boolean addFilter(String filterName, String root) {
-        System.out.println("adding filter "+root+"");
+        //System.out.println("adding filter "+root+"");
         Filter f = null;
         if (filterName.equals("ThresholdEdgeWeight")) {
             f = new ThresholdEdgeWeight();

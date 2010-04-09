@@ -4,7 +4,8 @@ set PLATFORMDIR=%cd%\platform\WINNT_x86-msvc
 set LIBDIR=%PLATFORMDIR%\lib
 set BERKELEYBIN=%PLATFORMDIR%\berkeley\bin
 set APPDATA=%PLATFORMDIR%\AppData
-PATH=%BERKELEYBIN%;%LIBDIR%;%APPDATA%
+set JAVA_HOME=%cd%\java
+PATH=%BERKELEYBIN%;%LIBDIR%;%APPDATA%;%JAVA_HOME%;%JAVA_HOME%\lib\
 set NLTK_DATA=%cd%\shared\nltk_data
 echo appdata=%APPDATA%
 echo *******************************

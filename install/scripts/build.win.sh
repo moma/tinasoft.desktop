@@ -10,6 +10,8 @@ version="1.0alpha2_julian"
 arch="WINNT_x86"
 xulrunner="xulrunner-1.9.1"
 platform="$arch-msvc"
+javaurl="http://dl.dropbox.com/u/122451/static/tina/java"
+javazip="java.zip"
 
 xulrunnerdownfile="xulrunner-1.9.1.7.en-US.win32.zip"
 xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozilla/xulrunner/releases/1.9.1.7/runtimes"
@@ -85,10 +87,28 @@ if [ -e ".packaging/$arch/$xulrunner/platform" ]
     rm $platformdownfile
 fi
 
+if [ -e ".packaging/$arch/java" ]
+  then
+    echo " - platform-specific libraries found"
+  else
+    echo " - platform-specific libraries not found, downloading.."
+    wget $javaurl/$javazip
+    unzip $javazip
+    mkdir -p .packaging/$arch/java
+    mv java .packaging/$arch/java
+    rm $javazip
+fi
+
 echo " - moving files around to create the windows build, and cleaning distro files"
+
 cp -R tina $outpath
 rm -Rf $outpath/xulrunner
 rm -Rf $outpath/platform
+if [ -e $outpath/java ]
+  then
+    rm -Rf $outpath/java
+    cp -R .packaging/$arch/java/java $outpath
+fi
 if [ -e $outpath/plugins ]
   then
     rm -Rf $outpath/plugins
