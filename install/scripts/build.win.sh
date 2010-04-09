@@ -85,7 +85,7 @@ if [ -e ".packaging/$arch/$xulrunner/platform" ]
     rm $platformdownfile
 fi
 
-echo " - moving files around to create the windows build.."
+echo " - moving files around to create the windows build, and cleaning distro files"
 cp -R tina $outpath
 rm -Rf $outpath/xulrunner
 rm -Rf $outpath/platform
@@ -93,7 +93,14 @@ if [ -e $outpath/plugins ]
   then
     rm -Rf $outpath/plugins
 fi
+
+
 rm -Rf $outpath/db
+rm -Rf $outpath/extensions/*
+rm -Rf $outpath/log/*
+rm -Rf $outpath/shared/gexf/gexf.template.*
+
+
 if [ -e $outpath/user ]
   then
     rm -Rf $outpath/user
@@ -107,7 +114,7 @@ cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
 cp install/skeletons/$arch/* $outpath
-cp -R install/data/* $outpath
+# cp -R install/data/* $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 cp -R tests $outpath/tests
 
