@@ -412,7 +412,7 @@ public class Main extends PApplet implements MouseWheelListener {
         // System.out.println("now working on view "+v);
         NodeList n = v.popNodes();
         if (n != null) {
-            System.out.println("pop nodes gave something! overwriting node screen cache..");
+            //System.out.println("pop nodes gave something! overwriting node screen cache..");
 
           
             /*

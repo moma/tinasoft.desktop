@@ -52,45 +52,45 @@ public class ThresholdEdgeWeight extends NodeFilter {
     }
 
     @Override
-        public NodeList process(Session session, View view, NodeList input) {
+    public NodeList process(Session session, View view, NodeList input) {
 
-        if(!enabled()) {
+        if (!enabled()) {
             return input;
         }
 
-        if (!view.properties.containsKey(root+KEY_MIN)) {
-            view.properties.put(root+KEY_MIN, 0.0f);
+        if (!view.properties.containsKey(root + KEY_MIN)) {
+            view.properties.put(root + KEY_MIN, 0.0f);
         }
 
-        if (!view.properties.containsKey(root+KEY_MAX)) {
-            view.properties.put(root+KEY_MAX, 1.0f);
+        if (!view.properties.containsKey(root + KEY_MAX)) {
+            view.properties.put(root + KEY_MAX, 1.0f);
         }
 
 
         float f = input.maxEdgeWeight - input.minEdgeWeight;
-        System.out.println("f:"+f);
+        System.out.println("f:" + f);
 
-        Object o = view.properties.get(root+KEY_MIN);
-        min =   (o instanceof Integer)
-                   ? new Float((Integer)o)
-                   : (o instanceof Double)
-                   ? new Float((Double)o)
-                   : (Float) o;
+        Object o = view.properties.get(root + KEY_MIN);
+        min = (o instanceof Integer)
+                ? new Float((Integer) o)
+                : (o instanceof Double)
+                ? new Float((Double) o)
+                : (Float) o;
         min = min * f + input.minEdgeWeight;
 
-        o = view.properties.get(root+KEY_MAX);
-        max =  (o instanceof Integer)
-                   ? new Float((Integer)o)
-                   : (o instanceof Double)
-                   ? new Float((Double)o)
-                   : (Float) o;
+        o = view.properties.get(root + KEY_MAX);
+        max = (o instanceof Integer)
+                ? new Float((Integer) o)
+                : (o instanceof Double)
+                ? new Float((Double) o)
+                : (Float) o;
         max = max * f + input.minEdgeWeight;
-               System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
-       System.out.println("min:"+min+" max:"+max);
+        // System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
+        //System.out.println("min:"+min+" max:"+max);
 
-         System.out.println("threshold weight got "+input.size()+" nodes in entry");
+        //System.out.println("threshold weight got "+input.size()+" nodes in entry");
         for (Node n : input.nodes) {
-           node(session, view, n);
+            node(session, view, n);
         }
         return input;
     }

@@ -29,11 +29,11 @@ function Tinaviz() {
         //this.setProperty("macro", "layout/repulsion", 0.5);
         
         // load default values (eg. from settings)
-	    this.dispatchProperty("weight/min", 0.0);
-	    this.dispatchProperty("weight/max", 1.0);
+	    this.dispatchProperty("edgeWeight/min", 0.0);
+	    this.dispatchProperty("edgeWeight/max", 1.0);
 	    
-	    this.dispatchProperty("genericity/min", 0.0);
-	    this.dispatchProperty("genericity/max", 1.0);
+	    this.dispatchProperty("nodeWeight/min", 0.0);
+	    this.dispatchProperty("nodeWeight/max", 1.0);
 	    
 	    this.dispatchProperty("radiusByWeight/max", 100.0/200.0);
 	    

@@ -154,7 +154,7 @@ public class SubGraphCopy extends NodeFilter {
                 String[] neigh = st.split(",");
                 long neighbourID = Long.parseLong(neigh[0]);
                 float neighbourWeight = Float.parseFloat(neigh[1]);
-                System.out.println("  - "+neighbourID+": "+neighbourWeight);
+                //System.out.println("  - "+neighbourID+": "+neighbourWeight);
                 if (!localView.graph.storedNodes.containsKey(neighbourID)) {
 
                     if (!sources.containsKey(neighbourID)) {
@@ -162,7 +162,7 @@ public class SubGraphCopy extends NodeFilter {
                         continue;
                     }
                     Node localNode = sources.get(neighbourID).getDetachedClone();
-                    System.out.println("  - trying to add node x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
+                    //System.out.println("  - trying to add node x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
 
                     newNodes.add(localNode);
                     rootNode.addNeighbour(neighbourID);
@@ -171,7 +171,7 @@ public class SubGraphCopy extends NodeFilter {
                 } else {
                     // already in the graph
                     Node localNode = localView.graph.storedNodes.get(neighbourID);
-                    System.out.println("  - node is already in graph x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
+                    // System.out.println("  - node is already in graph x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
 
                     rootNode.addNeighbour(neighbourID);
                     output.add(localNode.getProxyClone());
