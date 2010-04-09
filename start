@@ -1,12 +1,12 @@
 #!/bin/bash
 if [ -e tina/java ]
-  then 
+  then
     echo "found java!"
   else
     wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86_64.tar.gz
     tar xf java-x86_64.tar.gz
     mv java tina/java
-    if [ -e tina/java ] 
+    if [ -e tina/java];
       then
         rm java-x86_64.tar.gz
       else
