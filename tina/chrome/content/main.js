@@ -56,9 +56,9 @@ var tinasoftTaskObserver = {
                 button.html( "Loading macro view" );
                 tinaviz.clear();
                 console.log( "opening " + data );
-                $("#tabs").data('disabled.tabs', [4]);
+                
                 if (tinaviz.loadRelativeGraph("macro",JSON.parse(data)) == true) {
-                    switchedTo( "macro" );
+                    switchTab( "macro" );
                 }
             }
             button.html("New graph");
@@ -286,7 +286,7 @@ function displayListGraph(trid, corpora) {
             console.log( "opening " + $(this).attr('value') );
             $("#tabs").data('disabled.tabs', [4]);
             if (tinaviz.loadRelativeGraph("macro",$(this).attr('value')) == true) {
-                switchedTo( "macro" );
+                switchTab( "macro" );
             }
         });
         ol.append(button);
@@ -414,10 +414,11 @@ function getAppletHeight() {
 }
 
 
-function switchedTo(level) {
+function switchTab(level) {
     var tabs = { "macro" : 2,
                  "meso"  : 3,
                  "micro" : 4 };
+    console.log("switchTab("+level+")");
     $("#tabs").tabs( 'select' , tabs[level] );
 }
 
@@ -438,11 +439,11 @@ function resizeApplet() {
     $('#infodiv').css("width",""+(300)+"px");
     tinaviz.size(w,h);
 }
+
+
 // wait for the DOM to be loaded
 $(document).ready(function() {
-    $("#tabs").tabs();
-
-    $("#tabs").data('disabled.tabs', [0, 1, 2, 3, 4]);
+    $("#tabs").tabs( { disabled: [2,3] } );;
 
     $('#infodiv').hide();
     /* restores cache vars */

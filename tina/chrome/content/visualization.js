@@ -101,8 +101,9 @@ function Tinaviz() {
 
         // finally, once the gexf is loaded, we light the tab!
         this.logDebug("enabling applet tab..");
-
-        $("#tabs").data('disabled.tabs', []);
+        //$( "#tabs" ).enable();
+        $( "#tabs" ).tabs( "option", "disabled", false );
+        //$("#tabs").data('disabled.tabs', []);
     },
 
     size: function(w,h) {
@@ -151,7 +152,7 @@ function Tinaviz() {
         applet.unselect();
         this.setProperty("meso", "subgraph/item", "");
         applet.clear("meso");
-        applet.resetCamera("meso");
+        //applet.resetCamera("meso");
     },
     
     clear: function() {
@@ -227,8 +228,8 @@ function Tinaviz() {
         if (applet == null) return;
         if (id==null) {
             $('#infodiv').html("<h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>");
-            applet.resetCamera("meso");
-            applet.clear("meso");
+            //applet.recenter();
+            //applet.clear("meso");
             return;
         }
 
@@ -250,13 +251,13 @@ function Tinaviz() {
             }
         } else if (level == "meso") {
             if (attr=="Document") {
-                //applet.clear("meso");
+                applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", attr+'::'+id);
                 this.setProperty("meso", "subgraph/category", "NGram");
                 this.touch("meso");
                 this.printDocument(x,y,id,label);
             } else if (attr=="NGram") {
-                //applet.clear("meso");
+                applet.clear("meso");
                 this.setProperty("meso", "subgraph/item", attr+'::'+id);
 		        this.setProperty("meso", "subgraph/category", "Document");
                 this.touch("meso");
@@ -498,7 +499,7 @@ function Tinaviz() {
        console.log("DEBUG "+msg);
     },
     switchedTo: function(level) {
-        switchedTo(level);
+        switchTab(level);
     },
 
     getWidth: function() {
