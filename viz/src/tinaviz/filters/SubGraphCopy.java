@@ -123,7 +123,7 @@ public class SubGraphCopy extends NodeFilter {
                     localNode.x = (float) Math.random() * 100f;
                     localNode.y = (float) Math.random() * 100f;
 
-                    System.out.println("  - trying to add node x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
+                    //System.out.println("  - trying to add node x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
 
                     newNodes.add(localNode);
                     output.add(localNode.getProxyClone());
@@ -132,7 +132,7 @@ public class SubGraphCopy extends NodeFilter {
                 }
             }
         } else {
-            System.out.println("generating the hybrid graph..");
+            //System.out.println("generating the hybrid graph..");
             List<String> paramList = new ArrayList<String>();
             paramList.add(rootNode.category);
             paramList.add("" + rootNode.uuid);
@@ -145,9 +145,9 @@ public class SubGraphCopy extends NodeFilter {
 
 
             String neighboursString = (String) session.browser.window.call("getNeighbours", paramList.toArray());
-            System.out.println("neighboursString=" + neighboursString);
+            //System.out.println("neighboursString=" + neighboursString);
             String[] neighboursArray = neighboursString.split(";");
-            System.out.println("neighboursArray=" + neighboursArray);
+            //System.out.println("neighboursArray=" + neighboursArray);
             Map<Long, Float> neighboursMap = new HashMap<Long, Float>();
 
             for (String st : neighboursArray) {

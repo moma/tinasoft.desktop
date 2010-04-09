@@ -413,7 +413,10 @@ public class Main extends PApplet implements MouseWheelListener {
         NodeList n = v.popNodes();
         if (n != null) {
             System.out.println("pop nodes gave something! overwriting node screen cache..");
+
+          
             nodes = n;
+
             //nodes.clear();
             //nodes.addAll(n);
 

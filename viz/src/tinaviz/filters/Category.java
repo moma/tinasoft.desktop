@@ -50,7 +50,7 @@ public class Category extends NodeFilter {
 
         boolean keep = mode.equals("keep");
 
-        System.out.println("we are going to " + mode + " the category " + category + " got " + input.size() + " nodes in entry");
+        //System.out.println("we are going to " + mode + " the category " + category + " got " + input.size() + " nodes in entry");
 
         for (Node n : input.nodes) {
             //  System.out.println("  - n category == "+n.category);
@@ -73,9 +73,9 @@ public class Category extends NodeFilter {
             }
         }
 
-        System.out.println("NORMALIZING NODES WEIGHTS AFTER CATEGORY FILTERING");
+        //System.out.println("NORMALIZING NODES WEIGHTS AFTER CATEGORY FILTERING");
         output.normalize();
-        System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
+        //System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
         return output;
     }
 }

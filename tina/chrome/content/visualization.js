@@ -84,7 +84,7 @@ function Tinaviz() {
 
 
 		// multiply the radius by the genericity
-		this.bindFilter("NodeFunction",         "radiusByWeight",     "meso");
+		//this.bindFilter("NodeFunction",         "radiusByWeight",     "meso");
 		
 		// multiply the radius by the GUI slider value
 		this.bindFilter("NodeRadius",           "radius",             "meso");
