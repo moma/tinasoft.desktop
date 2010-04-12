@@ -56,7 +56,7 @@ var tinasoftTaskObserver = {
                 button.html( "Loading macro view" );
                 tinaviz.clear();
                 console.log( "opening " + data );
-                
+
                 if (tinaviz.loadRelativeGraph("macro",JSON.parse(data)) == true) {
                     switchTab( "macro" );
                 }
@@ -285,9 +285,8 @@ function displayListGraph(trid, corpora) {
             tinaviz.clear();
             console.log( "opening " + $(this).attr('value') );
             $("#tabs").data('disabled.tabs', [4]);
-            if (tinaviz.loadRelativeGraph("macro",$(this).attr('value')) == true) {
-                switchTab( "macro" );
-            }
+            switchTab( "macro" );
+            tinaviz.loadRelativeGraph("macro",$(this).attr('value'));
         });
         ol.append(button);
     }
@@ -571,7 +570,7 @@ $(document).ready(function() {
     });
 
     $("#mesoSlider_nodeSize").slider({
-    
+
         value: 25.0,
         max: 200.0,
         animate: true,
