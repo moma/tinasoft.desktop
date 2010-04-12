@@ -135,7 +135,10 @@ cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
 cp install/skeletons/$arch/* $outpath
-# cp -R install/data/* $outpath
+#cp -R install/data/* $outpath
+mkdir $outpath/db
+mkdir $outpath/index
+mkdir $outpath/user
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 cp -R tests $outpath/tests
 

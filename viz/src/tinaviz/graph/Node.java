@@ -126,38 +126,39 @@ public class Node {
         return attributes.get(key);
     }
 
+
     public void cloneDataFrom(Node node) {
 
-        this.uuid = node.uuid;
-        this.label = node.label;
-        this.shortLabel = node.shortLabel;
-        this.radius = node.radius;
-        this.x = node.x;
-        this.y = node.y;
+        this.uuid = 0L + node.uuid;
+        this.label = ""+ node.label;
+        this.shortLabel = ""+ node.shortLabel;
+        this.radius = 0 + node.radius;
+        this.x = 0 + node.x;
+        this.y = 0 + node.y;
 
-        this.vx = node.vx;
-        this.vy = node.vy;
+        this.vx = 0 + node.vx;
+        this.vy = 0 + node.vy;
 
-        this.r = node.r;
-        this.g = node.g;
-        this.b = node.b;
+        this.r = 0 + node.r;
+        this.g = 0 + node.g;
+        this.b = 0 + node.b;
 
-        screenX = node.screenX;
-        screenY = node.screenY;
+        screenX = 0 + node.screenX;
+        screenY = 0 + node.screenY;
 
         this.fixed = (node.fixed);
         this.shape = node.shape;
-        this.visibleToScreen = node.visibleToScreen;
+        this.visibleToScreen = (node.visibleToScreen);
         this.neighbours = new HashSet<Long>(node.neighbours.size());
         for (Long k : node.neighbours) {
             this.neighbours.add(k);
         }
         this.s = (node.s); // switch
-        this.degree = node.degree;
-        this.weight = node.weight;
+        this.degree = 0 + node.degree;
+        this.weight = 0 + node.weight;
         this.selected = (node.selected);
         this.highlighted = (node.highlighted);
-        this.category = node.category;
+        this.category = ""+ node.category;
         this.weights = new HashMap<Long, Float>();
         for (Long k : node.weights.keySet()) {
             this.weights.put(k, node.weights.get(k));
@@ -169,12 +170,23 @@ public class Node {
     }
 
     public Node getProxyClone() {
-        return new Node(this);
+        Node node = new Node(this.uuid);
+        // hard copy
+        node.cloneDataFrom(this);
+        
+        // soft copy
+        node.x = this.x;
+        node.y = this.y;
+        
+        node.original = this;
+        
+        return node;
     }
-
+    
     public Node getDetachedClone() {
         Node node = new Node(this.uuid);
         node.cloneDataFrom(this);
+        node.original = null;
         return node;
     }
 

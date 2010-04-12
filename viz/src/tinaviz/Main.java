@@ -67,7 +67,7 @@ public class Main extends PApplet implements MouseWheelListener {
     PVector lastMousePosition = new PVector(0, 0, 0);
     float MAX_NODE_RADIUS = 0.7f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
-    float MAX_EDGE_THICKNESS = 100.0f;
+    float MAX_EDGE_THICKNESS = 40.0f;
     private Long selectNode = null;
     private boolean selectNone = false;
     int oldScreenWidth = 0;
@@ -80,6 +80,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
+    private int bezierSize = 18;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -177,7 +178,7 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean generateRandomGlobalGraph = false;
 
         // font = loadFont(DEFAULT_FONT);
-        font = createFont("Arial", 100, true);
+        font = createFont("Arial", 150, true);
         //String[] fontList = PFont.list();
         //println(fontList);
 
@@ -202,8 +203,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
             window = JSObject.getWindow(this);
             session.setBrowser(new Browser(window));
-            int w = 200;
-            int h = 200;
+            int w = 10;
+            int h = 10;
             /*Object o = window.call("parent.tinaviz.getWidth", null);
             if (o != null) {
             if (o instanceof Double) {
@@ -234,7 +235,7 @@ public class Main extends PApplet implements MouseWheelListener {
             smooth();
             frameRate(25);
             textFont(font, 26);
-            bezierDetail(18);
+            bezierDetail(bezierSize);
         }
 
         rectMode(CENTER);
@@ -404,7 +405,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
-                layout.fastAndLabel(v, nodes);
+                layout.slowWithLabelAdjust(v, nodes);
+                
             }
             return;
         }
@@ -412,10 +414,19 @@ public class Main extends PApplet implements MouseWheelListener {
         // System.out.println("now working on view "+v);
         NodeList n = v.popNodes();
         if (n != null) {
-            System.out.println("pop nodes gave something! overwriting node screen cache..");
-            nodes = n;
-            //nodes.clear();
-            //nodes.addAll(n);
+            //System.out.println("pop nodes gave something! overwriting node screen cache..");
+
+          
+            /*
+            for (Node nd : n.nodes) {
+                if (nd.original != null) {
+                    nd.x = nd.original.x;
+                    nd.y = nd.original.y;
+                }
+            }
+             */
+            nodes.clear();
+            nodes.addAll(n);
 
             //if (nodes.size() < 1) return;
 
@@ -431,7 +442,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
 
-        if (recenter) {
+        if (recenter | nodes.autocenter) {
 
             float screenRadius = (width + height) / 2.0f;
             nodes.computeExtremums();
@@ -465,7 +476,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (abs(oldZoomScale - v.sceneScale) <= 0.3) {
                 recenter = false;
                 System.out.println("stabilization reached, disabling recentering");
-
+                oldZoomScale = v.sceneScale;
             } else {
 
                 oldZoomScale = v.sceneScale;
@@ -634,7 +645,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (v.paused) {
             smooth();
-            bezierDetail(25);
+            bezierDetail(24);
 
         } else {
             if (alwaysAntiAliasing) {
@@ -1249,6 +1260,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
                 break;
             case MESO:
+                System.out.println("scele scale: "+v.sceneScale+ " zoom floor:"+v.ZOOM_FLOOR + " zoom ceil:"+v.ZOOM_CEIL);
                 if (v.sceneScale > v.ZOOM_FLOOR) {
                     v.sceneScale = v.ZOOM_FLOOR;
                     System.out.println("switch in to micro");
@@ -1366,6 +1378,11 @@ public class Main extends PApplet implements MouseWheelListener {
     public boolean setAntiAliasing(boolean a) {
         alwaysAntiAliasing = a;
         return a;
+    }
+
+    public void setBezier(int nb) {
+        this.bezierSize = nb;
+        bezierDetail(bezierSize);
     }
 
     public void resetCamera(String view) {

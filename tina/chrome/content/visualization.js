@@ -29,13 +29,13 @@ function Tinaviz() {
         //this.setProperty("macro", "layout/repulsion", 0.5);
         
         // load default values (eg. from settings)
-	    this.dispatchProperty("weight/min", 0.0);
-	    this.dispatchProperty("weight/max", 1.0);
+	    this.dispatchProperty("edgeWeight/min", 0.0);
+	    this.dispatchProperty("edgeWeight/max", 1.0);
 	    
-	    this.dispatchProperty("genericity/min", 0.0);
-	    this.dispatchProperty("genericity/max", 1.0);
+	    this.dispatchProperty("nodeWeight/min", 0.0);
+	    this.dispatchProperty("nodeWeight/max", 1.0);
 	    
-	    this.dispatchProperty("radiusByWeight/max", 1.0);
+	    this.dispatchProperty("radiusByWeight/max", 100.0/200.0);
 	    
 	    // we want to keep documents
 	    this.dispatchProperty("category/value", "NGram");
@@ -57,9 +57,9 @@ function Tinaviz() {
 		//this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
 		
 		// filter by edge threshold
-		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
+		//this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
 		
-		//this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
+	    this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
 		
 		
 		this.bindFilter("NodeRadius",           "radius",             "macro");  
@@ -77,7 +77,7 @@ function Tinaviz() {
 		//this.bindFilter("Category",             "category",           "meso");
 				
 		// filter by genericity
-		//this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
+		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
 		
 		// filter by edge threshold
 		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "meso");
@@ -484,6 +484,7 @@ function Tinaviz() {
     setLevel: function(level) {
         if (applet == null) return;
         applet.getSession().setLevel(level);
+        applet.setAntiAliasing((level!="macro"));
     },
 
 

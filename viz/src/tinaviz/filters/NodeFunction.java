@@ -6,6 +6,7 @@ package tinaviz.filters;
 
 import java.util.LinkedList;
 import java.util.List;
+import processing.core.PApplet;
 import tinaviz.graph.Node;
 import tinaviz.view.NodeFilter;
 import tinaviz.session.Session;
@@ -28,7 +29,7 @@ public class NodeFunction extends NodeFilter {
         }
 
         if (!view.properties.containsKey(root + KEY_VALUE)) {
-            view.properties.put(root + KEY_VALUE, 1.0f);
+            view.properties.put(root + KEY_VALUE, 0.5f);
         }
         if (!view.properties.containsKey(root + KEY_SOURCE)) {
             view.properties.put(root + KEY_SOURCE, "none");
@@ -47,10 +48,15 @@ public class NodeFunction extends NodeFilter {
        String source = (String) view.properties.get(root+KEY_SOURCE);
        String target = (String) view.properties.get(root+KEY_TARGET);
 
-        for (Node n : input.nodes) {
-             //System.out.println(" node funct: "+(n.radius * n.genericity)+ " = "+n.radius+" * "+n.genericity);
-            n.radius *= n.weight;
 
+        for (Node n : input.nodes) {
+             //System.out.println(" node funct: "+(n.radius * n.weight)+ " = "+n.radius+" * "+n.weight);
+             if (!Float.isNaN(n.radius) && !Float.isNaN(n.weight))
+                n.radius = n.radius * n.weight;
+       
+               // n.radius = 5 + n.radius * (PApplet.sqrt(5)*n.weight);
+              //  n.radius =  (float) Math.pow((double)n.radius, (double)(1.0f/5f));
+ 
         }
         return input;
     }

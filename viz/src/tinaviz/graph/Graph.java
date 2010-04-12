@@ -118,7 +118,7 @@ public class Graph implements Cloneable {
         brandNewGraph.set(storedNodes.size() == 0);
         locked.set(true);
         String meta = "/gexf/graph/tina/";
-        Console.log("<applet> reading GEXF..");
+        Console.log("parsing..");
 
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
         sessionAttributes.put("zoom", (zoomValue != null) ? zoomValue.floatValue() : 1.0f);
@@ -247,10 +247,10 @@ public class Graph implements Cloneable {
                                     // System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
 
                                     if (attrib.key.equalsIgnoreCase("weight")) {
-                                        //System.out.println("attrib.key.equalsIgnoreCase(\"genericity\")");
-                                        if (attrib.type == Float.class) {
+                             
+                                        if (attrib.type == Float.class | attrib.type == Integer.class | attrib.type == Double.class) {
                                             node.weight = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
-                                            System.out.println("got weight: " + node.weight);
+                                            //System.out.println("got weight: " + node.weight);
                                         }
                                     } else if (attrib.key.equalsIgnoreCase("category")) {
                                         if (attrib.type == String.class) {
@@ -383,7 +383,7 @@ public class Graph implements Cloneable {
         metrics.normalize();
          */
 
-        Console.log("applet: gexf successfully imported.");
+        Console.log("graph loaded!");
 
         locked.set(false);
         touch();
@@ -466,25 +466,16 @@ public class Graph implements Cloneable {
     }
 
     public void selectNodeById(Long id) {
-        boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
-            changed = true;
-        }
-
-        if (changed) {
-            touch();
         }
 
     }
 
     public void unselectNodeById(Long id) {
-        boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
-            changed = true;
         }
-        //if (changed) touch();
     }
 
     public void unselectNodeById(String id) {
@@ -492,11 +483,8 @@ public class Graph implements Cloneable {
     }
 
     public void unselectAll() {
-        boolean changed = false;
         for (Node n : storedNodes.values()) {
             n.selected = false;
-            changed = true;
         }
-        //if (changed) touch();
     }
 }

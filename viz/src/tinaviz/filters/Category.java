@@ -23,18 +23,21 @@ public class Category extends NodeFilter {
 
     private String KEY_CATEGORY = "value";
     private String KEY_MODE = "mode";
+    private String category = "Document";
 
     @Override
     public NodeList process(Session session, View view, NodeList input) {
 
         //System.out.println("CATEGORY FILTER 1");
         NodeList output = new NodeList();
+        output.autocenter = input.autocenter;
+
         if (!enabled()) {
             return input;
         }
         //System.out.println("CATEGORY FILTER 2");
         for (String k : view.properties.keySet()) {
-            System.out.println("prop "+k+" "+view.properties.get(k));
+            //System.out.println("prop "+k+" "+view.properties.get(k));
         }
         if (!view.properties.containsKey(root + KEY_CATEGORY)) {
             view.properties.put(root + KEY_CATEGORY, "Document");
@@ -45,12 +48,18 @@ public class Category extends NodeFilter {
         }
 
 
+        // get the new category
+        // if this is a switch: we suppose we need to refresh the view
+        String oldCategory = category;
         String category = (String) view.properties.get(root + KEY_CATEGORY);
+        if (!oldCategory.equalsIgnoreCase(category)) {
+            output.autocenter = true;
+        }
         String mode = (String) view.properties.get(root + KEY_MODE);
 
         boolean keep = mode.equals("keep");
 
-        System.out.println("we are going to " + mode + " the category " + category + " got " + input.size() + " nodes in entry");
+        //System.out.println("we are going to " + mode + " the category " + category + " got " + input.size() + " nodes in entry");
 
         for (Node n : input.nodes) {
             //  System.out.println("  - n category == "+n.category);
@@ -73,9 +82,9 @@ public class Category extends NodeFilter {
             }
         }
 
-        System.out.println("NORMALIZING NODES WEIGHTS AFTER CATEGORY FILTERING");
+        //System.out.println("NORMALIZING NODES WEIGHTS AFTER CATEGORY FILTERING");
         output.normalize();
-        System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
+        //System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
         return output;
     }
 }

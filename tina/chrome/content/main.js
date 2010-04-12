@@ -436,7 +436,7 @@ function resizeApplet() {
     $('#infodiv').show();
     $('#infodiv').css("height",""+(h-50)+"px");
     $('#infodiv').css("width",""+(300)+"px");
-    tinaviz.size(w,h);
+    tinaviz.size(w - 350,h-10);
 }
 
 
@@ -539,7 +539,7 @@ $(document).ready(function() {
 
     $("#macroSlider_nodeSize").slider({
         value: 25.0,
-        max: 200.0,
+        max: 200.0,// precision/size
         animate: true,
         slide: function(event, ui) {
         tinaviz.setProperty("macro", "radius/value", ui.value / 200.0);
@@ -572,7 +572,7 @@ $(document).ready(function() {
     $("#mesoSlider_nodeSize").slider({
 
         value: 25.0,
-        max: 200.0,
+        max: 200.0,// precision/size
         animate: true,
         slide: function(event, ui) {
         tinaviz.setProperty("meso", "radius/value", ui.value / 200.0);
