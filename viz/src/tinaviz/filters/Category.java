@@ -34,7 +34,7 @@ public class Category extends NodeFilter {
         }
         //System.out.println("CATEGORY FILTER 2");
         for (String k : view.properties.keySet()) {
-            System.out.println("prop "+k+" "+view.properties.get(k));
+            //System.out.println("prop "+k+" "+view.properties.get(k));
         }
         if (!view.properties.containsKey(root + KEY_CATEGORY)) {
             view.properties.put(root + KEY_CATEGORY, "Document");

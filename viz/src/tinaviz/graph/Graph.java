@@ -118,7 +118,7 @@ public class Graph implements Cloneable {
         brandNewGraph.set(storedNodes.size() == 0);
         locked.set(true);
         String meta = "/gexf/graph/tina/";
-        Console.log("<applet> reading GEXF..");
+        Console.log("parsing..");
 
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
         sessionAttributes.put("zoom", (zoomValue != null) ? zoomValue.floatValue() : 1.0f);
@@ -383,7 +383,7 @@ public class Graph implements Cloneable {
         metrics.normalize();
          */
 
-        Console.log("applet: gexf successfully imported.");
+        Console.log("graph loaded!");
 
         locked.set(false);
         touch();

@@ -68,7 +68,7 @@ public class ThresholdEdgeWeight extends NodeFilter {
 
 
         float f = input.maxEdgeWeight - input.minEdgeWeight;
-        System.out.println("f:" + f);
+        //System.out.println("f:" + f);
 
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)

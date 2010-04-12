@@ -23,7 +23,7 @@ public class NodeList {
     public float NORMALIZED_MAX_RADIUS = 1.0f; // largely depends on the spatialization settings
 
     // TODO fix me
-    public float NORMALIZED_MIN_NODE_WEIGHT = -2.0f;
+    public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
     public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;
     
     public float minX;

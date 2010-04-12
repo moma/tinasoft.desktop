@@ -45,11 +45,7 @@ public class NodeRadius extends NodeFilter {
        //System.out.println("radius magnifier: "+r);
 
         for (Node n : input.nodes) {
-
-            // we dot not want a "zero sized" node
-            //System.out.println("n.radius = n.radius * r ---- "+(n.radius*r)+" = "+n.radius+" * "+r);
             n.radius = n.radius * r;
-
         }
         return input;
     }

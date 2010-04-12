@@ -104,10 +104,10 @@ public class SubGraphCopy extends NodeFilter {
         newNodes.add(rootNode);
         output.add(rootNode.getProxyClone());
         // System.out.println("added root at x:"+rootNode.x+" y:"+rootNode.y+" with "+rootNode.neighbours.size()+" neighbours");
-        System.out.println("cat: " + cat + " category:" + category);
+        //System.out.println("cat: " + cat + " category:" + category);
 
         if (cat.equals(category)) {
-            System.out.println("generating the same gender graph..");
+            //System.out.println("generating the same gender graph..");
             // same category: trivial
             for (Long potentialNeighbourId : sources.get(item).neighbours) {
                 Node potentialNeighbour = sources.get(potentialNeighbourId);
