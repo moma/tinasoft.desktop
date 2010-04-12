@@ -284,7 +284,7 @@ function displayListGraph(trid, corpora) {
         ).click(function(event) {
             tinaviz.clear();
             console.log( "opening " + $(this).attr('value') );
-            $("#tabs").data('disabled.tabs', [4]);
+            $("#tabs").data('disabled.tabs', []);
             switchTab( "macro" );
             tinaviz.loadRelativeGraph("macro",$(this).attr('value'));
         });
@@ -463,12 +463,6 @@ $(document).ready(function() {
                 tinaviz.enable();
             }
             tinaviz.setLevel("meso");
-        } else if (ui.index == 4) {
-            if (tinaviz.disabled()) {
-                resizeApplet();
-                tinaviz.enable();
-            }
-            tinaviz.setLevel("micro");
         } else {
             // hide the frame; magic!
             tinaviz.disable();
