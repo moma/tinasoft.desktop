@@ -7,12 +7,13 @@ set APPDATA=%PLATFORMDIR%\AppData
 set JAVA_HOME=%cd%\java
 PATH=%BERKELEYBIN%;%LIBDIR%;%APPDATA%;%JAVA_HOME%;%JAVA_HOME%\lib\
 set NLTK_DATA=%cd%\shared\nltk_data
-echo appdata=%APPDATA%
-echo *******************************
-echo path=%PATH%
-echo *******************************
-echo nltk=%NLTK_DATA%
-echo *******************************
+REM echo appdata=%APPDATA%
+REM echo *******************************
+REM echo path=%PATH%
+REM echo *******************************
+REM echo nltk=%NLTK_DATA%
+REM echo *******************************
 REM  start /max %cd%\xulrunner-stub.exe
 REM xulrunner-stub.exe
+echo "Loading TinaSoft, please wait.."
 xulrunner\xulrunner.exe application.ini
