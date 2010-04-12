@@ -80,6 +80,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
+    private int bezierSize = 18;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -202,8 +203,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
             window = JSObject.getWindow(this);
             session.setBrowser(new Browser(window));
-            int w = 200;
-            int h = 200;
+            int w = 1;
+            int h = 1;
             /*Object o = window.call("parent.tinaviz.getWidth", null);
             if (o != null) {
             if (o instanceof Double) {
@@ -234,7 +235,7 @@ public class Main extends PApplet implements MouseWheelListener {
             smooth();
             frameRate(25);
             textFont(font, 26);
-            bezierDetail(18);
+            bezierDetail(bezierSize);
         }
 
         rectMode(CENTER);
@@ -1375,6 +1376,11 @@ public class Main extends PApplet implements MouseWheelListener {
     public boolean setAntiAliasing(boolean a) {
         alwaysAntiAliasing = a;
         return a;
+    }
+
+    public void setBezier(int nb) {
+        this.bezierSize = nb;
+        bezierDetail(bezierSize);
     }
 
     public void resetCamera(String view) {
