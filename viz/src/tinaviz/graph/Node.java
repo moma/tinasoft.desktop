@@ -132,19 +132,19 @@ public class Node {
         this.uuid = 0L + node.uuid;
         this.label = ""+ node.label;
         this.shortLabel = ""+ node.shortLabel;
-        this.radius = 0 + node.radius;
-        this.x = 0 + node.x;
-        this.y = 0 + node.y;
+        this.radius = 0f + node.radius;
+        this.x = 0f + node.x;
+        this.y = 0f + node.y;
 
-        this.vx = 0 + node.vx;
-        this.vy = 0 + node.vy;
+        this.vx = 0f + node.vx;
+        this.vy = 0f + node.vy;
 
-        this.r = 0 + node.r;
-        this.g = 0 + node.g;
-        this.b = 0 + node.b;
+        this.r = 0f + node.r;
+        this.g = 0f + node.g;
+        this.b = 0f + node.b;
 
-        screenX = 0 + node.screenX;
-        screenY = 0 + node.screenY;
+        screenX = 0f + node.screenX;
+        screenY = 0f + node.screenY;
 
         this.fixed = (node.fixed);
         this.shape = node.shape;
@@ -155,7 +155,8 @@ public class Node {
         }
         this.s = (node.s); // switch
         this.degree = 0 + node.degree;
-        this.weight = 0 + node.weight;
+        this.weight = 0f + node.weight;
+        //System.out.println("this weight: "+this.weight+ " node.weight:"+node.weight);
         this.selected = (node.selected);
         this.highlighted = (node.highlighted);
         this.category = ""+ node.category;

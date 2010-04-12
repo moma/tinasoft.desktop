@@ -67,7 +67,7 @@ public class Main extends PApplet implements MouseWheelListener {
     PVector lastMousePosition = new PVector(0, 0, 0);
     float MAX_NODE_RADIUS = 0.7f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
-    float MAX_EDGE_THICKNESS = 40.0f;
+    float MAX_EDGE_THICKNESS = 20.0f;
     private Long selectNode = null;
     private boolean selectNone = false;
     int oldScreenWidth = 0;

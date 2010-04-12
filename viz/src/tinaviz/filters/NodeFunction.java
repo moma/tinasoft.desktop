@@ -51,8 +51,7 @@ public class NodeFunction extends NodeFilter {
 
         for (Node n : input.nodes) {
              //System.out.println(" node funct: "+(n.radius * n.weight)+ " = "+n.radius+" * "+n.weight);
-             if (!Float.isNaN(n.radius) && !Float.isNaN(n.weight))
-                n.radius = n.radius * n.weight;
+              n.radius = n.radius * n.weight;
        
                // n.radius = 5 + n.radius * (PApplet.sqrt(5)*n.weight);
               //  n.radius =  (float) Math.pow((double)n.radius, (double)(1.0f/5f));

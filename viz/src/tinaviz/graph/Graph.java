@@ -250,7 +250,7 @@ public class Graph implements Cloneable {
                              
                                         if (attrib.type == Float.class | attrib.type == Integer.class | attrib.type == Double.class) {
                                             node.weight = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
-                                            //System.out.println("got weight: " + node.weight);
+
                                         }
                                     } else if (attrib.key.equalsIgnoreCase("category")) {
                                         if (attrib.type == String.class) {
@@ -308,6 +308,8 @@ public class Graph implements Cloneable {
 
 
             }
+
+           //System.out.println(node.category + " " + node.label + " with weight " + node.weight);
 
             // HACK FOR BAD NGRAMS IN MESO DOCUMENTS GRAPHS
             if (session.macro.graph != this) {
@@ -378,11 +380,6 @@ public class Graph implements Cloneable {
 
         }
 
-        /*
-        metrics = new Metrics(storedNodes.values());
-        metrics.normalize();
-         */
-
         Console.log("graph loaded!");
 
         locked.set(false);
@@ -396,8 +393,6 @@ public class Graph implements Cloneable {
         for (Node n : storedNodes.values()) {
             res.add(n.getProxyClone());
         }
-        res.computeExtremums();
-        res.normalize();
         return res;
     }
 

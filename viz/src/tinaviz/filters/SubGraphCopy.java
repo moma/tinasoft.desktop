@@ -85,8 +85,10 @@ public class SubGraphCopy extends NodeFilter {
                 cat = ((String) o).split("::")[0];
         
                 item = Long.parseLong(((String) o).split("::")[1]);
+            } else if (((String)o).isEmpty()) {
+                //
             } else {
-                  System.out.println("ERROR, BAd ID: "+(String)o);
+                  System.out.println("Invalid ID: "+(String)o);
                   return input;
             }
 
@@ -147,6 +149,7 @@ public class SubGraphCopy extends NodeFilter {
                     localNode.y = 0f;//(float) Math.random() * 100f;
 
                     //System.out.println("  - trying to add node x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
+                     //System.out.println("  - trying to add "+localNode.category+" " + localNode.label + " with weight "+ localNode.weight + " ");
 
                     newNodes.add(localNode);
                     output.add(localNode.getProxyClone());
@@ -207,7 +210,11 @@ public class SubGraphCopy extends NodeFilter {
 
         }
         localView.clear();
+        newNodes.computeExtremums();
+        newNodes.normalize();
         localView.updateFromNodeList(newNodes);
+        output.computeExtremums();
+        output.normalize();
 
         //localView.resetCamera();
         output.autocenter = true;

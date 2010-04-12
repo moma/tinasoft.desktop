@@ -21,11 +21,9 @@ public class NodeList {
     public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f; // desired default weight
     public float NORMALIZED_MIN_RADIUS = 0.01f;
     public float NORMALIZED_MAX_RADIUS = 1.0f; // largely depends on the spatialization settings
-
     // TODO fix me
     public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
     public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;
-    
     public float minX;
     public float minY;
     public float maxX;
@@ -41,13 +39,10 @@ public class NodeList {
     public float maxEdgeWeight;
     public float minNodeWeight;
     public float maxNodeWeight;
-
     public boolean autocenter = false;
-    
+
     public NodeList(List<Node> nodes) {
         this.nodes = nodes;
-        computeExtremums();
-        normalize();
     }
 
     public NodeList() {
@@ -74,7 +69,7 @@ public class NodeList {
         minRadius = 0.0f;
         maxRadius = Float.MIN_VALUE;
         center = new PVector(0.0f, 0.0f);
-        baryCenter = new PVector(0.0f,0.0f);
+        baryCenter = new PVector(0.0f, 0.0f);
         graphRadius = 0.0f;
         graphWidth = 0.0f;
         graphHeight = 0.0f;
@@ -127,7 +122,7 @@ public class NodeList {
             //System.out.println("node "+n.label+" ("+n.category+")");
             //System.out.println(" - radius avant:"+n.radius);
 
-            n.radius = PApplet.map(n.radius,
+            n.radius =  (minRadius == maxRadius) ? NORMALIZED_MIN_RADIUS : PApplet.map(n.radius,
                     minRadius, maxRadius,
                     NORMALIZED_MIN_RADIUS, NORMALIZED_MAX_RADIUS);
             // System.out.println(" -  normalized radius:"+n.radius);
@@ -143,17 +138,23 @@ public class NodeList {
                 n.b = 255 - 160 * n.radius;
             }
 
+            //System.out.println("n.weight = " + "PApplet.map(" + n.weight + ","
+              //      + minNodeWeight + ", " + maxNodeWeight + "," + NORMALIZED_MIN_NODE_WEIGHT + ", " + NORMALIZED_MAX_NODE_WEIGHT + ");");
 
             // NORMALIZE WEIGHT
-            n.weight = PApplet.map(n.weight,
+
+            n.weight = (minNodeWeight == maxNodeWeight) ? NORMALIZED_MIN_NODE_WEIGHT : PApplet.map(n.weight,
                     minNodeWeight, maxNodeWeight,
                     NORMALIZED_MIN_NODE_WEIGHT, NORMALIZED_MAX_NODE_WEIGHT);
+
             //System.out.println("normalized genericity:"+n.genericity+"\n");
+            //System.out.println("n.weight = " + n.weight);
 
             // NORMALIZE WEIGHTS
             for (Long k : n.weights.keySet()) {
                 //System.out.println("  - w1: "+n.weights.get(k));
-                n.weights.put(k, PApplet.map(n.weights.get(k),
+
+                n.weights.put(k, (minEdgeWeight == maxEdgeWeight) ? NORMALIZED_MIN_EDGE_WEIGHT : PApplet.map(n.weights.get(k),
                         minEdgeWeight, maxEdgeWeight,
                         NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT));
                 //System.out.println("  - w2: "+n.weights.get(k));
@@ -164,14 +165,16 @@ public class NodeList {
 
     public synchronized void computeExtremums() {
         reset();
-        Float mx=null;
-        Float my=null;
+        Float mx = null;
+        Float my = null;
         for (Node n : nodes) {
             computeExtremumsKernel(n);
-            mx=(mx==null)?n.x:mx+n.x;
-            my=(my==null)?n.y:my+n.y;
+            mx = (mx == null) ? n.x : mx + n.x;
+            my = (my == null) ? n.y : my + n.y;
         }
-        if (mx!=null && my!=null) baryCenter.set(mx / nodes.size(),my / nodes.size(),0);
+        if (mx != null && my != null) {
+            baryCenter.set(mx / nodes.size(), my / nodes.size(), 0);
+        }
         aftermath();
     }
 
@@ -183,10 +186,18 @@ public class NodeList {
     // TODO MOYENNE
     private void aftermath() {
         // simple heuristic to correct the values, just in case we didn't found anything
-        if (minEdgeWeight == Float.MAX_VALUE) minEdgeWeight = (maxEdgeWeight!=Float.MIN_VALUE) ? maxEdgeWeight -1 : Float.MIN_VALUE + 1;
-        if (maxEdgeWeight == Float.MIN_VALUE) maxEdgeWeight = (minEdgeWeight!=Float.MAX_VALUE) ? minEdgeWeight +1 : Float.MAX_VALUE - 1;
-        if (minNodeWeight == Float.MAX_VALUE) minNodeWeight = (maxNodeWeight!=Float.MIN_VALUE) ? maxNodeWeight -1 : Float.MIN_VALUE + 1;
-        if (maxNodeWeight == Float.MIN_VALUE) maxNodeWeight = (minNodeWeight!=Float.MAX_VALUE) ? minNodeWeight +1 : Float.MAX_VALUE - 1;
+        if (minEdgeWeight == Float.MAX_VALUE) {
+            minEdgeWeight = (maxEdgeWeight != Float.MIN_VALUE) ? maxEdgeWeight - 1 : Float.MIN_VALUE + 1;
+        }
+        if (maxEdgeWeight == Float.MIN_VALUE) {
+            maxEdgeWeight = (minEdgeWeight != Float.MAX_VALUE) ? minEdgeWeight + 1 : Float.MAX_VALUE - 1;
+        }
+        if (minNodeWeight == Float.MAX_VALUE) {
+            minNodeWeight = (maxNodeWeight != Float.MIN_VALUE) ? maxNodeWeight - 1 : Float.MIN_VALUE + 1;
+        }
+        if (maxNodeWeight == Float.MIN_VALUE) {
+            maxNodeWeight = (minNodeWeight != Float.MAX_VALUE) ? minNodeWeight + 1 : Float.MAX_VALUE - 1;
+        }
 
         graphWidth = maxX - minX;
         graphHeight = maxY - minY;
@@ -194,6 +205,7 @@ public class NodeList {
         center.x = (graphWidth / 2.0f) + minX;
         center.y = (graphHeight / 2.0f) + minY;
     }
+
     private void computeExtremumsKernel(Node n) {
         if (n.x < minX) {
             minX = n.x;

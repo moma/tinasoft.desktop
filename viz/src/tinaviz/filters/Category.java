@@ -51,7 +51,7 @@ public class Category extends NodeFilter {
         // get the new category
         // if this is a switch: we suppose we need to refresh the view
         String oldCategory = category;
-        String category = (String) view.properties.get(root + KEY_CATEGORY);
+        category = (String) view.properties.get(root + KEY_CATEGORY);
         if (!oldCategory.equalsIgnoreCase(category)) {
             output.autocenter = true;
         }
@@ -71,7 +71,7 @@ public class Category extends NodeFilter {
                 if (n.category.equals(category)) {
                     if (keep) {
                         output.add(n);
-                        //System.out.println("  - kept "+n.category+" "+n.uuid+" = "+n.genericity+"\n");
+                        //System.out.println("  - kept " + n.category + " " + n.label + " = " + n.weight + "\n");
                     }
                 } else {
                     if (!keep) {
@@ -82,8 +82,11 @@ public class Category extends NodeFilter {
             }
         }
 
-        //System.out.println("NORMALIZING NODES WEIGHTS AFTER CATEGORY FILTERING");
-        output.normalize();
+      
+        output.computeExtremums();
+         output.normalize();
+
+
         //System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
         return output;
     }

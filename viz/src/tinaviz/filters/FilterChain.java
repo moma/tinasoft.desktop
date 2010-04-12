@@ -57,8 +57,6 @@ public class FilterChain {
         public void run() {
             //System.out.println("filter thread started on view "+view.getName()+"");
             NodeList result = (nodes != null) ? nodes : new NodeList();
-            //result.computeExtremums();
-            //result.normalize();
             for (Filter f : filters) {
                 //System.out.println("processing filter "+f.getRoot());
                 if (interrupted()) {
@@ -68,9 +66,6 @@ public class FilterChain {
                 result = f.process(session, view, result);
             }
 
-            //System.out.println("filter thread ended on view "+view.getName()+". normalizing graph..");
-            //result.computeExtremums();
-            //result.normalize();
             chain.filteredNodes = result;
             //System.out.println("filter finished to process "+result.size()+" nodes! setting flash 'ready' to true..");
             chain.filterIsRunning.set(false);

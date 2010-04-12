@@ -50,14 +50,11 @@ function Tinaviz() {
 	    // and YES, you can define filters or properties at any time, it's totally asynchronous ;)
 	    
 		this.bindFilter("Category",             "category",           "macro");
-		//this.bindFilter("ThresholdGenericity",  "genericity",         "macro");
-		// filter by genericity
-		
-		
-		//this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
+
+		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
 		
 		// filter by edge threshold
-		//this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
+		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
 		
 	    this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
 		

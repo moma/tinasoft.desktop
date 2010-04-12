@@ -58,10 +58,11 @@ public class ThresholdNodeWeight extends NodeFilter {
                 ? new Float((Double) o)
                 : (Float) o;
         max = max * f + input.minNodeWeight;
-        // System.out.println("minNodeWeight:"+input.minNodeWeight+" maxNodeWeight:"+input.maxNodeWeight);
-        //System.out.println("min:"+min+" min:"+max);
+        
+        //System.out.println("minNodeWeight:"+input.minNodeWeight+" maxNodeWeight:"+input.maxNodeWeight);
+        //System.out.println("min:"+min+" max:"+max);
         for (Node n : input.nodes) {
-            // System.out.println("genericity: ["+min+" <= "+n.genericity+" <= "+max);
+            //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
 
             if ((min <= n.weight && n.weight <= max) ) {
                 output.add(n);
