@@ -63,7 +63,7 @@ public class ThresholdNodeWeight extends NodeFilter {
         for (Node n : input.nodes) {
             // System.out.println("genericity: ["+min+" <= "+n.genericity+" <= "+max);
 
-            if (min <= n.weight && n.weight <= max) {
+            if ((min <= n.weight && n.weight <= max) ) {
                 output.add(n);
             }
         }

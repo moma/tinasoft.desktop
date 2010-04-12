@@ -23,12 +23,15 @@ public class Category extends NodeFilter {
 
     private String KEY_CATEGORY = "value";
     private String KEY_MODE = "mode";
+    private String category = "Document";
 
     @Override
     public NodeList process(Session session, View view, NodeList input) {
 
         //System.out.println("CATEGORY FILTER 1");
         NodeList output = new NodeList();
+        output.autocenter = input.autocenter;
+
         if (!enabled()) {
             return input;
         }
@@ -45,7 +48,13 @@ public class Category extends NodeFilter {
         }
 
 
+        // get the new category
+        // if this is a switch: we suppose we need to refresh the view
+        String oldCategory = category;
         String category = (String) view.properties.get(root + KEY_CATEGORY);
+        if (!oldCategory.equalsIgnoreCase(category)) {
+            output.autocenter = true;
+        }
         String mode = (String) view.properties.get(root + KEY_MODE);
 
         boolean keep = mode.equals("keep");

@@ -466,25 +466,16 @@ public class Graph implements Cloneable {
     }
 
     public void selectNodeById(Long id) {
-        boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
-            changed = true;
-        }
-
-        if (changed) {
-            touch();
         }
 
     }
 
     public void unselectNodeById(Long id) {
-        boolean changed = false;
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
-            changed = true;
         }
-        //if (changed) touch();
     }
 
     public void unselectNodeById(String id) {
@@ -492,11 +483,8 @@ public class Graph implements Cloneable {
     }
 
     public void unselectAll() {
-        boolean changed = false;
         for (Node n : storedNodes.values()) {
             n.selected = false;
-            changed = true;
         }
-        //if (changed) touch();
     }
 }

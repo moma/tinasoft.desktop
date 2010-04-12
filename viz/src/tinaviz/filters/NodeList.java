@@ -42,6 +42,8 @@ public class NodeList {
     public float minNodeWeight;
     public float maxNodeWeight;
 
+    public boolean autocenter = false;
+    
     public NodeList(List<Node> nodes) {
         this.nodes = nodes;
         computeExtremums();

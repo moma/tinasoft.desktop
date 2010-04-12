@@ -437,7 +437,7 @@ function resizeApplet() {
     $('#infodiv').show();
     $('#infodiv').css("height",""+(h-50)+"px");
     $('#infodiv').css("width",""+(300)+"px");
-    tinaviz.size(w,h);
+    tinaviz.size(w - 350,h-10);
 }
 
 

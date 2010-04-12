@@ -20,8 +20,8 @@ public class NodeRadius extends NodeFilter {
     private String KEY_VALUE = "value";
 
     // the range of the sliders
-    public float MIN_RADIUS_MAGNIFIER = 1.0f;
-    public float MAX_RADIUS_MAGNIFIER = 5.0f;
+    public float MIN_RADIUS_MAGNIFIER = 0.2f;
+    public float MAX_RADIUS_MAGNIFIER = 6.0f;
 
     @Override
     public NodeList process(Session session, View view, NodeList input) {

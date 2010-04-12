@@ -54,10 +54,10 @@ function Tinaviz() {
 		// filter by genericity
 		
 		
-		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
+		//this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
 		
 		// filter by edge threshold
-		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
+		//this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
 		
 	    this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
 		
@@ -484,6 +484,7 @@ function Tinaviz() {
     setLevel: function(level) {
         if (applet == null) return;
         applet.getSession().setLevel(level);
+        applet.setAntiAliasing((level!="macro"));
     },
 
 
