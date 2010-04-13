@@ -1,6 +1,7 @@
 package tinaviz;
 
 //import com.nativelibs4java.opencl.CLBuildException;
+import java.awt.Color;
 import java.io.IOException;
 import tinaviz.layout.Layout;
 import tinaviz.util.Console;
@@ -81,6 +82,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private float realWidth = 0.0f;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
     private int bezierSize = 18;
+    private int backgroundColor = color(255,255,255);
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -662,6 +664,7 @@ public class Main extends PApplet implements MouseWheelListener {
         stroke(150, 150, 150);
         strokeWeight(1);
 
+        //pushMatrix();
 
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
@@ -950,11 +953,24 @@ public class Main extends PApplet implements MouseWheelListener {
         }
         }
         }*/
+        /*
+        popMatrix();
 
+        fill(0,0,100,100);
+        stroke(0,0,0,200);
+        strokeWeight(1.0f);
+        ellipse(15, 15, 5, 5);
+        line(15, 15, 15, 5);
+        line(15, 16, 15, 17);
+*/
         selectNode = null;
         selectNone = false;
 
         doUnselection = false;
+        /*
+        translate(v.translation.y, v.translation.y);
+        scale(v.sceneScale);*/
+
     }
 
     public void drawCurve(Node n1, Node n2) {
@@ -1336,6 +1352,16 @@ public class Main extends PApplet implements MouseWheelListener {
             if ((v.attraction - 0.00001f) > 1.5e-5) {
                 v.attraction -= 0.00001f;
                 System.out.println("\nattraction: " + session.getView().attraction);
+            }
+        } else if (key == 'g') {
+            if ((v.gravity + 0.001f) < 0.5f) {
+                v.gravity += 0.001f;
+                System.out.println("\ngravity: " + session.getView().gravity);
+            }
+        } else if (key == 'b') {
+            if ((v.gravity - 0.001f) > 0.0f) {
+                v.gravity -= 0.001f;
+                System.out.println("\ngravity: " + session.getView().gravity);
             }
         }
 

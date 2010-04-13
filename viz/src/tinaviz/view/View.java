@@ -43,6 +43,7 @@ public class View {
     public float ZOOM_FLOOR = 25.0f;
     public float repulsion = 0.01f;
     public float attraction = 0.001f;
+    public float gravity = 0.00001f;
 
     public Graph graph = null;
     public FilterChain filters = null;
@@ -59,10 +60,6 @@ public class View {
         filters = new FilterChain(session, this);
         hasBeenRead = new AtomicBoolean(false);
 
-        repulsion = 0.01f;
-        attraction = 0.0001f;
-        prespatializeSteps = 0;
-
         resetParams();
     }
 
@@ -71,6 +68,10 @@ public class View {
         inerY = 0f;
         inerZ = 0f;
         sceneScale = 10.0f;
+        repulsion = 0.01f;
+        attraction = 0.0001f;
+        gravity = 0.00001f;
+        prespatializeSteps = 0;
     }
 
     // TODO refactor these two..
@@ -279,5 +280,13 @@ public class View {
 
     public float getAttractionRelative(float scale) {
         return attraction / scale;
+    }
+
+    public void setGravity(float g) {
+        gravity = g;
+    }
+
+    public float getGravity() {
+        return gravity;
     }
 }

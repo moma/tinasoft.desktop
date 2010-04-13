@@ -412,7 +412,6 @@ function getAppletHeight() {
     return getHeight() - 142;
 }
 
-
 function switchTab(level) {
     var tabs = { "macro" : 2,
                  "meso"  : 3,
@@ -426,7 +425,7 @@ function resizeApplet() {
     var w = getAppletWidth();
     var h = getAppletHeight();
 
-    $('.tabfiller').css("height",""+(h+10)+"px");
+    $('.tabfiller').css("height",""+(h+15)+"px");
 
     $('#whitebox').css("height",""+(h)+"px");
     $('#whitebox').css("width",""+(w)+"px");
@@ -436,7 +435,7 @@ function resizeApplet() {
     $('#infodiv').show();
     $('#infodiv').css("height",""+(h-50)+"px");
     $('#infodiv').css("width",""+(300)+"px");
-    tinaviz.size(w - 350,h-10);
+    tinaviz.size(w - 350,h);
 }
 
 

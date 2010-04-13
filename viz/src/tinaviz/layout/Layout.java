@@ -24,8 +24,7 @@ public class Layout {
         float repulsion = v.repulsion;
         float attraction = v.attraction;
 
-
-        float gravity = 0.00001f;
+        float gravity = v.gravity;
 
         for (Node n1 : nodes.nodes) {
             // gravity

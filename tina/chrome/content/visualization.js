@@ -541,32 +541,32 @@ function Tinaviz() {
     applet.selectFromId(id);
   },
 
-  printNGram: function(x,y,id,label,attr) {
+     printNGram: function(x,y,id,label,attr) {
 
-     var ng = getNGram( id );
-     this.logDebug("ng= "+ng);
-     if (ng == null) return null;
-     // don't query the DB if we are on a "lambda" graph
-     
-     delete ng['py/object'];
-     ng["edges_data"] = { "Document" : {}, "Corpus" : {} };
-      for (var doc in ng["edges"]["Document"]) {
-           var obj = getDocument(doc);
-           if (obj == null) { delete ng["edges"]["Document"][doc];} 
-           else {  ng["edges_data"]["Document"][doc] = obj;}
-      }
-     
-     $('#infodiv').html(Shotenjin.render("\n\
-     <h1 class=\"nodedetailsh1\">Field \"${label}\"</h1>\n\
-     <h3 class=\"nodedetailsh3\">Linked to these projects:</h3>\n\
-     <p class=\"nodedetailsp\">\n\
-     <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
-         <a href=\"javascript:tinaviz.selectNode('#{doc}')\" class=\"detailtext\">#{edges_data['Document'][first]['label']}</a> \
-     <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-       <br/><a href=\"javascript:tinaviz.selectNode('#{doc}')\" class=\"detailtext\">#{edges_data['Document'][doc]['label']}</a>\
-     <?js } ?>.\
-     </p>\n", ng));
-     
+         var ng = getNGram( id );
+         this.logDebug("ng= "+ng);
+         if (ng == null) return null;
+         // don't query the DB if we are on a "lambda" graph
+         
+         delete ng['py/object'];
+         ng["edges_data"] = { "Document" : {}, "Corpus" : {} };
+          for (var doc in ng["edges"]["Document"]) {
+               var obj = getDocument(doc);
+               if (obj == null) { delete ng["edges"]["Document"][doc];} 
+               else {  ng["edges_data"]["Document"][doc] = obj;}
+          }
+         
+         $('#infodiv').html(Shotenjin.render("\n\
+         <h1 class=\"nodedetailsh1\">Field <strong>${label}</strong></h1>\n\
+         <h3 class=\"nodedetailsh3\">Contained in these projects:</h3>\n\
+         <p class=\"nodedetailsp\">\n\
+         <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
+             <a href=\"javascript:tinaviz.selectNode('#{doc}')\" class=\"detailtext\">#{edges_data['Document'][first]['label']}</a> \
+         <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
+           <br/><a href=\"javascript:tinaviz.selectNode('#{doc}')\" class=\"detailtext\">#{edges_data['Document'][doc]['label']}</a>\
+         <?js } ?>.\
+         </p>\n", ng));
+         
 
     },
 
@@ -579,18 +579,18 @@ function Tinaviz() {
           
      delete doc['py/object'];
      doc["edges_data"] = { "NGram" : {}, "Corpus" : {} };
-      for (var ng in ng["edges"]["NGram"]) {
-           var obj = getNGram(doc);
+      for (var ng in doc["edges"]["NGram"]) {
+           var obj = getNGram(ng);
            if (obj == null) { delete doc["edges"]["NGram"][ng];} 
            else {  doc["edges_data"]["NGram"][ng] = obj;}
       }
      
      $('#infodiv').html(Shotenjin.render("\n\
-     <h1 class=\"nodedetailsh1\">Project ${label}</h1>\n\
+     <h1 class=\"nodedetailsh1\">Project <strong>${label}</strong></h1>\n\
      <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
      <p class=\"nodedetailsp\">\n\
      <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
-         <a href=\"javascript:tinaviz.selectNode('#{ng}')\" class=\"detailtext\">${edges_data['NGram'][ng]['label']}</a> \
+         <a href=\"javascript:tinaviz.selectNode('#{ng}')\" class=\"detailtext\">${edges_data['NGram'][first]['label']}</a> \
      <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
       <br/><a href=\"javascript:tinaviz.selectNode('#{ng}')\" class=\"detailtext\">${edges_data['NGram'][ng]['label']}</a>\
      <?js } ?>.\
