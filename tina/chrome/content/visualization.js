@@ -51,10 +51,10 @@ function Tinaviz() {
 	    
 		this.bindFilter("Category",             "category",           "macro");
 
-		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "macro");
+		this.bindFilter("NodeWeightRange",  "nodeWeight",         "macro");
 		
 		// filter by edge threshold
-		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "macro");
+		this.bindFilter("EdgeWeightRange",  "edgeWeight",         "macro");
 		
 	    this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
 		
@@ -74,10 +74,10 @@ function Tinaviz() {
 		//this.bindFilter("Category",             "category",           "meso");
 				
 		// filter by genericity
-		this.bindFilter("ThresholdNodeWeight",  "nodeWeight",         "meso");
+		this.bindFilter("NodeWeightRange",  "nodeWeight",         "meso");
 		
 		// filter by edge threshold
-		this.bindFilter("ThresholdEdgeWeight",  "edgeWeight",         "meso");
+		this.bindFilter("EdgeWeightRange",  "edgeWeight",         "meso");
 
 
 		// multiply the radius by the genericity
@@ -506,14 +506,20 @@ function Tinaviz() {
        return getAppletHeight();
     },
     
+    /*
+    bindFilter: function(name, path, level) {
+        if (applet == null) return;
+        if (level == null) return applet.getSession().addFilter("tinaviz.filters."+name, path);
+        return applet.getView(level).addFilter("tinaviz.filters."+name, path);
+    },*/
     
+             
     bindFilter: function(name, path, level) {
         if (applet == null) return;
         if (level == null) return applet.getSession().addFilter(name, path);
         return applet.getView(level).addFilter(name, path);
-    },
+    }, 
     
-      
     dispatchProperty: function(key,value) {
         if (applet == null) return;
         return applet.getSession().setProperty(key,value);

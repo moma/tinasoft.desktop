@@ -7,7 +7,7 @@ package tinaviz.filters;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import tinaviz.filters.ThresholdEdgeWeight;
+import tinaviz.filters.EdgeWeightRange;
 
 import tinaviz.filters.Category;
 import tinaviz.filters.NodeRadius;
@@ -15,9 +15,10 @@ import tinaviz.session.Session;
 import tinaviz.filters.Layout;
 import tinaviz.filters.NodeFunction;
 import tinaviz.filters.NodeList;
-import tinaviz.filters.SubGraphCopy;
-import tinaviz.filters.ThresholdNodeWeight;
+import tinaviz.filters.tina.SubGraphCopy;
+import tinaviz.filters.NodeWeightRange;
 import tinaviz.filters.WeightSize;
+import tinaviz.filters.tina.NodeWeightRangeHack;
 import tinaviz.graph.Node;
 import tinaviz.view.Filter;
 import tinaviz.view.View;
@@ -32,7 +33,7 @@ public class FilterChain {
     public AtomicBoolean popLocked = null;
     public AtomicBoolean filterIsRunning = new AtomicBoolean(false);
     public AtomicInteger graphRevision = new AtomicInteger(0);
-    private LinkedList<Filter> filters = null;
+    public LinkedList<Filter> filters = null;
     public View view = null;
     public Session session = null;
     private FilterThread thread = null;
@@ -86,8 +87,9 @@ public class FilterChain {
     public boolean addFilter(String filterName, String root) {
         //System.out.println("adding filter "+root+"");
         Filter f = null;
-        if (filterName.equals("ThresholdEdgeWeight")) {
-            f = new ThresholdEdgeWeight();
+
+        if (filterName.equals("EdgeWeightRange")) {
+            f = new EdgeWeightRange();
         } else if (filterName.equals("NodeRadius")) {
             f = new NodeRadius();
         }else if (filterName.equals("WeightSize")) {
@@ -96,13 +98,15 @@ public class FilterChain {
             f = new NodeFunction();
         }  else if (filterName.equals("Category")) {
             f = new Category();
-        } else if (filterName.equals("SubGraphCopy")) {
+        } else if (filterName.equals("tina.SubGraphCopy")) {
             f = new SubGraphCopy();
         }  else if (filterName.equals("Layout")) {
             f = new Layout();
 
-        } else if (filterName.equals("ThresholdNodeWeight")) {
-             f = new ThresholdNodeWeight();
+        } else if (filterName.equals("NodeWeightRange")) {
+             f = new NodeWeightRange();
+    }  else if (filterName.equals("tina.NodeWeightRangeHack")) {
+             f = new NodeWeightRangeHack();
     } else {
             return false;
         }

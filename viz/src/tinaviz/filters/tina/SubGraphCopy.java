@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tinaviz.filters;
+package tinaviz.filters.tina;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +13,11 @@ import java.util.Map;
 import java.util.Set;
 import netscape.javascript.JSException;
 import netscape.javascript.JSObject;
+import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 import tinaviz.view.NodeFilter;
 import tinaviz.session.Session;
+import tinaviz.util.Console;
 import tinaviz.view.View;
 
 /* FIXME TODO WARNING : ADD SOME LOCKS..
@@ -88,13 +90,13 @@ public class SubGraphCopy extends NodeFilter {
             } else if (((String)o).isEmpty()) {
                 //
             } else {
-                  System.out.println("Invalid ID: "+(String)o);
+                  Console.error("Invalid ID: "+(String)o);
                   return input;
             }
 
 
         } else {
-            System.out.println("bad type for " + root + KEY_SOURCE + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
+            Console.error("bad type for " + root + KEY_ITEM + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
             return input;
         }
 

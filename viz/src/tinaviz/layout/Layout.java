@@ -112,7 +112,7 @@ public class Layout {
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
                 if (n1.neighbours.contains(n2.uuid)) {
-                    float w = 1.0f + n1.weights.get(n2.uuid);
+                    float w = 0.1f + n1.weights.get(n2.uuid);
                     n1.vx += vx * distance * w * attraction;
                     n1.vy += vy * distance * w * attraction;
                     n2.vx -= vx * distance * w * attraction;
@@ -131,7 +131,7 @@ public class Layout {
         }   // FOr NODE A
 
 
-        float labelAdjustRepulsionStrength = 50.0f;
+        float labelAdjustRepulsionStrength = 150.0f;
         for (Node n1 : nodes.nodes) {
             for (Node n2 : nodes.nodes) {
                 if (n1 != n2) {
@@ -165,8 +165,8 @@ public class Layout {
 
         for (Node n : nodes.nodes) {
             // important, we limit the velocity!
-            n.vx = PApplet.constrain(n.vx, -5, 5);
-            n.vy = PApplet.constrain(n.vy, -5, 5);
+            n.vx = PApplet.constrain(n.vx, -10, 10);
+            n.vy = PApplet.constrain(n.vy, -10, 10);
 
             // update the coordinate
             // also set the bound box for the whole scene

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tinaviz.filters;
+package tinaviz.filters.tina;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,17 +11,22 @@ import tinaviz.view.NodeFilter;
 import tinaviz.session.Session;
 import tinaviz.view.View;
 import processing.core.*;
+import tinaviz.filters.NodeList;
+import tinaviz.util.Console;
 
 /**
  *
  * @author jbilcke
  */
-public class ThresholdNodeWeight extends NodeFilter {
+public class NodeWeightRangeHack extends NodeFilter {
 
     private String KEY_MIN = "min";
     private String KEY_MAX = "max";
+    private String KEY_EXCEPT = "except";
+
     private Float min = new Float(0.0f);
     private Float max = new Float(1.0f);
+    private Long except = -1L;
 
     @Override
     public NodeList process(Session session, View view, NodeList input) {
@@ -38,8 +43,10 @@ public class ThresholdNodeWeight extends NodeFilter {
             view.properties.put(root + KEY_MAX, 1.0f);
         }
 
-        // HACK HACK HACK ** POUR DAVID DEMO FET60 ** HACK HACK HACK HACK
-        //input.maxNodeWeight = 1.0f;
+        if (!view.properties.containsKey(root + KEY_EXCEPT)) {
+            view.properties.put(root + KEY_EXCEPT, -1L);
+        }
+
 
         float f = input.maxNodeWeight - input.minNodeWeight;
 
@@ -58,7 +65,36 @@ public class ThresholdNodeWeight extends NodeFilter {
                 ? new Float((Double) o)
                 : (Float) o;
         max = max * f + input.minNodeWeight;
-        
+
+
+
+        String cat = "";
+
+        o = view.properties.get(root + KEY_EXCEPT);
+        if (o == null) {
+            //  System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
+            return input;
+        }
+
+
+        if (o instanceof String) {
+            if (((String)o).contains("::")) {
+                cat = ((String) o).split("::")[0];
+
+                except = Long.parseLong(((String) o).split("::")[1]);
+            } else if (((String)o).isEmpty()) {
+                //
+            } else {
+                  Console.error("Invalid ID: "+(String)o);
+                  return input;
+            }
+
+
+        } else {
+            Console.error("bad type for " + root + KEY_EXCEPT + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
+            return input;
+        }
+
         //System.out.println("minNodeWeight:"+input.minNodeWeight+" maxNodeWeight:"+input.maxNodeWeight);
         //System.out.println("min:"+min+" max:"+max);
         for (Node n : input.nodes) {

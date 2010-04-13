@@ -1278,12 +1278,15 @@ public class Main extends PApplet implements MouseWheelListener {
             case MESO:
                 System.out.println("scele scale: "+v.sceneScale+ " zoom floor:"+v.ZOOM_FLOOR + " zoom ceil:"+v.ZOOM_CEIL);
                 if (v.sceneScale > v.ZOOM_FLOOR) {
-                    v.sceneScale = v.ZOOM_FLOOR;
-                    System.out.println("switch in to micro");
+                    v.sceneScale *= 3.f / 4.f;
+                    v.translation.mult(3.f / 4.f);
+                    //v.sceneScale = v.ZOOM_FLOOR;
+                    //System.out.println("switch in to micro");
                 }
                 if (v.sceneScale < v.ZOOM_CEIL) {
                     System.out.println("switch out to macro");
                     session.getMacro().sceneScale = session.getMacro().ZOOM_FLOOR - session.getMacro().ZOOM_FLOOR * 0.5f;
+                    // TODO center the graph to the current selection
                     session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2.0f;
                     jsSwitchToMacro();
                 }
