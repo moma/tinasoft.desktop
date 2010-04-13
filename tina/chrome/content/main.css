@@ -14,6 +14,11 @@ body {font-size:12px;}
     padding:1em 1em;
     background:#D0D0D0;
 }
+
+.formleft a {
+    color: #270053#270053;
+}
+
 .import-form {
     width: 410px;
 }
@@ -74,8 +79,8 @@ label {
 .slider {
     position: relative;
     float:left;
-    width:180px; 
-    height:12px; 
+    width:180px;
+    height:12px;
     margin: 15px;
 }
 
@@ -87,7 +92,7 @@ label {
 }
 
 .tabfiller {
-   height:500px; 
+   height:500px;
 }
 
 .detailtext {
