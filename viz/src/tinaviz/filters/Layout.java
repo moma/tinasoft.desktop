@@ -58,6 +58,7 @@ public class Layout extends NodeFilter {
                 // todo: what happen when vx or vy are 0 ?
                 vx = n2.x - n1.x;
                 vy = n2.y - n1.y;
+
                 distance = Math.sqrt(Math.pow(vx,2) + Math.pow(vy,2)) + 0.0000001;
 
 

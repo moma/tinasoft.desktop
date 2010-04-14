@@ -99,12 +99,30 @@ public class Layout {
         for (Node n1 : nodes.nodes) {
             for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
+
                     continue;
                 }
                 vx = n2.x - n1.x;// - (n2.anticolRadius - n1.anticolRadius);
                 vy = n2.y - n1.y;// - (n2.anticolRadius - n1.anticolRadius);
+
+                /*
+                if (Math.abs(vx) < 1f) {
+                    n2.x += 1f;
+                    vx = 1f;
+                } else if (Math.abs(vy) < 1f) {
+                    n2.y += 1f;
+                    vy = 1f;
+                }
+*/
                 // distance = FastSquareRoot.fast_sqrt(sq(vx)+sq(vy)) +  0.0000001f;
-                distance = PApplet.sqrt(vx * vx + vy * vy) + 0.0000001f;
+                distance = PApplet.sqrt(vx * vx + vy * vy);
+
+                
+                // we do not want the nodes to be glued together
+                if (distance == 0) {
+                    distance = 0.01f;
+                }
+                
                 // int badSquare = FastSquareRoot.fastSqrt((int)((sq(vx)+sq(vy))*1000));
                 //distance = ((float) badSquare) / 1000.0f;
                 //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;

@@ -4,10 +4,7 @@
  */
 package tinaviz.filters;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import tinaviz.graph.Node;
 import tinaviz.view.NodeFilter;

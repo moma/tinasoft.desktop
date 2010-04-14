@@ -82,7 +82,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private float realWidth = 0.0f;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
     private int bezierSize = 18;
-    private int backgroundColor = color(255,255,255);
+    private int backgroundColor = color(255, 255, 255);
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -326,7 +326,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/bipartite_graph_mixed_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/pubmed/1_0.0-1.0.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
@@ -408,7 +408,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
                 layout.slowWithLabelAdjust(v, nodes);
-                
+
             }
             return;
         }
@@ -418,13 +418,13 @@ public class Main extends PApplet implements MouseWheelListener {
         if (n != null) {
             //System.out.println("pop nodes gave something! overwriting node screen cache..");
 
-          
+
             /*
             for (Node nd : n.nodes) {
-                if (nd.original != null) {
-                    nd.x = nd.original.x;
-                    nd.y = nd.original.y;
-                }
+            if (nd.original != null) {
+            nd.x = nd.original.x;
+            nd.y = nd.original.y;
+            }
             }
              */
             nodes.clear();
@@ -660,6 +660,8 @@ public class Main extends PApplet implements MouseWheelListener {
             //v.graph.touch(); // do the layout (recompute all the scene as well..)
         }
 
+        nodes.sortBySelectionStatus();
+
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
@@ -694,6 +696,7 @@ public class Main extends PApplet implements MouseWheelListener {
         endShape();
          */
         noFill();
+
 
         for (Node n1 : nodes.nodes) {
 
@@ -895,8 +898,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
             if (n.selected) {
                 fill(0, 0, 0, 255);
+                rad2 *= 1.3f;
             } else if (n.highlighted) {
                 fill(0, 0, 0, 220);
+                rad2 *= 1.3f;
             } else {
 
                 fill(0, 0, 0, alpha);
@@ -963,7 +968,7 @@ public class Main extends PApplet implements MouseWheelListener {
         ellipse(15, 15, 5, 5);
         line(15, 15, 15, 5);
         line(15, 16, 15, 17);
-*/
+         */
         selectNode = null;
         selectNone = false;
 
@@ -979,9 +984,7 @@ public class Main extends PApplet implements MouseWheelListener {
         float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
         float[] xya1 = MathFunctions.rotation(xa0, ya0, n1.x, n1.y, PApplet.PI / 2);
         float[] xyb1 = MathFunctions.rotation(xb0, yb0, n2.x, n2.y, -PApplet.PI / 2);
-        float xa1 = (float) xya1[0], ya1 = (float) xya1[1];
-        float xb1 = (float) xyb1[0], yb1 = (float) xyb1[1];
-        bezier(n1.x, n1.y, xa1, ya1, xb1, yb1, n2.x, n2.y);
+        bezier(n1.x, n1.y, xya1[0], xya1[1], xyb1[0], xyb1[1], n2.x, n2.y);
     }
 
     public synchronized boolean takePicture(String path) {
@@ -1277,7 +1280,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
                 break;
             case MESO:
-                System.out.println("scele scale: "+v.sceneScale+ " zoom floor:"+v.ZOOM_FLOOR + " zoom ceil:"+v.ZOOM_CEIL);
+                System.out.println("scele scale: " + v.sceneScale + " zoom floor:" + v.ZOOM_FLOOR + " zoom ceil:" + v.ZOOM_CEIL);
                 if (v.sceneScale > v.ZOOM_FLOOR) {
                     v.sceneScale *= 3.f / 4.f;
                     v.translation.mult(3.f / 4.f);

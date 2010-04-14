@@ -159,13 +159,13 @@ public class Session {
     }
 
     public synchronized View getView(String v) {
-        if (v.contains("macro")) {
+        if (v.equalsIgnoreCase("macro")) {
             return macro;
         }
-        if (v.contains("meso")) {
+        if (v.equalsIgnoreCase("meso")) {
             return meso;
         }
-        if (v.contains("micro")) {
+        if (v.equalsIgnoreCase("micro")) {
             return micro;
         }
         return null;

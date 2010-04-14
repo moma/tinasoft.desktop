@@ -4,7 +4,6 @@
  */
 package tinaviz.view;
 
-import tinaviz.graph.Node;
 import tinaviz.session.Session;
 
 /**
@@ -19,8 +18,8 @@ public class MesoView extends View {
         super(aThis);
         spatializeWhenMoving = true;
         centeringMode = CenteringMode.SELECTED_GRAPH_BARYCENTER;
-        ZOOM_CEIL = 10f;
-        ZOOM_FLOOR = 200.0f;
+        ZOOM_CEIL = 0.1f;
+        ZOOM_FLOOR = 250.0f;
         resetParams();
        graph.locked.set(false);
     }

@@ -98,14 +98,14 @@ public class FilterChain {
             f = new NodeFunction();
         }  else if (filterName.equals("Category")) {
             f = new Category();
-        } else if (filterName.equals("tina.SubGraphCopy")) {
+        } else if (filterName.equals("SubGraphCopy")) {
             f = new SubGraphCopy();
         }  else if (filterName.equals("Layout")) {
             f = new Layout();
 
         } else if (filterName.equals("NodeWeightRange")) {
              f = new NodeWeightRange();
-    }  else if (filterName.equals("tina.NodeWeightRangeHack")) {
+    }  else if (filterName.equals("NodeWeightRangeHack")) {
              f = new NodeWeightRangeHack();
     } else {
             return false;

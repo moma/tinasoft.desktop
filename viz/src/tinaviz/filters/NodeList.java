@@ -4,6 +4,7 @@
  */
 package tinaviz.filters;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,9 +24,9 @@ public class NodeList {
             Node n1 = (Node)o1;
             Node n2 = (Node)o2;
             if ((n1.selected && !n2.selected)) {
-                return -1;
-            } else if ((!n1.selected && n2.selected)) {
                 return +1;
+            } else if ((!n1.selected && n2.selected)) {
+                return -1;
             } else {
                 return 0;
             }
@@ -57,6 +58,7 @@ public class NodeList {
     public float minNodeWeight;
     public float maxNodeWeight;
     public boolean autocenter = false;
+    private Comparator comp = new SelectedComparator();
 
     public NodeList(List<Node> nodes) {
         this.nodes = nodes;
@@ -77,10 +79,9 @@ public class NodeList {
         this.computeExtremums();
     }
 
-    public void selectedInLast() {
-        for (Node n : nodes) {
+    public void sortBySelectionStatus() {
 
-        }
+        Collections.sort(nodes, comp);
     }
 
     public void reset() {
