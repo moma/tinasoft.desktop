@@ -41,7 +41,7 @@ public class SubGraphCopy extends NodeFilter {
     @Override
     public NodeList process(Session session, View localView, NodeList input) {
 
-        Console.log("generating subgraph..");
+        //Console.log("generating subgraph..");
         if (!enabled()) {
             return input;
         }
@@ -58,7 +58,7 @@ public class SubGraphCopy extends NodeFilter {
         }
 
         source = (String) localView.properties.get(root + KEY_SOURCE);
-        System.out.println("source="+source);
+        //System.out.println("source="+source);
         View sourceView = session.getView(source);
         if (sourceView == null) {
             System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got " + source);
@@ -131,10 +131,10 @@ public class SubGraphCopy extends NodeFilter {
         newNodes.add(rootNode);
         output.add(rootNode.getProxyClone());
         // System.out.println("added root at x:"+rootNode.x+" y:"+rootNode.y+" with "+rootNode.neighbours.size()+" neighbours");
-        System.out.println("cat: " + cat + " category:" + category);
+        //System.out.println("cat: " + cat + " category:" + category);
 
         if (cat.equals(category)) {
-            System.out.println("generating the same gender graph..");
+            //System.out.println("generating the same gender graph..");
             // same category: trivial
             for (Long potentialNeighbourId : sources.get(item).neighbours) {
                 Node potentialNeighbour = sources.get(potentialNeighbourId);
@@ -160,7 +160,7 @@ public class SubGraphCopy extends NodeFilter {
                 }
             }
         } else {
-            System.out.println("generating the hybrid graph..");
+            //System.out.println("generating the hybrid graph..");
             List<String> paramList = new ArrayList<String>();
             paramList.add(rootNode.category);
             paramList.add("" + rootNode.uuid);
