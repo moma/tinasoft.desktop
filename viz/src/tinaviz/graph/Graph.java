@@ -216,8 +216,8 @@ public class Graph implements Cloneable {
                     : "" + uuid;
 
             Node node = new Node(uuid, label, (float) Math.random() * 2f,
-                    (float) Math.random() * 10f,
-                    (float) Math.random() * 10f);
+                    (float) Math.random() * 100f,
+                    (float) Math.random() * 100f);
 
             node.category = cat;
 

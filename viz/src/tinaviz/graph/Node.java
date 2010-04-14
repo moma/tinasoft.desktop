@@ -107,14 +107,14 @@ public class Node {
     public void addNeighbour(Node neighbour) {
         if (!neighbours.contains(neighbour.uuid)) {
             neighbours.add(neighbour.uuid);
-            weights.put(neighbour.uuid, 0.3f); // put a temporary weight
+            weights.put(neighbour.uuid, 0.25f); // put a temporary weight
         }
     }
 
     public void addNeighbour(Long nuuid) {
         if (!neighbours.contains(nuuid)) {
             neighbours.add(nuuid);
-            weights.put(nuuid, 0.3f); // put a temporary weight
+            weights.put(nuuid, 0.25f); // put a temporary weight
         }
     }
 
