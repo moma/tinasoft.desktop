@@ -4,6 +4,7 @@
  */
 package tinaviz.filters;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import processing.core.PApplet;
@@ -15,6 +16,22 @@ import tinaviz.graph.Node;
  * @author jbilcke
  */
 public class NodeList {
+
+    public class SelectedComparator implements Comparator {
+
+        public int compare(Object o1, Object o2) {
+            Node n1 = (Node)o1;
+            Node n2 = (Node)o2;
+            if ((n1.selected && !n2.selected)) {
+                return -1;
+            } else if ((!n1.selected && n2.selected)) {
+                return +1;
+            } else {
+                return 0;
+            }
+        }
+
+    }
 
     public List<Node> nodes;
     public float NORMALIZED_MIN_EDGE_WEIGHT = 0.0f;
@@ -58,6 +75,12 @@ public class NodeList {
     public void addAll(NodeList nodes) {
         this.nodes.addAll(nodes.nodes);
         this.computeExtremums();
+    }
+
+    public void selectedInLast() {
+        for (Node n : nodes) {
+
+        }
     }
 
     public void reset() {
