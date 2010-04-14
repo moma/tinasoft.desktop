@@ -196,21 +196,21 @@ function Tinaviz() {
             } 
         } else if (level == "meso") { // si dans meso
            
-             console.log("right click, level meso!");
+             //console.log("right click, level meso!");
             applet.clear("meso");
-             console.log("subgraph/item" + attr+"::"+id);
+             //console.log("subgraph/item" + attr+"::"+id);
             this.setProperty("meso", "subgraph/item", attr+"::"+id);
-            console.log("result of subgraph/item: " + this.getProperty("meso", "subgraph/item"));
+            //console.log("result of subgraph/item: " + this.getProperty("meso", "subgraph/item"));
              if (currentMacroFilter=="Document") {
-                 console.log("currentMacroFilter is Document");
+                 //console.log("currentMacroFilter is Document");
                 this.setProperty("meso", "subgraph/category", "NGram");
-                 console.log("subgraph/category should be NGram, but is "+this.setProperty("meso", "subgraph/category"));
+                 //console.log("subgraph/category should be NGram, but is "+this.getProperty("meso", "subgraph/category"));
                 currentMacroFilter = "NGram";
              } else if (currentMacroFilter=="NGram") {
              
-                 console.log("currentMacroFilter is NGram");
+                 //console.log("currentMacroFilter is NGram");
                  this.setProperty("meso", "subgraph/category", "Document");
-                 console.log("subgraph/category should be NGram, but is "+this.setProperty("meso", "subgraph/category"));
+                 //console.log("subgraph/category should be NGram, but is "+this.getProperty("meso", "subgraph/category"));
                 currentMacroFilter = "Document";
              }
             

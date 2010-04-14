@@ -784,12 +784,18 @@ public class Main extends PApplet implements MouseWheelListener {
                              * *
                              */
 
+                            if (n2.weight > n1.weight) {
                             float w1 = n1.weights.get(n2.uuid);
                             float w2 = n2.weights.get(n1.uuid);
                             if (v.highDefinition) {
                                 strokeWeight(w1 * MAX_EDGE_THICKNESS);
                             }
-                            drawCurve(n2, n1);
+                                drawCurve(n2, n1);
+                            } else {
+                                if (n2.uuid > n1.uuid) {
+                                drawCurve(n2, n1);
+                                }
+                            }
                         } else {
                             float w1 = n1.weights.get(n2.uuid);
                             if (v.highDefinition) {
