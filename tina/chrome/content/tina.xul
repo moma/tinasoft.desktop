@@ -76,8 +76,8 @@
 
     <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
       <menupopup onpopupshowing="buildHelpMenu();">
-        <menuitem id="menu-help" oncommand="openHelp()" class="menuitem-iconic"
-                  label="&help.label;" accesskey="&help.accesskey;"/>
+        <!--<menuitem id="menu-help" oncommand="openHelp()" class="menuitem-iconic"
+                  label="&help.label;" accesskey="&help.accesskey;"/>-->
         <menuitem id="menu-updates" oncommand="openUpdates()" class="menuitem-iconic"
                   label="&updates.label;" accesskey="&updates.accesskey;"/>
         <menuitem id="aboutName" oncommand="openAbout()"
