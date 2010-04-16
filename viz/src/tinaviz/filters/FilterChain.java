@@ -64,7 +64,7 @@ public class FilterChain {
                     //System.out.println("we're interrupted!");
                     return;
                 }
-                result = f.process(session, view, result);
+                result = f.preProcessing(session, view, result);
             }
             result.computeExtremums();
             this.

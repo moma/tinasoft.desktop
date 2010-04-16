@@ -24,7 +24,7 @@ public class NodeRadius extends NodeFilter {
     public float MAX_RADIUS_MAGNIFIER = 6.0f;
 
     @Override
-    public NodeList process(Session session, View view, NodeList input) {
+    public NodeList preProcessing(Session session, View view, NodeList input) {
         if (!enabled()) {
             return input;
         }

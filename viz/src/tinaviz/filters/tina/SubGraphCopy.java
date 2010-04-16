@@ -39,7 +39,7 @@ public class SubGraphCopy extends NodeFilter {
     private String oldCategory = "NGram";
     private String source = "macro";
     @Override
-    public NodeList process(Session session, View localView, NodeList input) {
+    public NodeList preProcessing(Session session, View localView, NodeList input) {
 
         //Console.log("generating subgraph..");
         if (!enabled()) {

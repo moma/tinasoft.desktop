@@ -32,7 +32,7 @@ public class NodeFilter implements Filter {
         return n;
     }
     
-    public NodeList process(Session session, View view, NodeList input) {
+    public NodeList preProcessing(Session session, View view, NodeList input) {
         NodeList output = new NodeList();
         if(!enabled()) {
             return input;

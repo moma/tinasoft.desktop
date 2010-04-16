@@ -79,8 +79,8 @@ public class Layout {
 
             // update the coordinate
             // also set the bound box for the whole scene
-            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -3000, +3000);
-            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -3000, +3000);
+            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -2000, +2000);
+            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -2000, +2000);
 
 
             if (n1.original != null) {

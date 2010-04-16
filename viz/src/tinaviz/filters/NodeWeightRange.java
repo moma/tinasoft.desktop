@@ -24,7 +24,7 @@ public class NodeWeightRange extends NodeFilter {
     private Float max = new Float(1.0f);
 
     @Override
-    public NodeList process(Session session, View view, NodeList input) {
+    public NodeList preProcessing(Session session, View view, NodeList input) {
         NodeList output = new NodeList();
         if (!enabled()) {
             return input;

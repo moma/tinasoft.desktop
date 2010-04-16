@@ -19,7 +19,7 @@ public class WeightSize extends NodeFilter {
     private String KEY_VALUE = "value";
 
     @Override
-    public NodeList process(Session session, View view, NodeList input) {
+    public NodeList preProcessing(Session session, View view, NodeList input) {
         if (!enabled()) {
             return input;
         }

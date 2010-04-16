@@ -20,7 +20,7 @@ public class Layout extends NodeFilter {
     private String KEY_MODE = "mode";
     
     @Override
-    public NodeList process(Session session, View v, NodeList input) {
+    public NodeList preProcessing(Session session, View v, NodeList input) {
    
         if(!enabled()) {
             return input;

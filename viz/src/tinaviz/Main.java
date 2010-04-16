@@ -59,6 +59,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private String recordPath = "graph.pdf";
     AtomicBoolean mouseClickLeft = new AtomicBoolean(false);
     AtomicBoolean mouseClickRight = new AtomicBoolean(false);
+    AtomicBoolean debug = new AtomicBoolean(false);
     public static JSObject window = null;
     private int recordingWidth = 100;
     private int recordingHeight = 100;
@@ -201,7 +202,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } else if (getParameter("engine").equals("hardware")) {
                 engine = OPENGL;
 
-            } else if (getParameter("engine").equals("optimized")) {
+            } else if (getParameter("engine").equals("hybrid")) {
                 engine = JAVA2D;
 
             }
@@ -478,7 +479,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             v.translation.set(translate);
 
-            if (abs(oldZoomScale - v.sceneScale) <= 0.3) {
+            if (abs(oldZoomScale - v.sceneScale) <= 0.5) {
                 recenter = false;
                 System.out.println("stabilization reached, disabling recentering");
                 oldZoomScale = v.sceneScale;
@@ -672,15 +673,15 @@ public class Main extends PApplet implements MouseWheelListener {
 
         int resolution = 0;
         if (v.highDefinition) {
-            
+
             // sadly, we can't use a linear scale, it would not be efficient
-           if (shownEdges < 150) {
+            if (shownEdges < 150) {
                 resolution = 90;
             } else if (shownEdges < 300) {
                 resolution = 70;
-            }  else if (shownEdges < 1500) {
+            } else if (shownEdges < 1500) {
                 resolution = 60;
-            }  else if (shownEdges < 3000) {
+            } else if (shownEdges < 3000) {
                 resolution = 50;
             } else if (shownEdges < 4000) {
                 resolution = 40;
@@ -697,7 +698,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } else {
                 resolution = 6;
             }
-                        /*
+            /*
             int resMax = 80;
             int resMin = 8;
             int nbEdgesMin = 1500;
@@ -706,13 +707,13 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             if (nodes.nbEdges >= nbEdgesMax) {
-                resolution = resMin;
+            resolution = resMin;
             } else if (nodes.nbEdges <= nbEdgesMin) {
-                resolution = resMax;
+            resolution = resMax;
             } else {
-                resolution = (int) PApplet.map(nodes.nbEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
+            resolution = (int) PApplet.map(nodes.nbEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
             }
-*/
+             */
         } else {
             /*
             int resMax = 80;
@@ -722,20 +723,20 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             if (shownEdges >= nbEdgesMax) {
-                resolution = resMin;
+            resolution = resMin;
             } else if (shownEdges <= nbEdgesMin) {
-                resolution = resMax;
+            resolution = resMax;
             } else {
-                resolution = (int) PApplet.map(shownEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
+            resolution = (int) PApplet.map(shownEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
             }
-*/
+             */
             if (shownEdges < 150) {
                 resolution = 90;
             } else if (shownEdges < 300) {
                 resolution = 70;
-            }  else if (shownEdges < 1500) {
+            } else if (shownEdges < 1500) {
                 resolution = 60;
-            }  else if (shownEdges < 3000) {
+            } else if (shownEdges < 3000) {
                 resolution = 50;
             } else if (shownEdges < 4000) {
                 resolution = 40;
@@ -780,11 +781,13 @@ public class Main extends PApplet implements MouseWheelListener {
         fill(80);
         textSize(12);
 
-        text("" + ((int) frameRate) + " img/sec", 10f, 13f);
-        text("" + shownNodes + "/" + nodes.size() + " nodes", 80f, 13f);
-        text("" + shownEdges + "/" + nodes.nbEdges + " edges", 190f, 13f);
-        text("aliasing: " + (resolution >= 35)+"    resolution: " + resolution , 310f, 13f);
-        fill(0);
+        if (debug.get()) {
+            text("" + ((int) frameRate) + " img/sec", 10f, 13f);
+            text("" + shownNodes + "/" + nodes.size() + " nodes", 80f, 13f);
+            text("" + shownEdges + "/" + nodes.nbEdges + " edges", 190f, 13f);
+            text("aliasing: " + (resolution >= 35) + "    resolution: " + resolution, 310f, 13f);
+            fill(0);
+        }
         shownNodes = 0;
         shownEdges = 0;
         //pushMatrix();
@@ -849,7 +852,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     continue;
                 }
                 if (!v.showLinks) {
-                    if (!n1.selected | n1.highlighted) {
+                    if (!n1.selected && !n1.highlighted) {
                         continue;
                     }
                 }
@@ -1487,6 +1490,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 v.gravity -= 0.001f;
                 System.out.println("\ngravity: " + session.getView().gravity);
             }
+        } else if (key == 'd') {
+            debug.set(!debug.get());
         }
 
     }
