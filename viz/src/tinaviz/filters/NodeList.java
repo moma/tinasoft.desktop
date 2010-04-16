@@ -57,6 +57,7 @@ public class NodeList {
     public float maxEdgeWeight;
     public float minNodeWeight;
     public float maxNodeWeight;
+    public int nbEdges;
     public boolean autocenter = false;
     private Comparator comp = new SelectedComparator();
 
@@ -101,6 +102,7 @@ public class NodeList {
         maxEdgeWeight = Float.MIN_VALUE;
         minNodeWeight = Float.MAX_VALUE;
         maxNodeWeight = Float.MIN_VALUE;
+        nbEdges = 0;
     }
 
     public int size() {
@@ -188,6 +190,7 @@ public class NodeList {
     }
 
     public synchronized void computeExtremums() {
+        System.out.println("computing extremums");
         reset();
         Float mx = null;
         Float my = null;
@@ -256,6 +259,8 @@ public class NodeList {
             maxNodeWeight = n.weight;
         }
 
+
+        nbEdges += n.neighbours.size();
 
         for (Float weight : n.weights.values()) {
             if (weight > maxEdgeWeight) {

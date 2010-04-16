@@ -2,6 +2,7 @@ package tinaviz;
 
 //import com.nativelibs4java.opencl.CLBuildException;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.io.IOException;
 import tinaviz.layout.Layout;
 import tinaviz.util.Console;
@@ -645,26 +646,91 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void drawAndSpatializeRealtime(View v) {
 
+        /*
         if (v.paused) {
-            smooth();
-            bezierDetail(24);
+        //smooth();
+        //bezierDetail(24);
 
+        }
+        else {
+        if (alwaysAntiAliasing) {
+        smooth();
         } else {
-            if (alwaysAntiAliasing) {
+        noSmooth();
+        }
+        //bezierDetail(7);
+        layout.fast(v, nodes);
+        //v.graph.touch(); // do the layout (recompute all the scene as well..)
+        }
+         */
+
+        //int edgesMin = 100f;
+
+        int resolution = 0;
+        if (v.highDefinition) {
+            int resMax = 50;
+            int resMin = 6;
+            int nbEdgesMin = 400;
+            int nbEdgesMax = 6000;
+
+
+
+            if (nodes.nbEdges >= nbEdgesMax) {
+                resolution = resMin;
+            } else if (nodes.nbEdges <= nbEdgesMin) {
+                resolution = resMax;
+            } else {
+                resolution = (int) PApplet.map(nodes.nbEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
+            }
+            if (resolution >= 35) {
                 smooth();
             } else {
                 noSmooth();
             }
-            bezierDetail(7);
+        } else {
+            int resMax = 50;
+            int resMin = 6;
+            int nbEdgesMin = 800;
+            int nbEdgesMax = 18000;
+
+
+            if (nodes.nbEdges >= nbEdgesMax) {
+                resolution = resMin;
+            } else if (nodes.nbEdges <= nbEdgesMin) {
+                resolution = resMax;
+            } else {
+                resolution = (int) PApplet.map(nodes.nbEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
+            }
+            if (resolution >= 20) {
+                smooth();
+            } else {
+                noSmooth();
+            }
+        }
+        bezierDetail(resolution);
+
+        System.out.println("links: " + nodes.nbEdges + " chosen resolution: " + resolution);
+
+        if (!v.paused) {
             layout.fast(v, nodes);
-            //v.graph.touch(); // do the layout (recompute all the scene as well..)
         }
 
+        // TODO optimize here
         nodes.sortBySelectionStatus();
+
 
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
+
+
+        fill(80);
+        textSize(12);
+
+        text("" + ((int) frameRate) + " img/sec", 10f, 13f);
+        text("" + nodes.size() + " nodes", 80f, 13f);
+        text("" + nodes.nbEdges + " edges", 160f, 13f);
+        fill(0);
 
         //pushMatrix();
 
@@ -697,6 +763,14 @@ public class Main extends PApplet implements MouseWheelListener {
          */
         noFill();
 
+        for (Node n : nodes.nodes) {
+            n.screenX = screenX(n.x, n.y);
+            n.screenY = screenY(n.x, n.y);
+            n.visibleToScreen = (n.screenX > -(width / 2.0f)
+                    && n.screenX < width + (width / 2.0f)
+                    && n.screenY > -(height / 2.0f)
+                    && n.screenY < height + (height / 2.0f));
+        }
 
         for (Node n1 : nodes.nodes) {
 
@@ -715,7 +789,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
             for (Node n2 : nodes.nodes) {
-                if (n1 == n2) {
+                if (n1 == n2 | !(n1.visibleToScreen && n2.visibleToScreen)) {
                     continue;
                 }
 
@@ -785,15 +859,15 @@ public class Main extends PApplet implements MouseWheelListener {
                              */
 
                             if (n2.weight > n1.weight) {
-                            float w1 = n1.weights.get(n2.uuid);
-                            float w2 = n2.weights.get(n1.uuid);
-                            if (v.highDefinition) {
-                                strokeWeight(w1 * MAX_EDGE_THICKNESS);
-                            }
+                                float w1 = n1.weights.get(n2.uuid);
+                                float w2 = n2.weights.get(n1.uuid);
+                                if (v.highDefinition) {
+                                    strokeWeight(w1 * MAX_EDGE_THICKNESS);
+                                }
                                 drawCurve(n2, n1);
                             } else {
                                 if (n2.uuid > n1.uuid) {
-                                drawCurve(n2, n1);
+                                    drawCurve(n2, n1);
                                 }
                             }
                         } else {
@@ -815,23 +889,14 @@ public class Main extends PApplet implements MouseWheelListener {
 
         noStroke();
         for (Node n : nodes.nodes) {
+            if (!n.visibleToScreen) {
+                continue;
+            }
 
             float rad = n.radius * MAX_NODE_RADIUS;
             float rad2 = rad + rad * 0.3f;
 
-            n.screenX = screenX(n.x, n.y);
-            n.screenY = screenY(n.x, n.y);
-            n.visibleToScreen = (n.screenX > -(width / 2.0f)
-                    && n.screenX < width + (width / 2.0f)
-                    && n.screenY > -(height / 2.0f)
-                    && n.screenY < height + (height / 2.0f));
-
-            // small improvment that should enhance perfs
-            if (!n.visibleToScreen) {
-                continue;
-            }
             float nodeScreenDiameter = screenX(n.x + rad2, n.y) - screenX(n.x - rad2, n.y);
-
             if (nodeScreenDiameter < 1) {
                 continue;
             }
@@ -864,6 +929,10 @@ public class Main extends PApplet implements MouseWheelListener {
             if (v.showNodes) {
 
 
+                if (n.selected | n.highlighted) {
+                    rad *= 1.3f;
+                    rad2 *= 1.3f;
+                }
 
                 if (n.selected) {
                     fill(40, 40, 40, alpha);
@@ -897,19 +966,15 @@ public class Main extends PApplet implements MouseWheelListener {
 
             // skip label drawing for small nodes
             // or if we have to hide labels
-            if (nodeScreenDiameter < 12 | !v.showLabels) {
+            if (nodeScreenDiameter < 11 | !(v.showLabels | n.selected | n.highlighted)) {
                 continue;
             }
 
-
             if (n.selected) {
                 fill(0, 0, 0, 255);
-                rad2 *= 1.3f;
             } else if (n.highlighted) {
                 fill(0, 0, 0, 220);
-                rad2 *= 1.3f;
             } else {
-
                 fill(0, 0, 0, alpha);
             }
             textSize(rad2);
@@ -917,7 +982,7 @@ public class Main extends PApplet implements MouseWheelListener {
             n.boxWidth = (rad2 * 2.0f + rad2 * 0.3f) + textWidth((n.highlighted) ? n.label : n.shortLabel) * 1.0f;
             text((n.highlighted) ? n.label : n.shortLabel, n.x + rad, n.y + (rad2 / PI));
 
-        }
+        } // END FOR EACH NODE
 
 
         //popMatrix();
@@ -1045,6 +1110,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseMoved() {
 
+        cursor(ARROW);
         Node candidate = null;
         for (Node n : nodes.nodes) {
             n.highlighted = false;
@@ -1075,6 +1141,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
         if (candidate != null) {
             candidate.highlighted = true;
+            cursor(HAND);
         }
     }
 

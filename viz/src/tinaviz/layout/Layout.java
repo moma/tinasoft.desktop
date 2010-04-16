@@ -53,7 +53,7 @@ public class Layout {
                 // plutot que mettre une distance minimale,
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
-                if (distance < 0.1f) distance = 0.1f;
+                if (distance < 0.2f) distance = 0.2f;
 
                 if (n1.neighbours.contains(n2.uuid)) {
                     float w =  n1.weights.get(n2.uuid);
