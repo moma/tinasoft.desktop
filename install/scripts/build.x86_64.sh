@@ -6,9 +6,9 @@ echo #############################################
 echo ""
 
 name="Tinasoft"
-version="1.0alpha"
+version="1.0alpha2"
 arch="Linux_x86_64"
-xulrunner="xulrunner-1.9.1" 
+xulrunner="xulrunner-1.9.1"
 #xulrunnerdownfile="xulrunner-1.9.1.7.en-US.linux-i686.tar.bz2"
 #xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozillla/xulrunner/releases/1.9.1.7/runtimes/"
 outfile="$name-$version-$arch"
@@ -23,18 +23,29 @@ fi
 
 echo " - copying xulrunner files to output distribution.."
 cp -R tina $outpath
-rm $outpath/tina
-rm $outpath/tina-stub
-rm -Rf $outpath/plugins
-rm -Rf $outpath/db
-rm -Rf $outpath/user
-rm -Rf $outpath/index
-rm -Rf $outpath/*.yaml
-cp install/skeletons/$arch/* $outpath
-cp -R install/data/* $outpath
-cp -R tests $outpath/tests
+
+rm -Rf $outpath/user/*
+rm -Rf $outpath/index/*
+rm -Rf $outpath/db/*
+rm -Rf $outpath/extensions/*
+rm -Rf $outpath/log/*
+rm -Rf $outpath/shared/gexf/gexf.template.*
+find $outpath -name *.pyo -delete
+find $outpath -name *.pyc -delete
+
+
+#rm $outpath/tina
+#rm $outpath/tina-stub
+#rm -Rf $outpath/plugins
+#rm -Rf $outpath/db
+#rm -Rf $outpath/user
+#rm -Rf $outpath/index
+#rm -Rf $outpath/*.yaml
+#cp install/skeletons/$arch/* $outpath
+#cp -R install/data/* $outpath
+#cp -R tests $outpath/tests
 
 echo " - creating release archive.."
-tar -cf $outfile.tar.gz $outpath
+tar -cf dist/$outfile.tar.gz $outpath
 
 # echo " - uploading to the tinasoft server.."

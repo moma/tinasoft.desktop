@@ -23,13 +23,13 @@ else
   mkdir dist
 fi
 
-#install/scripts/build.x86_64.sh
+install/scripts/build.x86_64.sh
 #install/scripts/build.i686.sh
-install/scripts/build.win.sh
+#install/scripts/build.win.sh
 
 
 #mount -o loop -t hfs tinasoft.dmg /mnt/mydmg
-#cp -R /mnt/mydmg/*  
+#cp -R /mnt/mydmg/*
 #unmount /mnt/mydmg
 #install/tools/makedmg tinasoft.dmg TinaSoft 100 dist/tinasoft-mac
 
