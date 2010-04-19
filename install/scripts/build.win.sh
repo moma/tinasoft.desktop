@@ -26,7 +26,7 @@ platformdownpath="http://dl.dropbox.com/u/122451/static/tina/alpha/platforms"
 platformdownfile="$platform.zip"
 
 
-if [ -e $outfile ];
+if [ -e $outfile ]
   then
     rm $outfile
 fi
@@ -38,7 +38,7 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
   else
     echo " - xulrunner not found, downloading.."
     mkdir -p .packaging/$arch/$xulrunner
-    if [ -e $xulrunnerdownfile ];
+    if [ -e $xulrunnerdownfile ]
       then
         echo " - seems to already be downloading, unpacking.."
       else
@@ -55,7 +55,7 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
     rm -Rf .tmp
 fi
 
-if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ];
+if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
   then
     echo " - pyxpcomext found"
   else
@@ -75,7 +75,7 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ];
     rm -Rf .tmp
 fi
 
-if [ -e ".packaging/$arch/$xulrunner/platform" ];
+if [ -e ".packaging/$arch/$xulrunner/platform" ]
   then
     echo " - platform-specific libraries found"
   else
@@ -119,8 +119,8 @@ rm -Rf $outpath/db
 rm -Rf $outpath/extensions/*
 rm -Rf $outpath/log/*
 rm -Rf $outpath/shared/gexf/gexf.template.*
-find $outpath -name *.pyo -delete
-find $outpath -name *.pyc -delete
+#find $outpath -name *.pyo -delete
+#find $outpath -name *.pyc -delete
 
 if [ -e $outpath/user ]
   then

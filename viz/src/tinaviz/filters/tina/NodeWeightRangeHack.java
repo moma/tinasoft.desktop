@@ -29,7 +29,7 @@ public class NodeWeightRangeHack extends NodeFilter {
     private Long except = -1L;
 
     @Override
-    public NodeList process(Session session, View view, NodeList input) {
+    public NodeList preProcessing(Session session, View view, NodeList input) {
         NodeList output = new NodeList();
         if (!enabled()) {
             return input;

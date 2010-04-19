@@ -53,7 +53,7 @@ public class Layout {
                 // plutot que mettre une distance minimale,
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
-                if (distance < 0.1f) distance = 0.1f;
+                if (distance < 0.2f) distance = 0.2f;
 
                 if (n1.neighbours.contains(n2.uuid)) {
                     float w =  n1.weights.get(n2.uuid);
@@ -79,8 +79,8 @@ public class Layout {
 
             // update the coordinate
             // also set the bound box for the whole scene
-            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -3000, +3000);
-            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -3000, +3000);
+            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -2000, +2000);
+            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -2000, +2000);
 
 
             if (n1.original != null) {

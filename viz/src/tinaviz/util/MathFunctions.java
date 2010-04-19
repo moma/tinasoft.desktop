@@ -13,6 +13,8 @@ import processing.core.PApplet;
  */
 public class MathFunctions {
 
+
+
     public static float logify(float x) {
         return (PApplet.abs(x) < 0.01f) 
                 ? 0.0f

@@ -2,6 +2,7 @@ package tinaviz;
 
 //import com.nativelibs4java.opencl.CLBuildException;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.io.IOException;
 import tinaviz.layout.Layout;
 import tinaviz.util.Console;
@@ -58,6 +59,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private String recordPath = "graph.pdf";
     AtomicBoolean mouseClickLeft = new AtomicBoolean(false);
     AtomicBoolean mouseClickRight = new AtomicBoolean(false);
+    AtomicBoolean debug = new AtomicBoolean(false);
     public static JSObject window = null;
     private int recordingWidth = 100;
     private int recordingHeight = 100;
@@ -83,6 +85,8 @@ public class Main extends PApplet implements MouseWheelListener {
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
     private int bezierSize = 18;
     private int backgroundColor = color(255, 255, 255);
+    private int shownEdges = 0;
+    private int shownNodes = 0;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -198,7 +202,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } else if (getParameter("engine").equals("hardware")) {
                 engine = OPENGL;
 
-            } else if (getParameter("engine").equals("optimized")) {
+            } else if (getParameter("engine").equals("hybrid")) {
                 engine = JAVA2D;
 
             }
@@ -475,7 +479,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             v.translation.set(translate);
 
-            if (abs(oldZoomScale - v.sceneScale) <= 0.3) {
+            if (abs(oldZoomScale - v.sceneScale) <= 0.5) {
                 recenter = false;
                 System.out.println("stabilization reached, disabling recentering");
                 oldZoomScale = v.sceneScale;
@@ -645,27 +649,147 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void drawAndSpatializeRealtime(View v) {
 
+        /*
         if (v.paused) {
-            smooth();
-            bezierDetail(24);
+        //smooth();
+        //bezierDetail(24);
 
+        }
+        else {
+        if (alwaysAntiAliasing) {
+        smooth();
         } else {
-            if (alwaysAntiAliasing) {
-                smooth();
+        noSmooth();
+        }
+        //bezierDetail(7);
+        layout.fast(v, nodes);
+        //v.graph.touch(); // do the layout (recompute all the scene as well..)
+        }
+         */
+
+        //int edgesMin = 100f;
+
+        boolean antialiasing = false;
+
+        int resolution = 0;
+        if (v.highDefinition) {
+
+            // sadly, we can't use a linear scale, it would not be efficient
+            if (shownEdges < 150) {
+                resolution = 90;
+            } else if (shownEdges < 300) {
+                resolution = 70;
+            } else if (shownEdges < 1500) {
+                resolution = 60;
+            } else if (shownEdges < 3000) {
+                resolution = 50;
+            } else if (shownEdges < 4000) {
+                resolution = 40;
+            } else if (shownEdges < 5000) {
+                resolution = 35;
+            } else if (shownEdges < 6000) {
+                resolution = 30;
+            } else if (shownEdges < 8000) {
+                resolution = 20;
+            } else if (shownEdges < 10000) {
+                resolution = 12;
+            } else if (shownEdges < 15000) {
+                resolution = 8;
             } else {
-                noSmooth();
+                resolution = 6;
             }
-            bezierDetail(7);
-            layout.fast(v, nodes);
-            //v.graph.touch(); // do the layout (recompute all the scene as well..)
+            /*
+            int resMax = 80;
+            int resMin = 8;
+            int nbEdgesMin = 1500;
+            int nbEdgesMax = 15000;
+
+
+
+            if (nodes.nbEdges >= nbEdgesMax) {
+            resolution = resMin;
+            } else if (nodes.nbEdges <= nbEdgesMin) {
+            resolution = resMax;
+            } else {
+            resolution = (int) PApplet.map(nodes.nbEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
+            }
+             */
+        } else {
+            /*
+            int resMax = 80;
+            int resMin = 8;
+            int nbEdgesMin = 1500;
+            int nbEdgesMax = 15000;
+
+
+            if (shownEdges >= nbEdgesMax) {
+            resolution = resMin;
+            } else if (shownEdges <= nbEdgesMin) {
+            resolution = resMax;
+            } else {
+            resolution = (int) PApplet.map(shownEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
+            }
+             */
+            if (shownEdges < 150) {
+                resolution = 90;
+            } else if (shownEdges < 300) {
+                resolution = 70;
+            } else if (shownEdges < 1500) {
+                resolution = 60;
+            } else if (shownEdges < 3000) {
+                resolution = 50;
+            } else if (shownEdges < 4000) {
+                resolution = 40;
+            } else if (shownEdges < 5000) {
+                resolution = 35;
+            } else if (shownEdges < 6000) {
+                resolution = 30;
+            } else if (shownEdges < 8000) {
+                resolution = 20;
+            } else if (shownEdges < 10000) {
+                resolution = 12;
+            } else if (shownEdges < 15000) {
+                resolution = 8;
+            } else {
+                resolution = 6;
+            }
+
+        }
+        antialiasing = (resolution >= 32);
+        bezierDetail(resolution);
+
+        if (antialiasing) {
+            smooth();
+        } else {
+            noSmooth();
         }
 
+
+        if (!v.paused) {
+            layout.fast(v, nodes);
+        }
+
+        // TODO optimize here
         nodes.sortBySelectionStatus();
+
 
         background(255);
         stroke(150, 150, 150);
         strokeWeight(1);
 
+
+        fill(80);
+        textSize(12);
+
+        if (debug.get()) {
+            text("" + ((int) frameRate) + " img/sec", 10f, 13f);
+            text("" + shownNodes + "/" + nodes.size() + " nodes", 80f, 13f);
+            text("" + shownEdges + "/" + nodes.nbEdges + " edges", 190f, 13f);
+            text("aliasing: " + (resolution >= 35) + "    resolution: " + resolution, 310f, 13f);
+            fill(0);
+        }
+        shownNodes = 0;
+        shownEdges = 0;
         //pushMatrix();
 
         translate(v.translation.x, v.translation.y);
@@ -697,6 +821,14 @@ public class Main extends PApplet implements MouseWheelListener {
          */
         noFill();
 
+        for (Node n : nodes.nodes) {
+            n.screenX = screenX(n.x, n.y);
+            n.screenY = screenY(n.x, n.y);
+            n.visibleToScreen = (n.screenX > -(width / 4.0f)
+                    && n.screenX < width + (width / 4.0f)
+                    && n.screenY > -(height / 4.0f)
+                    && n.screenY < height + (height / 4.0f));
+        }
 
         for (Node n1 : nodes.nodes) {
 
@@ -715,123 +847,102 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
             for (Node n2 : nodes.nodes) {
+
                 if (n1 == n2) {
                     continue;
                 }
-
-                if (n1.neighbours.contains(n2.uuid)) {
-
-                    // if we need to draw the links
-                    if (v.showLinks || n1.selected) {
-                        boolean mutual = n2.neighbours.contains(n1.uuid);
-
-                        float cr = (n1.r + n2.r) / 2;
-                        float cg = (n1.g + n2.g) / 2;
-                        float cb = (n1.b + n2.b) / 2;
-
-                        if (mutual) {
-                            if (n1.selected && n2.selected) {
-                                stroke(0, 0, 0, 180);
-                            } else if (n1.selected || n2.selected) {
-                                stroke(0, 0, 0, 160);
-                            } else {
-                                float m = 180.0f;
-                                float r = (255.0f - m) / 255.0f;
-                                stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
-                            }
-                        } else {
-                            if (n1.selected && n2.selected) {
-                                stroke(0, 0, 0, 160);
-                            } else if (n1.selected || n2.selected) {
-                                stroke(0, 0, 0, 140);
-                            } else {
-                                float m = 160.0f;
-                                float r = (255.0f - m) / 255.0f;
-                                stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
-                            }
-                        }
-
-
-                        // line(n2.x, n2.y, n1.x, n1.y);
-                        // arrow(n2.x, n2.y, n1.x, n1.y, n1.radius);
-
-                        if (mutual) {
-                            /*
-
-                            if (w1 > w2) {
-                            drawCurve(n2, n1);
-
-                            // ambiguite
-                            } else if (w1 == w2) {
-
-                            if (n1.genericity > n2.genericity) {
-                            drawCurve(n2, n1);
-
-                            // ambiguite
-                            } else if (n1.genericity == n2.genericity) {
-                            if (n1.uuid > n2.uuid) {
-                            drawCurve(n2, n1);
-                            } else {
-
-                            }
-
-                            } else {
-
-                            }
-                            } else {
-                            //drawCurve(n1, n2);
-                            }
-                             * *
-                             */
-
-                            if (n2.weight > n1.weight) {
-                            float w1 = n1.weights.get(n2.uuid);
-                            float w2 = n2.weights.get(n1.uuid);
-                            if (v.highDefinition) {
-                                strokeWeight(w1 * MAX_EDGE_THICKNESS);
-                            }
-                                drawCurve(n2, n1);
-                            } else {
-                                if (n2.uuid > n1.uuid) {
-                                drawCurve(n2, n1);
-                                }
-                            }
-                        } else {
-                            float w1 = n1.weights.get(n2.uuid);
-                            if (v.highDefinition) {
-                                strokeWeight(w1 * MAX_EDGE_THICKNESS);
-                            }
-                            drawCurve(n2, n1);
-                        }
-
-                        if (v.highDefinition && n2.uuid != null) {
-                            //strokeWeight(n1.weights.get(n2.uuid) * 1.0f);
-                            strokeWeight(1);
-                        }
+                if (!v.showLinks) {
+                    if (!n1.selected && !n1.highlighted) {
+                        continue;
                     }
                 }
+                if (!n1.visibleToScreen && !n2.visibleToScreen) {
+                    continue;
+                }
+                // skip the node if the following cases
+
+
+                boolean directed = n1.neighbours.contains(n2.uuid);
+                boolean mutual = n2.neighbours.contains(n1.uuid);
+                if (!(directed | mutual)) {
+                    continue;
+                }
+
+
+                // only print the edge in one direction
+                if (n2.weight < n2.weight) {
+                    continue;
+                } else if (n2.weight == n2.weight) {
+                    if (n1.uuid < n2.uuid) {
+                        continue;
+                    }
+                }
+
+                shownEdges++;
+                // if we want to draw the links, or if we clicked on a node
+                // or if we put the mouse over a node
+
+
+
+
+                // compute the average node color
+                float cr = (n1.r + n2.r) / 2;
+                float cg = (n1.g + n2.g) / 2;
+                float cb = (n1.b + n2.b) / 2;
+
+                // compute the edge color
+                if (mutual) {
+                    if (n1.selected && n2.selected) {
+                        stroke(0, 0, 0, 180);
+                    } else if (n1.selected || n2.selected) {
+                        stroke(0, 0, 0, 160);
+                    } else {
+                        float m = 180.0f;
+                        float r = (255.0f - m) / 255.0f;
+                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
+                    }
+                } else if (directed) {
+                    if (n1.selected && n2.selected) {
+                        stroke(0, 0, 0, 160);
+                    } else if (n1.selected || n2.selected) {
+                        stroke(0, 0, 0, 140);
+                    } else {
+                        float m = 160.0f;
+                        float r = (255.0f - m) / 255.0f;
+                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
+                    }
+                }
+
+
+                // compute the edge thickness
+                if (v.highDefinition) {
+                    // since mutal edges might have incomplete
+                    // weight information, we have to try to
+                    // get the weight in both nodes
+                    float w = n1.weights.containsKey(n2.uuid)
+                            ? n1.weights.get(n2.uuid) // node 2
+                            : n2.weights.containsKey(n1.uuid)
+                            ? n2.weights.get(n1.uuid) // node 1
+                            : 1.0f; // default
+                    strokeWeight(w * MAX_EDGE_THICKNESS);
+                } else {
+                    strokeWeight(1);
+                }
+
+                drawCurve(n2, n1);
             } // FOR NODE B
         }   // FOr NODE A
 
         noStroke();
         for (Node n : nodes.nodes) {
+            if (!n.visibleToScreen) {
+                continue;
+            }
 
             float rad = n.radius * MAX_NODE_RADIUS;
             float rad2 = rad + rad * 0.3f;
 
-            n.screenX = screenX(n.x, n.y);
-            n.screenY = screenY(n.x, n.y);
-            n.visibleToScreen = (n.screenX > -(width / 2.0f)
-                    && n.screenX < width + (width / 2.0f)
-                    && n.screenY > -(height / 2.0f)
-                    && n.screenY < height + (height / 2.0f));
-
-            // small improvment that should enhance perfs
-            if (!n.visibleToScreen) {
-                continue;
-            }
             float nodeScreenDiameter = screenX(n.x + rad2, n.y) - screenX(n.x - rad2, n.y);
-
             if (nodeScreenDiameter < 1) {
                 continue;
             }
@@ -864,6 +975,10 @@ public class Main extends PApplet implements MouseWheelListener {
             if (v.showNodes) {
 
 
+                if (n.selected | n.highlighted) {
+                    rad *= 1.3f;
+                    rad2 *= 1.3f;
+                }
 
                 if (n.selected) {
                     fill(40, 40, 40, alpha);
@@ -895,21 +1010,18 @@ public class Main extends PApplet implements MouseWheelListener {
 
             } // end of "if show nodes"
 
+            shownNodes++;
             // skip label drawing for small nodes
             // or if we have to hide labels
-            if (nodeScreenDiameter < 12 | !v.showLabels) {
+            if (nodeScreenDiameter < 11 | !(v.showLabels | n.selected | n.highlighted)) {
                 continue;
             }
 
-
             if (n.selected) {
                 fill(0, 0, 0, 255);
-                rad2 *= 1.3f;
             } else if (n.highlighted) {
                 fill(0, 0, 0, 220);
-                rad2 *= 1.3f;
             } else {
-
                 fill(0, 0, 0, alpha);
             }
             textSize(rad2);
@@ -917,7 +1029,7 @@ public class Main extends PApplet implements MouseWheelListener {
             n.boxWidth = (rad2 * 2.0f + rad2 * 0.3f) + textWidth((n.highlighted) ? n.label : n.shortLabel) * 1.0f;
             text((n.highlighted) ? n.label : n.shortLabel, n.x + rad, n.y + (rad2 / PI));
 
-        }
+        } // END FOR EACH NODE
 
 
         //popMatrix();
@@ -1045,6 +1157,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseMoved() {
 
+        cursor(ARROW);
         Node candidate = null;
         for (Node n : nodes.nodes) {
             n.highlighted = false;
@@ -1075,6 +1188,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
         if (candidate != null) {
             candidate.highlighted = true;
+            cursor(HAND);
         }
     }
 
@@ -1376,6 +1490,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 v.gravity -= 0.001f;
                 System.out.println("\ngravity: " + session.getView().gravity);
             }
+        } else if (key == 'd') {
+            debug.set(!debug.get());
         }
 
     }

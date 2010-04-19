@@ -64,9 +64,10 @@ public class FilterChain {
                     //System.out.println("we're interrupted!");
                     return;
                 }
-                result = f.process(session, view, result);
+                result = f.preProcessing(session, view, result);
             }
-
+            result.computeExtremums();
+            this.
             chain.filteredNodes = result;
             //System.out.println("filter finished to process "+result.size()+" nodes! setting flash 'ready' to true..");
             chain.filterIsRunning.set(false);

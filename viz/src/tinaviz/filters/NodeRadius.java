@@ -21,10 +21,10 @@ public class NodeRadius extends NodeFilter {
 
     // the range of the sliders
     public float MIN_RADIUS_MAGNIFIER = 0.1f;
-    public float MAX_RADIUS_MAGNIFIER = 3.0f;
+    public float MAX_RADIUS_MAGNIFIER = 6.0f;
 
     @Override
-    public NodeList process(Session session, View view, NodeList input) {
+    public NodeList preProcessing(Session session, View view, NodeList input) {
         if (!enabled()) {
             return input;
         }

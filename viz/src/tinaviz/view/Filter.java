@@ -16,7 +16,7 @@ import tinaviz.view.View;
  * @author jbilcke
  */
 public interface Filter {
-  public NodeList process(Session session, View view, NodeList input);
+  public NodeList preProcessing(Session session, View view, NodeList input);
   public boolean enabled();
   public void setEnabled(boolean b);
   public void setRoot(String root);

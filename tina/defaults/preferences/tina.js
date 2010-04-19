@@ -8,9 +8,9 @@ pref("plugin.expose_full_path",true);
 //pref("plugin.scan.SunJRE", "1.9"); 
 //pref("plugin.scan.4xPluginFolder", false);
 //pref("plugin.scan.plid.all", false);
-//pref("plugin.scan.WindowsMediaPlayer", "19.0");
+pref("plugin.scan.WindowsMediaPlayer", "19.0");
 
-pref("java.default_java_location_others","/home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/java");
+//pref("java.default_java_location_others","/home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/java");
 //pref("java.java_plugin_library_name","libnpjp2");
 
 /* magic hack */

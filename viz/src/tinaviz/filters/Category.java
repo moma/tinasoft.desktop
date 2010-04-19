@@ -26,7 +26,7 @@ public class Category extends NodeFilter {
     private String category = "Document";
 
     @Override
-    public NodeList process(Session session, View view, NodeList input) {
+    public NodeList preProcessing(Session session, View view, NodeList input) {
 
         //System.out.println("CATEGORY FILTER 1");
         NodeList output = new NodeList();

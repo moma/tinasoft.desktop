@@ -49,7 +49,7 @@ public class EdgeWeightRange extends NodeFilter {
     }
 
     @Override
-    public NodeList process(Session session, View view, NodeList input) {
+    public NodeList preProcessing(Session session, View view, NodeList input) {
 
         if (!enabled()) {
             return input;
