@@ -43,6 +43,13 @@ public class Main extends PApplet implements MouseWheelListener {
     public Layout layout;
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
+
+
+    private float ARCTAN_12 = (float) (2.0 * Math.atan(1.0 / 2.0));
+    
+    public PImage brandingImage = null;
+    public String brandingImageURL = "";
+
     PImage nodeIcon;
     PFont font;
     XMLElement xml;
@@ -392,6 +399,9 @@ public class Main extends PApplet implements MouseWheelListener {
         lastMousePosition = new PVector(width / 2.0f, height / 2.0f, 0);
         // fill(255, 184);
 
+        //brandingImage = getImage(new URL("tina_icon.gif"));
+        //brandingImage = loadImage("moma-crea-tiny-translucent.png");
+
         //Console.log("Starting visualization..");
         if (window != null) {
             window.eval("parent.tinaviz.init();");
@@ -649,32 +659,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void drawAndSpatializeRealtime(View v) {
 
-        /*
-        if (v.paused) {
-        //smooth();
-        //bezierDetail(24);
-
-        }
-        else {
-        if (alwaysAntiAliasing) {
-        smooth();
-        } else {
-        noSmooth();
-        }
-        //bezierDetail(7);
-        layout.fast(v, nodes);
-        //v.graph.touch(); // do the layout (recompute all the scene as well..)
-        }
-         */
-
-        //int edgesMin = 100f;
-
+        // sadly, we can't use a linear scale, it would not be efficient
         boolean antialiasing = false;
-
         int resolution = 0;
         if (v.highDefinition) {
-
-            // sadly, we can't use a linear scale, it would not be efficient
             if (shownEdges < 150) {
                 resolution = 90;
             } else if (shownEdges < 300) {
@@ -698,38 +686,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } else {
                 resolution = 6;
             }
-            /*
-            int resMax = 80;
-            int resMin = 8;
-            int nbEdgesMin = 1500;
-            int nbEdgesMax = 15000;
-
-
-
-            if (nodes.nbEdges >= nbEdgesMax) {
-            resolution = resMin;
-            } else if (nodes.nbEdges <= nbEdgesMin) {
-            resolution = resMax;
-            } else {
-            resolution = (int) PApplet.map(nodes.nbEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
-            }
-             */
         } else {
-            /*
-            int resMax = 80;
-            int resMin = 8;
-            int nbEdgesMin = 1500;
-            int nbEdgesMax = 15000;
-
-
-            if (shownEdges >= nbEdgesMax) {
-            resolution = resMin;
-            } else if (shownEdges <= nbEdgesMin) {
-            resolution = resMax;
-            } else {
-            resolution = (int) PApplet.map(shownEdges, nbEdgesMax, nbEdgesMin, resMin, resMax);
-            }
-             */
             if (shownEdges < 150) {
                 resolution = 90;
             } else if (shownEdges < 300) {
@@ -755,7 +712,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
         }
-        antialiasing = (resolution >= 32);
+        antialiasing = (resolution >= 40);
         bezierDetail(resolution);
 
         if (antialiasing) {
@@ -777,6 +734,7 @@ public class Main extends PApplet implements MouseWheelListener {
         stroke(150, 150, 150);
         strokeWeight(1);
 
+        //image(brandingImage, width - 98, height - 20);
 
         fill(80);
         textSize(12);
@@ -785,7 +743,7 @@ public class Main extends PApplet implements MouseWheelListener {
             text("" + ((int) frameRate) + " img/sec", 10f, 13f);
             text("" + shownNodes + "/" + nodes.size() + " nodes", 80f, 13f);
             text("" + shownEdges + "/" + nodes.nbEdges + " edges", 190f, 13f);
-            text("aliasing: " + (resolution >= 35) + "    resolution: " + resolution, 310f, 13f);
+            text("aliasing: " + (resolution >= 40) + "    resolution: " + resolution, 310f, 13f);
             fill(0);
         }
         shownNodes = 0;
