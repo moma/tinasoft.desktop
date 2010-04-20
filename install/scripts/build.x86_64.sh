@@ -46,6 +46,7 @@ find $outpath -name *.pyc -delete
 #cp -R tests $outpath/tests
 
 echo " - creating release archive.."
-tar -cf dist/$outfile.tar.gz $outpath
+cd dist
+tar -cjf $outfile.tar.bz $outfile
 
 # echo " - uploading to the tinasoft server.."
