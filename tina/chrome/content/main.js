@@ -135,6 +135,7 @@ var submitImportfile = function(event) {
     var corpora = $("#corpora");
     var path = $("#csvfile");
     var config  = $("#configfile");
+    var filetype = $("#filetype");
     var overwrite = $("#overwrite:checked");
     if (overwrite.val() !== undefined) {
         overwrite = true;
@@ -161,7 +162,7 @@ var submitImportfile = function(event) {
         config.val(),
         corpora.val(),
         false,
-        'tina',
+        filetype.val(),
         overwrite
     );
     return true;
