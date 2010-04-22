@@ -14,10 +14,12 @@ xulrunnerdownfile="xulrunner-1.9.1.7.en-US.linux-i686.tar.bz2"
 xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozilla/xulrunner/releases/1.9.1.7/runtimes"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
+
 pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
 pyxpcomextdownfile="pythonext-2.6.0.20090330-$platform.xpi"
-javaurl="http://dl.dropbox.com/u/122451/static/tina/java"
-javazip="java_x86.tar.gz"
+
+platformdownpath="http://dl.dropbox.com/u/122451/static/tina/alpha/platforms"
+platformdownfile="$platform.zip"
 
 if [ -e $outfile ]
   then
@@ -56,6 +58,18 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
     rm -Rf .tmp
 fi
 
+if [ -e ".packaging/$arch/$xulrunner/platform" ]
+  then
+    echo " - platform-specific libraries found"
+  else
+    echo " - platform-specific libraries not found, downloading.."
+    wget $platformdownpath/$platformdownfile
+    tar xf $platformdownfile
+    mkdir -p .packaging/$arch/$xulrunner/platform
+    mv $platform .packaging/$arch/$xulrunner/platform/
+    rm $platformdownfile
+fi
+
 if [ -e ".packaging/$arch/java" ]
   then
     echo " - platform-specific libraries found"
@@ -63,8 +77,7 @@ if [ -e ".packaging/$arch/java" ]
     echo " - platform-specific libraries not found, downloading.."
     wget $javaurl/$javazip
     unzip $javazip
-    mkdir -p .packaging/$arch/java
-    mv java .packaging/$arch/java
+    mv java .packaging/$arch
     rm $javazip
 fi
 
@@ -84,14 +97,12 @@ rm $outpath/tina-stub
 rm -Rf $outpath/xulrunner
 rm -Rf $outpath/index
 rm -Rf $outpath/*.yaml
-
 cp install/skeletons/$arch/* $outpath
-
+cp -R install/data/* $outpath
 cp -R tests $outpath/tests
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
 
 echo " - creating release archive.."
-cd dist
-tar -cjf $outfile.tar.bz $outfile
+tar -cf $outfile.tar.gz $outpath
 
 # echo " - uploading to the tinasoft server.."

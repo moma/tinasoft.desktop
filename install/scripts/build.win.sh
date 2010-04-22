@@ -94,8 +94,7 @@ if [ -e ".packaging/$arch/java" ]
     echo " - platform-specific libraries not found, downloading.."
     wget $javaurl/$javazip
     unzip $javazip
-    mkdir -p .packaging/$arch/java
-    mv java .packaging/$arch/java
+    mv java .packaging/$arch
     rm $javazip
 fi
 
