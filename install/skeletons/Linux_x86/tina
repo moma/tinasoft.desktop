@@ -9,7 +9,7 @@ if [ -e "plugins/libnpjp2.so" ]
   then
     echo "found java plugin!"
   else
-    ln -s "`pwd`/java/lib/amd64/libnpjp2.so" "plugins/libnpjp2.so"
+    ln -s "`pwd`/java/lib/i386/libnpjp2.so" "plugins/libnpjp2.so"
 fi
 
 export LD_LIBRARY_PATH="`pwd`/platform/Linux_x86-gcc3/lib"
@@ -19,5 +19,5 @@ export PATH="`pwd`/java"
 #echo $JAVA_HOME
 echo $PATH
 ./tina-stub
-#xulrunner application.ini
+#xulrunner-stub application.ini
 #xulrunner/xulrunner application.ini

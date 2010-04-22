@@ -16,6 +16,7 @@ build/*
 tinasoft-*.*
 *.tar.gz
 *.zip
+*.tar.bz
 viz/.*
 viz/dist/*
 viz/build/*

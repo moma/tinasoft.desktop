@@ -133,6 +133,7 @@ rm -Rf $outpath/*.yaml
 cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
+rm $outpath/*~
 cp install/skeletons/$arch/* $outpath
 #cp -R install/data/* $outpath
 mkdir $outpath/db
@@ -144,5 +145,6 @@ cp -R tests $outpath/tests
 echo " - creating release archive.."
 cd dist
 zip -r $outfile.zip $outfile
-
+cd ..
+mv dist/$outfile.zip .
 # echo " - uploading to the tinasoft server.."

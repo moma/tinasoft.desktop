@@ -19,7 +19,10 @@ pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
 pyxpcomextdownfile="pythonext-2.6.0.20090330-$platform.xpi"
 
 platformdownpath="http://dl.dropbox.com/u/122451/static/tina/alpha/platforms"
-platformdownfile="$platform.zip"
+platformdownfile="$platform.tar.gz"
+
+javaurl="http://dl.dropbox.com/u/122451/static/tina/java"
+javazip="java-x86.tar.gz"
 
 if [ -e $outfile ]
   then
@@ -76,7 +79,7 @@ if [ -e ".packaging/$arch/java" ]
   else
     echo " - platform-specific libraries not found, downloading.."
     wget $javaurl/$javazip
-    unzip $javazip
+    tar xf $javazip
     mv java .packaging/$arch
     rm $javazip
 fi
@@ -86,6 +89,7 @@ echo " - copying xulrunner files to output distribution.."
 cp -R tina $outpath
 rm -Rf $outpath/db
 rm -Rf $outpath/platform
+rm -Rf $outpath/java
 rm -Rf $outpath/extensions/*
 rm -Rf $outpath/log/*
 rm -Rf $outpath/shared/gexf/gexf.template.*
@@ -94,15 +98,23 @@ find $outpath -name *.pyc -delete
 
 rm $outpath/tina
 rm $outpath/tina-stub
+rm $outpath/*~
 rm -Rf $outpath/xulrunner
 rm -Rf $outpath/index
 rm -Rf $outpath/*.yaml
 cp install/skeletons/$arch/* $outpath
-cp -R install/data/* $outpath
+#cp -R install/data/* $outpath
 cp -R tests $outpath/tests
+cp -R .packaging/$arch/java $outpath
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
-
+cp -R .packaging/$arch/$xulrunner/platform $outpath
+cp $outpath/xulrunner/xulrunner-stub $outpath/tina-stub
 echo " - creating release archive.."
-tar -cf $outfile.tar.gz $outpath
+cd dist
+tar -cjf $outfile.tar.bz $outfile
+cd ..
+mv dist/$outfile.tar.bz .
+
+
 
 # echo " - uploading to the tinasoft server.."

@@ -48,5 +48,7 @@ find $outpath -name *.pyc -delete
 echo " - creating release archive.."
 cd dist
 tar -cjf $outfile.tar.bz $outfile
+cd ..
+mv dist/$outfile.tar.bz .
 
 # echo " - uploading to the tinasoft server.."

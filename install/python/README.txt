@@ -7,7 +7,8 @@ HOW-TO INSTALL PYTHON MODULE INTO THE EMBEDDED PYTHON LIBRARY ???
 
 cd $WORKPATH/tinasoft.desktop/install/python
 export PYTHONHOME=$WORKPATH/tinasoft.desktop/tina/xulrunner/python
-export LD_LIBRARY_PATH=$PYTHONHOME/lib
+# under mac: use DYLD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=$PYTHONHOME/lib
 cd python-src
 chmod 700 $PYTHONHOME/bin/python2.6
 $PYTHONHOME/bin/python2.6 setup.py build
