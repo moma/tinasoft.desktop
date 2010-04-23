@@ -882,7 +882,12 @@ public class Main extends PApplet implements MouseWheelListener {
                             : n2.weights.containsKey(n1.uuid)
                             ? n2.weights.get(n1.uuid) // node 1
                             : 1.0f; // default
-                    strokeWeight(w * MAX_EDGE_THICKNESS);
+
+                    strokeWeight(
+                            constrain(
+                            map(w,nodes.minEdgeWeight,nodes.maxEdgeWeight,1.0f,100.0f)
+                            * v.sceneScale,
+                            0.5f, 6.0f));
                 } else {
                     strokeWeight(1);
                 }
