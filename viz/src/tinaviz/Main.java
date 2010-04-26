@@ -94,6 +94,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private int backgroundColor = color(255, 255, 255);
     private int shownEdges = 0;
     private int shownNodes = 0;
+    AtomicBoolean redrawScene = new AtomicBoolean(true);
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -337,7 +338,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/pubmed/1_0.0-1.0.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
+                    "file:///home/jbilcke/Desktop/p1000/pubmed1-2_0.0-1.0.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
@@ -409,11 +410,24 @@ public class Main extends PApplet implements MouseWheelListener {
         Console.log("Visualization started..");
     }
 
-    @Override
+   @Override
     public void draw() {
-        // todo replace by get network
         View v = session.getView();
 
+       if (redrawScene.get()) {
+           draw2(v);
+       }
+        
+      redrawScene.set(!v.paused);
+
+    }
+
+    public void draw2(View v) {
+
+        //if (!doLoop.get()) noLoop();
+        
+
+        // todo replace by get network
 
         // HACK
         v.screenWidth = width;
@@ -1115,6 +1129,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mousePressed() {
         lastMousePosition.set(mouseX, mouseY, 0);
+        redrawIfNeeded();
     }
 
     @Override
@@ -1153,7 +1168,9 @@ public class Main extends PApplet implements MouseWheelListener {
             candidate.highlighted = true;
             cursor(HAND);
         }
+        redrawIfNeeded();
     }
+
 
     @Override
     public void mouseClicked() {
@@ -1179,6 +1196,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                         // cannot unselect the selected node in meso view
                         if (n.selected && session.getView().getLevel() == ViewLevel.MESO) {
+                            redrawIfNeeded();
                             return;
                         }
 
@@ -1223,7 +1241,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
         }
         lastMousePosition.set(mouseX, mouseY, 0);
+        redrawIfNeeded();
+    }
 
+    void redrawIfNeeded() {
+        redrawScene.set(true);
     }
 
     @Override
@@ -1239,6 +1261,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             cameraDelta.set(oldTranslation.x - v.translation.x, oldTranslation.y - v.translation.y, 0.0f);
         }
+        redrawIfNeeded();
     }
 
     @Override
@@ -1246,6 +1269,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (mouseButton == RIGHT) {
         } else if (mouseButton == LEFT) {
         }
+        redrawIfNeeded();
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -1343,6 +1367,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
                     session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
                     jsSwitchToMeso();
+                    redrawIfNeeded();
                     return;
 
                 } else if (bestMatchForSelection != null) {
@@ -1351,6 +1376,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         session.selectNode(bestMatchForSelection);
                         nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
                     }
+                    redrawIfNeeded();
                     return;
                 }
             }
@@ -1379,6 +1405,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
                 break;
         }
+        redrawIfNeeded();
     }
 
     @Override
@@ -1456,7 +1483,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else if (key == 'd') {
             debug.set(!debug.get());
         }
-
+        redrawIfNeeded();
     }
 
     public void storeResolution() {
