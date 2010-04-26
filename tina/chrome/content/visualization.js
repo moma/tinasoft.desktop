@@ -115,7 +115,7 @@ function Tinaviz() {
     },
     
     // Public methods
-    loadFromURI: function(uri) {
+    loadFromURI: function(view,uri) {
         if (applet == null) return false;
         return applet.getSession().updateFromURI(view,uri);
     },
@@ -365,7 +365,7 @@ function Tinaviz() {
         result = this.loadFromURI(uri);
     },
      // using string technique
-    loadRelativeGraph: function(view,filename) {
+    loadRelativeGraphOld: function(view,filename) {
 
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
         var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
@@ -389,7 +389,7 @@ function Tinaviz() {
 
         fstream.init(file, -1, 0, 0);
 
-        cstream.init(fstream, "UTF-8", 16000000, 0); // 16Mb - you can use another encoding here if you wish
+        cstream.init(fstream, "UTF-8", 32000000, 0); // 16Mb - you can use another encoding here if you wish
 
         var str = {};
         cstream.readString(-1, str); // read the whole file and put it in str.value
@@ -427,17 +427,26 @@ function Tinaviz() {
         result = this.loadFromString(view,str.value);
     },
 
-    loadAbsoluteGraphFromURI: function(filename) {
-        var gexfFile =
+    loadRelativeGraph: function(view,filename) {
+        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+        var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
+        var gexfPath;// = path + filename;
+        if (path.search(/\\/) != -1) { gexfPath = path + "\\"+filename }
+        else { gexfPath = path + "/"+filename  }
+
+        this.logDebug("going to load "+filename);
+        var file =
             Components.classes["@mozilla.org/file/local;1"]
                 .createInstance(Components.interfaces.nsILocalFile);
-        gexfFile.initWithPath(filename);
+        this.logDebug("initWithPath: "+gexfPath);
+        file.initWithPath(gexfPath);
+
         var uri =
             Components.classes["@mozilla.org/network/protocol;1?name=file"]
                 .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                    .getURLSpecFromFile(gexfFile);
+                    .getURLSpecFromFile(file);
         this.logDebug("loading absolute graph: "+uri);
-        result = this.loadFromURI(uri);
+        result = this.loadFromURI(view,uri);
     },
 
     readGraph: function(view,graphURL) {
@@ -600,4 +609,5 @@ function Tinaviz() {
 }
 
 tinaviz = new Tinaviz();
+
 

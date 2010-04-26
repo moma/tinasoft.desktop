@@ -16,6 +16,7 @@ build/*
 tinasoft-*.*
 *.tar.gz
 *.zip
+*.tar.bz
 viz/.*
 viz/dist/*
 viz/build/*
@@ -27,6 +28,7 @@ tina/import.yaml
 tina/tmp/*
 tina/*fet*
 tina/chrome/content/applet/tinaviz.jar
+tina/chrome/content/applet/current.gexf
 tina/graph.pdf
 tina/shared/gexf/gexf.template.cache
 tina/log/*

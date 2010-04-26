@@ -1,5 +1,5 @@
 @echo off
-echo hello %USERNAME%, you have %NUMBER_OF_PROCESSORS% processors.
+REM echo hello %USERNAME%, you have %NUMBER_OF_PROCESSORS% processors.
 set PLATFORMDIR=%cd%\platform\WINNT_x86-msvc
 set LIBDIR=%PLATFORMDIR%\lib
 set BERKELEYBIN=%PLATFORMDIR%\berkeley\bin
@@ -15,5 +15,5 @@ REM echo nltk=%NLTK_DATA%
 REM echo *******************************
 REM  start /max %cd%\xulrunner-stub.exe
 REM xulrunner-stub.exe
-echo "Loading TinaSoft, please wait.."
+echo Loading TinaSoft, please wait..
 xulrunner\xulrunner.exe application.ini

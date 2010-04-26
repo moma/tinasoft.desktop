@@ -31,12 +31,16 @@ public class Layout {
         for (Node n1 : nodes.nodes) {
             // gravity
 
-            vx = 0 - n1.x;
-            vy = 0 - n1.y;
+            /*
+            vx = nodes.baryCenter.x - n1.x;
+            vy = nodes.baryCenter.y - n1.y;
 
-            distance = PApplet.sqrt(PApplet.sq(vx) + PApplet.sq(vy)) + 0.0000001f;
+            distance = PApplet.sqrt(vx*vx + vy*vy);
+       
             n1.vx += vx * distance * gravity;
             n1.vy += vy * distance * gravity;
+             
+             */
 
             for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
@@ -53,7 +57,7 @@ public class Layout {
                 // plutot que mettre une distance minimale,
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
-                if (distance < 0.2f) distance = 0.2f;
+                if (distance < 0.002f) distance = 0.002f;
 
                 if (n1.neighbours.contains(n2.uuid)) {
                     float w =  n1.weights.get(n2.uuid);
