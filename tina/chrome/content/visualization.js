@@ -428,6 +428,7 @@ function Tinaviz() {
     },
 
 
+
     loadRelativeGraph: function(view,filename) {
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
         var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
@@ -442,17 +443,28 @@ function Tinaviz() {
         this.logDebug("initWithPath: "+gexfPath);
         file.initWithPath(gexfPath);
         
+        
+
+        
         var destDirPath;
         var destDir = Components.classes["@mozilla.org/file/local;1"]
         .createInstance(Components.interfaces.nsILocalFile);
         if (path.search(/\\/) != -1) {   destDirPath = path + "\\chrome\\content\\applet\\"; }
         else {   destDirPath = path + "/chrome/content/applet/"; }
+        
+       
+        var finaFile =
+             Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+        finaFile.initWithPath(destDirPath+"current.gexf");
+        if (finaFile.exists()) finaFile.remove(false);
+        
         destDir.initWithPath(destDirPath);
         file.copyTo(destDir,"current.gexf");
         
         this.logDebug("destDirPath + current.gexf: "+destDirPath+"current.gexf");
 
-        var finaFile =
+        finaFile =
              Components.classes["@mozilla.org/file/local;1"]
                 .createInstance(Components.interfaces.nsILocalFile);
         finaFile.initWithPath(destDirPath+"current.gexf");
