@@ -56,10 +56,8 @@ var tinasoftTaskObserver = {
                 button.html( "Loading macro view" );
                 tinaviz.clear();
                 console.log( "opening " + data );
-
-                if (tinaviz.loadRelativeGraph("macro",JSON.parse(data)) == true) {
-                    switchTab( "macro" );
-                }
+                switchTab( "macro" );
+                tinaviz.loadRelativeGraph("macro",data);
             }
             button.html("New graph");
             button.toggleClass("ui-state-disabled", 1);
@@ -183,7 +181,7 @@ var submitprocessCoocGraph = function(event) {
     // DEBUG VALUE
     var opts = {
         'DocumentGraph': {
-            'edgethreshold': [0.0, 2.0],
+            'edgethreshold': [0.0, 0.5],
             'nodethreshold': [1, 'inf']
         },
         'NGramGraph': {
