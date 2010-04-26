@@ -106,7 +106,7 @@ rm -Rf $outpath/platform
 if [ -e $outpath/java ]
   then
     rm -Rf $outpath/java
-    cp -R .packaging/$arch/java/java $outpath
+    #cp -R .packaging/$arch/java $outpath
 fi
 if [ -e $outpath/plugins ]
   then
@@ -118,8 +118,9 @@ rm -Rf $outpath/db
 rm -Rf $outpath/extensions/*
 rm -Rf $outpath/log/*
 rm -Rf $outpath/shared/gexf/gexf.template.*
-#find $outpath -name *.pyo -delete
-#find $outpath -name *.pyc -delete
+find $outpath -name *.pyo -delete
+find $outpath -name *.pyc -delete
+find $outpath -name *~ -delete
 
 if [ -e $outpath/user ]
   then
@@ -133,7 +134,6 @@ rm -Rf $outpath/*.yaml
 cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
-rm $outpath/*~
 cp install/skeletons/$arch/* $outpath
 #cp -R install/data/* $outpath
 mkdir $outpath/db

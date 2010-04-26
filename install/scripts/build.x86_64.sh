@@ -32,7 +32,7 @@ rm -Rf $outpath/log/*
 rm -Rf $outpath/shared/gexf/gexf.template.*
 find $outpath -name *.pyo -delete
 find $outpath -name *.pyc -delete
-
+find $outpath -name *~ -delete
 
 #rm $outpath/tina
 #rm $outpath/tina-stub
