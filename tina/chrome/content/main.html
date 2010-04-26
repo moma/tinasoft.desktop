@@ -86,13 +86,15 @@
                 <div id="importForm" class="ui-corner-all formleft">
                     <h3><a href="#">import a file</a></h3>
                     <div>
-                        <label><h4>source csv file</h4><label>
-                        <p class="ui-state-active">
-                        'doc_num' and 'corp_num' are <b>unique</b> id names<br/>
-                        'corp_num' represents a <b>period</b> id name
-                        </p>
+                        <label><h4>source file</h4><label>
                         <input id="csvfile" type="file" class="field" name="csvfile" value='' />
-                        <input id="configfile" class="field" type="hidden" name="configfile" value='import.yaml' />
+                        <div style="clear:both;"></div>
+                        <label><h4>file type</h4><label>
+                        <select id="filetype" class="field" name="filetype">
+                            <option selected value='tina'>tinasoft csv</option>
+                            <!--<option value ='medline'>pubmed medline abstracts</option>-->
+                        </select>
+                        <input id="configfile" class="field" type="hidden" name="configfile" value="import.yaml"/>
                     </div>
                     <h3><a href="#">choose a name</a></h3>
                     <div>
@@ -105,6 +107,12 @@
                             <button class="ui-state-default ui-corner-all">Launch</button>
                         </div>
                     </div>
+                    <h3><a href="#">options</a></h3>
+                    <div>
+                        <label><h4>config file (default='import.yaml')</h4><label>
+                        <input id="configfile" class="field" type="file" name="configfile" value="import.yaml"></input>
+                    </div>
+
                 </div>
                 <div id="data_sets" class="ui-corner-all formleft">
                     <table id="corpora_table" class="corpora_table">
@@ -118,7 +126,12 @@
                             <tbody class="ui-widget-content"></tbody>
                     </table>
                 </div>
-                <div id="duplicate_docs" class="ui-corner-all formleft"></div>
+                <div style="clear:both;"></div>
+                <div id="duplicate_docs" class="ui-corner-all formleft">
+                    <h3><a href="#"></a></h3>
+                    <div>
+                    </div>
+                </div>
                 <div style="clear:both;"></div>
             </div>
             <!-- NGRAM WHITELIST AND GRAPH TAB-->
