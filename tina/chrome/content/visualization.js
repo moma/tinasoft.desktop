@@ -427,6 +427,7 @@ function Tinaviz() {
         result = this.loadFromString(view,str.value);
     },
 
+
     loadRelativeGraph: function(view,filename) {
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
         var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
@@ -440,11 +441,27 @@ function Tinaviz() {
                 .createInstance(Components.interfaces.nsILocalFile);
         this.logDebug("initWithPath: "+gexfPath);
         file.initWithPath(gexfPath);
+        
+        var destDirPath;
+        var destDir = Components.classes["@mozilla.org/file/local;1"]
+        .createInstance(Components.interfaces.nsILocalFile);
+        if (path.search(/\\/) != -1) {   destDirPath = path + "\\chrome\\content\\applet\\"; }
+        else {   destDirPath = path + "/chrome/content/applet/"; }
+        destDir.initWithPath(destDirPath);
+        file.copyTo(destDir,"current.gexf");
+        
+        this.logDebug("destDirPath + current.gexf: "+destDirPath+"current.gexf");
 
+        var finaFile =
+             Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+        finaFile.initWithPath(destDirPath+"current.gexf");
+        
         var uri =
-            Components.classes["@mozilla.org/network/protocol;1?name=file"]
+              Components.classes["@mozilla.org/network/protocol;1?name=file"]
                 .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                    .getURLSpecFromFile(file);
+                    .getURLSpecFromFile(finaFile);
+                    
         this.logDebug("loading absolute graph: "+uri);
         result = this.loadFromURI(view,uri);
     },
