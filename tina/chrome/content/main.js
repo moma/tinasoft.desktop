@@ -117,7 +117,7 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_runni
 /* Duplicate document in data set controler */
 var displayDuplicateDocs = function(data) {
     var div = $( "#duplicate_docs" ).empty().show();
-    div.append( "<h3>duplicate documents found ("+ (data.length+1) +")</h3>" );
+    div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
     for ( var i=0; i < data.length; i++ ) {
         div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
     }
