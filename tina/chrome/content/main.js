@@ -181,7 +181,7 @@ var submitprocessCoocGraph = function(event) {
     // DEBUG VALUE
     var opts = {
         'DocumentGraph': {
-            'edgethreshold': [0.0, 0.5],
+            'edgethreshold': [0.0, 2.0],
             'nodethreshold': [1, 'inf']
         },
         'NGramGraph': {
