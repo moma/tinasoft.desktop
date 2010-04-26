@@ -576,11 +576,6 @@ $(document).ready(function() {
     displayListCorpora( "graph_table" );
     displayListCorpora( "corpora_table" );
 
-    $('.hover-star').rating({
-        callback: function(value, link){
-            // TODO update the user db (sessions, votes, comments..) here
-        }
-    });
 
 
     // TINASOFT WINDOW IS RESIZED
