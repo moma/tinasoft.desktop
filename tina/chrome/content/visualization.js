@@ -51,7 +51,7 @@ function Tinaviz() {
 	    
 		this.bindFilter("Category",             "category",           "macro");
 
-		this.bindFilter("NodeWeightRange",  "nodeWeight",         "macro");
+		//this.bindFilter("NodeWeightRange",  "nodeWeight",         "macro");
 		
 		// filter by edge threshold
 		this.bindFilter("EdgeWeightRange",  "edgeWeight",         "macro");
@@ -74,7 +74,7 @@ function Tinaviz() {
 		//this.bindFilter("Category",             "category",           "meso");
 				
 		// filter by genericity
-		this.bindFilter("NodeWeightRange",  "nodeWeight",         "meso");
+		//this.bindFilter("NodeWeightRange",  "nodeWeight",         "meso");
 		
 		// filter by edge threshold
 		this.bindFilter("EdgeWeightRange",  "edgeWeight",         "meso");
@@ -153,7 +153,7 @@ function Tinaviz() {
     clear: function() {
         if (applet == null) return;
         try {
-            applet.getSession().clear();
+            applet.clear();
         } catch (e) {
             this.logError("exception: "+e);
 

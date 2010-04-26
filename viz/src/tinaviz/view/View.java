@@ -31,7 +31,6 @@ public class View {
     public boolean showNodes = true;
     public boolean showLinks = true;
     public boolean paused = false;
-    
     public boolean highDefinition = false;
     public boolean spatializeWhenMoving = true;
     public PVector translation = new PVector(0.0f, 0.0f);
@@ -44,14 +43,13 @@ public class View {
     public float repulsion = 0.01f;
     public float attraction = 0.001f;
     public float gravity = 0.00001f;
-
     public Graph graph = null;
     public FilterChain filters = null;
     public AtomicBoolean hasBeenRead = null;
     public int prespatializeSteps = 0;
     public int screenWidth = 100;
     public int screenHeight = 100;
-    public Map<String,Object> properties = new HashMap<String, Object>();
+    public Map<String, Object> properties = new HashMap<String, Object>();
     public PVector dragDelta = new PVector(0.0f, 0.0f);
     public CenteringMode centeringMode = CenteringMode.FREE_MOVE;
 
@@ -68,7 +66,7 @@ public class View {
         inerY = 0f;
         inerZ = 0f;
         sceneScale = 10.0f;
-        repulsion = 0.01f;
+        repulsion = 0.001f;
         attraction = 0.0001f;
         gravity = 0.00001f;
         prespatializeSteps = 0;
@@ -143,83 +141,82 @@ public class View {
     }
 
     /*
-     public void resetCamera() {
-        resetZoom();
-        switch (centeringMode) {
-            case SELECTED_GRAPH_BARYCENTER:
-                resetToSelectionBarycenter();
-                break;
-            default:
-                resetToGraphBarycenter();
-        }
+    public void resetCamera() {
+    resetZoom();
+    switch (centeringMode) {
+    case SELECTED_GRAPH_BARYCENTER:
+    resetToSelectionBarycenter();
+    break;
+    default:
+    resetToGraphBarycenter();
+    }
 
     }
 
     public void resetZoom() {
 
-        float screenRadius =
-                (screenWidth + screenHeight)
-                / 2.0f;
+    float screenRadius =
+    (screenWidth + screenHeight)
+    / 2.0f;
 
-        float zoomScale = 1.0f / (screenRadius / graph.metrics.graphRadius);
-        System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + graph.metrics.graphRadius + " = " + zoomScale);
-        sceneScale =  1.0f;
+    float zoomScale = 1.0f / (screenRadius / graph.metrics.graphRadius);
+    System.out.println("zoomscale = screenRadius / graphRadius = " + screenRadius + " / " + graph.metrics.graphRadius + " = " + zoomScale);
+    sceneScale =  1.0f;
     }
 
 
     public synchronized void resetToGraphBarycenter() {
 
-        translation.set(graph..center);
-        System.out.println("translation1 x:" + translation.x + " y:" + translation.y);
-        PVector screenCenter = new PVector(screenWidth/2.0f, screenHeight/2.0f, 0);
-        //screenCenter.add(graph.metrics.center);
+    translation.set(graph..center);
+    System.out.println("translation1 x:" + translation.x + " y:" + translation.y);
+    PVector screenCenter = new PVector(screenWidth/2.0f, screenHeight/2.0f, 0);
+    //screenCenter.add(graph.metrics.center);
 
-        translation.sub(screenCenter);
-           System.out.println("translation2  x:" + translation.x + " y:" + translation.y);
-        translation.mult(sceneScale);
-           System.out.println("translation3  x:" +translation.x + " y:" + translation.y);
-        translation.add(screenCenter);
-         //  System.out.println("translation4  x:" + translation.x + " y:" + translation.y);
+    translation.sub(screenCenter);
+    System.out.println("translation2  x:" + translation.x + " y:" + translation.y);
+    translation.mult(sceneScale);
+    System.out.println("translation3  x:" +translation.x + " y:" + translation.y);
+    translation.add(screenCenter);
+    //  System.out.println("translation4  x:" + translation.x + " y:" + translation.y);
     }
 
     public synchronized void resetToSelectionBarycenter() {
-        resetToGraphBarycenter();
+    resetToGraphBarycenter();
 
-        float minX = 0.0f, minY = 0.0f, maxX = 0.0f, maxY = 0.0f, graphWidth = 0.0f, graphHeight = 0.0f;
+    float minX = 0.0f, minY = 0.0f, maxX = 0.0f, maxY = 0.0f, graphWidth = 0.0f, graphHeight = 0.0f;
 
-        boolean ok = false;
-        for (Node n : graph.storedNodes.values()) {
+    boolean ok = false;
+    for (Node n : graph.storedNodes.values()) {
 
-            // update the graph metrics
-            if (!n.selected) {
-                continue;
-            }
-             ok = true;
-            if (n.x < minX) {
-                minX = n.x;
-            }
-            if (n.x > maxX) {
-                maxX = n.x;
-            }
-            if (n.y < minY) {
-                minY = n.y;
-            }
-            if (n.y > maxY) {
-                maxY = n.y;
-            }
-
-        }
-        // no selection..
-        if (!ok) return;
-
-        graphWidth = maxX - minX;
-        graphHeight = maxY - minY;
-        PVector center = new PVector((graphWidth / 2.0f) + minX, (graphHeight / 2.0f) + minY);
-        System.out.println("centering to selection with x:" + center.x + " y:" + center.y);
-        this.translation.set(center);
+    // update the graph metrics
+    if (!n.selected) {
+    continue;
     }
-    */
+    ok = true;
+    if (n.x < minX) {
+    minX = n.x;
+    }
+    if (n.x > maxX) {
+    maxX = n.x;
+    }
+    if (n.y < minY) {
+    minY = n.y;
+    }
+    if (n.y > maxY) {
+    maxY = n.y;
+    }
 
+    }
+    // no selection..
+    if (!ok) return;
+
+    graphWidth = maxX - minX;
+    graphHeight = maxY - minY;
+    PVector center = new PVector((graphWidth / 2.0f) + minX, (graphHeight / 2.0f) + minY);
+    System.out.println("centering to selection with x:" + center.x + " y:" + center.y);
+    this.translation.set(center);
+    }
+     */
     public void selectNodeById(Long id) {
         graph.selectNodeById(id);
     }
@@ -235,6 +232,7 @@ public class View {
     public void unselectNodeById(String id) {
         graph.unselectNodeById(Long.parseLong(id));
     }
+
     public void unselectAll() {
         graph.unselectAll();
     }
@@ -249,7 +247,7 @@ public class View {
     }
 
     public synchronized void clear() {
-    resetParams();
+        resetParams();
         graph.clear();
     }
 

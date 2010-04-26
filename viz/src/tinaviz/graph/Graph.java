@@ -41,7 +41,7 @@ public class Graph implements Cloneable {
     public Map<String, Object> sessionAttributes = null;
     public AtomicBoolean locked = null;
     public AtomicBoolean needToBeReadAgain = null;
-    public AtomicBoolean brandNewGraph = null;
+    public AtomicBoolean topologyChanged = null;
     public AtomicInteger revision;
     private Session session = null;
     //public Map<String,Metrics> categorizedMetrics = new HashMap<String,Metrics>();
@@ -52,7 +52,7 @@ public class Graph implements Cloneable {
         nodeAttributes = new HashMap<String, Attribute>();
         edgeAttributes = new HashMap<String, Attribute>();
         locked = new AtomicBoolean(true);
-        brandNewGraph = new AtomicBoolean(false);
+        topologyChanged = new AtomicBoolean(false);
         revision = new AtomicInteger(0);
         this.session = session;
     }
@@ -115,7 +115,7 @@ public class Graph implements Cloneable {
     }
 
     private boolean parseXML(XPathReader xml) throws XPathExpressionException {
-        brandNewGraph.set(storedNodes.size() == 0);
+        topologyChanged.set(storedNodes.size() == 0);
         locked.set(true);
         String meta = "/gexf/graph/tina/";
         Console.log("parsing..");
@@ -463,14 +463,17 @@ public class Graph implements Cloneable {
     public void selectNodeById(Long id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
+            System.out.println("node selected, touching..");
+              touch();
         }
-
     }
 
     public void unselectNodeById(Long id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
+            touch();
         }
+
     }
 
     public void unselectNodeById(String id) {
@@ -481,5 +484,6 @@ public class Graph implements Cloneable {
         for (Node n : storedNodes.values()) {
             n.selected = false;
         }
+        touch();
     }
 }

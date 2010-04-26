@@ -31,7 +31,7 @@ public class Layout {
         for (Node n1 : nodes.nodes) {
             // gravity
 
-            /*
+            
             vx = nodes.baryCenter.x - n1.x;
             vy = nodes.baryCenter.y - n1.y;
 
@@ -40,7 +40,6 @@ public class Layout {
             n1.vx += vx * distance * gravity;
             n1.vy += vy * distance * gravity;
              
-             */
 
             for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
@@ -78,13 +77,13 @@ public class Layout {
                 //}
             } // FOR NODE B
             // important, we limit the velocity!
-            n1.vx = PApplet.constrain(n1.vx, -5, 5);
-            n1.vy = PApplet.constrain(n1.vy, -5, 5);
+            n1.vx = PApplet.constrain(n1.vx, -15, 15);
+            n1.vy = PApplet.constrain(n1.vy, -15, 15);
 
             // update the coordinate
             // also set the bound box for the whole scene
-            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -2000, +2000);
-            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -2000, +2000);
+            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -3000, +3000);
+            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -3000, +3000);
 
 
             if (n1.original != null) {

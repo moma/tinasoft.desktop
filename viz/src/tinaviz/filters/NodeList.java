@@ -190,7 +190,7 @@ public class NodeList {
     }
 
     public synchronized void computeExtremums() {
-        System.out.println("computing extremums");
+        //System.out.println("computing extremums");
         reset();
         Float mx = null;
         Float my = null;

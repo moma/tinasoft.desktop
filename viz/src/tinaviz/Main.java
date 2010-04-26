@@ -75,13 +75,13 @@ public class Main extends PApplet implements MouseWheelListener {
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_THICKNESS = 20.0f;
     private Long selectNode = null;
-    private boolean selectNone = false;
+
     int oldScreenWidth = 0;
     int oldScreenHeight = 0;
     private Node oldSelected = null;
     private boolean useOpenCL = false;
     private boolean recenter = true;
-    private boolean doUnselection = false;
+
     private boolean alwaysAntiAliasing = false;
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
@@ -152,6 +152,11 @@ public class Main extends PApplet implements MouseWheelListener {
         if (window != null) {
             window.eval("setTimeout(\"parent.tinaviz.switchedTo('micro');\",1);");
         }
+    }
+
+    private void drawNothing(View v) {
+        translate(v.translation.x, v.translation.y);
+        scale(v.sceneScale);
     }
 
     public enum RecordingFormat {
@@ -334,7 +339,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Desktop/p1000/pubmed1-2_0.0-1.0.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/current.gexf"//file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
@@ -430,6 +435,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (redrawScene.get()) {
             draw2(v, n);
+        } else {
+            // hack (we need to setup the matrix so processing can store object's positions)
+            drawNothing(v);
         }
 
 
@@ -447,10 +455,11 @@ public class Main extends PApplet implements MouseWheelListener {
         //boolean cameraUpdateNeeded = false;
         // System.out.println("now working on view "+v);
 
+        nodes.autocenter = false;
         if (n != null) {
             //System.out.println("pop nodes gave something! overwriting node screen cache..");
 
-
+            //System.out.println(n.toString());
             /*
             for (Node nd : n.nodes) {
             if (nd.original != null) {
@@ -462,19 +471,16 @@ public class Main extends PApplet implements MouseWheelListener {
             nodes.clear();
             nodes.addAll(n);
 
+            // HACK
+            nodes.autocenter = v.graph.topologyChanged.getAndSet(false);
+            if (nodes.autocenter) {
+                oldZoomScale = -1f;
+            }
             //if (nodes.size() < 1) return;
 
+        } else {
 
-            if (width > 0 && height > 0) {
-                if (!recenter) {
-                    recenter = v.graph.brandNewGraph.getAndSet(false);
-                    if (recenter) {
-                        oldZoomScale = -1f;
-                    }
-                }
-            }
         }
-
 
         if (recenter | nodes.autocenter) {
 
@@ -808,19 +814,14 @@ public class Main extends PApplet implements MouseWheelListener {
 
         for (Node n1 : nodes.nodes) {
 
-            if (selectNone) {
-                n1.selected = false;
-            } else {
+
                 if (selectNode != null) {
                     if (selectNode == n1.uuid) {
                         n1.selected = true;
                     }
                 }
-            }
+            
 
-            if (doUnselection) {
-                n1.selected = false;
-            }
 
             for (Node n2 : nodes.nodes) {
 
@@ -1069,12 +1070,8 @@ public class Main extends PApplet implements MouseWheelListener {
         line(15, 16, 15, 17);
          */
         selectNode = null;
-        selectNone = false;
 
-        doUnselection = false;
-        /*
-        translate(v.translation.y, v.translation.y);
-        scale(v.sceneScale);*/
+
 
     }
 
@@ -1125,10 +1122,6 @@ public class Main extends PApplet implements MouseWheelListener {
         return session.getView(v);
     }
 
-    public void resetSelection() {
-        doUnselection = true;
-        session.unselectAll();
-    }
 
     @Override
     public void mousePressed() {
@@ -1171,8 +1164,9 @@ public class Main extends PApplet implements MouseWheelListener {
         if (candidate != null) {
             candidate.highlighted = true;
             cursor(HAND);
-        }
-        redrawIfNeeded();
+            redrawIfNeeded();
+        } 
+
     }
 
     @Override
@@ -1485,6 +1479,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         } else if (key == 'd') {
             debug.set(!debug.get());
+
         }
         redrawIfNeeded();
     }
@@ -1496,15 +1491,17 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void clear() {
         getSession().clear();
+        redrawIfNeeded();
     }
 
     public void clear(String view) {
         getSession().getView(view).clear();
+        redrawIfNeeded();
     }
 
     public void recenter() {
-        System.out.println("calling recenter()");
         recenter = true;
+        redrawIfNeeded();
     }
 
     public void touch(String level) {
@@ -1525,12 +1522,14 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public boolean setAntiAliasing(boolean a) {
         alwaysAntiAliasing = a;
+        redrawIfNeeded();
         return a;
     }
 
     public void setBezier(int nb) {
         this.bezierSize = nb;
         bezierDetail(bezierSize);
+        redrawIfNeeded();
     }
 
     public void resetCamera(String view) {
@@ -1540,6 +1539,7 @@ public class Main extends PApplet implements MouseWheelListener {
          *
          */
         System.out.println("resetCamera(" + view + ") called, but NOT IMPLEMENTED");
+        redrawIfNeeded();
     }
 
     public void selectFromDbId(String str) {
@@ -1556,8 +1556,11 @@ public class Main extends PApplet implements MouseWheelListener {
         selectNode = id;
     }
 
+
+    
     public void unselect() {
         getSession().unselectAll();
-        selectNone = true;
+        //doUnselection.set(true);
+        //redrawIfNeeded();
     }
 }
