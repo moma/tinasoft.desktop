@@ -116,8 +116,8 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_runni
 
 /* Duplicate document in data set controler */
 var displayDuplicateDocs = function(data) {
-    var div = $( "#duplicate_docs" ).empty();
-    div.append( "<h3>Duplicate documents found</h3>" );
+    var div = $( "#duplicate_docs" ).empty().show();
+    div.append( "<h3>duplicate documents found ("+ (data.length+1) +")</h3>" );
     for ( var i=0; i < data.length; i++ ) {
         div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
     }
@@ -210,6 +210,7 @@ var submitExportGraph = function(event) {
     var whitelistpath = $("#whitelistfile")
     // DEBUG
     if ( whitelistpath.val() == '' ) {
+        whitelistpath.addClass('ui-state-error');
         whitelistpath.addClass('ui-state-error');
         console.log( "missing the white list path field" );
         return false;
@@ -494,7 +495,7 @@ $(document).ready(function() {
         submitExportGraph(event)
     });*/
 
-
+    var dupldoc = $( "#duplicate_docs" ).empty().hide();
     $.extend($.ui.slider.defaults, {
             //range: "min",
             min: 0,
