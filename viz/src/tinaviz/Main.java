@@ -43,13 +43,9 @@ public class Main extends PApplet implements MouseWheelListener {
     public Layout layout;
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
-
-
     private float ARCTAN_12 = (float) (2.0 * Math.atan(1.0 / 2.0));
-    
     public PImage brandingImage = null;
     public String brandingImageURL = "";
-
     PImage nodeIcon;
     PFont font;
     XMLElement xml;
@@ -410,24 +406,9 @@ public class Main extends PApplet implements MouseWheelListener {
         Console.log("Visualization started..");
     }
 
-   @Override
+    @Override
     public void draw() {
         View v = session.getView();
-
-       if (redrawScene.get()) {
-           draw2(v);
-       }
-        
-      redrawScene.set(!v.paused);
-
-    }
-
-    public void draw2(View v) {
-
-        //if (!doLoop.get()) noLoop();
-        
-
-        // todo replace by get network
 
         // HACK
         v.screenWidth = width;
@@ -440,9 +421,32 @@ public class Main extends PApplet implements MouseWheelListener {
             }
             return;
         }
+
+        NodeList n = v.popNodes();
+        if (n != null) {
+            redrawScene.set(true);
+        }
+
+
+        if (redrawScene.get()) {
+            draw2(v, n);
+        }
+
+
+        redrawScene.set(!v.paused);
+
+    }
+
+    public void draw2(View v, NodeList n) {
+
+        //if (!doLoop.get()) noLoop();
+
+
+        // todo replace by get network
+
         //boolean cameraUpdateNeeded = false;
         // System.out.println("now working on view "+v);
-        NodeList n = v.popNodes();
+
         if (n != null) {
             //System.out.println("pop nodes gave something! overwriting node screen cache..");
 
@@ -899,7 +903,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                     strokeWeight(
                             constrain(
-                            map(w,nodes.minEdgeWeight,nodes.maxEdgeWeight,1.0f,100.0f)
+                            map(w, nodes.minEdgeWeight, nodes.maxEdgeWeight, 1.0f, 100.0f)
                             * v.sceneScale,
                             0.5f, 6.0f));
                 } else {
@@ -1170,7 +1174,6 @@ public class Main extends PApplet implements MouseWheelListener {
         }
         redrawIfNeeded();
     }
-
 
     @Override
     public void mouseClicked() {
