@@ -46,6 +46,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private float ARCTAN_12 = (float) (2.0 * Math.atan(1.0 / 2.0));
     public PImage brandingImage = null;
     public String brandingImageURL = "";
+    public boolean showBranding = true;
     PImage nodeIcon;
     PFont font;
     XMLElement xml;
@@ -339,17 +340,8 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/current.gexf"//file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
-                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
-                    //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
-                    //"file://default.gexf"
-                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
-                    // + "/tinasoft.desktop/tina/chrome/content/applet/data/"
-                    // + "map_dopamine_2002_2007_g.gexf"))*/
+                    "file:///home/uxmal/Desktop/pubmed1_0.0-1.0.gexf"
                     );
-            // session.getMacro().
-            //session.getMacro().translation.set(new PVector());
-            //session.getMacro().animationPaused = true;
             try {
                 session.getMacro().setProperty("cat/value", "NGram");
             } catch (KeyException ex) {
@@ -402,7 +394,7 @@ public class Main extends PApplet implements MouseWheelListener {
         // fill(255, 184);
 
         //brandingImage = getImage(new URL("tina_icon.gif"));
-        //brandingImage = loadImage("moma-crea-tiny-translucent.png");
+        brandingImage = loadImage("moma-crea-tiny-translucent.png");
 
         //Console.log("Starting visualization..");
         if (window != null) {
@@ -758,7 +750,6 @@ public class Main extends PApplet implements MouseWheelListener {
         stroke(150, 150, 150);
         strokeWeight(1);
 
-        //image(brandingImage, width - 98, height - 20);
 
         fill(80);
         textSize(12);
@@ -1071,8 +1062,21 @@ public class Main extends PApplet implements MouseWheelListener {
          */
         selectNode = null;
 
+        PVector p = new PVector(0,0,0);
+        //image(brandingImage, -v.translation.x - 98, -v.translation.y - 20);
+        p.sub(v.translation);
+        p.div(v.sceneScale);
+        drawBranding(v,p);
 
+    }
 
+    public void drawBranding(View v, PVector p) {
+        if (showBranding) {
+
+        image(brandingImage,
+                p.x, p.y,
+                brandingImage.width/v.sceneScale, brandingImage.height/v.sceneScale);
+        }
     }
 
     public void drawCurve(Node n1, Node n2) {
@@ -1275,8 +1279,9 @@ public class Main extends PApplet implements MouseWheelListener {
         if (e.getUnitsToScroll() == 0) {
             return;
         }
-
+        showBranding = false;
         View v = getView();
+        
         lastMousePosition.set(mouseX, mouseY, 0);
         v.translation.sub(lastMousePosition);
 
@@ -1291,7 +1296,8 @@ public class Main extends PApplet implements MouseWheelListener {
         v.translation.add(lastMousePosition);
         // System.out.println("Zoom: " + v.sceneScale);
 
-
+       
+        
         if (e.getWheelRotation() < 0) {
 
 
@@ -1364,6 +1370,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
                     session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
                     jsSwitchToMeso();
+                   
                     redrawIfNeeded();
                     return;
 
@@ -1373,6 +1380,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         session.selectNode(bestMatchForSelection);
                         nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
                     }
+                    
                     redrawIfNeeded();
                     return;
                 }
@@ -1402,6 +1410,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
                 break;
         }
+       
         redrawIfNeeded();
     }
 
