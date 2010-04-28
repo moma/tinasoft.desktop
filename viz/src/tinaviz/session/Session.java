@@ -172,35 +172,43 @@ public class Session {
     }
 
     public void selectNode(Node n) {
-        macro.selectNodeById(n.uuid);
-        meso.selectNodeById(n.uuid);
-        micro.selectNodeById(n.uuid);
+        macro.selectNodeById(n.id);
+        meso.selectNodeById(n.id);
+        micro.selectNodeById(n.id);
     }
 
     public void unselectNode(Node n) {
-        macro.unselectNodeById(n.uuid);
-        meso.unselectNodeById(n.uuid);
-        micro.unselectNodeById(n.uuid);
+        macro.unselectNodeById(n.id);
+        meso.unselectNodeById(n.id);
+        micro.unselectNodeById(n.id);
     }
 
-    public void selectNodeById(Long id) {
+
+
+    public void selectNode(String s) {
+        macro.selectNodeById((long)s.hashCode());
+        meso.selectNodeById((long)s.hashCode());
+        micro.selectNodeById((long)s.hashCode());
+    }
+
+    public void unselectNode(String s) {
+        macro.unselectNodeById((long)s.hashCode());
+        meso.unselectNodeById((long)s.hashCode());
+        micro.unselectNodeById((long)s.hashCode());
+    }
+
+    public void selectNode(Long id) {
         macro.selectNodeById(id);
         meso.selectNodeById(id);
         micro.selectNodeById(id);
     }
 
-    public void unselectNodeById(Long id) {
+    public void unselectNode(Long id) {
         macro.unselectNodeById(id);
         meso.unselectNodeById(id);
         micro.unselectNodeById(id);
     }
 
-    public void resetCamera(float width, float height) {
-        /*
-        macro.resetCamera();
-        meso.resetCamera();
-        micro.resetCamera();*/
-    }
 
     public void unselectAll() {
         macro.unselectAll();

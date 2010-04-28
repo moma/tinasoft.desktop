@@ -41,7 +41,7 @@ public class EdgeWeightRange extends NodeFilter {
                 // .. and do not remove from weights
             } else {
                 // .. and do not add to neighbours
-                n.weights.remove(n.uuid);
+                n.weights.remove(n.id);
             }
         }
         n.neighbours = newNeighbours;

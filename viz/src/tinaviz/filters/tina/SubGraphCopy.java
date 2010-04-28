@@ -163,7 +163,7 @@ public class SubGraphCopy extends NodeFilter {
             //System.out.println("generating the hybrid graph..");
             List<String> paramList = new ArrayList<String>();
             paramList.add(rootNode.category);
-            paramList.add("" + rootNode.uuid);
+            paramList.add("" + rootNode.id);
             paramList.add(category);
 
             /* JSObject document = (JSObject)session.browser.window.getMember("document");

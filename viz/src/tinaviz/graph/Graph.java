@@ -203,23 +203,26 @@ public class Graph implements Cloneable {
 
             String xmlid = (String) xmlnodeAttributes.getNamedItem("id").getNodeValue();
             String cat = "BAD_CATEGORY";
-            Long uuid = 0L;
+            Long id = (long) xmlid.hashCode();
+            String uuid = "";
+            
             if (xmlid.contains("::")) {
+                uuid = xmlid.split("::")[1];
                 cat = xmlid.split("::")[0];
-                uuid = Long.parseLong(xmlid.split("::")[1]);
             } else {
-                uuid = Long.parseLong(xmlid);
+                Console.error("error, id \""+xmlid+"\" is invalid");
             }
-
+            
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
-                    : "" + uuid;
+                    : "" + id;
 
-            Node node = new Node(uuid, label, (float) Math.random() * 2f,
+            Node node = new Node(id, label, (float) Math.random() * 2f,
                     (float) Math.random() * 100f,
                     (float) Math.random() * 100f);
 
             node.category = cat;
+            node.uuid = uuid;
 
             org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
 
@@ -314,17 +317,17 @@ public class Graph implements Cloneable {
             // HACK FOR BAD NGRAMS IN MESO DOCUMENTS GRAPHS
             if (session.macro.graph != this) {
                 if (node.category.equals("NGram")) {
-                    if (!session.macro.graph.storedNodes.containsKey(node.uuid)) {
+                    if (!session.macro.graph.storedNodes.containsKey(node.id)) {
                         System.out.println("Skipping node " + node.label);
                         continue;
                     }
                 }
             }
 
-            if (storedNodes.containsKey(uuid)) {
-                storedNodes.get(uuid).cloneDataFrom(node);
+            if (storedNodes.containsKey(id)) {
+                storedNodes.get(id).cloneDataFrom(node);
             } else {
-                storedNodes.put(uuid, node);
+                storedNodes.put(id, node);
             }
 
         }
@@ -339,31 +342,8 @@ public class Graph implements Cloneable {
                 continue;
             }
 
-
-            String sourcexmlid = (String) edgeAttributesXML.getNamedItem("source").getNodeValue();
-            String sourcecat = "BAD_CATEGORY";
-            Long source = 0L;
-
-            if (sourcexmlid.contains("::")) {
-                sourcecat = sourcexmlid.split("::")[0];
-                source = Long.parseLong(sourcexmlid.split("::")[1]);
-
-            } else {
-                source = Long.parseLong(sourcexmlid);
-            }
-
-            String targetxmlid = (String) edgeAttributesXML.getNamedItem("target").getNodeValue();
-            String targetcat = "BAD_CATEGORY";
-            Long target = 0L;
-
-            if (targetxmlid.contains("::")) {
-                targetcat = targetxmlid.split("::")[0];
-                target = Long.parseLong(targetxmlid.split("::")[1]);
-
-            } else {
-                target = Long.parseLong(targetxmlid);
-            }
-
+            Long source  = (long) edgeAttributesXML.getNamedItem("source").getNodeValue().hashCode();
+            Long target  = (long) edgeAttributesXML.getNamedItem("target").getNodeValue().hashCode();
 
             String type = (edgeAttributesXML.getNamedItem("type") != null)
                     ? (String) edgeAttributesXML.getNamedItem("type").getNodeValue()
@@ -397,34 +377,34 @@ public class Graph implements Cloneable {
     }
 
     public synchronized void putNode(tinaviz.graph.Node node) {
-        if (storedNodes.containsKey(node.uuid)) {
-            storedNodes.put(node.uuid, node);
+        if (storedNodes.containsKey(node.id)) {
+            storedNodes.put(node.id, node);
         } else {
-            storedNodes.get(node.uuid).cloneDataFrom(node);
+            storedNodes.get(node.id).cloneDataFrom(node);
         }
         touch();
     }
 
     public synchronized void addNode(tinaviz.graph.Node node) {
-        if (!storedNodes.containsKey(node.uuid)) {
-            storedNodes.put(node.uuid, node);
+        if (!storedNodes.containsKey(node.id)) {
+            storedNodes.put(node.id, node);
         }
         touch();
     }
 
     public synchronized void updateNode(tinaviz.graph.Node node) {
-        if (storedNodes.containsKey(node.uuid)) {
-            storedNodes.get(node.uuid).cloneDataFrom(node);
+        if (storedNodes.containsKey(node.id)) {
+            storedNodes.get(node.id).cloneDataFrom(node);
         }
         touch();
     }
 
     public synchronized void addNeighbour(tinaviz.graph.Node node1, tinaviz.graph.Node node2, Float weight) {
-        if (storedNodes.containsKey(node1.uuid)) {
-            storedNodes.get(node1.uuid).addNeighbour(node2, weight);
+        if (storedNodes.containsKey(node1.id)) {
+            storedNodes.get(node1.id).addNeighbour(node2, weight);
         } else {
             node1.addNeighbour(node2, weight);
-            storedNodes.put(node1.uuid, node1);
+            storedNodes.put(node1.id, node1);
         }
         touch();
     }
@@ -476,10 +456,7 @@ public class Graph implements Cloneable {
 
     }
 
-    public void unselectNodeById(String id) {
-        unselectNodeById(Long.parseLong(id));
-    }
-
+  
     public void unselectAll() {
         for (Node n : storedNodes.values()) {
             n.selected = false;

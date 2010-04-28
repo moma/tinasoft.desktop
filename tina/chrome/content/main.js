@@ -432,7 +432,7 @@ function resizeApplet() {
 
     $('#vizframe').css("height",""+(h)+"px");
     $('#vizframe').css("width",""+(w-350)+"px");
-    $('#infodiv').show();
+    $('#hide').show();
     $('#infodiv').css("height",""+(h-50)+"px");
     $('#infodiv').css("width",""+(300)+"px");
     tinaviz.size(w - 350,h);
@@ -443,7 +443,7 @@ function resizeApplet() {
 $(document).ready(function() {
     $("#tabs").tabs( { disabled: [2,3] } );;
 
-    $('#infodiv').hide();
+    $('#hide').hide();
     /* restores cache vars */
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
 
@@ -473,7 +473,7 @@ $(document).ready(function() {
 
             $('#infodiv').css("height","0px");
             $('#infodiv').css("width","0px");
-            $('#infodiv').hide();
+            $('#hide').hide();
         }
     });
     var max = 0;
@@ -595,8 +595,8 @@ $(document).ready(function() {
     var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
     appletFile.initWithPath(appletPath);
     var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
-    var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no"  frameborder="1" src="'+appletURL+'"></iframe>';
-    window.setTimeout("$('#container').html('"+iframehtml+"');", 2000);
+    var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no" frameborder="0" src="'+appletURL+'"></iframe>';
+    window.setTimeout("$('#container').html('"+iframehtml+"');", 1000);
 
     $("#tabs-1-accordion").accordion({
         autoHeight: false,
