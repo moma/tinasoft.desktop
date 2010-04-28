@@ -244,12 +244,12 @@ public class Main extends PApplet implements MouseWheelListener {
         if (engine.equals(OPENGL)) {
             smooth();
             frameRate(60);
-            textFont(font, 96);
+            textFont(font, 120);
             bezierDetail(48);
         } else {
             smooth();
             frameRate(25);
-            textFont(font, 26);
+            textFont(font, 48);
             bezierDetail(bezierSize);
         }
 
@@ -339,7 +339,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/content/applet/current.gexf"//file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
+                    "file:///home/jbilcke/Desktop/ErumIA.gexf"//file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
                     // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
                     //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
                     //"file://default.gexf"
@@ -816,7 +816,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
                 if (selectNode != null) {
-                    if (selectNode == n1.uuid) {
+                    if (selectNode == n1.id) {
                         n1.selected = true;
                     }
                 }
@@ -839,8 +839,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 // skip the node if the following cases
 
 
-                boolean directed = n1.neighbours.contains(n2.uuid);
-                boolean mutual = n2.neighbours.contains(n1.uuid);
+                boolean directed = n1.neighbours.contains(n2.id);
+                boolean mutual = n2.neighbours.contains(n1.id);
                 if (!(directed | mutual)) {
                     continue;
                 }
@@ -850,7 +850,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n2.weight < n2.weight) {
                     continue;
                 } else if (n2.weight == n2.weight) {
-                    if (n1.uuid < n2.uuid) {
+                    if (n1.id < n2.id) {
                         continue;
                     }
                 }
@@ -876,7 +876,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     } else {
                         float m = 180.0f;
                         float r = (255.0f - m) / 255.0f;
-                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
+                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.id) * 255, 80, 255));
                     }
                 } else if (directed) {
                     if (n1.selected && n2.selected) {
@@ -886,7 +886,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     } else {
                         float m = 160.0f;
                         float r = (255.0f - m) / 255.0f;
-                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
+                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.id) * 255, 80, 255));
                     }
                 }
 
@@ -896,10 +896,10 @@ public class Main extends PApplet implements MouseWheelListener {
                     // since mutal edges might have incomplete
                     // weight information, we have to try to
                     // get the weight in both nodes
-                    float w = n1.weights.containsKey(n2.uuid)
-                            ? n1.weights.get(n2.uuid) // node 2
-                            : n2.weights.containsKey(n1.uuid)
-                            ? n2.weights.get(n1.uuid) // node 1
+                    float w = n1.weights.containsKey(n2.id)
+                            ? n1.weights.get(n2.id) // node 2
+                            : n2.weights.containsKey(n1.id)
+                            ? n2.weights.get(n1.id) // node 1
                             : 1.0f; // default
 
                     strokeWeight(
@@ -1542,25 +1542,12 @@ public class Main extends PApplet implements MouseWheelListener {
         redrawIfNeeded();
     }
 
-    public void selectFromDbId(String str) {
-        System.out.println("str:" + str);
-        String category = (String) str.split("::")[0];
-        Long id = Long.parseLong(str.split("::")[1]);
-        getSession().selectNodeById(id);
-        selectNode = id;
-    }
-
+    // db id=   "Document::6657-45645"
     public void selectFromId(String str) {
-        Long id = Long.parseLong(str);
-        getSession().selectNodeById(id);
-        selectNode = id;
+        getSession().selectNode(str);
     }
-
-
     
     public void unselect() {
         getSession().unselectAll();
-        //doUnselection.set(true);
-        //redrawIfNeeded();
     }
 }
