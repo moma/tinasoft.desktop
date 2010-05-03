@@ -280,4 +280,8 @@ public class View {
     public float getGravity() {
         return gravity;
     }
+
+    public Node getNode(Long nodeId) {
+        return getGraph().getNode(nodeId);
+    }
 }

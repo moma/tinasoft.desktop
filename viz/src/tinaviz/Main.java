@@ -4,6 +4,7 @@ package tinaviz;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.io.IOException;
+import org.json.JSONException;
 import tinaviz.layout.Layout;
 import tinaviz.util.Console;
 import tinaviz.graph.ShapeCategory;
@@ -27,12 +28,17 @@ import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
 import netscape.javascript.*;
+import org.json.JSONStringer;
+import org.json.JSONWriter;
 import tinaviz.browser.Browser;
 import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 //import tinaviz.layout.LayoutOpenCL;
 import tinaviz.ui.PaintTools;
 import tinaviz.util.MathFunctions;
+//import peasy.*;
+
+
 
 public class Main extends PApplet implements MouseWheelListener {
 
@@ -46,6 +52,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private float ARCTAN_12 = (float) (2.0 * Math.atan(1.0 / 2.0));
     public PImage brandingImage = null;
     public String brandingImageURL = "";
+    public boolean showBranding = true;
     PImage nodeIcon;
     PFont font;
     XMLElement xml;
@@ -75,13 +82,11 @@ public class Main extends PApplet implements MouseWheelListener {
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_THICKNESS = 20.0f;
     private Long selectNode = null;
-
     int oldScreenWidth = 0;
     int oldScreenHeight = 0;
     private Node oldSelected = null;
     private boolean useOpenCL = false;
     private boolean recenter = true;
-
     private boolean alwaysAntiAliasing = false;
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
@@ -91,6 +96,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private int shownEdges = 0;
     private int shownNodes = 0;
     AtomicBoolean redrawScene = new AtomicBoolean(true);
+    //PeasyCam cam;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -203,7 +209,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
-        String engine = P2D;
+        String engine = P3D;
         if (getParameter("engine") != null) {
             if (getParameter("engine").equals("software")) {
                 engine = P2D;
@@ -339,17 +345,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Desktop/ErumIA.gexf"//file:///home/jbilcke/Checkouts/git/TINA/backup/tinasoft_test.gexf" // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/reseau_multilevel_champ_precision_1990-2000.gexf"
-                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/user/fet%20open/tinasoft_test.gexf" //"file:///home/uxmal/Downloads/CSS_bipartite_graph_2.gexf" //"file:///home/uxmal/Downloads/CSSbipartite_graph.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/viz/data/tina_0.9-0.9999_spatialized.gexf" // "file:///home/uxmal/Checkout/git/TINA/tinasoft.desktop/install/data/user/pubmed test 200 abstracts/1_0.0-1.0.gexf"
-                    //  "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/map_dopamine_2002_2007_g.gexf"
-                    //"file://default.gexf"
-                    // "file:///home/jbilcke/Checkouts/git/TINA/tinasoft.desktop/tina/chrome/data/graph/examples/tinaapptests-exportGraph.gexf" /* if(session.getNetwork().updateFromURI("file:///home/jbilcke/Checkouts/git/TINA"
-                    // + "/tinasoft.desktop/tina/chrome/content/applet/data/"
-                    // + "map_dopamine_2002_2007_g.gexf"))*/
-                    );
-            // session.getMacro().
-            //session.getMacro().translation.set(new PVector());
-            //session.getMacro().animationPaused = true;
+                    "file:///home/jbilcke/Desktop/ErumIA.gexf");
             try {
                 session.getMacro().setProperty("cat/value", "NGram");
             } catch (KeyException ex) {
@@ -402,13 +398,19 @@ public class Main extends PApplet implements MouseWheelListener {
         // fill(255, 184);
 
         //brandingImage = getImage(new URL("tina_icon.gif"));
-        //brandingImage = loadImage("moma-crea-tiny-translucent.png");
+        brandingImage = loadImage("moma-crea-tiny-translucent.png");
 
         //Console.log("Starting visualization..");
         if (window != null) {
             window.eval("parent.tinaviz.init();");
         }
         Console.log("Visualization started..");
+
+        /*
+        cam = new PeasyCam(this, 100);
+        cam.setMinimumDistance(50);
+        cam.setMaximumDistance(500);*/
+
     }
 
     @Override
@@ -479,7 +481,6 @@ public class Main extends PApplet implements MouseWheelListener {
             //if (nodes.size() < 1) return;
 
         } else {
-
         }
 
         if (recenter | nodes.autocenter) {
@@ -679,6 +680,12 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void genericDrawer(View net, PGraphics pg, int w, int h) {
+        bezierDetail(90);
+        background(255);
+        stroke(150, 150, 150);
+        strokeWeight(1);
+
+        nodes.sortBySelectionStatus();
     }
 
     public void drawAndSpatializeRealtime(View v) {
@@ -758,7 +765,6 @@ public class Main extends PApplet implements MouseWheelListener {
         stroke(150, 150, 150);
         strokeWeight(1);
 
-        //image(brandingImage, width - 98, height - 20);
 
         fill(80);
         textSize(12);
@@ -815,12 +821,12 @@ public class Main extends PApplet implements MouseWheelListener {
         for (Node n1 : nodes.nodes) {
 
 
-                if (selectNode != null) {
-                    if (selectNode == n1.id) {
-                        n1.selected = true;
-                    }
+            if (selectNode != null) {
+                if (selectNode == n1.id) {
+                    n1.selected = true;
                 }
-            
+            }
+
 
 
             for (Node n2 : nodes.nodes) {
@@ -1071,8 +1077,21 @@ public class Main extends PApplet implements MouseWheelListener {
          */
         selectNode = null;
 
+        PVector p = new PVector(0, 0, 0);
+        //image(brandingImage, -v.translation.x - 98, -v.translation.y - 20);
+        //p.sub(v.translation);
+        //p.div(v.sceneScale);
+        //drawBranding(v,p);
 
+    }
 
+    public void drawBranding(View v, PVector p) {
+        if (showBranding) {
+
+            image(brandingImage,
+                    p.x, p.y,
+                    brandingImage.width / v.sceneScale, brandingImage.height / v.sceneScale);
+        }
     }
 
     public void drawCurve(Node n1, Node n2) {
@@ -1080,7 +1099,9 @@ public class Main extends PApplet implements MouseWheelListener {
         float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
         float[] xya1 = MathFunctions.rotation(xa0, ya0, n1.x, n1.y, PApplet.PI / 2);
         float[] xyb1 = MathFunctions.rotation(xb0, yb0, n2.x, n2.y, -PApplet.PI / 2);
+        beginShape();
         bezier(n1.x, n1.y, xya1[0], xya1[1], xyb1[0], xyb1[1], n2.x, n2.y);
+        endShape();
     }
 
     public synchronized boolean takePicture(String path) {
@@ -1121,7 +1142,6 @@ public class Main extends PApplet implements MouseWheelListener {
     public View getView(String v) {
         return session.getView(v);
     }
-
 
     @Override
     public void mousePressed() {
@@ -1165,7 +1185,7 @@ public class Main extends PApplet implements MouseWheelListener {
             candidate.highlighted = true;
             cursor(HAND);
             redrawIfNeeded();
-        } 
+        }
 
     }
 
@@ -1275,8 +1295,9 @@ public class Main extends PApplet implements MouseWheelListener {
         if (e.getUnitsToScroll() == 0) {
             return;
         }
-
+        showBranding = false;
         View v = getView();
+
         lastMousePosition.set(mouseX, mouseY, 0);
         v.translation.sub(lastMousePosition);
 
@@ -1290,6 +1311,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
         v.translation.add(lastMousePosition);
         // System.out.println("Zoom: " + v.sceneScale);
+
 
 
         if (e.getWheelRotation() < 0) {
@@ -1364,6 +1386,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
                     session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
                     jsSwitchToMeso();
+
                     redrawIfNeeded();
                     return;
 
@@ -1373,6 +1396,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         session.selectNode(bestMatchForSelection);
                         nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
                     }
+
                     redrawIfNeeded();
                     return;
                 }
@@ -1402,6 +1426,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
                 break;
         }
+
         redrawIfNeeded();
     }
 
@@ -1546,8 +1571,56 @@ public class Main extends PApplet implements MouseWheelListener {
     public void selectFromId(String str) {
         getSession().selectNode(str);
     }
-    
+
     public void unselect() {
         getSession().unselectAll();
+    }
+
+    /*public String getNeighbourhood(String id) {
+    String result = "{";
+    Node node = nodes.getNode(id);
+    if (node == null) {
+    return "{}";
+    }
+    for (Long nodeId : node.neighbours) {
+    Node n = getView().getNode(nodeId);
+    result += "\""+n.uuid+"\":{}"
+    }
+    return result + "}";
+
+    }*/
+    public String getNeighbourhood(String id) {
+        String result = "";
+
+        Node node = nodes.getNode(id);
+        if (node == null) {
+            return "{}";
+        }
+        JSONWriter writer = null;
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            return "{}";
+        }
+
+        try {
+
+            for (Long nodeId : node.neighbours) {
+                Node n = getView().getNode(nodeId);
+                writer.key(n.uuid).object().key("label").value(n.label).endObject().object().key("category").value(n.category).endObject().endObject();
+            }
+
+        } catch (JSONException jSONException) {
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        return writer.toString();
+
     }
 }

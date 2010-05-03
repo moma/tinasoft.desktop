@@ -171,6 +171,13 @@ public class Session {
         return null;
     }
 
+    public void getNode(String s) {
+        //this.
+        //macro.selectNodeById(n.id);
+        //meso.selectNodeById(n.id);
+        //micro.selectNodeById(n.id);
+    }
+
     public void selectNode(Node n) {
         macro.selectNodeById(n.id);
         meso.selectNodeById(n.id);

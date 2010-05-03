@@ -11,7 +11,7 @@ arch="Linux_x86"
 platform="$arch-gcc3"
 xulrunner="xulrunner-1.9.1"
 xulrunnerdownfile="xulrunner-1.9.1.7.en-US.linux-i686.tar.bz2"
-xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozilla/xulrunner/releases/1.9.1.7/runtimes"
+xulrunnerdownpath="http://dl.dropbox.com/u/122451/static/tina/xulrunner"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
@@ -19,7 +19,7 @@ pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
 pyxpcomextdownfile="pythonext-2.6.0.20090330-$platform.xpi"
 
 platformdownpath="http://dl.dropbox.com/u/122451/static/tina/alpha/platforms"
-platformdownfile="$platform.tar.gz"
+platformdownfile="$platform.tar.bz2"
 
 javaurl="http://dl.dropbox.com/u/122451/static/tina/java"
 javazip="java-x86.tar.gz"
@@ -38,7 +38,7 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
     wget $xulrunnerdownpath/$xulrunnerdownfile
     tar xjf $xulrunnerdownfile
     rm $xulrunnerdownfile
-    mv xulrunner .packaging/$arch/$xulrunner/
+    mv xulrunner-1.9.1.7 .packaging/$arch/$xulrunner/xulrunner
 fi
 
 if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
@@ -80,6 +80,7 @@ if [ -e ".packaging/$arch/java" ]
     echo " - platform-specific libraries not found, downloading.."
     wget $javaurl/$javazip
     tar xf $javazip
+    chmod +x java/bin/*
     mv java .packaging/$arch
     rm $javazip
 fi
@@ -99,7 +100,7 @@ find $outpath -name *~ -delete
 
 rm $outpath/tina
 rm $outpath/tina-stub
-rm $outpath/*~
+rm $outpath/plugins/*
 rm -Rf $outpath/xulrunner
 rm -Rf $outpath/index
 rm -Rf $outpath/*.yaml
