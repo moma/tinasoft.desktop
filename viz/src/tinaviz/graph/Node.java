@@ -16,7 +16,9 @@ import processing.core.PImage;
  */
 public class Node {
 
-    public Long uuid; // id
+    public Long id; // id
+    public String uuid = "";
+
     public String label = "label";
     public String shortLabel = "label";
     public float radius = 1.0f; // radius
@@ -50,7 +52,8 @@ public class Node {
 
     public Node(Long uuid, String label, float radius, float x, float y) {
 
-        this.uuid = uuid;
+        this.id = uuid;
+        this.uuid = "";
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
         this.radius = radius;
@@ -59,7 +62,8 @@ public class Node {
     }
 
     public Node(Long uuid, String label, float x, float y) {
-        this.uuid = uuid;
+        this.id = uuid;
+        this.uuid = "";
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
         this.x = x;
@@ -67,20 +71,23 @@ public class Node {
     }
 
     public Node(Long uuid, String label, float radius) {
-        this.uuid = uuid;
+        this.id = uuid;
+        this.uuid = "";
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
         this.radius = radius;
     }
 
     public Node(Long uuid, String label) {
-        this.uuid = uuid;
+        this.id = uuid;
+        this.uuid = "";
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
     }
 
     public Node(Long uuid) {
-        this.uuid = uuid;
+        this.id = uuid;
+        this.uuid = "";
     }
 
     public Node(Node n) {
@@ -89,11 +96,11 @@ public class Node {
     }
 
     public void addNeighbour(Node neighbour, Float weight) {
-        if (!neighbours.contains(neighbour.uuid)) {
-            neighbours.add(neighbour.uuid);
+        if (!neighbours.contains(neighbour.id)) {
+            neighbours.add(neighbour.id);
         }
         // overwrite if necessary
-        weights.put(neighbour.uuid, weight);
+        weights.put(neighbour.id, weight);
     }
 
     public void addNeighbour(Long nuuid, Float weight) {
@@ -105,9 +112,9 @@ public class Node {
     }
 
     public void addNeighbour(Node neighbour) {
-        if (!neighbours.contains(neighbour.uuid)) {
-            neighbours.add(neighbour.uuid);
-            weights.put(neighbour.uuid, 0.25f); // put a temporary weight
+        if (!neighbours.contains(neighbour.id)) {
+            neighbours.add(neighbour.id);
+            weights.put(neighbour.id, 0.25f); // put a temporary weight
         }
     }
 
@@ -130,7 +137,8 @@ public class Node {
 
     public void cloneDataFrom(Node node) {
 
-        this.uuid = 0L + node.uuid;
+        this.id = 0L + node.id;
+        this.uuid = "" + node.uuid;
         this.label = ""+ node.label;
         this.shortLabel = ""+ node.shortLabel;
         this.radius = 0f + node.radius;
@@ -172,7 +180,7 @@ public class Node {
     }
 
     public Node getProxyClone() {
-        Node node = new Node(this.uuid);
+        Node node = new Node(this.id);
         // hard copy
         node.cloneDataFrom(this);
         
@@ -186,7 +194,7 @@ public class Node {
     }
     
     public Node getDetachedClone() {
-        Node node = new Node(this.uuid);
+        Node node = new Node(this.id);
         node.cloneDataFrom(this);
         node.original = null;
         return node;

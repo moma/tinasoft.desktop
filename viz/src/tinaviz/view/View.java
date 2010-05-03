@@ -225,13 +225,6 @@ public class View {
         graph.unselectNodeById(id);
     }
 
-    public void selectNodeById(String id) {
-        graph.selectNodeById(Long.parseLong(id));
-    }
-
-    public void unselectNodeById(String id) {
-        graph.unselectNodeById(Long.parseLong(id));
-    }
 
     public void unselectAll() {
         graph.unselectAll();
@@ -286,5 +279,9 @@ public class View {
 
     public float getGravity() {
         return gravity;
+    }
+
+    public Node getNode(Long nodeId) {
+        return getGraph().getNode(nodeId);
     }
 }

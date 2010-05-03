@@ -18,8 +18,18 @@ import tinaviz.graph.Node;
  */
 public class NodeList {
 
+    public Node getNode(String id) {
+        for (Node node : nodes) {
+            if (node.uuid.equals(id)) {
+                return node;
+            }
+        }
+        return null;
+    }
+
     public class SelectedComparator implements Comparator {
 
+        @Override
         public int compare(Object o1, Object o2) {
             Node n1 = (Node)o1;
             Node n2 = (Node)o2;

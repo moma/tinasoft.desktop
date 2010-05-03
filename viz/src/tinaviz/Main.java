@@ -4,6 +4,7 @@ package tinaviz;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.io.IOException;
+import org.json.JSONException;
 import tinaviz.layout.Layout;
 import tinaviz.util.Console;
 import tinaviz.graph.ShapeCategory;
@@ -27,12 +28,17 @@ import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
 import netscape.javascript.*;
+import org.json.JSONStringer;
+import org.json.JSONWriter;
 import tinaviz.browser.Browser;
 import tinaviz.filters.NodeList;
 import tinaviz.graph.Node;
 //import tinaviz.layout.LayoutOpenCL;
 import tinaviz.ui.PaintTools;
 import tinaviz.util.MathFunctions;
+//import peasy.*;
+
+
 
 public class Main extends PApplet implements MouseWheelListener {
 
@@ -76,13 +82,11 @@ public class Main extends PApplet implements MouseWheelListener {
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_THICKNESS = 20.0f;
     private Long selectNode = null;
-
     int oldScreenWidth = 0;
     int oldScreenHeight = 0;
     private Node oldSelected = null;
     private boolean useOpenCL = false;
     private boolean recenter = true;
-
     private boolean alwaysAntiAliasing = false;
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
@@ -92,6 +96,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private int shownEdges = 0;
     private int shownNodes = 0;
     AtomicBoolean redrawScene = new AtomicBoolean(true);
+    //PeasyCam cam;
 
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
@@ -204,7 +209,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
-        String engine = P2D;
+        String engine = P3D;
         if (getParameter("engine") != null) {
             if (getParameter("engine").equals("software")) {
                 engine = P2D;
@@ -245,12 +250,12 @@ public class Main extends PApplet implements MouseWheelListener {
         if (engine.equals(OPENGL)) {
             smooth();
             frameRate(60);
-            textFont(font, 96);
+            textFont(font, 120);
             bezierDetail(48);
         } else {
             smooth();
             frameRate(25);
-            textFont(font, 26);
+            textFont(font, 48);
             bezierDetail(bezierSize);
         }
 
@@ -340,8 +345,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/uxmal/Desktop/pubmed1_0.0-1.0.gexf"
-                    );
+                    "file:///home/jbilcke/Desktop/ErumIA.gexf");
             try {
                 session.getMacro().setProperty("cat/value", "NGram");
             } catch (KeyException ex) {
@@ -401,6 +405,12 @@ public class Main extends PApplet implements MouseWheelListener {
             window.eval("parent.tinaviz.init();");
         }
         Console.log("Visualization started..");
+
+        /*
+        cam = new PeasyCam(this, 100);
+        cam.setMinimumDistance(50);
+        cam.setMaximumDistance(500);*/
+
     }
 
     @Override
@@ -471,7 +481,6 @@ public class Main extends PApplet implements MouseWheelListener {
             //if (nodes.size() < 1) return;
 
         } else {
-
         }
 
         if (recenter | nodes.autocenter) {
@@ -671,6 +680,12 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     public void genericDrawer(View net, PGraphics pg, int w, int h) {
+        bezierDetail(90);
+        background(255);
+        stroke(150, 150, 150);
+        strokeWeight(1);
+
+        nodes.sortBySelectionStatus();
     }
 
     public void drawAndSpatializeRealtime(View v) {
@@ -806,12 +821,12 @@ public class Main extends PApplet implements MouseWheelListener {
         for (Node n1 : nodes.nodes) {
 
 
-                if (selectNode != null) {
-                    if (selectNode == n1.uuid) {
-                        n1.selected = true;
-                    }
+            if (selectNode != null) {
+                if (selectNode == n1.id) {
+                    n1.selected = true;
                 }
-            
+            }
+
 
 
             for (Node n2 : nodes.nodes) {
@@ -830,8 +845,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 // skip the node if the following cases
 
 
-                boolean directed = n1.neighbours.contains(n2.uuid);
-                boolean mutual = n2.neighbours.contains(n1.uuid);
+                boolean directed = n1.neighbours.contains(n2.id);
+                boolean mutual = n2.neighbours.contains(n1.id);
                 if (!(directed | mutual)) {
                     continue;
                 }
@@ -841,7 +856,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n2.weight < n2.weight) {
                     continue;
                 } else if (n2.weight == n2.weight) {
-                    if (n1.uuid < n2.uuid) {
+                    if (n1.id < n2.id) {
                         continue;
                     }
                 }
@@ -867,7 +882,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     } else {
                         float m = 180.0f;
                         float r = (255.0f - m) / 255.0f;
-                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
+                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.id) * 255, 80, 255));
                     }
                 } else if (directed) {
                     if (n1.selected && n2.selected) {
@@ -877,7 +892,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     } else {
                         float m = 160.0f;
                         float r = (255.0f - m) / 255.0f;
-                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.uuid) * 255, 80, 255));
+                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.id) * 255, 80, 255));
                     }
                 }
 
@@ -887,10 +902,10 @@ public class Main extends PApplet implements MouseWheelListener {
                     // since mutal edges might have incomplete
                     // weight information, we have to try to
                     // get the weight in both nodes
-                    float w = n1.weights.containsKey(n2.uuid)
-                            ? n1.weights.get(n2.uuid) // node 2
-                            : n2.weights.containsKey(n1.uuid)
-                            ? n2.weights.get(n1.uuid) // node 1
+                    float w = n1.weights.containsKey(n2.id)
+                            ? n1.weights.get(n2.id) // node 2
+                            : n2.weights.containsKey(n1.id)
+                            ? n2.weights.get(n1.id) // node 1
                             : 1.0f; // default
 
                     strokeWeight(
@@ -1062,20 +1077,20 @@ public class Main extends PApplet implements MouseWheelListener {
          */
         selectNode = null;
 
-        PVector p = new PVector(0,0,0);
+        PVector p = new PVector(0, 0, 0);
         //image(brandingImage, -v.translation.x - 98, -v.translation.y - 20);
-        p.sub(v.translation);
-        p.div(v.sceneScale);
-        drawBranding(v,p);
+        //p.sub(v.translation);
+        //p.div(v.sceneScale);
+        //drawBranding(v,p);
 
     }
 
     public void drawBranding(View v, PVector p) {
         if (showBranding) {
 
-        image(brandingImage,
-                p.x, p.y,
-                brandingImage.width/v.sceneScale, brandingImage.height/v.sceneScale);
+            image(brandingImage,
+                    p.x, p.y,
+                    brandingImage.width / v.sceneScale, brandingImage.height / v.sceneScale);
         }
     }
 
@@ -1084,7 +1099,9 @@ public class Main extends PApplet implements MouseWheelListener {
         float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
         float[] xya1 = MathFunctions.rotation(xa0, ya0, n1.x, n1.y, PApplet.PI / 2);
         float[] xyb1 = MathFunctions.rotation(xb0, yb0, n2.x, n2.y, -PApplet.PI / 2);
+        beginShape();
         bezier(n1.x, n1.y, xya1[0], xya1[1], xyb1[0], xyb1[1], n2.x, n2.y);
+        endShape();
     }
 
     public synchronized boolean takePicture(String path) {
@@ -1125,7 +1142,6 @@ public class Main extends PApplet implements MouseWheelListener {
     public View getView(String v) {
         return session.getView(v);
     }
-
 
     @Override
     public void mousePressed() {
@@ -1169,7 +1185,7 @@ public class Main extends PApplet implements MouseWheelListener {
             candidate.highlighted = true;
             cursor(HAND);
             redrawIfNeeded();
-        } 
+        }
 
     }
 
@@ -1281,7 +1297,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
         showBranding = false;
         View v = getView();
-        
+
         lastMousePosition.set(mouseX, mouseY, 0);
         v.translation.sub(lastMousePosition);
 
@@ -1296,8 +1312,8 @@ public class Main extends PApplet implements MouseWheelListener {
         v.translation.add(lastMousePosition);
         // System.out.println("Zoom: " + v.sceneScale);
 
-       
-        
+
+
         if (e.getWheelRotation() < 0) {
 
 
@@ -1370,7 +1386,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
                     session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
                     jsSwitchToMeso();
-                   
+
                     redrawIfNeeded();
                     return;
 
@@ -1380,7 +1396,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         session.selectNode(bestMatchForSelection);
                         nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
                     }
-                    
+
                     redrawIfNeeded();
                     return;
                 }
@@ -1410,7 +1426,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
                 break;
         }
-       
+
         redrawIfNeeded();
     }
 
@@ -1551,25 +1567,60 @@ public class Main extends PApplet implements MouseWheelListener {
         redrawIfNeeded();
     }
 
-    public void selectFromDbId(String str) {
-        System.out.println("str:" + str);
-        String category = (String) str.split("::")[0];
-        Long id = Long.parseLong(str.split("::")[1]);
-        getSession().selectNodeById(id);
-        selectNode = id;
-    }
-
+    // db id=   "Document::6657-45645"
     public void selectFromId(String str) {
-        Long id = Long.parseLong(str);
-        getSession().selectNodeById(id);
-        selectNode = id;
+        getSession().selectNode(str);
     }
 
-
-    
     public void unselect() {
         getSession().unselectAll();
-        //doUnselection.set(true);
-        //redrawIfNeeded();
+    }
+
+    /*public String getNeighbourhood(String id) {
+    String result = "{";
+    Node node = nodes.getNode(id);
+    if (node == null) {
+    return "{}";
+    }
+    for (Long nodeId : node.neighbours) {
+    Node n = getView().getNode(nodeId);
+    result += "\""+n.uuid+"\":{}"
+    }
+    return result + "}";
+
+    }*/
+    public String getNeighbourhood(String id) {
+        String result = "";
+
+        Node node = nodes.getNode(id);
+        if (node == null) {
+            return "{}";
+        }
+        JSONWriter writer = null;
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            return "{}";
+        }
+
+        try {
+
+            for (Long nodeId : node.neighbours) {
+                Node n = getView().getNode(nodeId);
+                writer.key(n.uuid).object().key("label").value(n.label).endObject().object().key("category").value(n.category).endObject().endObject();
+            }
+
+        } catch (JSONException jSONException) {
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        return writer.toString();
+
     }
 }
