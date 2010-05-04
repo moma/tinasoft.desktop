@@ -94,6 +94,7 @@ rm -Rf $outpath/java
 rm -Rf $outpath/extensions/*
 rm -Rf $outpath/log/*
 rm -Rf $outpath/shared/gexf/gexf.template.*
+rm -Rf $outpath/.autoreg
 find $outpath -name *.pyo -delete
 find $outpath -name *.pyc -delete
 find $outpath -name *~ -delete
