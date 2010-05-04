@@ -57,7 +57,7 @@ var tinasoftTaskObserver = {
                 tinaviz.clear();
                 console.log( "opening " + data );
                 switchTab( "macro" );
-                tinaviz.loadRelativeGraph("macro",data);
+                tinaviz.loadRelativeGraph("macro", JSON.parse(data));
             }
             button.html("New graph");
             button.toggleClass("ui-state-disabled", 1);

@@ -210,7 +210,8 @@ public class Graph implements Cloneable {
                 uuid = xmlid.split("::")[1];
                 cat = xmlid.split("::")[0];
             } else {
-                Console.error("error, id \""+xmlid+"\" is invalid");
+                uuid = xmlid;
+                //Console.log("id \""+xmlid+"\" has no category");
             }
             
             String label = (xmlnodeAttributes.getNamedItem("label") != null)

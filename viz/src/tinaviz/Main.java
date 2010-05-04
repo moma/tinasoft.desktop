@@ -209,7 +209,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
-        String engine = P3D;
+        String engine = P2D;
         if (getParameter("engine") != null) {
             if (getParameter("engine").equals("software")) {
                 engine = P2D;
@@ -345,7 +345,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Desktop/ErumIA.gexf");
+                    "file:///home/jbilcke/Desktop/david_fet60_cooc.gexf");
             try {
                 session.getMacro().setProperty("cat/value", "NGram");
             } catch (KeyException ex) {
@@ -1099,9 +1099,9 @@ public class Main extends PApplet implements MouseWheelListener {
         float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
         float[] xya1 = MathFunctions.rotation(xa0, ya0, n1.x, n1.y, PApplet.PI / 2);
         float[] xyb1 = MathFunctions.rotation(xb0, yb0, n2.x, n2.y, -PApplet.PI / 2);
-        beginShape();
+        //beginShape();
         bezier(n1.x, n1.y, xya1[0], xya1[1], xyb1[0], xyb1[1], n2.x, n2.y);
-        endShape();
+        //endShape();
     }
 
     public synchronized boolean takePicture(String path) {

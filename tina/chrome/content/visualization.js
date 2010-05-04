@@ -225,6 +225,7 @@ function Tinaviz() {
     },
     nodeLeftClicked: function(level,x,y,id,label,attr) {
         if (applet == null) return;
+        this.logDebug("nodeLeftClicked called level="+level+", id="+label+", id="+id+", attr="+attr+",");
         if (id==null) {
             $('#infodiv').html("<h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>");
             //applet.recenter();
@@ -460,6 +461,7 @@ function Tinaviz() {
         if (finaFile.exists()) finaFile.remove(false);
         
         destDir.initWithPath(destDirPath);
+        //console.log("file.copyTo("+destDir+",\"current.gexf\");");
         file.copyTo(destDir,"current.gexf");
         
         this.logDebug("destDirPath + current.gexf: "+destDirPath+"current.gexf");
@@ -578,7 +580,7 @@ function Tinaviz() {
   },
 
      printNGram: function(x,y,id,label,attr) {
-
+         this.logDebug("printNGram= "+id);
          var ng = getNGram( id );
          this.logDebug("ng= "+ng);
          if (ng == null) return null;
@@ -607,7 +609,7 @@ function Tinaviz() {
     },
 
      printDocument: function(x,y,id,label,attr) {
-
+     this.logDebug("printDocument= "+id);
      var doc = getDocument( id );
      this.logDebug("doc= "+doc);
      if (doc == null) return null;
