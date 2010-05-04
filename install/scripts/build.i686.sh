@@ -113,9 +113,9 @@ cp -R .packaging/$arch/$xulrunner/platform $outpath
 cp $outpath/xulrunner/xulrunner-stub $outpath/tina-stub
 echo " - creating release archive.."
 cd dist
-tar -cjf $outfile.tar.bz $outfile
+tar -cjf $outfile.tar.bz2 $outfile
 cd ..
-mv dist/$outfile.tar.bz .
+mv dist/$outfile.tar.bz2 .
 
 
 
