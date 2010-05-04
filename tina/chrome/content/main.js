@@ -18,7 +18,7 @@ if ( typeof(TinaService) == "undefined" ) {
 /* Tinasoft observers handlers */
 
 var tinasoftTaskObserver = {
-    observe : function ( subject , topic , data ){
+    observe : function ( subject , topic , data ) {
         //console.log(topic + "\nDATA = " + data);
         //data = JSON.parse(data);
         // traitements en fonction du topic...
@@ -40,9 +40,11 @@ var tinasoftTaskObserver = {
         if (topic == "tinasoft_runImportFile_running_status") {
             if (data == TinaService.STATUS_RUNNING) {
                 $('#importFile button').toggleClass("ui-state-disabled", 1);
-                $('#importFile button').html( "starting" );
+                $('#importFile button').html( "please wait during init" );
             }
-            $('#importFile button').html( "imported "+data+" lines" );
+            else {
+                $('#importFile button').html( "imported "+data+" lines" );
+            }
         }
 
         if(topic == "tinasoft_runProcessCoocGraph_finish_status"){
