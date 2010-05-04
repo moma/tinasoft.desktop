@@ -6,7 +6,7 @@ echo "#############################################"
 echo ""
 
 name="Tinasoft"
-version="1.0alpha3"
+version="1.0alpha4"
 arch="Linux_x86"
 platform="$arch-gcc3"
 xulrunner="xulrunner-1.9.1"
