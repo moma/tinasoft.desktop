@@ -201,18 +201,15 @@ public class Graph implements Cloneable {
 
             org.w3c.dom.NamedNodeMap xmlnodeAttributes = xmlnode.getAttributes();
 
-            String xmlid = (String) xmlnodeAttributes.getNamedItem("id").getNodeValue();
+            String uuid = (String) xmlnodeAttributes.getNamedItem("id").getNodeValue();
             String cat = "BAD_CATEGORY";
-            Long id = (long) xmlid.hashCode();
-            String uuid = "";
-            
-            if (xmlid.contains("::")) {
-                uuid = xmlid.split("::")[1];
-                cat = xmlid.split("::")[0];
-            } else {
-                uuid = xmlid;
-                //Console.log("id \""+xmlid+"\" has no category");
+
+            if (uuid.contains("::")) {
+                cat = uuid.split("::")[0];
+                uuid = uuid.split("::")[1];
             }
+
+            Long id = (long) uuid.hashCode();
             
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
@@ -343,8 +340,21 @@ public class Graph implements Cloneable {
                 continue;
             }
 
-            Long source  = (long) edgeAttributesXML.getNamedItem("source").getNodeValue().hashCode();
-            Long target  = (long) edgeAttributesXML.getNamedItem("target").getNodeValue().hashCode();
+            String src = edgeAttributesXML.getNamedItem("source").getNodeValue();
+
+            if (src.contains("::")) {
+                src = src.split("::")[1];
+            }
+
+            Long source  = (long) src.hashCode();
+
+            String trg = edgeAttributesXML.getNamedItem("target").getNodeValue();
+
+            if (trg.contains("::")) {
+                trg = trg.split("::")[1];
+            }
+
+            Long target = (long) trg.hashCode();
 
             String type = (edgeAttributesXML.getNamedItem("type") != null)
                     ? (String) edgeAttributesXML.getNamedItem("type").getNodeValue()

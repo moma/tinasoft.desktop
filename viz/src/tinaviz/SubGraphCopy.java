@@ -45,6 +45,7 @@ public class SubGraphCopy extends NodeFilter {
         if (!enabled()) {
             return input;
         }
+        // System.out.println("debugging subgraph copier");
 
         if (!localView.properties.containsKey(root + KEY_SOURCE)) {
             localView.properties.put(root + KEY_SOURCE, "macro");
@@ -61,14 +62,15 @@ public class SubGraphCopy extends NodeFilter {
         //System.out.println("source="+source);
         View sourceView = session.getView(source);
         if (sourceView == null) {
-            System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got " + source);
+            // System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got " + source);
             return input;
         }
 
         oldCategory = category;
         category = (String) localView.properties.get(root + KEY_CATEGORY);
         if (category == null | category.isEmpty()) {
-            System.out.println("uh oh! i am a source and my 'category' parameter is totally wrong! got " + category);
+            // System.out.println("uh oh! i am a source and my 'category' parameter is totally wrong! got " + category);
+            return input;
         }
 
 
@@ -77,28 +79,26 @@ public class SubGraphCopy extends NodeFilter {
         String cat = "";
         Object o = localView.properties.get(root + KEY_ITEM);
         if (o == null) {
-            //  System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
+            // System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
             return input;
         }
 
 
         if (o instanceof String) {
+
             if (((String)o).contains("::")) {
                 cat = ((String) o).split("::")[0];
-        
-                item = Long.parseLong(((String) o).split("::")[1]);
-            } else if (((String)o).isEmpty()) {
-                //
+                o = ((String) o).split("::")[1];
             } else {
-                  Console.error("Invalid ID: "+(String)o);
-                  return input;
+                cat = "NO_CATEGORY";
             }
-
-
+            item = (long) ((String)o).hashCode();
+            
         } else {
-            Console.error("bad type for " + root + KEY_ITEM + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
+            // Console.error("bad type for " + root + KEY_ITEM + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
             return input;
         }
+        // System.out.println("root is \""+item+"\"");
 
 
         if (sourceView.graph.size() < 1) {
@@ -163,7 +163,7 @@ public class SubGraphCopy extends NodeFilter {
             //System.out.println("generating the hybrid graph..");
             List<String> paramList = new ArrayList<String>();
             paramList.add(rootNode.category);
-            paramList.add("" + rootNode.id);
+            paramList.add("" + rootNode.uuid);
             paramList.add(category);
 
             /* JSObject document = (JSObject)session.browser.window.getMember("document");
@@ -173,14 +173,18 @@ public class SubGraphCopy extends NodeFilter {
 
 
             String neighboursString = (String) session.browser.window.call("getNeighbours", paramList.toArray());
-            //System.out.println("neighboursString=" + neighboursString);
+            if (neighboursString==null) {
+                // Console.log("asked for getNeighbours(), but got NULL as reply");
+                return input;
+            }
+            // System.out.println("neighboursString=" + neighboursString);
             String[] neighboursArray = neighboursString.split(";");
             //System.out.println("neighboursArray=" + neighboursArray);
             Map<Long, Float> neighboursMap = new HashMap<Long, Float>();
 
             for (String st : neighboursArray) {
                 String[] neigh = st.split(",");
-                long neighbourID = Long.parseLong(neigh[0]);
+                long neighbourID = (long) neigh[0].hashCode();
                 float neighbourWeight = Float.parseFloat(neigh[1]);
                 //System.out.println("  - "+neighbourID+": "+neighbourWeight);
                 if (!localView.graph.storedNodes.containsKey(neighbourID)) {
