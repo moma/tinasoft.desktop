@@ -4,12 +4,12 @@ package tinaviz;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.io.IOException;
-import org.json.JSONException;
-import tinaviz.layout.Layout;
-import tinaviz.util.Console;
-import tinaviz.graph.ShapeCategory;
-import tinaviz.view.ViewLevel;
-import tinaviz.view.View;
+
+import eu.tinasoft.services.visualization.layout.Layout;
+import eu.tinasoft.services.debug.Console;
+import eu.tinasoft.services.data.model.ShapeCategory;
+import eu.tinasoft.services.visualization.views.ViewLevel;
+import eu.tinasoft.services.visualization.views.View;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.security.KeyException;
@@ -22,20 +22,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import megamu.mesh.Hull;
 
-import tinaviz.session.*;
+import eu.tinasoft.services.session.*;
 import processing.opengl.*;
 import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
 import netscape.javascript.*;
-import org.json.JSONStringer;
-import org.json.JSONWriter;
-import tinaviz.browser.Browser;
-import tinaviz.filters.NodeList;
-import tinaviz.graph.Node;
+
+import eu.tinasoft.services.protocols.browser.LiveConnector;
+import eu.tinasoft.services.formats.json.JSONException;
+import eu.tinasoft.services.formats.json.JSONStringer;
+import eu.tinasoft.services.formats.json.JSONWriter;
+import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
+import eu.tinasoft.services.data.model.Node;
 //import tinaviz.layout.LayoutOpenCL;
-import tinaviz.ui.PaintTools;
-import tinaviz.util.MathFunctions;
+import eu.tinasoft.services.visualization.rendering.drawing.PaintTools;
+import eu.tinasoft.services.computing.MathFunctions;
 //import peasy.*;
 
 
@@ -223,7 +225,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
             window = JSObject.getWindow(this);
-            session.setBrowser(new Browser(window));
+            session.setBrowser(new LiveConnector(window));
             int w = 10;
             int h = 10;
             /*Object o = window.call("parent.tinaviz.getWidth", null);
@@ -242,7 +244,7 @@ public class Main extends PApplet implements MouseWheelListener {
             size(w, h, engine);
 
         } else {
-            session.setBrowser(new Browser());
+            session.setBrowser(new LiveConnector());
             loadDefaultGlobalGraph = true;
             size(screenWidth, screenHeight, engine);
         }
