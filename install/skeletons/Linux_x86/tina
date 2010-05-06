@@ -21,8 +21,8 @@ export NLTK_DATA="`pwd`/shared/nltk_data"
 export PATH="`pwd`/java"
 #echo $JAVA_HOME
 #echo $PATH
-echo Starting Tinasoft..
-echo (if you are upgrading from a previous release, please remove ~/.tina folder)
+echo "Starting Tinasoft.."
+echo "(if you are upgrading from a previous release, please remove ~/.tina folder)"
 ./tina-stub
 #xulrunner-stub application.ini
 #xulrunner/xulrunner application.ini
