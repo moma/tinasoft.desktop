@@ -4,7 +4,7 @@
  */
 package eu.tinasoft.services.visualization.views;
 
-import eu.tinasoft.services.dataflow.filtering.FilterChain;
+import eu.tinasoft.services.data.transformation.FilterChain;
 import java.io.InputStream;
 import java.security.KeyException;
 
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import processing.core.PVector;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
+import eu.tinasoft.services.data.model.NodeList;
 
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.model.Graph;
@@ -31,7 +31,7 @@ public class View {
     public boolean showNodes = true;
     public boolean showLinks = true;
     public boolean paused = false;
-    public boolean highDefinition = false;
+    public boolean highDefinition = true;
     public boolean spatializeWhenMoving = true;
     public PVector translation = new PVector(0.0f, 0.0f);
     public float sceneScale = 10.0f;
@@ -104,6 +104,8 @@ public class View {
     public ViewLevel getLevel() {
         return null;
     }
+
+
 
     public boolean cameraIsMoving() {
         return Math.abs(inerX + inerY + inerZ) != 0.0f;

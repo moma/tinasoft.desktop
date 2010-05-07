@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.security.KeyException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
+import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
 
 //import org.w3c.dom.*;

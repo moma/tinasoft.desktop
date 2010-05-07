@@ -2,13 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.tinasoft.services.dataflow.filtering.filters;
+package eu.tinasoft.services.data.transformation.filters;
 
+import eu.tinasoft.services.data.model.NodeList;
 import java.util.LinkedList;
 import java.util.List;
 import processing.core.PApplet;
 import eu.tinasoft.services.data.model.Node;
-import eu.tinasoft.services.dataflow.filtering.NodeFilter;
+import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.visualization.views.View;
 

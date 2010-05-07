@@ -2,30 +2,30 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.tinasoft.services.dataflow.filtering;
+package eu.tinasoft.services.data.transformation;
 
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import eu.tinasoft.services.dataflow.filtering.filters.EdgeWeightRange;
+import eu.tinasoft.services.data.transformation.filters.EdgeWeightRange;
 
-import eu.tinasoft.services.dataflow.filtering.filters.Category;
-import eu.tinasoft.services.dataflow.filtering.filters.Category;
-import eu.tinasoft.services.dataflow.filtering.filters.EdgeWeightRange;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeRadius;
+import eu.tinasoft.services.data.transformation.filters.Category;
+import eu.tinasoft.services.data.transformation.filters.Category;
+import eu.tinasoft.services.data.transformation.filters.EdgeWeightRange;
+import eu.tinasoft.services.data.transformation.filters.NodeRadius;
 import eu.tinasoft.services.session.Session;
-import eu.tinasoft.services.dataflow.filtering.filters.Layout;
-import eu.tinasoft.services.dataflow.filtering.filters.Layout;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeFunction;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeFunction;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeRadius;
+import eu.tinasoft.services.data.transformation.filters.Layout;
+import eu.tinasoft.services.data.transformation.filters.Layout;
+import eu.tinasoft.services.data.transformation.filters.NodeFunction;
+import eu.tinasoft.services.data.transformation.filters.NodeFunction;
+import eu.tinasoft.services.data.model.NodeList;
+import eu.tinasoft.services.data.model.NodeList;
+import eu.tinasoft.services.data.transformation.filters.NodeRadius;
 import tinaviz.SubGraphCopy;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeWeightRange;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeWeightRange;
-import eu.tinasoft.services.dataflow.filtering.filters.WeightSize;
-import eu.tinasoft.services.dataflow.filtering.filters.WeightSize;
+import eu.tinasoft.services.data.transformation.filters.NodeWeightRange;
+import eu.tinasoft.services.data.transformation.filters.NodeWeightRange;
+import eu.tinasoft.services.data.transformation.filters.WeightSize;
+import eu.tinasoft.services.data.transformation.filters.WeightSize;
 import tinaviz.NodeWeightRangeHack;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.visualization.views.View;

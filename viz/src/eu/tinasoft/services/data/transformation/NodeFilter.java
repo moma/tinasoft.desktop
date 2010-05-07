@@ -3,13 +3,13 @@
  * and open the template in the editor.
  */
 
-package eu.tinasoft.services.dataflow.filtering;
+package eu.tinasoft.services.data.transformation;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
+import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.visualization.views.View;

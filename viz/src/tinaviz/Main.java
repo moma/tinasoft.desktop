@@ -1,9 +1,6 @@
 package tinaviz;
 
 //import com.nativelibs4java.opencl.CLBuildException;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.io.IOException;
 
 import eu.tinasoft.services.visualization.layout.Layout;
 import eu.tinasoft.services.debug.Console;
@@ -14,9 +11,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.security.KeyException;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,11 +27,10 @@ import eu.tinasoft.services.protocols.browser.LiveConnector;
 import eu.tinasoft.services.formats.json.JSONException;
 import eu.tinasoft.services.formats.json.JSONStringer;
 import eu.tinasoft.services.formats.json.JSONWriter;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
 import eu.tinasoft.services.data.model.Node;
 //import tinaviz.layout.LayoutOpenCL;
-import eu.tinasoft.services.visualization.rendering.drawing.PaintTools;
 import eu.tinasoft.services.computing.MathFunctions;
+import eu.tinasoft.services.data.model.NodeList;
 //import peasy.*;
 
 

@@ -16,6 +16,8 @@ import tinaviz.Main;
  */
 public class Console {
 
+    private static String PREFIX = "";
+    
     /**
      * Given a Throwable, gets the full stack trace for the
      * Exception or Error as a String.  Returns an empty string
@@ -63,23 +65,27 @@ public class Console {
         debug(Console.getStackTraceAsString(t));
     }
 
+    public static void setPrefix(String prefix) {
+        PREFIX=prefix;
+    }
+
     public static void error(String s) {
         if (Main.window != null) {
-            Main.window.eval("parent.tinaviz.logError('" + s + "');");
+            Main.window.eval(PREFIX+"tinaviz.logError('" + s + "');");
         }
         System.out.println("[APPLET] ERROR "+s);
     }
 
     public static void log(String s) {
         if (Main.window != null) {
-            Main.window.eval("parent.tinaviz.logNormal('" + s + "');");
+            Main.window.eval(PREFIX+"tinaviz.logNormal('" + s + "');");
         }
         System.out.println("[APPLET] LOG "+s);
     }
 
     public static void debug(String s) {
         if (Main.window != null) {
-            Main.window.eval("parent.tinaviz.logDebug('" + s + "');");
+            Main.window.eval(PREFIX+"tinaviz.logDebug('" + s + "');");
         }
         System.out.println("[APPLET] DEBUG "+s);
     }

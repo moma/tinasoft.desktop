@@ -7,11 +7,11 @@ package tinaviz;
 import java.util.LinkedList;
 import java.util.List;
 import eu.tinasoft.services.data.model.Node;
-import eu.tinasoft.services.dataflow.filtering.NodeFilter;
+import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.visualization.views.View;
 import processing.core.*;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
+import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.debug.Console;
 
 /**

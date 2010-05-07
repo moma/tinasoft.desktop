@@ -6,7 +6,7 @@ package eu.tinasoft.services.visualization.layout;
 
 import java.util.List;
 import processing.core.PApplet;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
+import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.visualization.views.View;
 

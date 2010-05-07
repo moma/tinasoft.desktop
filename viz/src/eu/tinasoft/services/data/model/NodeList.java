@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.tinasoft.services.dataflow.filtering.filters;
+package eu.tinasoft.services.data.model;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,8 +47,10 @@ public class NodeList {
     public List<Node> nodes;
     public float NORMALIZED_MIN_EDGE_WEIGHT = 0.0f;
     public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f; // desired default weight
-    public float NORMALIZED_MIN_RADIUS = 0.01f;
+
+    public float NORMALIZED_MIN_RADIUS = 0.05f;
     public float NORMALIZED_MAX_RADIUS = 1.0f; // largely depends on the spatialization settings
+
     // TODO fix me
     public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
     public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;

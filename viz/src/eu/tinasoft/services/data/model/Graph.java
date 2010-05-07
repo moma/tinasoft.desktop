@@ -23,7 +23,6 @@ import javax.xml.xpath.XPathExpressionException;
 import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.data.model.Node;
 import processing.core.*;
-import eu.tinasoft.services.dataflow.filtering.filters.NodeList;
 import eu.tinasoft.services.session.Attribute;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.formats.xml.XPathReader;
