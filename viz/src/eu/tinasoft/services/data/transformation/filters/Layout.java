@@ -67,8 +67,8 @@ public class Layout extends NodeFilter {
                 // plutot que mettre une distance minimale,
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
-                if (n1.neighbours.contains(n2.id)) {
-                    distance *= (n1.weights.get(n2.id));
+                if (n1.weights.containsKey(n2.id)) {
+                    distance *= (Float) n1.weights.get(n2.id);
                     n1.vx += (vx * distance) * attraction;
                     n1.vy += (vy * distance) * attraction;
                     n2.vx -= (vx * distance) * attraction;

@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import processing.core.PApplet;
 import processing.core.PVector;
-import eu.tinasoft.services.data.model.Node;
 
 /**
  *
@@ -209,10 +208,10 @@ public class NodeList {
             //System.out.println("n.weight = " + n.weight);
 
             // NORMALIZE WEIGHTS
-            for (Long k : n.weights.keySet()) {
+            for (int k : n.weights.keys().elements()) {
                 //System.out.println("  - w1: "+n.weights.get(k));
 
-                n.weights.put(k, (minEdgeWeight == maxEdgeWeight) ? NORMALIZED_MIN_EDGE_WEIGHT : PApplet.map(n.weights.get(k),
+                n.weights.put(k, (minEdgeWeight == maxEdgeWeight) ? NORMALIZED_MIN_EDGE_WEIGHT : PApplet.map((Float)n.weights.get(k),
                         minEdgeWeight, maxEdgeWeight,
                         NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT));
                 //System.out.println("  - w2: "+n.weights.get(k));
@@ -292,9 +291,10 @@ public class NodeList {
         }
 
 
-        nbEdges += n.neighbours.size();
+        nbEdges += n.weights.size();
 
-        for (Float weight : n.weights.values()) {
+        for (Object weightObj : n.weights.values().elements()) {
+            Float weight = (Float) weightObj;
             if (weight > maxEdgeWeight) {
                 maxEdgeWeight = weight;
             }

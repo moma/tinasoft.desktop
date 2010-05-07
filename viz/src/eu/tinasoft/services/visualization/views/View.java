@@ -9,11 +9,10 @@ import java.io.InputStream;
 import java.security.KeyException;
 
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
+
 import processing.core.PVector;
 import eu.tinasoft.services.data.model.NodeList;
 
@@ -219,11 +218,11 @@ public class View {
     this.translation.set(center);
     }
      */
-    public void selectNodeById(Long id) {
+    public void selectNodeById(int id) {
         graph.selectNodeById(id);
     }
 
-    public void unselectNodeById(Long id) {
+    public void unselectNodeById(int id) {
         graph.unselectNodeById(id);
     }
 
@@ -283,7 +282,7 @@ public class View {
         return gravity;
     }
 
-    public Node getNode(Long nodeId) {
+    public Node getNode(int nodeId) {
         return getGraph().getNode(nodeId);
     }
 }

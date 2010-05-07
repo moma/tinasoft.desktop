@@ -6,23 +6,16 @@ package eu.tinasoft.services.data.model;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import eu.tinasoft.services.debug.Console;
-import eu.tinasoft.services.data.model.Node;
-import processing.core.*;
+
 import eu.tinasoft.services.session.Attribute;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.formats.xml.XPathReader;
@@ -34,7 +27,7 @@ import eu.tinasoft.services.formats.xml.XPathReader;
 public class Graph implements Cloneable {
 
     public static final String NS = "tina";
-    public Map<Long, eu.tinasoft.services.data.model.Node> storedNodes = null;
+    public Map<Integer, eu.tinasoft.services.data.model.Node> storedNodes = null;
     public Map<String, Attribute> nodeAttributes = null;
     public Map<String, Attribute> edgeAttributes = null;
     public Map<String, Object> sessionAttributes = null;
@@ -46,7 +39,7 @@ public class Graph implements Cloneable {
     //public Map<String,Metrics> categorizedMetrics = new HashMap<String,Metrics>();
 
     public Graph(Session session) {
-        storedNodes = new HashMap<Long, eu.tinasoft.services.data.model.Node>();
+        storedNodes = new HashMap<Integer, eu.tinasoft.services.data.model.Node>();
         sessionAttributes = new HashMap<String, Object>();
         nodeAttributes = new HashMap<String, Attribute>();
         edgeAttributes = new HashMap<String, Attribute>();
@@ -208,7 +201,7 @@ public class Graph implements Cloneable {
                 uuid = uuid.split("::")[1];
             }
 
-            Long id = (long) uuid.hashCode();
+            int id = uuid.hashCode();
             
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
@@ -347,7 +340,7 @@ public class Graph implements Cloneable {
                 src = src.split("::")[1];
             }
 
-            Long source  = (long) src.hashCode();
+            int source  = src.hashCode();
 
             String trg = edgeAttributesXML.getNamedItem("target").getNodeValue();
 
@@ -355,7 +348,7 @@ public class Graph implements Cloneable {
                 trg = trg.split("::")[1];
             }
 
-            Long target = (long) trg.hashCode();
+            int target = trg.hashCode();
 
             String type = (edgeAttributesXML.getNamedItem("type") != null)
                     ? (String) edgeAttributesXML.getNamedItem("type").getNodeValue()
@@ -435,7 +428,7 @@ public class Graph implements Cloneable {
         return storedNodes.size();
     }
 
-    public synchronized eu.tinasoft.services.data.model.Node getNode(Long key) {
+    public synchronized eu.tinasoft.services.data.model.Node getNode(int key) {
         return storedNodes.get(key);
     }
 
@@ -452,7 +445,7 @@ public class Graph implements Cloneable {
         return revision.incrementAndGet();
     }
 
-    public void selectNodeById(Long id) {
+    public void selectNodeById(int id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
             System.out.println("node selected, touching..");
@@ -460,7 +453,7 @@ public class Graph implements Cloneable {
         }
     }
 
-    public void unselectNodeById(Long id) {
+    public void unselectNodeById(int id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
             touch();

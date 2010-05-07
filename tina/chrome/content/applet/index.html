@@ -31,13 +31,13 @@ body {
             <div id="container" class="container">
             <!--[if !IE]> -->
                 <object id="tinaviz"
-                        classid="java:com.sun.opengl.util.JOGLAppletLauncher.class"
+                        classid="java:org.jdesktop.applet.util.JNLPAppletLauncher"
                         type="application/x-java-applet"
-                        archive="tinaviz.jar,opengl.jar,jogl.jar,gluegen-rt.jar,core.jar,itext.jar,pdf.jar"
+                        archive="tinaviz.jar,core.jar,itext.jar,pdf.jar,colt.jar,concurrent.jar,applet-launcher.jar"
 
                         standby="Loading visualization..." >
 
-                    <param name="archive" value="tinaviz.jar,opengl.jar,jogl.jar,gluegen-rt.jar,core.jar,itext.jar,pdf.jar" />
+                    <param name="archive" value="tinaviz.jar,core.jar,itext.jar,pdf.jar,colt.jar,concurrent.jar,applet-launcher.jar" />
 
                     <param name="mayscript" value="true" />
                     <param name="scriptable" value="true" />
@@ -49,10 +49,14 @@ body {
 
                     <param name="subapplet.classname" value="tinaviz.Main" />
                     <param name="subapplet.displayname" value="TinaViz" />
+                    
+                    <param name="engine" value="software" />
+                    <param name="js_context" value="parent." />
+                                
                     <param name="jogl.silent.noddraw.check" value="true" />
                     <param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true"/>
                     <!--<param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true -Dsun.java2d.opengl=True"/>-->
-                    <param name="engine" value="software" />
+
 
             <!--<![endif]-->
 
@@ -62,8 +66,8 @@ body {
 
                         standby="Loading visualization..."  >
 
-                    <param name="code" value="com.sun.opengl.util.JOGLAppletLauncher" />
-                    <param name="archive" value="tinaviz.jar,opengl.jar,jogl.jar,gluegen-rt.jar,core.jar,itext.jar,pdf.jar" />
+                    <param name="code" value="org.jdesktop.applet.util.JNLPAppletLauncher" />
+                    <param name="archive" value="tinaviz.jar,core.jar,itext.jar,pdf.jar,colt.jar,concurrent.jar,applet-launcher.jar" />
 
                     <param name="mayscript" value="true" />
                     <param name="scriptable" value="true" />
@@ -75,11 +79,14 @@ body {
 
                     <param name="subapplet.classname" value="tinaviz.Main" />
                     <param name="subapplet.displayname" value="TinaViz" />
+                    
                     <param name="jogl.silent.noddraw.check" value="true" />
                       <param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true"/>
                     <!--<param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true -Dsun.java2d.opengl=True"/>-->
+                    
                     <param name="engine" value="software" />
-
+                    <param name="js_context" value="parent." />
+                    
                     <p>
                         <strong>
                             You need to install "Java" in order to visualize maps.

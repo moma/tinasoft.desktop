@@ -193,24 +193,24 @@ public class Session {
 
 
     public void selectNode(String s) {
-        macro.selectNodeById((long)s.hashCode());
-        meso.selectNodeById((long)s.hashCode());
-        micro.selectNodeById((long)s.hashCode());
+        macro.selectNodeById(s.hashCode());
+        meso.selectNodeById(s.hashCode());
+        micro.selectNodeById(s.hashCode());
     }
 
     public void unselectNode(String s) {
-        macro.unselectNodeById((long)s.hashCode());
-        meso.unselectNodeById((long)s.hashCode());
-        micro.unselectNodeById((long)s.hashCode());
+        macro.unselectNodeById(s.hashCode());
+        meso.unselectNodeById(s.hashCode());
+        micro.unselectNodeById(s.hashCode());
     }
 
-    public void selectNode(Long id) {
+    public void selectNode(int id) {
         macro.selectNodeById(id);
         meso.selectNodeById(id);
         micro.selectNodeById(id);
     }
 
-    public void unselectNode(Long id) {
+    public void unselectNode(int id) {
         macro.unselectNodeById(id);
         meso.unselectNodeById(id);
         micro.unselectNodeById(id);

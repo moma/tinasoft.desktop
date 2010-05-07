@@ -4,7 +4,6 @@
  */
 package eu.tinasoft.services.visualization.layout;
 
-import java.util.List;
 import processing.core.PApplet;
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
@@ -59,8 +58,8 @@ public class Layout {
                 // radius * (1 / distance)   // ou distance au carré
                 if (distance < 0.002f) distance = 0.002f;
 
-                if (n1.neighbours.contains(n2.id)) {
-                    float w =  n1.weights.get(n2.id);
+                if (n1.weights.containsKey(n2.id)) {
+                    float w =  (Float) n1.weights.get(n2.id);
                     //System.out.println("w: "+w);
                     n1.vx += vx * distance * w * attraction;
                     n1.vy += vy * distance * w * attraction;
@@ -133,8 +132,8 @@ public class Layout {
                 // plutot que mettre une distance minimale,
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
-                if (n1.neighbours.contains(n2.id)) {
-                    float w = 1.0f + n1.weights.get(n2.id);
+                if (n1.weights.containsKey(n2.id)) {
+                    float w = 1.0f + (Float)n1.weights.get(n2.id);
                     //System.out.println("w: "+w);
                     n1.vx += vx * distance * w * attraction;
                     n1.vy += vy * distance * w * attraction;
@@ -212,8 +211,8 @@ public class Layout {
                     // plutot que mettre une distance minimale,
                     // mettre une force de repulsion, par exemple
                     // radius * (1 / distance)   // ou distance au carré
-                    if (n1.neighbours.contains(n2.id)) {
-                        float w = 20f * n1.weights.get(n2.id);
+                    if (n1.weights.containsKey(n2.id)) {
+                        float w = 20f * (Float) n1.weights.get(n2.id);
                         n1.vx += vx * distance * w * attraction;
                         n1.vy += vy * distance * w * attraction;
                         n2.vx -= vx * distance * w * attraction;
@@ -322,8 +321,8 @@ public class Layout {
                 // plutot que mettre une distance minimale,
                 // mettre une force de repulsion, par exemple
                 // radius * (1 / distance)   // ou distance au carré
-                if (n1.neighbours.contains(n2.id)) {
-                    float w = 1.0f + n1.weights.get(n2.id);
+                if (n1.weights.containsKey(n2.id)) {
+                    float w = 1.0f + (Float) n1.weights.get(n2.id);
                     n1.vx += vx * distance * w * attraction;
                     n1.vy += vy * distance * w * attraction;
                     n2.vx -= vx * distance * w * attraction;

@@ -36,7 +36,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     boolean generateRandomLocalGraph = false;
     boolean loadDefaultLocalGraph = false;
-    boolean loadDefaultGlobalGraph = true;
+    boolean loadDefaultGlobalGraph = false;
     boolean generateRandomGlobalGraph = false;
     public PImage currentImg = null;
     public PVector ref = new PVector();
@@ -316,13 +316,13 @@ public class Main extends PApplet implements MouseWheelListener {
             float ry = random(height);
             float radius = 15.0f;
 
-            Node root = new Node(0L, "root node", radius, 0, 0);
+            Node root = new Node(0, "root node", radius, 0, 0);
             root.weight = random(1.0f);
             root.category = (random(1.0f) > 0.5f) ? "Document" : "NGram";
             root.label = root.category + " " + root.label;
             root.fixed = true;
 
-            for (long i = 0; i < 50; i++) {
+            for (int i = 0; i < 50; i++) {
                 radius = random(3.0f, 5.0f);
                 node = new Node(i, "node " + i, radius, random(-20), random(20));
                 node.weight = random(1.0f);
@@ -364,7 +364,7 @@ public class Main extends PApplet implements MouseWheelListener {
             float rx = random(width);
             float ry = random(height);
             float radius = 0.0f;
-            for (long i = 0; i < 200; i++) {
+            for (int i = 0; i < 200; i++) {
                 radius = random(3.0f, 10.0f);
 
                 node = new Node(i, "node " + i, radius, random(width / 2), random(height / 2));
@@ -843,8 +843,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 // skip the node if the following cases
 
 
-                boolean directed = n1.neighbours.contains(n2.id);
-                boolean mutual = n2.neighbours.contains(n1.id);
+                boolean directed = n1.weights.containsKey(n2.id);
+                boolean mutual = n2.weights.containsKey(n1.id);
                 if (!(directed | mutual)) {
                     continue;
                 }
@@ -900,18 +900,18 @@ public class Main extends PApplet implements MouseWheelListener {
                         stroke(constrain((m + cr * r)*0.4f, 0, 255),
                                 constrain((m + cg * r)*0.4f, 0, 255),
                                 constrain((m + cb * r)*0.4f, 0, 255),
-                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                                constrain((Float)n1.weights.get(n2.id) * 205, 50, 255));
                     } else if (n1.highlighted || n2.highlighted) {
                         stroke(constrain((m + cr * r)*0.8f, 0, 255),
                                 constrain((m + cg * r)*0.8f, 0, 255),
                                 constrain((m + cb * r)*0.8f, 0, 255),
-                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                                constrain((Float)n1.weights.get(n2.id) * 205, 50, 255));
                     } else {
 
                         stroke(constrain(m + cr * r, 0, 255),
                                 constrain(m + cg * r, 0, 255),
                                 constrain(m + cb * r, 0, 255),
-                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                                constrain((Float)n1.weights.get(n2.id) * 205, 50, 255));
                     }
                 //}
 
@@ -929,9 +929,9 @@ public class Main extends PApplet implements MouseWheelListener {
                     // weight information, we have to try to
                     // get the weight in both nodes
                     float w = n1.weights.containsKey(n2.id)
-                            ? n1.weights.get(n2.id) // node 2
+                            ? (Float)n1.weights.get(n2.id) // node 2
                             : n2.weights.containsKey(n1.id)
-                            ? n2.weights.get(n1.id) // node 1
+                            ? (Float)n2.weights.get(n1.id) // node 1
                             : 1.0f; // default
 
 
@@ -1328,6 +1328,7 @@ public class Main extends PApplet implements MouseWheelListener {
         redrawIfNeeded();
     }
 
+    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 
 
@@ -1645,7 +1646,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         try {
 
-            for (Long nodeId : node.neighbours) {
+            for (int nodeId : node.weights.keys().elements()) {
                 Node n = getView().getNode(nodeId);
                 writer.key(n.uuid).object().key("label").value(n.label).endObject().object().key("category").value(n.category).endObject().endObject();
             }

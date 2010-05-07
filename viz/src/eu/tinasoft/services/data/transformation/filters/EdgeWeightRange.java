@@ -4,6 +4,8 @@
  */
 package eu.tinasoft.services.data.transformation.filters;
 
+import cern.colt.map.OpenIntIntHashMap;
+import cern.colt.map.OpenIntObjectHashMap;
 import eu.tinasoft.services.data.model.NodeList;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,29 +29,30 @@ public class EdgeWeightRange extends NodeFilter {
     public Node node(Session session, View view, Node n) {
 
         //System.out.println("fmin:"+min+" fmax:"+max);
-        Set<Long> newNeighbours = new HashSet<Long>(n.neighbours.size());
+        OpenIntObjectHashMap newWeights = new OpenIntObjectHashMap();
+        newWeights.ensureCapacity(n.weights.size());
 
-        for (Long k : n.neighbours) {
+        for (int k : n.weights.keys().elements()) {
 
-            Float w = n.weights.get(k);
+            Float w = (Float) n.weights.get(k);
 
-            
+
             if (w == null) {
                 //System.out.println("weight null for <"+n+","+k+">");
                 continue;
             }
 
             if (min <= w && w <= max) {
-                newNeighbours.add(k);
+                newWeights.put(k,w);
                 //System.out.println("ADDED EDGE "+w+" MIN: "+min);
                 // .. and do not remove from weights
             } else {
                 // .. and do not add to neighbours
                 //System.out.println("REMOVED EDGE "+w+" MIN: "+min);
-                n.weights.remove(n.id);
+                n.weights.removeKey(n.id);
             }
         }
-        n.neighbours = newNeighbours;
+        n.weights = newWeights;
         return n;
     }
 
@@ -72,7 +75,7 @@ public class EdgeWeightRange extends NodeFilter {
         float f = input.maxEdgeWeight - input.minEdgeWeight;
         //System.out.println("f:" + f);
         //System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
-        
+
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)
                 ? new Float((Integer) o)

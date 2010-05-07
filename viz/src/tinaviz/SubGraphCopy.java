@@ -6,19 +6,15 @@ package tinaviz;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import netscape.javascript.JSException;
-import netscape.javascript.JSObject;
-import processing.core.PApplet;
+
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;
-import eu.tinasoft.services.debug.Console;
+
 import eu.tinasoft.services.visualization.views.View;
 
 /* FIXME TODO WARNING : ADD SOME LOCKS..
@@ -32,8 +28,8 @@ public class SubGraphCopy extends NodeFilter {
     private String KEY_SOURCE = "source";
     private String KEY_ITEM = "item";
     private String KEY_CATEGORY = "category";
-    private Long oldItem = -0L;
-    private long item = -0L;
+    private int oldItem = -0;
+    private int item = -0;
 
     private String category = "NGram";
     private String oldCategory = "NGram";
@@ -92,7 +88,7 @@ public class SubGraphCopy extends NodeFilter {
             } else {
                 cat = "NO_CATEGORY";
             }
-            item = (long) ((String)o).hashCode();
+            item = ((String)o).hashCode();
             
         } else {
             // Console.error("bad type for " + root + KEY_ITEM + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
@@ -126,7 +122,8 @@ public class SubGraphCopy extends NodeFilter {
             output.autocenter = true;
         }
 
-        Map<Long, Node> sources = sourceView.graph.storedNodes;
+
+        Map<Integer, Node> sources = sourceView.graph.storedNodes;
         Node rootNode = sources.get(item).getDetachedClone();
         newNodes.add(rootNode);
         output.add(rootNode.getProxyClone());
@@ -136,9 +133,9 @@ public class SubGraphCopy extends NodeFilter {
         if (cat.equals(category)) {
             //System.out.println("generating the same gender graph..");
             // same category: trivial
-            for (Long potentialNeighbourId : sources.get(item).neighbours) {
+            for (int potentialNeighbourId : sources.get(item).weights.keys().elements()) {
                 Node potentialNeighbour = sources.get(potentialNeighbourId);
-                if (rootNode.neighbours.contains(potentialNeighbourId) | potentialNeighbour.neighbours.contains(item)) {
+                if (rootNode.weights.containsKey(potentialNeighbourId) | potentialNeighbour.weights.containsKey(item)) {
                     if (!potentialNeighbour.category.equalsIgnoreCase(category)) {
                         continue;
                     }
@@ -184,7 +181,7 @@ public class SubGraphCopy extends NodeFilter {
 
             for (String st : neighboursArray) {
                 String[] neigh = st.split(",");
-                long neighbourID = (long) neigh[0].hashCode();
+                int neighbourID = neigh[0].hashCode();
                 float neighbourWeight = Float.parseFloat(neigh[1]);
                 //System.out.println("  - "+neighbourID+": "+neighbourWeight);
                 if (!localView.graph.storedNodes.containsKey(neighbourID)) {

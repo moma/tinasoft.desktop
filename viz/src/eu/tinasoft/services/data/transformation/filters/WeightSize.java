@@ -37,8 +37,8 @@ public class WeightSize extends NodeFilter {
                 : (Float) o;
 
         for (Node n : input.nodes) {
-            for (Long k : n.weights.keySet()) {
-                n.weights.put(k,n.weights.get(k) * r);
+            for (int k : n.weights.keys().elements()) {
+                n.weights.put(k,((Float) n.weights.get(k)) * r);
             }
         }
         return input;
