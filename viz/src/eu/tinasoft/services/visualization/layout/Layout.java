@@ -16,7 +16,7 @@ import eu.tinasoft.services.visualization.views.View;
  */
 public class Layout {
 
-    public void fast(View v, NodeList nodes) {
+    public void macroLayout_approximate(View v, NodeList nodes) {
         float distance = 1f;
         float vx = 1f;
         float vy = 1f;
@@ -37,8 +37,8 @@ public class Layout {
 
             distance = PApplet.sqrt(vx*vx + vy*vy);
        
-            n1.vx += vx * distance * gravity;
-            n1.vy += vy * distance * gravity;
+            //n1.vx += vx * distance * gravity;
+            //n1.vy += vy * distance * gravity;
              
 
             for (Node n2 : nodes.nodes) {
@@ -50,7 +50,8 @@ public class Layout {
 
                 vx = n2.x - n1.x;
                 vy = n2.y - n1.y;
-                distance = PApplet.sqrt(vx * vx + vy * vy) ;
+                distance = PApplet.sqrt(vx * vx + vy * vy);
+
 
                 //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
                 // plutot que mettre une distance minimale,
@@ -77,8 +78,8 @@ public class Layout {
                 //}
             } // FOR NODE B
             // important, we limit the velocity!
-            n1.vx = PApplet.constrain(n1.vx, -15, 15);
-            n1.vy = PApplet.constrain(n1.vy, -15, 15);
+            n1.vx = PApplet.constrain(n1.vx, -30, 30);
+            n1.vy = PApplet.constrain(n1.vy, -30, 30);
 
             // update the coordinate
             // also set the bound box for the whole scene

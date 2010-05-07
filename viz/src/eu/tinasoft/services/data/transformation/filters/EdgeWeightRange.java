@@ -33,15 +33,19 @@ public class EdgeWeightRange extends NodeFilter {
 
             Float w = n.weights.get(k);
 
+            
             if (w == null) {
                 //System.out.println("weight null for <"+n+","+k+">");
                 continue;
             }
+
             if (min <= w && w <= max) {
                 newNeighbours.add(k);
+                //System.out.println("ADDED EDGE "+w+" MIN: "+min);
                 // .. and do not remove from weights
             } else {
                 // .. and do not add to neighbours
+                //System.out.println("REMOVED EDGE "+w+" MIN: "+min);
                 n.weights.remove(n.id);
             }
         }
@@ -67,14 +71,15 @@ public class EdgeWeightRange extends NodeFilter {
 
         float f = input.maxEdgeWeight - input.minEdgeWeight;
         //System.out.println("f:" + f);
-
+        //System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
+        
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)
                 ? new Float((Integer) o)
                 : (o instanceof Double)
                 ? new Float((Double) o)
                 : (Float) o;
-        min = min * f + input.minEdgeWeight;
+        //min = min * f + input.minEdgeWeight;
 
         o = view.properties.get(root + KEY_MAX);
         max = (o instanceof Integer)
@@ -82,8 +87,8 @@ public class EdgeWeightRange extends NodeFilter {
                 : (o instanceof Double)
                 ? new Float((Double) o)
                 : (Float) o;
-        max = max * f + input.minEdgeWeight;
-        // System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
+        //max = max * f + input.minEdgeWeight;
+
         //System.out.println("min:"+min+" max:"+max);
 
         //System.out.println("threshold weight got "+input.size()+" nodes in entry");

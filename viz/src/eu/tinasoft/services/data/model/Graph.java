@@ -220,11 +220,23 @@ public class Graph implements Cloneable {
 
             node.category = cat;
             node.uuid = uuid;
+            node.weight = 1.0f;
+
+            if (node.category.equals("NGram")) {
+                        node.r = 110;
+                        node.g = 100;
+                        node.b = 150;
+            } else {
+                        node.r = 150;
+                        node.g = 100;
+                        node.b = 110;
+            }
 
             org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
 
             for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
                 org.w3c.dom.Node n = xmlnodeChildren.item(j);
+
                 if (n.getNodeName().equalsIgnoreCase("attvalues")) {
                     // System.out.println("in attributes tag");
                     org.w3c.dom.NodeList xmlattribs = n.getChildNodes();
@@ -288,17 +300,7 @@ public class Graph implements Cloneable {
                     if (xmlnodePositionAttributes.getNamedItem("b") != null) {
                         node.b = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("b").getNodeValue());
                     }
-                } else {
-                    if (node.category.equals("NGram")) {
-                        node.r = 110;
-                        node.g = 100;
-                        node.b = 150;
-                    } else {
-                        node.r = 150;
-                        node.g = 100;
-                        node.b = 110;
-                    }
-                }
+                } 
 
                 if (node.category.equals("NGram")) {
                     node.shape = ShapeCategory.DISK;

@@ -1,7 +1,6 @@
 package tinaviz;
 
 //import com.nativelibs4java.opencl.CLBuildException;
-
 import eu.tinasoft.services.visualization.layout.Layout;
 import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.data.model.ShapeCategory;
@@ -33,10 +32,12 @@ import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.NodeList;
 //import peasy.*;
 
-
-
 public class Main extends PApplet implements MouseWheelListener {
 
+    boolean generateRandomLocalGraph = false;
+    boolean loadDefaultLocalGraph = false;
+    boolean loadDefaultGlobalGraph = true;
+    boolean generateRandomGlobalGraph = false;
     public PImage currentImg = null;
     public PVector ref = new PVector();
     public PVector drawerTranslation = new PVector();
@@ -91,8 +92,9 @@ public class Main extends PApplet implements MouseWheelListener {
     private int shownEdges = 0;
     private int shownNodes = 0;
     AtomicBoolean redrawScene = new AtomicBoolean(true);
-    //PeasyCam cam;
+    public String js_context = "";
 
+    //PeasyCam cam;
     private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
 
         if (n != null) {
@@ -104,9 +106,9 @@ public class Main extends PApplet implements MouseWheelListener {
             return; // in debug mode
         }
         if (n == null) {
-            window.eval("setTimeout(\"parent.tinaviz.nodeLeftClicked('" + session.getLevel() + "',0,0,null,null,null);\",1);");
+            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeLeftClicked('" + session.getLevel() + "',0,0,null,null,null);\",1);");
         } else {
-            window.eval("setTimeout(\"parent.tinaviz.nodeLeftClicked('" + session.getLevel() + "',"
+            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeLeftClicked('" + session.getLevel() + "',"
                     + screenX(n.x, n.y) + ","
                     + screenY(n.x, n.y) + ",'"
                     + n.uuid + "','" + n.label + "', '" + n.category + "');\",1);");
@@ -124,9 +126,9 @@ public class Main extends PApplet implements MouseWheelListener {
             return; // in debug mode
         }
         if (n == null) {
-            window.eval("setTimeout(\"parent.tinaviz.nodeRightClicked('" + session.getLevel() + "',0,0,null,null,null);\",1);");
+            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeRightClicked('" + session.getLevel() + "',0,0,null,null,null);\",1);");
         } else {
-            window.eval("setTimeout(\"parent.tinaviz.nodeRightClicked('" + session.getLevel() + "',"
+            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeRightClicked('" + session.getLevel() + "',"
                     + screenX(n.x, n.y) + ","
                     + screenY(n.x, n.y) + ",'"
                     + n.uuid + "','" + n.label + "', '" + n.category + "');\",1);");
@@ -136,7 +138,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private void jsSwitchToMacro() {
         session.toMacroLevel();
         if (window != null) {
-            window.eval("setTimeout(\"parent.tinaviz.switchedTo('macro');\",1);");
+            window.eval("setTimeout(\"" + js_context + "tinaviz.switchedTo('macro');\",1);");
         }
 
     }
@@ -144,14 +146,14 @@ public class Main extends PApplet implements MouseWheelListener {
     private void jsSwitchToMeso() {
         session.toMesoLevel();
         if (window != null) {
-            window.eval("setTimeout(\"parent.tinaviz.switchedTo('meso');\",1);");
+            window.eval("setTimeout(\"" + js_context + "tinaviz.switchedTo('meso');\",1);");
         }
     }
 
     private void jsSwitchToMicro() {
         session.toMicroLevel();
         if (window != null) {
-            window.eval("setTimeout(\"parent.tinaviz.switchedTo('micro');\",1);");
+            window.eval("setTimeout(\"" + js_context + "tinaviz.switchedTo('micro');\",1);");
         }
     }
 
@@ -188,10 +190,6 @@ public class Main extends PApplet implements MouseWheelListener {
         }*/
 
 
-        boolean generateRandomLocalGraph = false;
-        boolean loadDefaultLocalGraph = false;
-        boolean loadDefaultGlobalGraph = false;
-        boolean generateRandomGlobalGraph = false;
 
         // font = loadFont(DEFAULT_FONT);
         font = createFont("Arial", 150, true);
@@ -203,6 +201,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 useOpenCL = true;
             }
         }
+
+        if (getParameter("js_context") != null) {
+
+            js_context = getParameter("js_context");
+
+        }
+
+        Console.setPrefix(js_context);
 
         String engine = P2D;
         if (getParameter("engine") != null) {
@@ -219,15 +225,15 @@ public class Main extends PApplet implements MouseWheelListener {
 
             window = JSObject.getWindow(this);
             session.setBrowser(new LiveConnector(window));
-            int w = 10;
-            int h = 10;
-            /*Object o = window.call("parent.tinaviz.getWidth", null);
+            int w = 200;
+            int h = 200;
+            /*Object o = window.call(""+js_context+"tinaviz.getWidth", null);
             if (o != null) {
             if (o instanceof Double) {
             w = ((Double) o).intValue();
             }
             }
-            o = window.call("parent.tinaviz.getHeight", null);
+            o = window.call(""+js_context+"tinaviz.getHeight", null);
             if (o != null) {
             if (o instanceof Double) {
             h = ((Double) o).intValue();
@@ -250,7 +256,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             smooth();
             frameRate(25);
-            textFont(font, 48);
+            textFont(font, 32);
             bezierDetail(bezierSize);
         }
 
@@ -340,15 +346,16 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Desktop/david_fet60_cooc.gexf");
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf");
             try {
-                session.getMacro().setProperty("cat/value", "NGram");
+                session.getMacro().setProperty("cat/value", "Document");
             } catch (KeyException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             session.getMacro().addFilter("Category", "cat");
-            //session.animationPaused = true;
+            session.getView().togglePause();
+
         } else if (generateRandomGlobalGraph) {
 
             NodeList tmp = new NodeList();
@@ -393,11 +400,11 @@ public class Main extends PApplet implements MouseWheelListener {
         // fill(255, 184);
 
         //brandingImage = getImage(new URL("tina_icon.gif"));
-        brandingImage = loadImage("moma-crea-tiny-translucent.png");
+        //brandingImage = loadImage("moma-crea.png");
 
         //Console.log("Starting visualization..");
         if (window != null) {
-            window.eval("parent.tinaviz.init();");
+            window.eval("" + js_context + "tinaviz.init();");
         }
         Console.log("Visualization started..");
 
@@ -574,7 +581,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         } else if (v.prespatializeSteps-- > 0) {
             drawLoading(v);
-            layout.fast(v, nodes);
+            layout.macroLayout_approximate(v, nodes);
 
         } else {
             drawAndSpatializeRealtime(v);
@@ -688,57 +695,36 @@ public class Main extends PApplet implements MouseWheelListener {
         // sadly, we can't use a linear scale, it would not be efficient
         boolean antialiasing = false;
         int resolution = 0;
-        if (v.highDefinition) {
-            if (shownEdges < 150) {
-                resolution = 90;
-            } else if (shownEdges < 300) {
-                resolution = 70;
-            } else if (shownEdges < 1500) {
-                resolution = 60;
-            } else if (shownEdges < 3000) {
-                resolution = 50;
-            } else if (shownEdges < 4000) {
-                resolution = 40;
-            } else if (shownEdges < 5000) {
-                resolution = 35;
-            } else if (shownEdges < 6000) {
-                resolution = 30;
-            } else if (shownEdges < 8000) {
-                resolution = 20;
-            } else if (shownEdges < 10000) {
-                resolution = 12;
-            } else if (shownEdges < 15000) {
-                resolution = 8;
-            } else {
-                resolution = 6;
-            }
-        } else {
-            if (shownEdges < 150) {
-                resolution = 90;
-            } else if (shownEdges < 300) {
-                resolution = 70;
-            } else if (shownEdges < 1500) {
-                resolution = 60;
-            } else if (shownEdges < 3000) {
-                resolution = 50;
-            } else if (shownEdges < 4000) {
-                resolution = 40;
-            } else if (shownEdges < 5000) {
-                resolution = 35;
-            } else if (shownEdges < 6000) {
-                resolution = 30;
-            } else if (shownEdges < 8000) {
-                resolution = 20;
-            } else if (shownEdges < 10000) {
-                resolution = 12;
-            } else if (shownEdges < 15000) {
-                resolution = 8;
-            } else {
-                resolution = 6;
-            }
 
+        if (shownEdges < 150) {
+            resolution = 60;
+        } else if (shownEdges < 300) {
+            resolution = 50;
+        } else if (shownEdges < 600) {
+            resolution = 40;
+        } else if (shownEdges < 900) {
+            resolution = 35;
+        } else if (shownEdges < 1500) {
+            resolution = 30;
+        } else if (shownEdges < 3000) {
+            resolution = 25;
+        } else if (shownEdges < 4000) {
+            resolution = 20;
+        } else if (shownEdges < 5000) {
+            resolution = 15;
+        } else if (shownEdges < 6000) {
+            resolution = 12;
+        } else if (shownEdges < 8000) {
+            resolution = 10;
+        } else if (shownEdges < 10000) {
+            resolution = 7;
+        } else if (shownEdges < 15000) {
+            resolution = 6;
+        } else {
+            resolution = 6;
         }
-        antialiasing = (resolution >= 40);
+
+        antialiasing = (resolution >= 50);
         bezierDetail(resolution);
 
         if (antialiasing) {
@@ -748,18 +734,35 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
 
-        if (!v.paused) {
-            layout.fast(v, nodes);
-        }
+        //if (!v.paused) {
+            layout.macroLayout_approximate(v, nodes);
+        //}
 
         // TODO optimize here
         nodes.sortBySelectionStatus();
 
 
         background(255);
+        //background(53,59,61);
         stroke(150, 150, 150);
         strokeWeight(1);
 
+
+        /*
+
+        loadPixels();
+        for (float y = 0; y < height; y++) {
+        float grad = (float) (y * 30f / (float)height);
+        int colo = (int) color(255f-grad, 255f-grad, 255f-grad);
+
+        for (float x = 0; x < width; x++) {
+        pixels[(int) (x + y * width)] = colo;
+        }
+
+        }
+        updatePixels();
+         *
+         */
 
         fill(80);
         textSize(12);
@@ -869,28 +872,56 @@ public class Main extends PApplet implements MouseWheelListener {
                 float cb = (n1.b + n2.b) / 2;
 
                 // compute the edge color
+                /*
                 if (mutual) {
-                    if (n1.selected && n2.selected) {
-                        stroke(0, 0, 0, 180);
-                    } else if (n1.selected || n2.selected) {
-                        stroke(0, 0, 0, 160);
-                    } else {
-                        float m = 180.0f;
-                        float r = (255.0f - m) / 255.0f;
-                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.id) * 255, 80, 255));
-                    }
-                } else if (directed) {
-                    if (n1.selected && n2.selected) {
-                        stroke(0, 0, 0, 160);
-                    } else if (n1.selected || n2.selected) {
-                        stroke(0, 0, 0, 140);
-                    } else {
-                        float m = 160.0f;
-                        float r = (255.0f - m) / 255.0f;
-                        stroke(m + cr * r, m + cg * r, m + cb * r, constrain(n1.weights.get(n2.id) * 255, 80, 255));
-                    }
-                }
+                    float m = 180.0f;
+                    float r = (255.0f - m) / 255.0f;
 
+                    if (n1.selected && n2.selected) {
+                        stroke(constrain(m + cr * r, 0, 255),
+                                constrain(m + cg * r, 0, 255),
+                                constrain(m + cb * r, 0, 255),
+                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                    } else if (n1.selected || n2.selected) {
+                        stroke(constrain(m + cr * r, 0, 255),
+                                constrain(m + cg * r, 0, 255),
+                                constrain(m + cb * r, 0, 255),
+                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                    } else {
+                        stroke(constrain(m + cr * r, 0, 255),
+                                constrain(m + cg * r, 0, 255),
+                                constrain(m + cb * r, 0, 255),
+                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                    }
+                } else if (directed) {*/
+                    float m = 160.0f;
+                    float r = (255.0f - m) / 255.0f;
+                     if (n1.selected || n2.selected) {
+                        stroke(constrain((m + cr * r)*0.4f, 0, 255),
+                                constrain((m + cg * r)*0.4f, 0, 255),
+                                constrain((m + cb * r)*0.4f, 0, 255),
+                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                    } else if (n1.highlighted || n2.highlighted) {
+                        stroke(constrain((m + cr * r)*0.8f, 0, 255),
+                                constrain((m + cg * r)*0.8f, 0, 255),
+                                constrain((m + cb * r)*0.8f, 0, 255),
+                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                    } else {
+
+                        stroke(constrain(m + cr * r, 0, 255),
+                                constrain(m + cg * r, 0, 255),
+                                constrain(m + cb * r, 0, 255),
+                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                    }
+                //}
+
+
+
+                float powd = PApplet.dist(n1.screenX, n1.screenY, n2.screenX, n2.screenY);
+
+                float modulator = constrain(PApplet.map(powd, 8, width, 1, 90), 1, 90);
+
+                bezierDetail((int) modulator);
 
                 // compute the edge thickness
                 if (v.highDefinition) {
@@ -903,14 +934,17 @@ public class Main extends PApplet implements MouseWheelListener {
                             ? n2.weights.get(n1.id) // node 1
                             : 1.0f; // default
 
+
+
+
+
                     strokeWeight(
-                            constrain(
-                            map(w, nodes.minEdgeWeight, nodes.maxEdgeWeight, 1.0f, 100.0f)
-                            * v.sceneScale,
-                            0.5f, 6.0f));
+                            constrain(w * v.sceneScale, 1.0f, 20.0f));
+
                 } else {
                     strokeWeight(1);
                 }
+
 
                 drawCurve(n2, n1);
             } // FOR NODE B
@@ -923,7 +957,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
             float rad = n.radius * MAX_NODE_RADIUS;
-            float rad2 = rad + rad * 0.3f;
+            float rad2 = rad * 1.5f;
 
             float nodeScreenDiameter = screenX(n.x + rad2, n.y) - screenX(n.x - rad2, n.y);
             if (nodeScreenDiameter < 1) {
@@ -959,17 +993,27 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
                 if (n.selected | n.highlighted) {
-                    rad *= 1.3f;
-                    rad2 *= 1.3f;
+                    rad *= 1.0f;
+                    rad2 *= 1.0f;
                 }
 
+                /*
                 if (n.selected) {
-                    fill(40, 40, 40, alpha);
+                fill(40, 40, 40, alpha);
                 } else if (n.highlighted) {
-                    fill(110, 110, 110, alpha);
+                fill(110, 110, 110, alpha);
                 } else {
-                    fill(180, 180, 180, alpha);
+                fill(180, 180, 180, alpha);
+                }*/
+
+                if (n.selected) {
+                    fill(constrain(n.r * 0.4f, 0, 255), constrain(n.g * 0.4f, 0, 255), constrain(n.b * 0.4f, 0, 255), alpha);
+                } else if (n.highlighted) {
+                    fill(constrain(n.r * 0.4f + 40, 0, 255), constrain(n.g * 0.4f + 40, 0, 255), constrain(n.b * 0.4f + 40, 0, 255), alpha);
+                } else {
+                    fill(constrain(n.r * 0.4f + 80, 0, 255), constrain(n.g * 0.4f + 80, 0, 255), constrain(n.b * 0.4f + 80, 0, 255), alpha);
                 }
+
 
                 if (n.shape == ShapeCategory.DISK) {
                     ellipse(n.x, n.y, rad2, rad2);
@@ -996,7 +1040,7 @@ public class Main extends PApplet implements MouseWheelListener {
             shownNodes++;
             // skip label drawing for small nodes
             // or if we have to hide labels
-            if (nodeScreenDiameter < 11 | !(v.showLabels | n.selected | n.highlighted)) {
+            if (nodeScreenDiameter < 12 | !(v.showLabels | n.selected)) {
                 continue;
             }
 
@@ -1094,9 +1138,9 @@ public class Main extends PApplet implements MouseWheelListener {
         float xb0 = (n1.x + 6 * n2.x) / 7, yb0 = (n1.y + 6 * n2.y) / 7;
         float[] xya1 = MathFunctions.rotation(xa0, ya0, n1.x, n1.y, PApplet.PI / 2);
         float[] xyb1 = MathFunctions.rotation(xb0, yb0, n2.x, n2.y, -PApplet.PI / 2);
-        //beginShape();
+        beginShape();
         bezier(n1.x, n1.y, xya1[0], xya1[1], xyb1[0], xyb1[1], n2.x, n2.y);
-        //endShape();
+        endShape();
     }
 
     public synchronized boolean takePicture(String path) {
@@ -1448,27 +1492,27 @@ public class Main extends PApplet implements MouseWheelListener {
             lastMousePosition.set(width / 2.0f, height / 2.0f, 0);
         } else if (key == 'e') {
             if (window != null) {
-                window.eval("parent.tinaviz.toggleEdges('" + v.getName() + "');");
+                window.eval("" + js_context + "tinaviz.toggleEdges('" + v.getName() + "');");
             } else {
                 v.showLinks = !v.showLinks;
             }
             System.out.println("show links is now " + v.showLinks);
         } else if (key == 't') {
             if (window != null) {
-                window.eval("parent.tinaviz.toggleLabels('" + v.getName() + "');");
+                window.eval("" + js_context + "tinaviz.toggleLabels('" + v.getName() + "');");
             } else {
                 v.showLabels = !v.showLabels;
             }
         } else if (key == 'n') {
             if (window != null) {
-                window.eval("parent.tinaviz.toggleNodes('" + v.getName() + "');");
+                window.eval("" + js_context + "tinaviz.toggleNodes('" + v.getName() + "');");
             } else {
                 v.showNodes = !v.showNodes;
             }
             System.out.println("show nodes is now " + v.showNodes);
         } else if (key == 'a') {
             if (window != null) {
-                window.eval("parent.tinaviz.togglePause('" + v.getName() + "');");
+                window.eval("" + js_context + "tinaviz.togglePause('" + v.getName() + "');");
             } else {
                 v.paused = !v.paused;
             }

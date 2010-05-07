@@ -33,13 +33,33 @@ public class NodeList {
         public int compare(Object o1, Object o2) {
             Node n1 = (Node)o1;
             Node n2 = (Node)o2;
-            if ((n1.selected && !n2.selected)) {
-                return +1;
-            } else if ((!n1.selected && n2.selected)) {
-                return -1;
+
+            if (n1.selected) {
+                if (n2.selected) {
+                    return 0;
+                } else if (n2.highlighted) {
+                    return +1;
+                } else {
+                    return +1;
+                }
+            } else if (n1.highlighted) {
+                if (n2.selected) {
+                    return -1;
+                } else if (n2.highlighted) {
+                    return 0;
+                } else {
+                    return +1;
+                }
             } else {
-                return 0;
+                if (n2.selected) {
+                    return -1;
+                } else if (n2.highlighted) {
+                    return -1;
+                } else {
+                    return 0;
+                }
             }
+
         }
 
     }

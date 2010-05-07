@@ -30,8 +30,10 @@ public class Node {
     public float vy = 0.0f;
     public boolean s = false; // switch
     public int degree = 0;
+    
     public Set<Long> neighbours = new HashSet<Long>(32);
     public Map<Long, Float> weights = new HashMap<Long, Float>();
+
     public HashMap<Long, EdgeDirection> directions = new HashMap<Long, EdgeDirection>();
     public boolean selected = false;
     public boolean highlighted = false;

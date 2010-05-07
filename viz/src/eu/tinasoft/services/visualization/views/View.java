@@ -40,8 +40,8 @@ public class View {
     public float inerZ;
     public float ZOOM_CEIL = 0.7f;
     public float ZOOM_FLOOR = 25.0f;
-    public float repulsion = 0.01f;
-    public float attraction = 0.001f;
+    public float repulsion = 0.001f;
+    public float attraction = 0.0001f;
     public float gravity = 0.00001f;
     public Graph graph = null;
     public FilterChain filters = null;
