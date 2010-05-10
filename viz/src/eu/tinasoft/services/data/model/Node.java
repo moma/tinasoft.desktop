@@ -4,11 +4,17 @@
  */
 package eu.tinasoft.services.data.model;
 
-
 import cern.colt.map.OpenIntObjectHashMap;
+import eu.tinasoft.services.debug.Console;
+import eu.tinasoft.services.formats.json.JSONException;
+import eu.tinasoft.services.formats.json.JSONStringer;
+import eu.tinasoft.services.formats.json.JSONWriter;
 import java.util.HashMap;
 
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import processing.core.PImage;
 
 /**
@@ -19,7 +25,6 @@ public class Node {
 
     public int id; // id
     public String uuid = "";
-
     public String label = "label";
     public String shortLabel = "label";
     public float radius = 1.0f; // radius
@@ -31,12 +36,9 @@ public class Node {
     public float vy = 0.0f;
     public boolean s = false; // switch
     public int degree = 0;
-
     public OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
-
     //public Set<Long> neighbours = new HashSet<Long>(32);
     //public Map<Long, Float> weights = new HashMap<Long, Float>();
-
     public boolean selected = false;
     public boolean highlighted = false;
     public float weight = 1.0f;
@@ -108,16 +110,16 @@ public class Node {
     }
 
     public void addNeighbour(Node neighbour) {
-        if (!weights.containsKey(neighbour.id))
+        if (!weights.containsKey(neighbour.id)) {
             weights.put(neighbour.id, 0.25f); // put a temporary weight
-        
+        }
     }
 
     public void addNeighbour(int nuuid) {
-        if (!weights.containsKey(nuuid))
+        if (!weights.containsKey(nuuid)) {
             weights.put(nuuid, 0.25f); // put a temporary weight
+        }
     }
-
 
     public void setAttribute(String key, Object value) {
         attributes.put(key, value);
@@ -127,13 +129,12 @@ public class Node {
         return attributes.get(key);
     }
 
-
     public void cloneDataFrom(Node node) {
 
         this.id = 0 + node.id;
         this.uuid = "" + node.uuid;
-        this.label = ""+ node.label;
-        this.shortLabel = ""+ node.shortLabel;
+        this.label = "" + node.label;
+        this.shortLabel = "" + node.shortLabel;
         this.radius = 0f + node.radius;
         this.x = 0f + node.x;
         this.y = 0f + node.y;
@@ -151,7 +152,7 @@ public class Node {
         this.fixed = (node.fixed);
         this.shape = node.shape;
         this.visibleToScreen = (node.visibleToScreen);
-        
+
 
         this.s = (node.s); // switch
         this.degree = 0 + node.degree;
@@ -159,7 +160,7 @@ public class Node {
         //System.out.println("this weight: "+this.weight+ " node.weight:"+node.weight);
         this.selected = (node.selected);
         this.highlighted = (node.highlighted);
-        this.category = ""+ node.category;
+        this.category = "" + node.category;
 
         this.weights = new OpenIntObjectHashMap();
         this.weights.ensureCapacity(node.weights.size());
@@ -173,16 +174,16 @@ public class Node {
         Node node = new Node(this.id);
         // hard copy
         node.cloneDataFrom(this);
-        
+
         // soft copy
         node.x = this.x;
         node.y = this.y;
-        
+
         node.original = this;
-        
+
         return node;
     }
-    
+
     public Node getDetachedClone() {
         Node node = new Node(this.id);
         node.cloneDataFrom(this);
@@ -198,5 +199,36 @@ public class Node {
         return (label.length() > len)
                 ? label.substring(0, len - 2) + ".."
                 : label;
+    }
+
+    public String getAttributesAsJSON() {
+
+        JSONWriter writer = null;
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            return "{}";
+        }
+
+
+        try {
+            // writer.key("category").value(category).endObject();
+            writer.key("label").value(label);
+            writer.key("x").value(x);
+            writer.key("y").value(y);
+            for (Entry<String, Object> entry : attributes.entrySet()) {
+                writer.key((String) entry.getKey()).value(entry.getValue());
+            }
+
+        } catch (JSONException jSONException) {
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        return writer.toString();
     }
 }

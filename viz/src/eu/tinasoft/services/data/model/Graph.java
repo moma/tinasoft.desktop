@@ -262,6 +262,18 @@ public class Graph implements Cloneable {
                                             node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
                                         }
                                     }
+
+                                    // store the attributes in the node map
+                                    String nodeValue = attr.getAttributes().getNamedItem("value").getNodeValue();
+                                    node.attributes.put(attrib.key,
+                                            (attrib.type == Integer.class)
+                                            ? Integer.parseInt(nodeValue)
+                                            : (attrib.type == Float.class)
+                                            ? Float.parseFloat(nodeValue)
+                                            : (attrib.type == String.class)
+                                            ? nodeValue
+                                            : nodeValue);
+
                                 }
 
                             }
@@ -304,6 +316,9 @@ public class Graph implements Cloneable {
 
             }
 
+            // debug
+            System.out.println("json: "+node.getAttributesAsJSON());
+            
            //System.out.println(node.category + " " + node.label + " with weight " + node.weight);
 
             // HACK FOR BAD NGRAMS IN MESO DOCUMENTS GRAPHS
@@ -321,6 +336,8 @@ public class Graph implements Cloneable {
             } else {
                 storedNodes.put(id, node);
             }
+
+
 
         }
 

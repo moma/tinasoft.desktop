@@ -160,9 +160,17 @@ function Tinaviz() {
         }
     },
     
+    nodeSelected: function(level,x,y,id,label,attr, mouse) {
+        if (mouse=="left") {
+            nodeLeftClicked(level,x,y,id,label,JSON.parse(attr));
+        } else if (mouse == "right") {
+            nodeRightClicked(level,x,y,id,label,JSON.parse(attr));
+        }
+    },
     nodeRightClicked: function(level,x,y,id,label,attr) {
         if (applet == null) return;
-        this.logDebug("nodeRightClicked called on "+level+" "+label+" "+attr+"");
+        
+        this.logDebug("nodeRightClicked called on "+level+" "+label+" "+attr.category+"");
 
          // here 'attr' is the category of the current selected node!
          // and cat the current filter
@@ -199,7 +207,7 @@ function Tinaviz() {
              //console.log("right click, level meso!");
             applet.clear("meso");
              //console.log("subgraph/item" + attr+"::"+id);
-            this.setProperty("meso", "subgraph/item", attr+"::"+id);
+            this.setProperty("meso", "subgraph/item", attr.category+"::"+id);
             //console.log("result of subgraph/item: " + this.getProperty("meso", "subgraph/item"));
              if (currentMacroFilter=="Document") {
                  //console.log("currentMacroFilter is Document");
@@ -236,7 +244,7 @@ function Tinaviz() {
          this.logDebug("nodeLeftClicked called on level: "+level+" id: "+id+" label: "+label+" attr: "+attr+"");
         
          applet.clear("meso");
-         this.setProperty("meso", "subgraph/item", attr+"::"+id);
+         this.setProperty("meso", "subgraph/item", attr.category+"::"+id);
                 
          if (attr=="Document") {
 		        this.setProperty("meso", "subgraph/category", "NGram");

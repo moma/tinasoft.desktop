@@ -30,6 +30,7 @@ import eu.tinasoft.services.data.model.Node;
 //import tinaviz.layout.LayoutOpenCL;
 import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.NodeList;
+import java.util.Map.Entry;
 //import peasy.*;
 
 public class Main extends PApplet implements MouseWheelListener {
@@ -106,12 +107,12 @@ public class Main extends PApplet implements MouseWheelListener {
             return; // in debug mode
         }
         if (n == null) {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeLeftClicked('" + session.getLevel() + "',0,0,null,null,null);\",1);");
+            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null,'left');\",1);");
         } else {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeLeftClicked('" + session.getLevel() + "',"
+            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',"
                     + screenX(n.x, n.y) + ","
                     + screenY(n.x, n.y) + ",'"
-                    + n.uuid + "','" + n.label + "', '" + n.category + "');\",1);");
+                    + n.uuid + "','" + n.label + "', \"" + n.getAttributesAsJSON() + "\",'left');\",1);");
         }
     }
 
@@ -126,12 +127,12 @@ public class Main extends PApplet implements MouseWheelListener {
             return; // in debug mode
         }
         if (n == null) {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeRightClicked('" + session.getLevel() + "',0,0,null,null,null);\",1);");
+            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null,'right');\",1);");
         } else {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeRightClicked('" + session.getLevel() + "',"
+            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',"
                     + screenX(n.x, n.y) + ","
                     + screenY(n.x, n.y) + ",'"
-                    + n.uuid + "','" + n.label + "', '" + n.category + "');\",1);");
+                    + n.uuid + "','" + n.label + "', '" + n.category + "','right');\",1);");
         }
     }
 
@@ -734,9 +735,9 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
 
-        //if (!v.paused) {
-            layout.macroLayout_approximate(v, nodes);
-        //}
+        if (!v.paused) {
+        layout.macroLayout_approximate(v, nodes);
+        }
 
         // TODO optimize here
         nodes.sortBySelectionStatus();
@@ -874,45 +875,45 @@ public class Main extends PApplet implements MouseWheelListener {
                 // compute the edge color
                 /*
                 if (mutual) {
-                    float m = 180.0f;
-                    float r = (255.0f - m) / 255.0f;
+                float m = 180.0f;
+                float r = (255.0f - m) / 255.0f;
 
-                    if (n1.selected && n2.selected) {
-                        stroke(constrain(m + cr * r, 0, 255),
-                                constrain(m + cg * r, 0, 255),
-                                constrain(m + cb * r, 0, 255),
-                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
-                    } else if (n1.selected || n2.selected) {
-                        stroke(constrain(m + cr * r, 0, 255),
-                                constrain(m + cg * r, 0, 255),
-                                constrain(m + cb * r, 0, 255),
-                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
-                    } else {
-                        stroke(constrain(m + cr * r, 0, 255),
-                                constrain(m + cg * r, 0, 255),
-                                constrain(m + cb * r, 0, 255),
-                                constrain(n1.weights.get(n2.id) * 205, 50, 255));
-                    }
+                if (n1.selected && n2.selected) {
+                stroke(constrain(m + cr * r, 0, 255),
+                constrain(m + cg * r, 0, 255),
+                constrain(m + cb * r, 0, 255),
+                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                } else if (n1.selected || n2.selected) {
+                stroke(constrain(m + cr * r, 0, 255),
+                constrain(m + cg * r, 0, 255),
+                constrain(m + cb * r, 0, 255),
+                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                } else {
+                stroke(constrain(m + cr * r, 0, 255),
+                constrain(m + cg * r, 0, 255),
+                constrain(m + cb * r, 0, 255),
+                constrain(n1.weights.get(n2.id) * 205, 50, 255));
+                }
                 } else if (directed) {*/
-                    float m = 160.0f;
-                    float r = (255.0f - m) / 255.0f;
-                     if (n1.selected || n2.selected) {
-                        stroke(constrain((m + cr * r)*0.4f, 0, 255),
-                                constrain((m + cg * r)*0.4f, 0, 255),
-                                constrain((m + cb * r)*0.4f, 0, 255),
-                                constrain((Float)n1.weights.get(n2.id) * 205, 50, 255));
-                    } else if (n1.highlighted || n2.highlighted) {
-                        stroke(constrain((m + cr * r)*0.8f, 0, 255),
-                                constrain((m + cg * r)*0.8f, 0, 255),
-                                constrain((m + cb * r)*0.8f, 0, 255),
-                                constrain((Float)n1.weights.get(n2.id) * 205, 50, 255));
-                    } else {
+                float m = 160.0f;
+                float r = (255.0f - m) / 255.0f;
+                if (n1.selected || n2.selected) {
+                    stroke(constrain((m + cr * r) * 0.4f, 0, 255),
+                            constrain((m + cg * r) * 0.4f, 0, 255),
+                            constrain((m + cb * r) * 0.4f, 0, 255),
+                            constrain((Float) n1.weights.get(n2.id) * 205, 50, 255));
+                } else if (n1.highlighted || n2.highlighted) {
+                    stroke(constrain((m + cr * r) * 0.8f, 0, 255),
+                            constrain((m + cg * r) * 0.8f, 0, 255),
+                            constrain((m + cb * r) * 0.8f, 0, 255),
+                            constrain((Float) n1.weights.get(n2.id) * 205, 50, 255));
+                } else {
 
-                        stroke(constrain(m + cr * r, 0, 255),
-                                constrain(m + cg * r, 0, 255),
-                                constrain(m + cb * r, 0, 255),
-                                constrain((Float)n1.weights.get(n2.id) * 205, 50, 255));
-                    }
+                    stroke(constrain(m + cr * r, 0, 255),
+                            constrain(m + cg * r, 0, 255),
+                            constrain(m + cb * r, 0, 255),
+                            constrain((Float) n1.weights.get(n2.id) * 205, 50, 255));
+                }
                 //}
 
 
@@ -929,9 +930,9 @@ public class Main extends PApplet implements MouseWheelListener {
                     // weight information, we have to try to
                     // get the weight in both nodes
                     float w = n1.weights.containsKey(n2.id)
-                            ? (Float)n1.weights.get(n2.id) // node 2
+                            ? (Float) n1.weights.get(n2.id) // node 2
                             : n2.weights.containsKey(n1.id)
-                            ? (Float)n2.weights.get(n1.id) // node 1
+                            ? (Float) n2.weights.get(n1.id) // node 1
                             : 1.0f; // default
 
 
@@ -1629,6 +1630,15 @@ public class Main extends PApplet implements MouseWheelListener {
     return result + "}";
 
     }*/
+
+    public String getNodeAttributes(String id) {
+        Node node = nodes.getNode(id);
+        if (node == null) {
+            return "{}";
+        }
+        return node.getAttributesAsJSON();
+    }
+
     public String getNeighbourhood(String id) {
         String result = "";
 
@@ -1648,7 +1658,14 @@ public class Main extends PApplet implements MouseWheelListener {
 
             for (int nodeId : node.weights.keys().elements()) {
                 Node n = getView().getNode(nodeId);
-                writer.key(n.uuid).object().key("label").value(n.label).endObject().object().key("category").value(n.category).endObject().endObject();
+                writer.key(n.uuid)
+                        .object()
+                            .key("label").value(n.label)
+                        .endObject()
+                        .object()
+                            .key("category").value(n.category)
+                        .endObject()
+               .endObject();
             }
 
         } catch (JSONException jSONException) {
