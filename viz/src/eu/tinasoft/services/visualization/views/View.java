@@ -33,7 +33,7 @@ public class View {
     public boolean highDefinition = true;
     public boolean spatializeWhenMoving = true;
     public PVector translation = new PVector(0.0f, 0.0f);
-    public float sceneScale = 10.0f;
+    public float sceneScale = 1.0f;
     public float inerX;
     public float inerY;
     public float inerZ;

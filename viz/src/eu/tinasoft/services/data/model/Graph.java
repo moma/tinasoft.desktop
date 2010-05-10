@@ -317,7 +317,7 @@ public class Graph implements Cloneable {
             }
 
             // debug
-            System.out.println("json: "+node.getAttributesAsJSON());
+            //System.out.println("json: "+node.getAttributesAsJSON());
             
            //System.out.println(node.category + " " + node.label + " with weight " + node.weight);
 

@@ -67,8 +67,8 @@ public class NodeList {
     public float NORMALIZED_MIN_EDGE_WEIGHT = 0.0f;
     public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f; // desired default weight
 
-    public float NORMALIZED_MIN_RADIUS = 0.05f;
-    public float NORMALIZED_MAX_RADIUS = 1.0f; // largely depends on the spatialization settings
+    public float MIN_RADIUS = 1f;
+    public float MAX_RADIUS = 6f; // largely depends on the spatialization settings
 
     // TODO fix me
     public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
@@ -179,9 +179,14 @@ public class NodeList {
             //System.out.println("node "+n.label+" ("+n.category+")");
             //System.out.println(" - radius avant:"+n.radius);
 
-            n.radius =  (minRadius == maxRadius) ? NORMALIZED_MIN_RADIUS : PApplet.map(n.radius,
-                    minRadius, maxRadius,
-                    NORMALIZED_MIN_RADIUS, NORMALIZED_MAX_RADIUS);
+            n.radius =  (minRadius == maxRadius) 
+                    ? MIN_RADIUS
+                    : PApplet.map(n.radius,
+                    minRadius,
+                    maxRadius,
+                    MIN_RADIUS,
+                    MAX_RADIUS);
+            
             // System.out.println(" -  normalized radius:"+n.radius);
 
             // NORMALIZE COLORS USING RADIUS

@@ -110,12 +110,17 @@ public class Main extends PApplet implements MouseWheelListener {
             window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null,'left');\",1);");
         } else {
             window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',"
-                    + screenX(n.x, n.y) + ","
-                    + screenY(n.x, n.y) + ",'"
-                    + n.uuid + "','" + n.label + "', \"" + n.getAttributesAsJSON() + "\",'left');\",1);");
+                    + screenX(n.x, n.y) + ","+ screenY(n.x, n.y) + ",'"
+                    + n.uuid + "','"
+                    + n.label+ "', '"
+                    + escape(n.getAttributesAsJSON())
+                    + "','left');\",1);");
         }
     }
 
+    private String escape(String str) {
+        return str.replace("\"", "\\\"");
+    }
     private void nodeSelectedRightMouse_JS_CALLBACK(Node n) {
 
         if (n != null) {
@@ -130,9 +135,11 @@ public class Main extends PApplet implements MouseWheelListener {
             window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null,'right');\",1);");
         } else {
             window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',"
-                    + screenX(n.x, n.y) + ","
-                    + screenY(n.x, n.y) + ",'"
-                    + n.uuid + "','" + n.label + "', '" + n.category + "','right');\",1);");
+                    + screenX(n.x, n.y) + ","+ screenY(n.x, n.y) + ",'"
+                    + n.uuid + "','"
+                    + n.label + "', '"
+                    + escape(n.getAttributesAsJSON())
+                    + "','right');\",1);");
         }
     }
 
@@ -347,7 +354,9 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
+                    //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf");
                     "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf");
+
             try {
                 session.getMacro().setProperty("cat/value", "Document");
             } catch (KeyException ex) {
@@ -957,7 +966,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 continue;
             }
 
-            float rad = n.radius * MAX_NODE_RADIUS;
+            float rad = n.radius;// * MAX_NODE_RADIUS;
             float rad2 = rad * 1.5f;
 
             float nodeScreenDiameter = screenX(n.x + rad2, n.y) - screenX(n.x - rad2, n.y);
