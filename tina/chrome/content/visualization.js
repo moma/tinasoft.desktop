@@ -162,9 +162,9 @@ function Tinaviz() {
     
     nodeSelected: function(level,x,y,id,label,attr, mouse) {
         if (mouse=="left") {
-            nodeLeftClicked(level,x,y,id,label,JSON.parse(attr));
+            nodeLeftClicked(level,x,y,id,label,$.parseJSON(attr));
         } else if (mouse == "right") {
-            nodeRightClicked(level,x,y,id,label,JSON.parse(attr));
+            nodeRightClicked(level,x,y,id,label,$.parseJSON(attr));
         }
     },
     nodeRightClicked: function(level,x,y,id,label,attr) {
