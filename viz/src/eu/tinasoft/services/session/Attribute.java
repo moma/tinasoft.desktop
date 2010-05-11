@@ -20,13 +20,13 @@ public class Attribute {
     public Attribute(Node xml) {
         //System.out.println("   - getting id..");
         setID(xml.getAttributes().getNamedItem("id").getNodeValue());
-        //System.out.println("   - got id " + id);
+        System.out.println("   - got id " + id);
         //System.out.println("   - getting key..");
         setKey(xml.getAttributes().getNamedItem("title").getNodeValue());
-        //System.out.println("   - got key " + key);
+        System.out.println("   - got key " + key);
         //System.out.println("   - getting type..");
         setType(xml.getAttributes().getNamedItem("type").getNodeValue());
-        //System.out.println("   - got type " + type);
+        System.out.println("   - got type " + type);
     }
 
     public Attribute(String id, String key, String type) {

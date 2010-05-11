@@ -30,7 +30,10 @@ import eu.tinasoft.services.data.model.Node;
 //import tinaviz.layout.LayoutOpenCL;
 import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.NodeList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 //import peasy.*;
 
 public class Main extends PApplet implements MouseWheelListener {
@@ -110,9 +113,9 @@ public class Main extends PApplet implements MouseWheelListener {
             window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null,'left');\",1);");
         } else {
             window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',"
-                    + screenX(n.x, n.y) + ","+ screenY(n.x, n.y) + ",'"
+                    + screenX(n.x, n.y) + "," + screenY(n.x, n.y) + ",'"
                     + n.uuid + "','"
-                    + n.label+ "', '"
+                    + n.label + "', '"
                     + escape(n.getAttributesAsJSON())
                     + "','left');\",1);");
         }
@@ -121,6 +124,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private String escape(String str) {
         return str.replace("\"", "\\\"");
     }
+
     private void nodeSelectedRightMouse_JS_CALLBACK(Node n) {
 
         if (n != null) {
@@ -135,7 +139,7 @@ public class Main extends PApplet implements MouseWheelListener {
             window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null,'right');\",1);");
         } else {
             window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',"
-                    + screenX(n.x, n.y) + ","+ screenY(n.x, n.y) + ",'"
+                    + screenX(n.x, n.y) + "," + screenY(n.x, n.y) + ",'"
                     + n.uuid + "','"
                     + n.label + "', '"
                     + escape(n.getAttributesAsJSON())
@@ -354,8 +358,8 @@ public class Main extends PApplet implements MouseWheelListener {
         if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
-                    //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf");
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf");
+                    "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf");
+                    //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf");
 
             try {
                 session.getMacro().setProperty("cat/value", "Document");
@@ -364,7 +368,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
             session.getMacro().addFilter("Category", "cat");
-            session.getView().togglePause();
+            session.getView().paused = true;
 
         } else if (generateRandomGlobalGraph) {
 
@@ -745,7 +749,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
         if (!v.paused) {
-        layout.macroLayout_approximate(v, nodes);
+            layout.macroLayout_approximate(v, nodes);
         }
 
         // TODO optimize here
@@ -855,19 +859,26 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 boolean directed = n1.weights.containsKey(n2.id);
                 boolean mutual = n2.weights.containsKey(n1.id);
-                if (!(directed | mutual)) {
-                    continue;
-                }
-
-
-                // only print the edge in one direction
-                if (n2.weight < n2.weight) {
-                    continue;
-                } else if (n2.weight == n2.weight) {
-                    if (n1.id < n2.id) {
+                if (!directed) {
+                    if (!mutual) {
                         continue;
                     }
                 }
+
+                float weightN1_2_N2 = (Float) n1.weights.get(n2.id);
+                float weightN2_2_N1 = (Float) n2.weights.get(n1.id);
+
+                // only print the edge in one direction
+                if (n1.weight > n2.weight) {
+                    // print
+                } else if (weightN1_2_N2 > weightN2_2_N1) {
+                    // print
+                } else if (n1.id > n2.id) {
+                    // print
+                } else {
+                    continue;
+                }
+
 
                 shownEdges++;
                 // if we want to draw the links, or if we clicked on a node
@@ -945,11 +956,8 @@ public class Main extends PApplet implements MouseWheelListener {
                             : 1.0f; // default
 
 
-
-
-
                     strokeWeight(
-                            constrain(w * v.sceneScale, 1.0f, 20.0f));
+                            constrain(w * v.sceneScale * 1.5f, 1.0f, 30.0f));
 
                 } else {
                     strokeWeight(1);
@@ -1521,6 +1529,13 @@ public class Main extends PApplet implements MouseWheelListener {
                 v.showNodes = !v.showNodes;
             }
             System.out.println("show nodes is now " + v.showNodes);
+        } else if (key == 'r') {
+            if (window != null) {
+                window.eval("" + js_context + "tinaviz.recenter();");
+            } else {
+                recenter = true;
+            }
+            System.out.println("show nodes is now " + v.showNodes);
         } else if (key == 'a') {
             if (window != null) {
                 window.eval("" + js_context + "tinaviz.togglePause('" + v.getName() + "');");
@@ -1639,22 +1654,14 @@ public class Main extends PApplet implements MouseWheelListener {
     return result + "}";
 
     }*/
+    public String getNodesByLabel(String label, String mode) {
+        List<Node> results = nodes.getNodesByLabel(label, mode);
 
-    public String getNodeAttributes(String id) {
-        Node node = nodes.getNode(id);
-        if (node == null) {
+        if (results.size() == 0) {
             return "{}";
         }
-        return node.getAttributesAsJSON();
-    }
 
-    public String getNeighbourhood(String id) {
         String result = "";
-
-        Node node = nodes.getNode(id);
-        if (node == null) {
-            return "{}";
-        }
         JSONWriter writer = null;
         try {
             writer = new JSONStringer().object();
@@ -1664,17 +1671,66 @@ public class Main extends PApplet implements MouseWheelListener {
         }
 
         try {
+            for (Node n : results) {
+                writer.key(n.uuid).object();
+                for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
+                    writer.key(entry.getKey()).value(entry.getValue());
+                }
+                writer.endObject();
+            }
+        } catch (JSONException jSONException) {
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        //System.out.println("data: " + writer.toString());
+        return writer.toString();
+    }
 
+    public String getNodeAttributes(String id) {
+        Node node = nodes.getNode(id);
+
+
+        if (node == null) {
+            return "{}";
+
+
+        }
+        return node.getAttributesAsJSON();
+
+
+    }
+
+    public String getNeighbourhood(String id) {
+        String result = "";
+
+        Node node = nodes.getNode(id);
+
+        if (node == null) {
+            return "{}";
+        }
+        JSONWriter writer = null;
+
+
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            return "{}";
+        }
+
+        try {
             for (int nodeId : node.weights.keys().elements()) {
                 Node n = getView().getNode(nodeId);
-                writer.key(n.uuid)
-                        .object()
-                            .key("label").value(n.label)
-                        .endObject()
-                        .object()
-                            .key("category").value(n.category)
-                        .endObject()
-               .endObject();
+                writer.key(n.uuid).object();
+                for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
+                    writer.key(entry.getKey()).value(entry.getValue());
+                }
+                writer.endObject();
             }
 
         } catch (JSONException jSONException) {
@@ -1686,6 +1742,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return "{}";
         }
+        //System.out.println("data: " + writer.toString());
         return writer.toString();
 
     }

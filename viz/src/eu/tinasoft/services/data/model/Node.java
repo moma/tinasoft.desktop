@@ -201,6 +201,10 @@ public class Node {
                 : label;
     }
 
+    public Map<String, Object> getAttributes() {
+        return (original == null) ? this.attributes : original.attributes;
+    }
+
     public String getAttributesAsJSON() {
 
         JSONWriter writer = null;
@@ -213,10 +217,11 @@ public class Node {
 
         try {
             // writer.key("category").value(category).endObject();
-            writer.key("label").value(label);
             writer.key("x").value(x);
             writer.key("y").value(y);
-            for (Entry<String, Object> entry : attributes.entrySet()) {
+
+            for (Entry<String, Object> entry : getAttributes().entrySet()) {
+                //System.out.println(" writing " + ((String) entry.getKey()) + " => " + entry.getValue());
                 writer.key((String) entry.getKey()).value(entry.getValue());
             }
 
@@ -229,6 +234,7 @@ public class Node {
             Console.error(ex.getMessage());
             return "{}";
         }
+        System.out.println("json: " + writer.toString());
         return writer.toString();
     }
 }

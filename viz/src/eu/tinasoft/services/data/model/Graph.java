@@ -19,6 +19,7 @@ import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.session.Attribute;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.formats.xml.XPathReader;
+import processing.core.PApplet;
 
 /**
  *
@@ -210,7 +211,7 @@ public class Graph implements Cloneable {
             Node node = new Node(id, label, (float) Math.random() * 2f,
                     (float) Math.random() * 100f,
                     (float) Math.random() * 100f);
-
+            node.attributes.put("label", label);
             node.category = cat;
             node.uuid = uuid;
             node.weight = 1.0f;
@@ -246,25 +247,27 @@ public class Graph implements Cloneable {
                                     AttributeIdXML = attr.getAttributes().getNamedItem("id");
                                 }
                                 if (AttributeIdXML != null) {
-                                    String attributeId = AttributeIdXML.getNodeValue();
 
+                                    String attributeId = AttributeIdXML.getNodeValue();
                                     Attribute attrib = nodeAttributes.get(attributeId);
+                                    String nodeValue = attr.getAttributes().getNamedItem("value").getNodeValue();
                                     // System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
 
                                     if (attrib.key.equalsIgnoreCase("weight")) {
                              
                                         if (attrib.type == Float.class | attrib.type == Integer.class | attrib.type == Double.class) {
-                                            node.weight = Float.parseFloat(attr.getAttributes().getNamedItem("value").getNodeValue());
+                                            node.weight = Float.parseFloat(nodeValue);
 
                                         }
                                     } else if (attrib.key.equalsIgnoreCase("category")) {
                                         if (attrib.type == String.class) {
-                                            node.category = attr.getAttributes().getNamedItem("value").getNodeValue();
+                                            node.category = nodeValue;
                                         }
                                     }
 
                                     // store the attributes in the node map
-                                    String nodeValue = attr.getAttributes().getNamedItem("value").getNodeValue();
+                                    //System.out.println("storing attribute "+attrib.key+" with attr id "+attributeId);
+
                                     node.attributes.put(attrib.key,
                                             (attrib.type == Integer.class)
                                             ? Integer.parseInt(nodeValue)
@@ -288,6 +291,7 @@ public class Graph implements Cloneable {
                     if (xmlnodePositionAttributes.getNamedItem("y") != null) {
                         node.y = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("y").getNodeValue());
                     }
+
                 } else if (n.getNodeName().equalsIgnoreCase("viz:size") || n.getNodeName().equalsIgnoreCase("size")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("value") != null) {

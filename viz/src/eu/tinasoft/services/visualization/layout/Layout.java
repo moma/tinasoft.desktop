@@ -16,89 +16,8 @@ import java.math.*;
  */
 public class Layout {
 
-    public void macroLayout_older(View v, NodeList nodes) {
-        float distance = 1f;
-        float vx = 1f;
-        float vy = 1f;
-
-        float criticalDistance = 0.001f;
-
-        float repulsion = v.repulsion;
-        float attraction = v.attraction;
-
-        float gravity = v.gravity;
-
-        for (Node n1 : nodes.nodes) {
-            // gravity
-
-
-            vx = nodes.baryCenter.x - n1.x;
-            vy = nodes.baryCenter.y - n1.y;
-
-            distance = PApplet.sqrt(vx * vx + vy * vy);
-
-            //n1.vx += vx * distance * gravity;
-            //n1.vy += vy * distance * gravity;
-
-
-            for (Node n2 : nodes.nodes) {
-                if (n1 == n2) {
-                    continue;
-                }
-
-                // todo: what happen when vx or vy are 0 ?
-
-                vx = n2.x - n1.x;
-                vy = n2.y - n1.y;
-                distance = PApplet.sqrt(vx * vx + vy * vy);
-
-
-                //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
-                // plutot que mettre une distance minimale,
-                // mettre une force de repulsion, par exemple
-                // radius * (1 / distance)   // ou distance au carré
-                if (distance < 0.002f) {
-                    distance = 0.002f;
-                }
-
-                if (n1.weights.containsKey(n2.id)) {
-                    float w = (Float) n1.weights.get(n2.id);
-                    //System.out.println("w: "+w);
-                    n1.vx += vx * distance * w * attraction;
-                    n1.vy += vy * distance * w * attraction;
-                    n2.vx -= vx * distance * w * attraction;
-                    n2.vy -= vy * distance * w * attraction;
-                } else {
-                    // STANDARD REPULSION
-                    n1.vx -= (vx / distance) * repulsion;
-                    n1.vy -= (vy / distance) * repulsion;
-                    n2.vx += (vx / distance) * repulsion;
-                    n2.vy += (vy / distance) * repulsion;
-                }
-
-
-                //}
-            } // FOR NODE B
-            // important, we limit the velocity!
-            n1.vx = PApplet.constrain(n1.vx, -30, 30);
-            n1.vy = PApplet.constrain(n1.vy, -30, 30);
-
-            // update the coordinate
-            // also set the bound box for the whole scene
-            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -3000, +3000);
-            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -3000, +3000);
-
-
-            if (n1.original != null) {
-                n1.original.x = n1.x;
-                n1.original.y = n1.y;
-            }
-
-
-            n1.vx = 0.0f;
-            n1.vy = 0.0f;
-        }   // FOr NODE A
-    }
+    static final float GLOBAL_SCALE = 0.00000001f;
+    static final float EPSILON = 0.0000001f;
 
     public void macroLayout_approximate(View v, NodeList nodes) {
         float distance = 1f;
@@ -108,74 +27,117 @@ public class Layout {
         float gdx = 1f;
         float gdy = 1f;
 
-        float repulsion = 0f;
-        float attraction = 0.00001f;
-        float gravity = 10f;
+        // scene scale (depends on scene coordinates)
+
+
+        // how each node is attracted to each other when there is a link
+        float attraction = 0.1f; // 9000 is max, after, nodes are too attached
+
+        // the more the node has neighbours, the more it will repulse
+        // TODO: except if the other node has few degree too
+        float repulsion_when_big_degree = 100f;
+
+        // this tend to push nodes with high degree to the periphery
+        float repulsion_when_big_degree_diff = 0.01f;
+
+        float globalRepulsion = 20.0f; // mini: 1.0f ,  default: 1.5f
+
+        // should we center a bit more nodes with higher degree ? (maybe genericity?)
+        float centerNodesWithHighDegree = 1.005f; // 1.0 = very small, 0.0 not used, 1.1f = default
+        
+        // depends on the number of elements
+
+        float gravity = 100f;
+        gravity = nodes.size() * 20.0f;
+
+        repulsion_when_big_degree *= GLOBAL_SCALE;
+        attraction *= GLOBAL_SCALE;
+        gravity *= GLOBAL_SCALE;
+        repulsion_when_big_degree_diff *= GLOBAL_SCALE;
+
+
+
+        float borderDistance = EPSILON;
+        int n1_degree = 0, n2_degree = 0;
+        float dix = 0;
+        float diy = 0;
+        float weight = 0;
 
         for (Node n1 : nodes.nodes) {
 
-            int nombreLiens = n1.weights.size();
+            n1_degree = n1.weights.size();
 
 
             gdx = nodes.baryCenter.x - n1.x;
             gdy = nodes.baryCenter.y - n1.y;
 
-            gdistance = PApplet.sqrt(gdx * gdx + gdy * gdy) + 0.00001f;
-
-            //n1.vx += gdx * gdistance * gravity;
-            //n1.vy += gdy * gdistance * gravity;
+            gdistance = PApplet.sqrt(gdx * gdx + gdy * gdy) + EPSILON;
+            float centering =1.0f + centerNodesWithHighDegree * PApplet.sqrt(n1_degree);
+            n1.vx += gdx * gdistance * gravity * centering;
+            n1.vy += gdy * gdistance * gravity * centering;
 
             for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
                     continue;
                 }
 
+                n2_degree = n2.weights.size();
+
                 dx = n2.x - n1.x;
                 dy = n2.y - n1.y;
 
-                distance = PApplet.sqrt(dx * dx + dy * dy) + 0.00001f;
+                distance = PApplet.sqrt(dx * dx + dy * dy) + EPSILON;
 
-                float borderDistance = distance - n1.radius - n2.radius;
+                borderDistance = distance - n1.radius - n2.radius;
                 if (borderDistance <= 0.0f) {
-                    float dix = (dx / distance) * (n1.radius + n2.radius) * 2;
-                    float diy = (dy / distance) * (n1.radius + n2.radius) * 2;
+                    dix = (dx / distance) * (n1.radius + n2.radius) * 1.5f;
+                    diy = (dy / distance) * (n1.radius + n2.radius) * 1.5f;
+
                     //System.out.println(" n1.vx = " + n1.vx + dix);
                     //System.out.println(" n2.vx = " + n2.vx + dix);
 
                     // si les noeuds se chevauchent
-                    n1.vx += dix;
-                    n1.vy += diy;
+                    n1.vx -= dix;
+                    n1.vy -= diy;
 
-                    n2.vx -= dix;
-                    n2.vy -= diy;
+                    n2.vx += dix;
+                    n2.vy += diy;
+
+                    
                 } else {
                     // sinon on les attire en fonction du nb de liens
                     // et du poids
+
+                    // ATTRACTION QUAND ON A UN LIEN
                     if (n1.weights.containsKey(n2.id)) {
                         // TODO prendre le + grand des 2
-                        float w = (Float) n1.weights.get(n2.id);
-         
+                        weight = (Float) n1.weights.get(n2.id);
 
-                        float dix = dx * borderDistance * w * attraction;
-                        float diy = dy * borderDistance * w * attraction;
+                        dix = dx * borderDistance * weight * attraction;
+                        diy = dy * borderDistance * weight * attraction;
 
                         n1.vx += dix;
                         n1.vy += diy;
-
                         n2.vx -= dix;
                         n2.vy -= diy;
                     }
 
-//
-//                    //
-//                    // REPULSION
-                    float rep = (repulsion);// * PApplet.sqrt(nombreLiens));
-                    float di = (distance * PApplet.sqrt(distance));
-                    n1.vx -= (dx / distance) * di * rep;
-                    n1.vy -= (dy / distance) * di * rep;
 
-                    n2.vx += (dx / distance) * di * rep;
-                    n2.vy += (dy / distance) * di * rep;
+                    // REPULSION
+                    // TODO fonction qui, lorsqu'on s'approche très près, tend vers une force infinie
+                    float rep = repulsion_when_big_degree * PApplet.sqrt(n1_degree);
+                    //rep = 0.0000001f + repulsion_when_big_degree_diff * PApplet.abs(n1_degree - n2_degree);
+                    //rep = repulsion_when_big_degree;
+                    //0.01; 1.
+                    rep = globalRepulsion + 0.1f * PApplet.sqrt(n2_degree);
+                    
+                    //float di = distance * PApplet.sqrt(distance);
+                
+                    n1.vx -= (dx / (distance*distance))  * rep;
+                    n1.vy -= (dy / (distance*distance))  * rep;
+
+                    n2.vx += (dx / (distance*distance)) * rep;
+                    n2.vy += (dy / (distance*distance))  * rep;
 
                 }
 
@@ -188,8 +150,9 @@ public class Layout {
             //n1.vx = PApplet.constrain(n1.vx, -30, 30);
             //n1.vy = PApplet.constrain(n1.vy, -30, 30);
 
+            /*
             int vlimit = 30;
-            /*if (PApplet.abs(n1.vx) > vlimit | PApplet.abs(n1.vy) > vlimit) {
+            if (PApplet.abs(n1.vx) > vlimit | PApplet.abs(n1.vy) > vlimit) {
             n1.vx = (n1.vx / distance) * vlimit;
             n1.vy = (n1.vy / distance) * vlimit;
             }*/
@@ -199,8 +162,8 @@ public class Layout {
 
             // update the coordinate
             // also set the bound box for the whole scene
-            n1.x = PApplet.constrain(n1.x + n1.vx, -3000, +3000);
-            n1.y = PApplet.constrain(n1.y + n1.vy, -3000, +3000);
+            n1.x = PApplet.constrain(n1.x + n1.vx, -6000, +6000);
+            n1.y = PApplet.constrain(n1.y + n1.vy, -6000, +6000);
 
 
             if (n1.original != null) {
@@ -213,80 +176,6 @@ public class Layout {
             n1.vy = 0.0f;
         }   // FOr NODE A
     }
-
-    public void fast_old(View v, NodeList nodes) {
-        float distance = 1f;
-        float vx = 1f;
-        float vy = 1f;
-
-        float repulsion = v.repulsion;
-        float attraction = v.attraction;
-
-        float gravity = v.gravity;
-
-        for (Node n1 : nodes.nodes) {
-            // gravity
-
-            vx = 0 - n1.x;
-            vy = 0 - n1.y;
-
-            distance = PApplet.sqrt(PApplet.sq(vx) + PApplet.sq(vy)) + 0.0000001f;
-            n1.vx += vx * distance * gravity;
-            n1.vy += vy * distance * gravity;
-
-            for (Node n2 : nodes.nodes) {
-                if (n1 == n2) {
-                    continue;
-                }
-
-                // todo: what happen when vx or vy are 0 ?
-
-                vx = n2.x - n1.x;
-                vy = n2.y - n1.y;
-                distance = PApplet.sqrt(vx * vx + vy * vy) + 0.0000001f;
-
-                //if (distance < (n1.radius + n2.radius)*2) distance = (n1.radius + n2.radius)*2;
-                // plutot que mettre une distance minimale,
-                // mettre une force de repulsion, par exemple
-                // radius * (1 / distance)   // ou distance au carré
-                if (n1.weights.containsKey(n2.id)) {
-                    float w = 1.0f + (Float) n1.weights.get(n2.id);
-                    //System.out.println("w: "+w);
-                    n1.vx += vx * distance * w * attraction;
-                    n1.vy += vy * distance * w * attraction;
-                    n2.vx -= vx * distance * w * attraction;
-                    n2.vy -= vy * distance * w * attraction;
-                } else {
-                    // STANDARD REPULSION
-                    n1.vx -= (vx / distance) * repulsion;
-                    n1.vy -= (vy / distance) * repulsion;
-                    n2.vx += (vx / distance) * repulsion;
-                    n2.vy += (vy / distance) * repulsion;
-                }
-
-                //}
-            } // FOR NODE B
-            // important, we limit the velocity!
-            n1.vx = PApplet.constrain(n1.vx, -5, 5);
-            n1.vy = PApplet.constrain(n1.vy, -5, 5);
-
-            // update the coordinate
-            // also set the bound box for the whole scene
-            n1.x = PApplet.constrain(n1.x + n1.vx * 0.5f, -3000, +3000);
-            n1.y = PApplet.constrain(n1.y + n1.vy * 0.5f, -3000, +3000);
-
-
-            if (n1.original != null) {
-                n1.original.x = n1.x;
-                n1.original.y = n1.y;
-            }
-
-
-            n1.vx = 0.0f;
-            n1.vy = 0.0f;
-        }   // FOr NODE A
-    }
-
     public void slowWithLabelAdjust(View v, NodeList nodes) {
 
         System.out.println("HELLO");
@@ -339,10 +228,10 @@ public class Layout {
                     } else {
 
                         // STANDARD REPULSION
-                        n1.vx -= (vx / distance) * repulsion;
-                        n1.vy -= (vy / distance) * repulsion;
-                        n2.vx += (vx / distance) * repulsion;
-                        n2.vy += (vy / distance) * repulsion;
+                        n1.vx += (vx / distance) * repulsion;
+                        n1.vy += (vy / distance) * repulsion;
+                        n2.vx -= (vx / distance) * repulsion;
+                        n2.vy -= (vy / distance) * repulsion;
                     }
                 } else {
                     n1.vx += 100f;

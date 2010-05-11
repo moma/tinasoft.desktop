@@ -4,6 +4,7 @@
  */
 package eu.tinasoft.services.data.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -26,12 +27,61 @@ public class NodeList {
         return null;
     }
 
+    /** getNodesByLabel
+     * @param label : String
+     * @param mode : String (equalsIgnoreCase,equals,startsWith,endsWith,contains)
+     */
+    public List<Node> getNodesByLabel(String label, String mode) {
+
+        List<Node> results = new ArrayList<Node>();
+
+        if (mode.equalsIgnoreCase("equalsIgnoreCase")) {
+            for (Node n : nodes) {
+                if (n.label.equalsIgnoreCase(label)) {
+                    results.add(n);
+                }
+            }
+        }
+
+        else if (mode.equalsIgnoreCase("equals")) {
+            for (Node n : nodes) {
+                if (n.label.equals(label)) {
+                    results.add(n);
+                }
+            }
+        }
+
+        else if (mode.equalsIgnoreCase("startsWith")) {
+            for (Node n : nodes) {
+                if (n.label.startsWith(label)) {
+                    results.add(n);
+                }
+            }
+        }
+        else if (mode.equalsIgnoreCase("endsWith")) {
+            for (Node n : nodes) {
+                if (n.label.endsWith(label)) {
+                    results.add(n);
+                }
+            }
+        }
+        else if (mode.equalsIgnoreCase("contains")) {
+            for (Node n : nodes) {
+                if (n.label.contains(label)) {
+                    results.add(n);
+                }
+            }
+        }
+
+        return results;
+    }
+
     public class SelectedComparator implements Comparator {
 
         @Override
         public int compare(Object o1, Object o2) {
-            Node n1 = (Node)o1;
-            Node n2 = (Node)o2;
+            Node n1 = (Node) o1;
+            Node n2 = (Node) o2;
 
             if (n1.selected) {
                 if (n2.selected) {
@@ -60,19 +110,24 @@ public class NodeList {
             }
 
         }
-
     }
-
     public List<Node> nodes;
     public float NORMALIZED_MIN_EDGE_WEIGHT = 0.0f;
     public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f; // desired default weight
-
     public float MIN_RADIUS = 1f;
     public float MAX_RADIUS = 6f; // largely depends on the spatialization settings
-
     // TODO fix me
     public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
     public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;
+
+    // you can set it to something like 4 for fun
+    public float INITIAL_SQUARE_SIZE = 100f;
+
+    public float MIN_X = -INITIAL_SQUARE_SIZE;
+    public float MIN_Y = -INITIAL_SQUARE_SIZE;
+    public float MAX_X = INITIAL_SQUARE_SIZE;
+    public float MAX_Y = INITIAL_SQUARE_SIZE;
+
     public float minX;
     public float minY;
     public float maxX;
@@ -179,14 +234,17 @@ public class NodeList {
             //System.out.println("node "+n.label+" ("+n.category+")");
             //System.out.println(" - radius avant:"+n.radius);
 
-            n.radius =  (minRadius == maxRadius) 
+            n.x = (minX == maxX) ? MIN_X : PApplet.map(n.x, minX, maxX, MIN_X, MAX_X);
+            n.y = (minY == maxY) ? MIN_Y : PApplet.map(n.y, minY, maxY, MIN_Y, MAX_Y);
+
+            n.radius = (minRadius == maxRadius)
                     ? MIN_RADIUS
                     : PApplet.map(n.radius,
                     minRadius,
                     maxRadius,
                     MIN_RADIUS,
                     MAX_RADIUS);
-            
+
             // System.out.println(" -  normalized radius:"+n.radius);
 
             // NORMALIZE COLORS USING RADIUS
@@ -201,7 +259,7 @@ public class NodeList {
             }
 
             //System.out.println("n.weight = " + "PApplet.map(" + n.weight + ","
-              //      + minNodeWeight + ", " + maxNodeWeight + "," + NORMALIZED_MIN_NODE_WEIGHT + ", " + NORMALIZED_MAX_NODE_WEIGHT + ");");
+            //      + minNodeWeight + ", " + maxNodeWeight + "," + NORMALIZED_MIN_NODE_WEIGHT + ", " + NORMALIZED_MAX_NODE_WEIGHT + ");");
 
             // NORMALIZE WEIGHT
 
@@ -216,7 +274,7 @@ public class NodeList {
             for (int k : n.weights.keys().elements()) {
                 //System.out.println("  - w1: "+n.weights.get(k));
 
-                n.weights.put(k, (minEdgeWeight == maxEdgeWeight) ? NORMALIZED_MIN_EDGE_WEIGHT : PApplet.map((Float)n.weights.get(k),
+                n.weights.put(k, (minEdgeWeight == maxEdgeWeight) ? NORMALIZED_MIN_EDGE_WEIGHT : PApplet.map((Float) n.weights.get(k),
                         minEdgeWeight, maxEdgeWeight,
                         NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT));
                 //System.out.println("  - w2: "+n.weights.get(k));
