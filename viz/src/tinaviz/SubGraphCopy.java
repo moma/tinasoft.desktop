@@ -16,6 +16,7 @@ import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;
 
 import eu.tinasoft.services.visualization.views.View;
+import processing.core.PVector;
 
 /* FIXME TODO WARNING : ADD SOME LOCKS..
  * */
@@ -118,11 +119,6 @@ public class SubGraphCopy extends NodeFilter {
 
         NodeList output = new NodeList();
 
-        if (!oldCategory.equalsIgnoreCase(category) | oldItem != oldItem) {
-            output.autocenter = true;
-        }
-
-
         Map<Integer, Node> sources = sourceView.graph.storedNodes;
         Node rootNode = sources.get(item).getDetachedClone();
         newNodes.add(rootNode);
@@ -144,8 +140,7 @@ public class SubGraphCopy extends NodeFilter {
                     Node localNode = potentialNeighbour.getDetachedClone();
 
                     // a new graph, with new positions, each time we click
-                    localNode.x = (float) Math.random() * 100f;
-                    localNode.y = (float) Math.random() * 100f;
+                    localNode.position = new PVector((float) Math.random() * 100f,(float) Math.random() * 100f);
 
                     //System.out.println("  - trying to add node x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
                      //System.out.println("  - trying to add "+localNode.category+" " + localNode.label + " with weight "+ localNode.weight + " ");
@@ -192,8 +187,7 @@ public class SubGraphCopy extends NodeFilter {
                     }
                     Node localNode = sources.get(neighbourID).getDetachedClone();
                     //System.out.println("  - trying to add node x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
-                    localNode.x = (float) Math.random() * 100f;
-                    localNode.y = (float) Math.random() * 100f;
+                    localNode.position = new PVector((float) Math.random() * 100f,(float) Math.random() * 100f);
 
                     
                     newNodes.add(localNode);
@@ -223,7 +217,6 @@ public class SubGraphCopy extends NodeFilter {
         output.normalize();
 
         //localView.resetCamera();
-        output.autocenter = true;
         return output;
     }
 }

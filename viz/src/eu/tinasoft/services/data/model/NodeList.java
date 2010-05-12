@@ -18,6 +18,16 @@ import processing.core.PVector;
  */
 public class NodeList {
 
+    public NodeList(NodeList nodeList) {
+        reset();
+        //System.out.println("copying nodes from another node list, but clearing state..");
+        nodes = new LinkedList<Node>();
+        for (Node n : nodeList.nodes) {
+            nodes.add(n);
+        }
+        computeExtremums();
+    }
+
     public Node getNode(String id) {
         for (Node node : nodes) {
             if (node.uuid.equals(id)) {
@@ -41,31 +51,25 @@ public class NodeList {
                     results.add(n);
                 }
             }
-        }
-
-        else if (mode.equalsIgnoreCase("equals")) {
+        } else if (mode.equalsIgnoreCase("equals")) {
             for (Node n : nodes) {
                 if (n.label.equals(label)) {
                     results.add(n);
                 }
             }
-        }
-
-        else if (mode.equalsIgnoreCase("startsWith")) {
+        } else if (mode.equalsIgnoreCase("startsWith")) {
             for (Node n : nodes) {
                 if (n.label.startsWith(label)) {
                     results.add(n);
                 }
             }
-        }
-        else if (mode.equalsIgnoreCase("endsWith")) {
+        } else if (mode.equalsIgnoreCase("endsWith")) {
             for (Node n : nodes) {
                 if (n.label.endsWith(label)) {
                     results.add(n);
                 }
             }
-        }
-        else if (mode.equalsIgnoreCase("contains")) {
+        } else if (mode.equalsIgnoreCase("contains")) {
             for (Node n : nodes) {
                 if (n.label.contains(label)) {
                     results.add(n);
@@ -119,15 +123,12 @@ public class NodeList {
     // TODO fix me
     public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
     public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;
-
     // you can set it to something like 4 for fun
     public float INITIAL_SQUARE_SIZE = 100f;
-
     public float MIN_X = -INITIAL_SQUARE_SIZE;
     public float MIN_Y = -INITIAL_SQUARE_SIZE;
     public float MAX_X = INITIAL_SQUARE_SIZE;
     public float MAX_Y = INITIAL_SQUARE_SIZE;
-
     public float minX;
     public float minY;
     public float maxX;
@@ -144,7 +145,6 @@ public class NodeList {
     public float minNodeWeight;
     public float maxNodeWeight;
     public int nbEdges;
-    public boolean autocenter = false;
     private Comparator comp = new SelectedComparator();
 
     public NodeList(List<Node> nodes) {
@@ -218,25 +218,33 @@ public class NodeList {
 
     public void add(Node node) {
         nodes.add(node);
-        computeExtremumsFromNode(node);
     }
 
     public Node get(int i) {
         return nodes.get(i);
     }
 
-    public synchronized void normalize() {
-
-        // now we need to normalize the graph
+    public synchronized void normalizePositions() {
+        //System.out.println("normalizing positions..");
         for (Node n : nodes) {
 
             // NORMALIZE RADIUS
             //System.out.println("node "+n.label+" ("+n.category+")");
             //System.out.println(" - radius avant:"+n.radius);
 
-            n.x = (minX == maxX) ? MIN_X : PApplet.map(n.x, minX, maxX, MIN_X, MAX_X);
-            n.y = (minY == maxY) ? MIN_Y : PApplet.map(n.y, minY, maxY, MIN_Y, MAX_Y);
 
+            n.position.set(
+                    (minX == maxX) ? MIN_X : PApplet.map(n.position.x, minX, maxX, MIN_X, MAX_X),
+                    (minY == maxY) ? MIN_Y : PApplet.map(n.position.y, minY, maxY, MIN_Y, MAX_Y),
+                    0.0f);
+
+        }
+    }
+
+    public synchronized void normalize() {
+        //System.out.println("normalizing..");
+
+        for (Node n : nodes) {
             n.radius = (minRadius == maxRadius)
                     ? MIN_RADIUS
                     : PApplet.map(n.radius,
@@ -244,8 +252,6 @@ public class NodeList {
                     maxRadius,
                     MIN_RADIUS,
                     MAX_RADIUS);
-
-            // System.out.println(" -  normalized radius:"+n.radius);
 
             // NORMALIZE COLORS USING RADIUS
             if (n.r < 0) {
@@ -281,6 +287,7 @@ public class NodeList {
             }
 
         }
+
     }
 
     public synchronized void computeExtremums() {
@@ -290,8 +297,8 @@ public class NodeList {
         Float my = null;
         for (Node n : nodes) {
             computeExtremumsKernel(n);
-            mx = (mx == null) ? n.x : mx + n.x;
-            my = (my == null) ? n.y : my + n.y;
+            mx = (mx == null) ? n.position.x : mx + n.position.x;
+            my = (my == null) ? n.position.y : my + n.position.y;
         }
         if (mx != null && my != null) {
             baryCenter.set(mx / nodes.size(), my / nodes.size(), 0);
@@ -328,17 +335,17 @@ public class NodeList {
     }
 
     private void computeExtremumsKernel(Node n) {
-        if (n.x < minX) {
-            minX = n.x;
+        if (n.position.x < minX) {
+            minX = n.position.x;
         }
-        if (n.x > maxX) {
-            maxX = n.x;
+        if (n.position.x > maxX) {
+            maxX = n.position.x;
         }
-        if (n.y < minY) {
-            minY = n.y;
+        if (n.position.y < minY) {
+            minY = n.position.y;
         }
-        if (n.y > maxY) {
-            maxY = n.y;
+        if (n.position.y > maxY) {
+            maxY = n.position.y;
         }
         if (n.radius < minRadius) {
             minRadius = n.radius;
@@ -352,7 +359,6 @@ public class NodeList {
         if (n.weight > maxNodeWeight) {
             maxNodeWeight = n.weight;
         }
-
 
         nbEdges += n.weights.size();
 

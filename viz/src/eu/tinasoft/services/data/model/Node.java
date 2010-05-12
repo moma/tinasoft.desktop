@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import processing.core.PImage;
+import processing.core.PVector;
 
 /**
  *
@@ -30,10 +31,7 @@ public class Node {
     public float radius = 1.0f; // radius
     public float boxWidth = 1.0f;
     public float boxHeight = 1.0f;
-    public float x = 0.0f; // rect xposition
-    public float y = 0.0f; // rect yposition
-    public float vx = 0.0f;
-    public float vy = 0.0f;
+    public PVector position = new PVector();
     public boolean s = false; // switch
     public int degree = 0;
     public OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
@@ -56,27 +54,25 @@ public class Node {
     public PImage image = null;
     public String imageURL = "http://cssociety.org/tiki-show_user_avatar.php?user=";
 
-    public Node(int uuid, String label, float radius, float x, float y) {
+    public Node(int uuid, String label, float radius, Float x, Float y) {
 
         this.id = uuid;
         this.uuid = "";
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
         this.radius = radius;
-        this.x = x;
-        this.y = y;
+        this.position = new PVector(x,y);
     }
 
-    public Node(int uuid, String label, float x, float y) {
+    public Node(int uuid, String label, Float x, Float y) {
         this.id = uuid;
         this.uuid = "";
         this.label = label;
         this.shortLabel = reduceLabel(label, 40);
-        this.x = x;
-        this.y = y;
+        this.position = new PVector(x,y);
     }
 
-    public Node(int uuid, String label, float radius) {
+    public Node(int uuid, String label, Float radius) {
         this.id = uuid;
         this.uuid = "";
         this.label = label;
@@ -131,17 +127,14 @@ public class Node {
 
     public void cloneDataFrom(Node node) {
 
+        this.original = node;
+        
         this.id = 0 + node.id;
         this.uuid = "" + node.uuid;
         this.label = "" + node.label;
         this.shortLabel = "" + node.shortLabel;
         this.radius = 0f + node.radius;
-        this.x = 0f + node.x;
-        this.y = 0f + node.y;
-
-        this.vx = 0f + node.vx;
-        this.vy = 0f + node.vy;
-
+        this.position = node.position;
         this.r = 0f + node.r;
         this.g = 0f + node.g;
         this.b = 0f + node.b;
@@ -172,15 +165,8 @@ public class Node {
 
     public Node getProxyClone() {
         Node node = new Node(this.id);
-        // hard copy
         node.cloneDataFrom(this);
-
-        // soft copy
-        node.x = this.x;
-        node.y = this.y;
-
         node.original = this;
-
         return node;
     }
 
@@ -188,6 +174,7 @@ public class Node {
         Node node = new Node(this.id);
         node.cloneDataFrom(this);
         node.original = null;
+        node.position = new PVector(0.0f+position.x,0.0f+position.y);
         return node;
     }
 
@@ -217,8 +204,8 @@ public class Node {
 
         try {
             // writer.key("category").value(category).endObject();
-            writer.key("x").value(x);
-            writer.key("y").value(y);
+            writer.key("x").value(position.x);
+            writer.key("y").value(position.y);
 
             for (Entry<String, Object> entry : getAttributes().entrySet()) {
                 //System.out.println(" writing " + ((String) entry.getKey()) + " => " + entry.getValue());

@@ -23,17 +23,17 @@ public class NodeWeightRangeHack extends NodeFilter {
     private String KEY_MIN = "min";
     private String KEY_MAX = "max";
     private String KEY_EXCEPT = "except";
-
     private Float min = new Float(0.0f);
     private Float max = new Float(1.0f);
     private Long except = -1L;
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
-        NodeList output = new NodeList();
         if (!enabled()) {
             return input;
         }
+
+        NodeList output = new NodeList();
 
         if (!view.properties.containsKey(root + KEY_MIN)) {
             view.properties.put(root + KEY_MIN, 0.0f);
@@ -78,15 +78,15 @@ public class NodeWeightRangeHack extends NodeFilter {
 
 
         if (o instanceof String) {
-            if (((String)o).contains("::")) {
+            if (((String) o).contains("::")) {
                 cat = ((String) o).split("::")[0];
 
                 except = Long.parseLong(((String) o).split("::")[1]);
-            } else if (((String)o).isEmpty()) {
+            } else if (((String) o).isEmpty()) {
                 //
             } else {
-                  Console.error("Invalid ID: "+(String)o);
-                  return input;
+                Console.error("Invalid ID: " + (String) o);
+                return input;
             }
 
 
@@ -100,7 +100,7 @@ public class NodeWeightRangeHack extends NodeFilter {
         for (Node n : input.nodes) {
             //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
 
-            if ((min <= n.weight && n.weight <= max) ) {
+            if ((min <= n.weight && n.weight <= max)) {
                 output.add(n);
             }
         }

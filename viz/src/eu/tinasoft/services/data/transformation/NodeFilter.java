@@ -5,14 +5,10 @@
 
 package eu.tinasoft.services.data.transformation;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.session.Session;
-import eu.tinasoft.services.visualization.views.View;
 import eu.tinasoft.services.visualization.views.View;
 
 /**
@@ -33,6 +29,7 @@ public class NodeFilter implements Filter {
         return n;
     }
     
+    @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
         NodeList output = new NodeList();
         if(!enabled()) {
@@ -45,17 +42,21 @@ public class NodeFilter implements Filter {
         return output;
     }
 
+    @Override
     public boolean enabled() {
         return enabled.get();
     }
 
+    @Override
     public void setEnabled(boolean b) {
         enabled.set(b);
     }
 
+    @Override
     public void setRoot(String root) {
         this.root = root + "/";
     }
+    @Override
     public String getRoot() {
         return root;
     }

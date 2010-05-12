@@ -31,7 +31,6 @@ public class Category extends NodeFilter {
 
         //System.out.println("CATEGORY FILTER 1");
         NodeList output = new NodeList();
-        output.autocenter = input.autocenter;
 
         if (!enabled()) {
             return input;
@@ -51,11 +50,9 @@ public class Category extends NodeFilter {
 
         // get the new category
         // if this is a switch: we suppose we need to refresh the view
-        String oldCategory = category;
+
         category = (String) view.properties.get(root + KEY_CATEGORY);
-        if (!oldCategory.equalsIgnoreCase(category)) {
-            output.autocenter = true;
-        }
+
         String mode = (String) view.properties.get(root + KEY_MODE);
 
         boolean keep = mode.equals("keep");
@@ -83,10 +80,13 @@ public class Category extends NodeFilter {
             }
         }
 
-      
-        output.computeExtremums();
-         output.normalize();
 
+        output.computeExtremums();
+        output.normalize();
+
+        // should we normalize positions as well?
+        if (view.graph.topologyChanged.get())
+            output.normalizePositions();
 
         //System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
         return output;

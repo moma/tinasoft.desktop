@@ -27,6 +27,7 @@ public class NodeWeightRange extends NodeFilter {
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
         NodeList output = new NodeList();
+
         if (!enabled()) {
             return input;
         }

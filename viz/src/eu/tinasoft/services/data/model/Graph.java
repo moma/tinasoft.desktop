@@ -19,11 +19,11 @@ import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.session.Attribute;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.formats.xml.XPathReader;
-import processing.core.PApplet;
 
 /**
- *
- * @author jbilcke
+ * Graph container - todo rename it
+ * 
+ * @author Julian Bilcke
  */
 public class Graph implements Cloneable {
 
@@ -286,10 +286,10 @@ public class Graph implements Cloneable {
                 } else if (n.getNodeName().equalsIgnoreCase("viz:position") || n.getNodeName().equalsIgnoreCase("position")) {
                     org.w3c.dom.NamedNodeMap xmlnodePositionAttributes = n.getAttributes();
                     if (xmlnodePositionAttributes.getNamedItem("x") != null) {
-                        node.x = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("x").getNodeValue());
+                        node.position.x = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("x").getNodeValue());
                     }
                     if (xmlnodePositionAttributes.getNamedItem("y") != null) {
-                        node.y = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("y").getNodeValue());
+                        node.position.y = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("y").getNodeValue());
                     }
 
                 } else if (n.getNodeName().equalsIgnoreCase("viz:size") || n.getNodeName().equalsIgnoreCase("size")) {
