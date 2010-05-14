@@ -35,7 +35,8 @@ import java.util.Map.Entry;
 //import peasy.*;
 
 public class Main extends PApplet implements MouseWheelListener {
-
+    String PATH_TO_TEST_FILE = "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf";
+    
     boolean generateRandomLocalGraph = false;
     boolean loadDefaultLocalGraph = false;
     boolean loadDefaultGlobalGraph = false;
@@ -47,7 +48,7 @@ public class Main extends PApplet implements MouseWheelListener {
     public Layout layout;
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
-    public  final float ARCTAN_12 = (float) (2.0 * Math.atan(1.0 / 2.0));
+    public final float ARCTAN_12 = (float) (2.0 * Math.atan(1.0 / 2.0));
     public final float PI_ON_TWO = PApplet.PI / 2;
     public PImage brandingImage = null;
     public String brandingImageURL = "";
@@ -96,55 +97,68 @@ public class Main extends PApplet implements MouseWheelListener {
     private int shownNodes = 0;
     AtomicBoolean redrawScene = new AtomicBoolean(true);
     public String js_context = "";
+    private int currenthighlighted = 0;
 
     //PeasyCam cam;
-    private void nodeSelectedLeftMouse_JS_CALLBACK(Node n) {
+    private String getSelectedNodesAsJSON() {
 
-        if (n != null) {
-            selectedX = n.position.x;
-            selectedY = n.position.y;
+        String result = "";
+        JSONWriter writer = null;
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            return "{}";
         }
 
-        if (window == null) {
+        try {
+            for (Node node : nodes.nodes) {
+
+                if (node.selected) {
+                    writer.key(node.uuid).object();
+                    //for (int nodeId : node.weights.keys().elements()) {
+                        //Node n = getView().getNode(nodeId);
+                        //writer.key(n.uuid).object();
+                        for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
+                            writer.key(entry.getKey()).value(entry.getValue());
+                        }
+                        //writer.endObject();
+                    //}
+                    writer.endObject();
+                }
+            }
+
+        } catch (JSONException jSONException) {
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        //System.out.println("data: " + writer.toString());
+        return writer.toString();
+
+    }
+
+    private void nodeSelected_JS_CALLBACK(Node n, boolean left) {
+
+        String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','" + 
+                 escape(getSelectedNodesAsJSON()) + "','" + (left ? "left" : "right") + "');\",1);";
+        System.out.println("cmd: " + cmd);
+                if (window == null) {
             return; // in debug mode
         }
-        if (n == null) {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null,'left');\",1);");
-        } else {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',"
-                    + screenX(n.position.x, n.position.y) + "," + screenY(n.position.x, n.position.y) + ",'"
-                    + n.uuid + "','"
-                    + n.label + "', '"
-                    + escape(n.getAttributesAsJSON())
-                    + "','left');\",1);");
-        }
+        window.eval(cmd);
+
+
     }
 
     private String escape(String str) {
-        return str.replace("\"", "\\\"");
+        return str.replace("\"", "\\\"").replace("'", "\\'");
     }
 
-    private void nodeSelectedRightMouse_JS_CALLBACK(Node n) {
-
-        if (n != null) {
-            selectedX = n.position.x;
-            selectedY = n.position.y;
-        }
-
-        if (window == null) {
-            return; // in debug mode
-        }
-        if (n == null) {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',0,0,null,null,null,'right');\",1);");
-        } else {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.nodeSelected('" + session.getLevel() + "',"
-                    + screenX(n.position.x, n.position.y) + "," + screenY(n.position.x, n.position.y) + ",'"
-                    + n.uuid + "','"
-                    + n.label + "', '"
-                    + escape(n.getAttributesAsJSON())
-                    + "','right');\",1);");
-        }
-    }
 
     private void jsSwitchToMacro() {
         session.toMacroLevel();
@@ -238,25 +252,12 @@ public class Main extends PApplet implements MouseWheelListener {
             session.setBrowser(new LiveConnector(window));
             int w = 200;
             int h = 200;
-            /*Object o = window.call(""+js_context+"tinaviz.getWidth", null);
-            if (o != null) {
-            if (o instanceof Double) {
-            w = ((Double) o).intValue();
-            }
-            }
-            o = window.call(""+js_context+"tinaviz.getHeight", null);
-            if (o != null) {
-            if (o instanceof Double) {
-            h = ((Double) o).intValue();
-            }
-            }*/
-
             size(w, h, engine);
 
         } else {
             session.setBrowser(new LiveConnector());
             loadDefaultGlobalGraph = true;
-            size(screenWidth, screenHeight, engine);
+            size(screenWidth - 400, screenHeight - 100, engine);
         }
 
         if (engine.equals(OPENGL)) {
@@ -274,33 +275,8 @@ public class Main extends PApplet implements MouseWheelListener {
         rectMode(CENTER);
 
         addMouseWheelListener(this);
-        //noStroke();
-        // current sketch's "data" directory to load successfully
-
 
         layout = new Layout();
-        /*
-        if (useOpenCL) {
-        try {
-        layout = new LayoutOpenCL();
-        } catch (IOException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (CLBuildException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        }*/
-
-        // currentView.showLabels = false;
-
-        /*
-        SecurityManager appsm = System.getSecurityManager();
-        if (appsm != null) {
-        appsm.checkPermission(new FilePermission("*","read"));
-        } else {
-
-        }
-         * *
-         */
 
         if (loadDefaultLocalGraph) {
 
@@ -353,23 +329,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             //session.animationPaused = true;
         }
-
-        if (loadDefaultGlobalGraph) {
-            Console.log("loading default graph..");
-            session.getMacro().getGraph().updateFromURI(
-                    "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf");
-            //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf");
-
-            try {
-                session.getMacro().setProperty("cat/value", "NGram");
-            } catch (KeyException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            session.getMacro().addFilter("Category", "cat");
-            //session.getView().paused = true;
-
-        } else if (generateRandomGlobalGraph) {
+         if (generateRandomGlobalGraph) {
 
             NodeList tmp = new NodeList();
             Node node;
@@ -377,7 +337,7 @@ public class Main extends PApplet implements MouseWheelListener {
             float rx = random(width);
             float ry = random(height);
             float radius = 0.0f;
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 2000; i++) {
                 radius = random(3.0f, 10.0f);
 
                 node = new Node(i, "node " + i, radius, random(width / 2), random(height / 2));
@@ -389,8 +349,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
             for (int i = 0; i < tmp.size(); i++) {
                 for (int j = 0; j < tmp.size() && i != j; j++) {
-                    if (random(1.0f) < 0.009) { // link density : 0.02 = a lot, 0.0002 = a few
-                        tmp.get(i).addNeighbour(tmp.get(j), 0.01f + random(1.0f));
+                    if (random(1.0f) < 0.001) { // link density : 0.02 = a lot, 0.0002 = a few
+                        tmp.get(i).addNeighbour(tmp.get(j), random(1.0f));
                     }
                 }
             }
@@ -398,6 +358,23 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             //session.animationPaused = true;
+        }
+        else if (loadDefaultGlobalGraph) {
+            Console.log("loading default graph..");
+            session.getMacro().getGraph().updateFromURI(
+                    PATH_TO_TEST_FILE);
+            //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf");
+
+            try {
+                session.getMacro().setProperty("cat/value", "NGram");
+            } catch (KeyException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            session.getMacro().addFilter("Category", "cat");
+            session.getMacro().addFilter("NodeFunction", "radiusByWeight");
+            session.getView().paused = true;
+
         }
         //cenNGramesoView();
         //session.toMesoLevel();
@@ -771,8 +748,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n1 == n2) {
                     continue;
                 }
+                
+   
+
                 if (!v.showLinks) {
-                    if (!n1.selected && !n1.highlighted) {
+                    if (!n1.selected && !n1.isFirstHighlight) {
                         continue;
                     }
                 }
@@ -790,8 +770,8 @@ public class Main extends PApplet implements MouseWheelListener {
                     }
                 }
 
-                float weightN1_2_N2 = (Float) n1.weights.get(n2.id);
-                float weightN2_2_N1 = (Float) n2.weights.get(n1.id);
+                float weightN1_2_N2 = (!directed) ? 0.0f : (Float) n1.weights.get(n2.id);
+                float weightN2_2_N1 = (!mutual) ? 0.0f : (Float) n2.weights.get(n1.id);
 
                 // only print the edge in one direction
                 if (n1.weight > n2.weight) {
@@ -808,6 +788,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 shownEdges++;
                 // if we want to draw the links, or if we clicked on a node
                 // or if we put the mouse over a node
+                
+                //n2.isSecondHighlight = (n1.isFirstHighlight);
 
                 // compute the average node color
                 float cr = (n1.r + n2.r) / 2;
@@ -820,19 +802,20 @@ public class Main extends PApplet implements MouseWheelListener {
                     stroke(constrain((m + cr * r) * 0.4f, 0, 255),
                             constrain((m + cg * r) * 0.4f, 0, 255),
                             constrain((m + cb * r) * 0.4f, 0, 255),
-                            constrain((Float) n1.weights.get(n2.id) * 205, 50, 255));
-                } else if (n1.highlighted || n2.highlighted) {
+                            constrain((Float)weightN1_2_N2 * 205, 50, 255));
+                } else if (n1.isFirstHighlight || n2.isFirstHighlight) {
                     stroke(constrain((m + cr * r) * 0.8f, 0, 255),
                             constrain((m + cg * r) * 0.8f, 0, 255),
                             constrain((m + cb * r) * 0.8f, 0, 255),
-                            constrain((Float) n1.weights.get(n2.id) * 205, 50, 255));
+                            constrain((Float)weightN1_2_N2 * 205, 50, 255));
                 } else {
 
                     stroke(constrain(m + cr * r, 0, 255),
                             constrain(m + cg * r, 0, 255),
                             constrain(m + cb * r, 0, 255),
-                            constrain((Float) n1.weights.get(n2.id) * 205, 50, 255));
+                            constrain((Float) weightN1_2_N2 * 205, 50, 255));
                 }
+
 
 
                 float powd = PApplet.dist(n1.screenX, n1.screenY, n2.screenX, n2.screenY);
@@ -868,6 +851,9 @@ public class Main extends PApplet implements MouseWheelListener {
                 continue;
             }
 
+
+            boolean highlighted = (n.isFirstHighlight | n.isSecondHighlight);
+
             float nx = n.position.x;
             float ny = n.position.y;
 
@@ -883,7 +869,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (n.selected) {
                 alpha = 220;
                 hasSelected = n;
-            } else if (n.highlighted) {
+            } else if (highlighted) {
                 alpha = 200;
             } else {
 
@@ -904,7 +890,7 @@ public class Main extends PApplet implements MouseWheelListener {
              ****************************/
             // if we don't want to show the nodes.. we skip
             if (v.showNodes) {
-                if (n.selected | n.highlighted) {
+                if (n.selected | highlighted) {
                     rad *= 1.0f;
                     rad2 *= 1.0f;
                 }
@@ -919,7 +905,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 if (n.selected) {
                     fill(constrain(n.r * 0.4f, 0, 255), constrain(n.g * 0.4f, 0, 255), constrain(n.b * 0.4f, 0, 255), alpha);
-                } else if (n.highlighted) {
+                } else if (n.isFirstHighlight) {
                     fill(constrain(n.r * 0.4f + 40, 0, 255), constrain(n.g * 0.4f + 40, 0, 255), constrain(n.b * 0.4f + 40, 0, 255), alpha);
                 } else {
                     fill(constrain(n.r * 0.4f + 80, 0, 255), constrain(n.g * 0.4f + 80, 0, 255), constrain(n.b * 0.4f + 80, 0, 255), alpha);
@@ -934,7 +920,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 if (n.selected) {
                     fill(constrain(n.r, 0, 255), constrain(n.g, 0, 255), constrain(n.b, 0, 255), alpha);
-                } else if (n.highlighted) {
+                } else if (n.isFirstHighlight) {
                     fill(constrain(n.r + 40, 0, 255), constrain(n.g + 40, 0, 255), constrain(n.b + 40, 0, 255), alpha);
                 } else {
                     fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha);
@@ -949,20 +935,22 @@ public class Main extends PApplet implements MouseWheelListener {
             shownNodes++;
             // skip label drawing for small nodes
             // or if we have to hide labels
-            if (nodeScreenDiameter < 12 | !(v.showLabels | n.selected)) {
+            if (nodeScreenDiameter < 12 | !(v.showLabels | n.selected | highlighted)) {
                 continue;
             }
             if (n.selected) {
                 fill(0, 0, 0, 255);
-            } else if (n.highlighted) {
+            } else if (n.isFirstHighlight) {
                 fill(0, 0, 0, 220);
+            } else if (n.isSecondHighlight) {
+                fill(60, 60, 60, 200);
             } else {
                 fill(0, 0, 0, alpha);
             }
             textSize(rad2);
             n.boxHeight = rad2 * 2.0f;
-            n.boxWidth = (rad2 * 2.0f + rad2 * 0.3f) + textWidth((n.highlighted) ? n.label : n.shortLabel) * 1.0f;
-            text((n.highlighted) ? n.label : n.shortLabel, nx + rad, ny + (rad2 / PI));
+            n.boxWidth = (rad2 * 2.0f + rad2 * 0.3f) + textWidth((highlighted) ? n.label : n.shortLabel) * 1.0f;
+            text((highlighted) ? n.label : n.shortLabel, nx + rad, ny + (rad2 / PI));
 
         } // END FOR EACH NODE
 
@@ -1028,6 +1016,17 @@ public class Main extends PApplet implements MouseWheelListener {
         //p.sub(v.translation);
         //p.div(v.sceneScale);
         //drawBranding(v,p);
+
+
+        fill(0, 0, 100, 100);
+        stroke(0, 0, 0, 200);
+        strokeWeight(1.0f);
+        fill(100, 100, 255, 80);
+        p.sub(mouseX, mouseY, 0);
+        p.sub(v.translation);
+
+        p.mult(v.sceneScale);
+        ellipse(p.x, p.y, 10 * v.sceneScale, 10 * v.sceneScale);
 
     }
 
@@ -1100,11 +1099,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mouseMoved() {
-
+        currenthighlighted = 0;
         cursor(ARROW);
         Node candidate = null;
         for (Node n : nodes.nodes) {
-            n.highlighted = false;
+            n.isFirstHighlight = false;
             float nsx = screenX(n.position.x, n.position.y);
             float nsy = screenY(n.position.x, n.position.y);
             //System.out.println("got candidate at x:"+nsx+",y:"+nsy+"");
@@ -1131,7 +1130,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
         }
         if (candidate != null) {
-            candidate.highlighted = true;
+            candidate.isFirstHighlight = true;
+            currenthighlighted = candidate.id;
             cursor(HAND);
             redrawIfNeeded();
         }
@@ -1169,7 +1169,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         // double click also select nodes!
                         n.selected = true;
                         session.selectNode(n);
-                        nodeSelectedLeftMouse_JS_CALLBACK(n);
+                        nodeSelected_JS_CALLBACK(n, true);
 
                         if (session.currentLevel == ViewLevel.MACRO) {
                             System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
@@ -1185,12 +1185,12 @@ public class Main extends PApplet implements MouseWheelListener {
                         if (!n.selected) {
                             n.selected = true;
                             session.selectNode(n);
-                            nodeSelectedLeftMouse_JS_CALLBACK(n);
+                            nodeSelected_JS_CALLBACK(n, true);
 
                         } else {
                             n.selected = false;
                             session.unselectNode(n);
-                            nodeSelectedLeftMouse_JS_CALLBACK(null);
+                            nodeSelected_JS_CALLBACK(null, true);
                         }
                     }
 
@@ -1198,9 +1198,10 @@ public class Main extends PApplet implements MouseWheelListener {
                 } else if (mouseButton == RIGHT) {
                     if (!n.selected) {
                         n.selected = true;
+
                         session.selectNode(n);
                     }
-                    nodeSelectedRightMouse_JS_CALLBACK(n);
+                    nodeSelected_JS_CALLBACK(n, false);
                 }
                 break;
             }
@@ -1331,7 +1332,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     if (!bestMatchForSwitch.selected) {
                         bestMatchForSwitch.selected = true;
                         session.selectNode(bestMatchForSwitch);
-                        nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSwitch);
+                        nodeSelected_JS_CALLBACK(bestMatchForSwitch, true);
                     }
                     System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
                     session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
@@ -1344,7 +1345,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     if (!bestMatchForSelection.selected) {
                         bestMatchForSelection.selected = true;
                         session.selectNode(bestMatchForSelection);
-                        nodeSelectedLeftMouse_JS_CALLBACK(bestMatchForSelection);
+                        nodeSelected_JS_CALLBACK(bestMatchForSelection, true);
                     }
 
                     redrawIfNeeded();

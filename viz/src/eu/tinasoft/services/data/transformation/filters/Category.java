@@ -25,6 +25,7 @@ public class Category extends NodeFilter {
     private String KEY_CATEGORY = "value";
     private String KEY_MODE = "mode";
     private String category = "Document";
+    private String oldCategory = "__OLD_CATEGORY__";
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
@@ -85,8 +86,9 @@ public class Category extends NodeFilter {
         output.normalize();
 
         // should we normalize positions as well?
-        if (view.graph.topologyChanged.get())
+        if (view.graph.topologyChanged.get() | !oldCategory.equals(category))
             output.normalizePositions();
+        oldCategory = category;
 
         //System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());
         return output;

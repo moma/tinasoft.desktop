@@ -38,7 +38,7 @@ public class Node {
     //public Set<Long> neighbours = new HashSet<Long>(32);
     //public Map<Long, Float> weights = new HashMap<Long, Float>();
     public boolean selected = false;
-    public boolean highlighted = false;
+    public boolean isFirstHighlight = false;
     public float weight = 1.0f;
     public String category = "Document";
     public ShapeCategory shape = ShapeCategory.DISK;
@@ -53,6 +53,7 @@ public class Node {
     public Node original = null;
     public PImage image = null;
     public String imageURL = "http://cssociety.org/tiki-show_user_avatar.php?user=";
+    public boolean isSecondHighlight = false;
 
     public Node(int uuid, String label, float radius, Float x, Float y) {
 
@@ -152,7 +153,7 @@ public class Node {
         this.weight = 0f + node.weight;
         //System.out.println("this weight: "+this.weight+ " node.weight:"+node.weight);
         this.selected = (node.selected);
-        this.highlighted = (node.highlighted);
+        this.isFirstHighlight = (node.isFirstHighlight);
         this.category = "" + node.category;
 
         this.weights = new OpenIntObjectHashMap();

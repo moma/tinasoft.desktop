@@ -90,15 +90,15 @@ public class NodeList {
             if (n1.selected) {
                 if (n2.selected) {
                     return 0;
-                } else if (n2.highlighted) {
+                } else if (n2.isFirstHighlight) {
                     return +1;
                 } else {
                     return +1;
                 }
-            } else if (n1.highlighted) {
+            } else if (n1.isFirstHighlight) {
                 if (n2.selected) {
                     return -1;
-                } else if (n2.highlighted) {
+                } else if (n2.isFirstHighlight) {
                     return 0;
                 } else {
                     return +1;
@@ -106,7 +106,7 @@ public class NodeList {
             } else {
                 if (n2.selected) {
                     return -1;
-                } else if (n2.highlighted) {
+                } else if (n2.isFirstHighlight) {
                     return -1;
                 } else {
                     return 0;
@@ -119,7 +119,7 @@ public class NodeList {
     public float NORMALIZED_MIN_EDGE_WEIGHT = 0.0f;
     public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f; // desired default weight
     public float MIN_RADIUS = 1f;
-    public float MAX_RADIUS = 6f; // largely depends on the spatialization settings
+    public float MAX_RADIUS = 3f; // largely depends on the spatialization settings
     // TODO fix me
     public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
     public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;
@@ -304,6 +304,7 @@ public class NodeList {
             baryCenter.set(mx / nodes.size(), my / nodes.size(), 0);
         }
         aftermath();
+                System.out.println(this);
     }
 
     public synchronized void computeExtremumsFromNode(Node node) {
@@ -371,5 +372,6 @@ public class NodeList {
                 minEdgeWeight = weight;
             }
         }
+
     }
 }
