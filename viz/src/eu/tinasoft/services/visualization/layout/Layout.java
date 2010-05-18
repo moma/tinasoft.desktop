@@ -98,12 +98,13 @@ public class Layout {
                 dist = PApplet.sqrt(dx * dx + dy * dy) + EPSILON;
                 float sqDist = dist * dist;
 
-                borderDist = dist - (n1.radius + n2.radius)* 2.0f;
-                float sqBorderDist = borderDist * borderDist;
-                float desiredDist = (n1.radius + n2.radius) * 2.0f;
+                float radiusSum = (n1.radius + n2.radius);
+                borderDist = dist - radiusSum;
+                float sqBorderDist = borderDist * borderDist;// / radiusSum;
+                float desiredDist = radiusSum * 2.0f;
 
-                if (borderDist  <= 0.0f) {
-                    if (false) {
+                if (borderDist <= 0.0f) {
+                    if (true) {
                         float theta = 2 * PApplet.PI * (float) Math.random();
                         dix = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
                         diy = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
@@ -117,6 +118,18 @@ public class Layout {
                     n2y += n2vy + n2gvy;
 
                 } else {
+
+
+                    if (false) {
+                        float theta = 2 * PApplet.PI * (float) Math.random();
+                        float dix_secu = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
+                        float diy_secu = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
+
+                        if (borderDist < radiusSum) {
+                            n2vx += dix_secu * ((radiusSum - borderDist) / radiusSum);
+                            n2vy += diy_secu * ((radiusSum - borderDist) / radiusSum);
+                        }
+                    }
 
                     // ATTRACTION QUAND ON A UN LIEN
 
