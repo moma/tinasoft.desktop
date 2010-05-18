@@ -27,7 +27,7 @@ public class NodeFunction extends NodeFilter {
         }
 
         for (Node n : input.nodes) {
-             System.out.println(" node funct: "+(n.radius * n.weight)+ " = "+n.radius+" * "+n.weight);
+             // System.out.println(" node funct: "+(n.radius * n.weight)+ " = "+n.radius+" * "+n.weight);
               n.radius = n.radius * n.weight;
  
         }

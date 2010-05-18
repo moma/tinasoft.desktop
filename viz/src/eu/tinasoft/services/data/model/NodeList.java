@@ -5,6 +5,7 @@
 package eu.tinasoft.services.data.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -71,12 +72,24 @@ public class NodeList {
             }
         } else if (mode.equalsIgnoreCase("contains")) {
             for (Node n : nodes) {
+                //System.out.println("checking if "+n.label+" contains ("+label+")");
                 if (n.label.contains(label)) {
+                    //System.out.println("okay, adding");
                     results.add(n);
                 }
             }
         }
 
+        return results;
+    }
+
+    public Collection<Node> getNodesByCategory(String category) {
+        List<Node> results = new ArrayList<Node>();
+        for (Node n : nodes) {
+            if (n.category.equals(category)) {
+                results.add(n);
+            }
+        }
         return results;
     }
 
@@ -116,8 +129,9 @@ public class NodeList {
         }
     }
     public List<Node> nodes;
+    // should stay to 0 and 1
     public float NORMALIZED_MIN_EDGE_WEIGHT = 0.0f;
-    public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f; // desired default weight
+    public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f;
     public float MIN_RADIUS = 1f;
     public float MAX_RADIUS = 3f; // largely depends on the spatialization settings
     // TODO fix me
@@ -280,9 +294,22 @@ public class NodeList {
             for (int k : n.weights.keys().elements()) {
                 //System.out.println("  - w1: "+n.weights.get(k));
 
-                n.weights.put(k, (minEdgeWeight == maxEdgeWeight) ? NORMALIZED_MIN_EDGE_WEIGHT : PApplet.map((Float) n.weights.get(k),
+                float w = (Float) n.weights.get(k);
+
+                w =
+                        // si pas de min ni d emax
+                        (minEdgeWeight == maxEdgeWeight)
+                        ? NORMALIZED_MIN_EDGE_WEIGHT
+                        : // sinon
+                        // entre 0 et NORMALIZED_MAX_EDGE_WEIGHT
+                        (0 < minEdgeWeight && maxEdgeWeight < 1)
+                        ? ((NORMALIZED_MAX_EDGE_WEIGHT * w) / maxEdgeWeight)
+                        // entre 1 et NORMALIZED_MAX_EDGE_WEIGHT
+                        : PApplet.map(w,
                         minEdgeWeight, maxEdgeWeight,
-                        NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT));
+                        NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);
+
+                n.weights.put(k, w);
                 //System.out.println("  - w2: "+n.weights.get(k));
             }
 
@@ -290,9 +317,36 @@ public class NodeList {
 
     }
 
+
+    public PVector getBarycenter(String id) {
+        for (Node n : nodes) {
+            if (id.equals(n.uuid)) return new PVector(n.position.x, n.position.y, 0);
+        }
+        return baryCenter;
+    }
+
+    public PVector getBarycenter(Collection<String> nodesIds) {
+        PVector bary = new PVector(0.0f,0.0f,0.0f);
+        Float mx = null;
+        Float my = null;
+        int i = 0;
+        for (Node n : nodes) {
+            if (!nodesIds.contains(n.uuid)) continue;
+            mx = (mx == null) ? n.position.x : mx + n.position.x;
+            my = (my == null) ? n.position.y : my + n.position.y;
+            i++;
+        }
+        if (mx != null && my != null) {
+            bary.set(mx / i, my / i, 0);
+        }
+        return bary;
+    }
+    
+
     public synchronized void computeExtremums() {
         //System.out.println("computing extremums");
         reset();
+
         Float mx = null;
         Float my = null;
         for (Node n : nodes) {
@@ -303,8 +357,9 @@ public class NodeList {
         if (mx != null && my != null) {
             baryCenter.set(mx / nodes.size(), my / nodes.size(), 0);
         }
+
         aftermath();
-                System.out.println(this);
+        System.out.println(this);
     }
 
     public synchronized void computeExtremumsFromNode(Node node) {

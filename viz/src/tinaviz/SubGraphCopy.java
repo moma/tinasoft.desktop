@@ -13,6 +13,7 @@ import java.util.Map;
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.transformation.NodeFilter;
+import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.session.Session;
 
 import eu.tinasoft.services.visualization.views.View;
@@ -42,7 +43,7 @@ public class SubGraphCopy extends NodeFilter {
         if (!enabled()) {
             return input;
         }
-        // System.out.println("debugging subgraph copier");
+        System.out.println("debugging subgraph copier");
 
         if (!localView.properties.containsKey(root + KEY_SOURCE)) {
             localView.properties.put(root + KEY_SOURCE, "macro");
@@ -56,17 +57,17 @@ public class SubGraphCopy extends NodeFilter {
         }
 
         source = (String) localView.properties.get(root + KEY_SOURCE);
-        //System.out.println("source="+source);
+        System.out.println("source="+source);
         View sourceView = session.getView(source);
         if (sourceView == null) {
-            // System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got " + source);
+            System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got " + source);
             return input;
         }
 
         oldCategory = category;
         category = (String) localView.properties.get(root + KEY_CATEGORY);
         if (category == null | category.isEmpty()) {
-            // System.out.println("uh oh! i am a source and my 'category' parameter is totally wrong! got " + category);
+            System.out.println("uh oh! i am a source and my 'category' parameter is totally wrong! got " + category);
             return input;
         }
 
@@ -76,7 +77,7 @@ public class SubGraphCopy extends NodeFilter {
         String cat = "";
         Object o = localView.properties.get(root + KEY_ITEM);
         if (o == null) {
-            // System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
+            System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
             return input;
         }
 
@@ -92,24 +93,24 @@ public class SubGraphCopy extends NodeFilter {
             item = ((String)o).hashCode();
             
         } else {
-            // Console.error("bad type for " + root + KEY_ITEM + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
+            Console.error("bad type for " + root + KEY_ITEM + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
             return input;
         }
-        // System.out.println("root is \""+item+"\"");
+        System.out.println("root is \""+item+"\"");
 
 
         if (sourceView.graph.size() < 1) {
-            // System.out.println("original graph is zero-sized.. ");
+            System.out.println("original graph is zero-sized.. ");
             return input;
         }
-        //System.out.println("current view size: "+localView.graph.size());
+        System.out.println("current view size: "+localView.graph.size());
         if (localView.graph.size() > 0) {
-            //System.out.println("view.graph.size() > 0 is TRUE !");
+            System.out.println("view.graph.size() > 0 is TRUE !");
             return input;
         }
 
         if (!sourceView.graph.storedNodes.containsKey(item)) {
-            // System.out.println("the key doesn't exists! but that's probably not that bad.");
+            System.out.println("the key doesn't exists! but that's probably not that bad.");
             return input;
         }
 
@@ -123,8 +124,8 @@ public class SubGraphCopy extends NodeFilter {
         Node rootNode = sources.get(item).getDetachedClone();
         newNodes.add(rootNode);
         output.add(rootNode.getProxyClone());
-        // System.out.println("added root at x:"+rootNode.x+" y:"+rootNode.y+" with "+rootNode.neighbours.size()+" neighbours");
-        //System.out.println("cat: " + cat + " category:" + category);
+        System.out.println("added root at x:"+rootNode.position.x+" y:"+rootNode.position.y+" with "+rootNode.weights.size()+" neighbours");
+        System.out.println("cat: " + cat + " category:" + category);
 
         if (cat.equals(category)) {
             //System.out.println("generating the same gender graph..");

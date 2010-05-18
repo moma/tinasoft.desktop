@@ -16,13 +16,12 @@ import eu.tinasoft.services.visualization.views.View;
  *
  * @author jbilcke
  */
-public class NodeRadius extends NodeFilter {
+public class ScreenSettings extends NodeFilter {
 
-    private String KEY_VALUE = "value";
 
     // the range of the sliders
-    public float MIN_RADIUS_MAGNIFIER = 0.1f;
-    public float MAX_RADIUS_MAGNIFIER = 3.0f;
+    public float MIN_RADIUS_MAGNIFIER = 10.0f;
+    public float MAX_RADIUS_MAGNIFIER = 300.0f;
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
@@ -30,23 +29,8 @@ public class NodeRadius extends NodeFilter {
             return input;
         }
 
-        if (!view.properties.containsKey(root + KEY_VALUE)) {
-            view.properties.put(root + KEY_VALUE, 0.125f);
-        }
-
-        Object o = view.properties.get(root + KEY_VALUE);
-        Float r = (o instanceof Integer)
-                ? new Float((Integer) o)
-                : (o instanceof Double)
-                ? new Float((Double) o)
-                : (Float) o;
-
-       r = PApplet.map(r,0.0f,1.0f,MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
-
-       //System.out.println("radius magnifier: "+r);
-
         for (Node n : input.nodes) {
-            n.radius = n.radius * r;
+            n.radius = PApplet.map(n.radius,0.0f,1.0f,MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
         }
         return input;
     }

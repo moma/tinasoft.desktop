@@ -15,6 +15,7 @@ import eu.tinasoft.services.data.transformation.filters.NodeFunction;
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.transformation.filters.NodeRadius;
 import tinaviz.SubGraphCopy;
+import tinaviz.SubGraphCopyStandalone;
 import eu.tinasoft.services.data.transformation.filters.NodeWeightRange;
 import eu.tinasoft.services.data.transformation.filters.WeightSize;
 import tinaviz.NodeWeightRangeHack;
@@ -90,6 +91,8 @@ public class FilterChain {
             f = new Category();
         } else if (filterName.equals("SubGraphCopy")) {
             f = new SubGraphCopy();
+        } else if (filterName.equals("SubGraphCopyStandalone")) {
+            f = new SubGraphCopyStandalone();
         } else if (filterName.equals("NodeWeightRange")) {
             f = new NodeWeightRange();
         } else if (filterName.equals("NodeWeightRangeHack")) {

@@ -15,12 +15,10 @@ import eu.tinasoft.services.visualization.views.View;
  */
 public class Layout {
 
-    int compteur = 0;
-    static final float GLOBAL_SCALE = 0.00000001f;
     static final float EPSILON = 0.0000001f;
 
     /**
-     * Force Blender - a cool layout for macro view
+     * Force - a cool layout for macro view
      *
      * - Gravity depends on the number of nodes
      * - Every node is attracted to the center
@@ -31,65 +29,45 @@ public class Layout {
      * @param v
      * @param nodes
      */
-    public void macroViewLayout_ForceCarto(View v, NodeList nodes) {
+    public void macroViewLayout_TinaForce(View v, NodeList nodes) {
+
+        v.layoutIterationCount++;
+
+        ////////////////////////////////////////////////////////////////////////////////
+
+        float attraction = 5f;
+
+        float globalRepulsion = 5f;
+
+        float cooling = 0.01f;
+
+        float vlimit_max = 100f;
+
+        float decay = PApplet.exp(-v.layoutIterationCount * cooling);
+
+        float gravity = 0.008f * (1 - decay);
+
+        ////////////////////////////////////////////////////////////////////////////////
+
+        // System.out.println(decay + " = PApplet.exp(-" + v.compteur + " * " + cooling + ")");
+
+        float borderDist = EPSILON;
+        int n1_degree = 0;
+        float dix = 0;
+        float diy = 0;
+        float weight = 0;
         float dist = 1f;
         float gdistance = 1f;
-        float sqDist = 1f;
+
         float dx = 1f;
         float dy = 1f;
         float gdx = 1f;
         float gdy = 1f;
 
-
-
-        // scene scale (depends on scene coordinates)
-
-
-
-        float attraction = 10f;
-        float globalRepulsion = 0f;
-
-
-        // the more the node has neighbours, the more it will repulse
-        // TODO: except if the other node has few degree too
-        float repulsion_when_big_degree = 100f;
-
-        // this tend to push nodes with high degree to the periphery
-        float repulsion_when_big_degree_diff = 0.01f;
-
-        // avant: 20
-
-        // should we center a bit more nodes with higher degree ? (maybe genericity?)
-        float centerNodesWithHighDegree = 1.005f; // 1.0 = very small, 0.0 not used, 1.1f = default
-
-        // depends on the number of elements
-
-        float gravity = 100f;
-        gravity = nodes.size() * 20.0f;
-        gravity = 20000;
-
-        //////////////////////////////////////////////////////////////////////////
-        repulsion_when_big_degree *= GLOBAL_SCALE;
-        // attraction *= GLOBAL_SCALE;
-        gravity *= GLOBAL_SCALE;
-        repulsion_when_big_degree_diff *= GLOBAL_SCALE;
-
-
-        float borderDist = EPSILON;
-        int n1_degree = 0, n2_degree = 0;
-        float dix = 0;
-        float diy = 0;
-        float weight = 0;
-
         float n1x = 0.0f, n1y = 0.0f, n2x = 0.0f, n2y = 0.0f,
-                n1vx = 0.0f, n1vy = 0.0f, n2vx = 0.0f, n2vy = 0.0f;
-
-        //System.out.println("iteration " + compteur);
+                n1vx = 0.0f, n1vy = 0.0f, n2vx = 0.0f, n2vy = 0.0f, n2gvx = 0.0f, n2gvy = 0.0f;
 
         for (Node n1 : nodes.nodes) {
-
-
-
             n1_degree = n1.weights.size();
             n1x = n1.position.x;
             n1y = n1.position.y;
@@ -101,112 +79,89 @@ public class Layout {
                 }
                 n2vx = 0.0f;
                 n2vy = 0.0f;
+                n2gvx = 0.0f;
+                n2gvy = 0.0f;
 
+                n2x = n2.position.x;
+                n2y = n2.position.y;
 
                 // GRAVITY
                 gdx = nodes.baryCenter.x - n2x;
                 gdy = nodes.baryCenter.y - n2y;
                 gdistance = PApplet.sqrt(gdx * gdx + gdy * gdy) + EPSILON;
-
-                float centering = 1.0f + centerNodesWithHighDegree * PApplet.sqrt(n1_degree);
-                float gravityForce = gdistance * gravity * centering;
-
-                //n2vx += gdx * gravityForce;
-                //n2vy += gdy * gravityForce;
-
-
-
-                n2x = n2.position.x;
-                n2y = n2.position.y;
-                n2_degree = n2.weights.size();
-
+                n2gvx += (gdx / gdistance) * gravity;
+                n2gvy += (gdy / gdistance) * gravity;
 
                 dx = n2x - n1x;
                 dy = n2y - n1y;
 
                 dist = PApplet.sqrt(dx * dx + dy * dy) + EPSILON;
-                sqDist = dist * dist;
+                float sqDist = dist * dist;
 
-                borderDist = dist - n1.radius - n2.radius;
+                borderDist = dist - (n1.radius + n2.radius)* 2.0f;
                 float sqBorderDist = borderDist * borderDist;
+                float desiredDist = (n1.radius + n2.radius) * 2.0f;
 
-                if (borderDist <= 0.0f) {
-
-                    float theta = 2 * PApplet.PI * (float) Math.random();
-
-                    //rc[0] = (float) (centerX + (x - centerX) * PApplet.cos(theta) - (y - centerY) * PApplet.sin(theta));
-                    // rc[1] = (float) (centerY + (x - centerX) * PApplet.sin(theta) + (y - centerY) * PApplet.cos(theta));
-                    dix = ((PApplet.cos(theta) - PApplet.sin(theta))) * (n1.radius + n2.radius) * 1.5f;
-                    diy = ((PApplet.cos(theta) + PApplet.sin(theta))) * (n1.radius + n2.radius) * 1.5f;
-
+                if (borderDist  <= 0.0f) {
+                    if (false) {
+                        float theta = 2 * PApplet.PI * (float) Math.random();
+                        dix = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
+                        diy = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
+                    } else {
+                        dix = (dx / desiredDist) * 2.0f;
+                        diy = (dy / desiredDist) * 2.0f;
+                    }
                     n2vx += dix;
                     n2vy += diy;
+                    n2x += n2vx + n2gvx;
+                    n2y += n2vy + n2gvy;
 
                 } else {
 
                     // ATTRACTION QUAND ON A UN LIEN
-                    if (true) {
-                        if (n1.weights.containsKey(n2.id)) {
-                            // TODO prendre le + grand des 2
-                            weight = (Float) n1.weights.get(n2.id);
-                            weight = 1.0f;
-                            dix = (dx/dist) * borderDist * weight * attraction;
-                            diy = (dy/dist) * borderDist * weight * attraction;
-                            if (Math.random() < 0.01)
-                                System.out.println(dix+" = ("+dx+"/"+dist+") * "+borderDist+" * "+weight+" * "+attraction+")");
-                            n2vx -= dix;
-                            n2vy -= diy;
-                        }
+
+                    if (n1.weights.containsKey(n2.id)) {
+                        weight = (Float) n1.weights.get(n2.id);
+                        dix = (dx / dist) * weight * attraction;
+                        diy = (dy / dist) * weight * attraction;
+                        n2vx -= dix;
+                        n2vy -= diy;
                     }
 
+                    // REPULSION
+                    float rep = (n1.weights.containsKey(n2.id))
+                            ? globalRepulsion * PApplet.sqrt(n1_degree)
+                            : globalRepulsion;
+                    n2vx += (dx / sqBorderDist) * rep;
+                    n2vy += (dy / sqBorderDist) * rep;
 
-                    if (true) {
 
-                        // REPULSION
-                        //float rep = globalRepulsion * PApplet.sqrt(n2_degree);
-                        float rep = globalRepulsion ;//* PApplet.log(n1_degree);
-                        //float di = distance * PApplet.sqrt(distance);
 
-                        //n1vx -= (dx / sqBorderDist) * rep;
-                        //n1vy -= (dy / sqBorderDist) * rep;
-
-                        n2vx += (dx / sqBorderDist) * rep;
-                        n2vy += (dy / sqBorderDist) * rep;
-
-                    }
-
-                }
-
-                if (true) {
-                    float vlimit = 10f;
+                    // limit the force
+                    float vlimit = PApplet.min(vlimit_max, borderDist);
                     if (PApplet.abs(n2vx) > vlimit | PApplet.abs(n2vy) > vlimit) {
                         n2vx = (dx / dist) * vlimit;
                         n2vy = (dy / dist) * vlimit;
                     }
+
+                    // limit the gravity force
+                    vlimit = PApplet.min(vlimit_max, gdistance);
+                    if (PApplet.abs(n2gvx) > vlimit | PApplet.abs(n2gvy) > vlimit) {
+                        n2gvx = (gdx / gdistance) * vlimit;
+                        n2gvy = (gdy / gdistance) * vlimit;
+                    }
+
+                    // apply the forces
+                    n2x += n2vx * decay + n2gvx * decay;
+                    n2y += n2vy * decay + n2gvy * decay;
                 }
 
-                // set the graph box limit
-                n2x = PApplet.constrain(n2x + n2vx, -5000, +5000);
-                n2y = PApplet.constrain(n2y + n2vy, -5000, +5000);
-
-                // save new position
-                n2.position.set(n2x, n2y, 0.0f);
-
+                // enforce a global size limit then save the new position
+                n2.position.set(
+                        PApplet.constrain(n2x, -6000, +6000),
+                        PApplet.constrain(n2y, -6000, +6000),
+                        0.0f);
             }
-
-
-            
-  
-
-            //System.out.println("\nn1.x + n1.vx = " + n1.x + " + " + n1.vx);
-            //System.out.println("n1.y + n1.vy = " + n1.y + " + " + n1.vy + "\n");
-
-            // set the graph box limit
-            //n1x = PApplet.constrain(n1x + n1vx, -60000, +60000);
-            //n1y = PApplet.constrain(n1y + n1vy, -60000, +60000);
-
-            // save new position
-            //n1.position.set(n1x, n1y, 0.0f);
         }
     }
 
@@ -221,6 +176,7 @@ public class Layout {
 
         // scene scale (depends on scene coordinates)
 
+        float GLOBAL_SCALE = 0.00000001f;
 
         // how each node is attracted to each other when there is a link
         float attraction = 0.1f; // 9000 is max, after, nodes are too attached

@@ -51,6 +51,7 @@ public class View {
     public Map<String, Object> properties = new HashMap<String, Object>();
     public PVector dragDelta = new PVector(0.0f, 0.0f);
     public CenteringMode centeringMode = CenteringMode.FREE_MOVE;
+    public int layoutIterationCount = 0;
 
     public View(Session session) {
         graph = new Graph(session);
@@ -69,6 +70,7 @@ public class View {
         attraction = 0.0001f;
         gravity = 0.00001f;
         prespatializeSteps = 0;
+        layoutIterationCount = 0;
     }
 
     // TODO refactor these two..
@@ -104,8 +106,6 @@ public class View {
         return null;
     }
 
-
-
     public boolean cameraIsMoving() {
         return Math.abs(inerX + inerY + inerZ) != 0.0f;
     }
@@ -117,6 +117,7 @@ public class View {
     public synchronized boolean setProperty(String key, Object value) throws KeyException {
         // System.out.println("set property "+key+" to "+value+" for view "+getName());
         properties.put(key, value);
+        resetLayoutCounter();
         return true;
     }
 
@@ -125,18 +126,22 @@ public class View {
     }
 
     public synchronized boolean updateFromURI(String uri) {
+        resetLayoutCounter();
         return graph.updateFromURI(uri);
     }
 
     public synchronized boolean updateFromString(String str) {
+        resetLayoutCounter();
         return graph.updateFromString(str);
     }
 
     public synchronized boolean updateFromInputStream(InputStream inputStream) {
+        resetLayoutCounter();
         return graph.updateFromInputStream(inputStream);
     }
 
     public synchronized boolean updateFromNodeList(NodeList nodes) {
+        resetLayoutCounter();
         return graph.updateFromNodeList(nodes);
 
     }
@@ -226,7 +231,6 @@ public class View {
         graph.unselectNodeById(id);
     }
 
-
     public void unselectAll() {
         graph.unselectAll();
     }
@@ -284,5 +288,9 @@ public class View {
 
     public Node getNode(int nodeId) {
         return getGraph().getNode(nodeId);
+    }
+
+    public void resetLayoutCounter() {
+        layoutIterationCount = 0;
     }
 }

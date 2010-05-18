@@ -30,13 +30,16 @@ import eu.tinasoft.services.data.model.Node;
 //import tinaviz.layout.LayoutOpenCL;
 import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.NodeList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 //import peasy.*;
 
 public class Main extends PApplet implements MouseWheelListener {
-    String PATH_TO_TEST_FILE = "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf";
-    
+    String PATH_TO_TEST_FILE =
+          //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf"
+          "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            ;
     boolean generateRandomLocalGraph = false;
     boolean loadDefaultLocalGraph = false;
     boolean loadDefaultGlobalGraph = false;
@@ -78,7 +81,7 @@ public class Main extends PApplet implements MouseWheelListener {
     float selectedX = 0.0f;
     float selectedY = 0.0f;
     PVector lastMousePosition = new PVector(0, 0, 0);
-    float MAX_NODE_RADIUS = 0.7f; // node radius is normalized to 1.0 for each node, then mult with this value
+    float MAX_NODE_RADIUS = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_THICKNESS = 20.0f;
     private Long selectNode = null;
@@ -98,6 +101,7 @@ public class Main extends PApplet implements MouseWheelListener {
     AtomicBoolean redrawScene = new AtomicBoolean(true);
     public String js_context = "";
     private int currenthighlighted = 0;
+    private boolean centerOnSelection = false;
 
     //PeasyCam cam;
     private String getSelectedNodesAsJSON() {
@@ -119,6 +123,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     //for (int nodeId : node.weights.keys().elements()) {
                         //Node n = getView().getNode(nodeId);
                         //writer.key(n.uuid).object();
+                        writer.key("id").value(node.uuid);
                         for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
                             writer.key(entry.getKey()).value(entry.getValue());
                         }
@@ -137,7 +142,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return "{}";
         }
-        //System.out.println("data: " + writer.toString());
+        System.out.println("data: " + writer.toString());
         return writer.toString();
 
     }
@@ -204,6 +209,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
         layout = new Layout();
+        
         /*
         try {
         layout = new LayoutOpenCL();
@@ -363,7 +369,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
                     PATH_TO_TEST_FILE);
-            //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf");
+      
 
             try {
                 session.getMacro().setProperty("cat/value", "NGram");
@@ -373,7 +379,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             session.getMacro().addFilter("Category", "cat");
             session.getMacro().addFilter("NodeFunction", "radiusByWeight");
-            session.getView().paused = true;
+            //session.getView().paused = true;
 
         }
         //cenNGramesoView();
@@ -415,7 +421,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
-                layout.macroViewLayout_ForceBlender(v, nodes);
+                layout.macroViewLayout_TinaForce(v, nodes);
 
             }
             return;
@@ -458,8 +464,11 @@ public class Main extends PApplet implements MouseWheelListener {
             float screenRadius = (width + height) / 2.0f;
 
             v.sceneScale = nodes.graphRadius > 0 ? (screenRadius * 0.3f / nodes.graphRadius) : 1.0f;
-
             PVector baryCenter = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
+            if (centerOnSelection) {
+
+                centerOnSelection = false;
+            } 
 
             PVector translate = new PVector();
             translate.set(baryCenter);
@@ -498,7 +507,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         } else if (v.prespatializeSteps-- > 0) {
             drawLoading(v);
-            layout.macroViewLayout_ForceBlender(v, nodes);
+            layout.macroViewLayout_TinaForce(v, nodes);
 
         } else {
             drawAndSpatializeRealtime(v);
@@ -652,7 +661,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
         if (!v.paused) {
-            layout.macroViewLayout_ForceBlender(v, nodes);
+            layout.macroViewLayout_TinaForce(v, nodes);
         }
 
         // TODO optimize here
@@ -802,18 +811,18 @@ public class Main extends PApplet implements MouseWheelListener {
                     stroke(constrain((m + cr * r) * 0.4f, 0, 255),
                             constrain((m + cg * r) * 0.4f, 0, 255),
                             constrain((m + cb * r) * 0.4f, 0, 255),
-                            constrain((Float)weightN1_2_N2 * 205, 50, 255));
+                            constrain((Float)weightN1_2_N2 * 205, 50, 180));
                 } else if (n1.isFirstHighlight || n2.isFirstHighlight) {
                     stroke(constrain((m + cr * r) * 0.8f, 0, 255),
                             constrain((m + cg * r) * 0.8f, 0, 255),
                             constrain((m + cb * r) * 0.8f, 0, 255),
-                            constrain((Float)weightN1_2_N2 * 205, 50, 255));
+                            constrain((Float)weightN1_2_N2 * 205, 70, 210));
                 } else {
 
                     stroke(constrain(m + cr * r, 0, 255),
                             constrain(m + cg * r, 0, 255),
                             constrain(m + cb * r, 0, 255),
-                            constrain((Float) weightN1_2_N2 * 205, 50, 255));
+                            constrain((Float) weightN1_2_N2 * 205, 80, 255));
                 }
 
 
@@ -834,8 +843,9 @@ public class Main extends PApplet implements MouseWheelListener {
                             ? (Float) n2.weights.get(n1.id) // node 1
                             : 1.0f; // default
 
+
                     strokeWeight(
-                            constrain(w * v.sceneScale * 1.5f, 1.0f, 30.0f));
+                            constrain(w * v.sceneScale, 1.0f, 30.0f));
 
                 } else {
                     strokeWeight(1);
@@ -950,6 +960,7 @@ public class Main extends PApplet implements MouseWheelListener {
             textSize(rad2);
             n.boxHeight = rad2 * 2.0f;
             n.boxWidth = (rad2 * 2.0f + rad2 * 0.3f) + textWidth((highlighted) ? n.label : n.shortLabel) * 1.0f;
+            // float sw = textWidth(s)
             text((highlighted) ? n.label : n.shortLabel, nx + rad, ny + (rad2 / PI));
 
         } // END FOR EACH NODE
@@ -1467,89 +1478,156 @@ public class Main extends PApplet implements MouseWheelListener {
         redrawIfNeeded();
     }
 
-    public void storeResolution() {
-        oldScreenWidth = 0;
-        oldScreenHeight = 0;
-    }
 
+    /**
+     * Clear and reset everything
+     */
     public void clear() {
         getSession().clear();
         redrawIfNeeded();
     }
 
+    /**
+     * Clear a view
+     *
+     * @param view
+     */
     public void clear(String view) {
         getSession().getView(view).clear();
         redrawIfNeeded();
     }
 
+    /**
+     * Recenter the view
+     */
     public void recenter() {
         recenter = true;
         redrawIfNeeded();
     }
 
-    public void touch(String level) {
-        getView(level).getGraph().touch();
+    /**
+     * "Touch" a given view (will cause the current view to update)
+     * @param level
+     */
+    public void touch(String view) {
+        getView(view).getGraph().touch();
     }
 
+    /**
+     * Dispatch a property to all views (this method is here to facilitate
+     * configuration of a lot of filters on a lot of views)
+     *
+     * @param key
+     * @param value
+     * @return
+     * @throws KeyException
+     */
     public boolean dispatchProperty(String key, Object value) throws KeyException {
         return getSession().setProperty(key, value);
     }
 
-    public boolean setProperty(String level, String key, Object value) throws KeyException {
-        return getView(level).setProperty(key, value);
+    /**
+     * Set a property in a view
+     *
+     * @param view
+     * @param key
+     * @param value
+     * @return true or false
+     * @throws KeyException
+     */
+    public boolean setProperty(String view, String key, Object value) throws KeyException {
+        return getView(view).setProperty(key, value);
     }
 
+    /**
+     * Get a property from a given view
+     * @param level
+     * @param key
+     * @return
+     * @throws KeyException
+     */
     public Object getProperty(String level, String key) throws KeyException {
         return getView(level).getProperty(key);
     }
 
-    public boolean setAntiAliasing(boolean a) {
-        alwaysAntiAliasing = a;
-        redrawIfNeeded();
-        return a;
-    }
 
-    public void setBezier(int nb) {
-        this.bezierSize = nb;
-        bezierDetail(bezierSize);
-        redrawIfNeeded();
-    }
-
-    public void resetCamera(String view) {
-        /*
-        View v = getSession().getView(view);
-        v.resetCamera();
-         *
-         */
-        System.out.println("resetCamera(" + view + ") called, but NOT IMPLEMENTED");
-        redrawIfNeeded();
-    }
-
-    // db id=   "Document::6657-45645"
+    /**
+     * select a node from it's ID in all views
+     * @param str
+     */
     public void selectFromId(String str) {
         getSession().selectNode(str);
     }
 
+
+    /**
+     * Unselect all nodes in all views
+     */
     public void unselect() {
         getSession().unselectAll();
     }
 
-    /*public String getNeighbourhood(String id) {
-    String result = "{";
-    Node node = nodes.getNode(id);
-    if (node == null) {
-    return "{}";
-    }
-    for (Long nodeId : node.neighbours) {
-    Node n = getView().getNode(nodeId);
-    result += "\""+n.uuid+"\":{}"
-    }
-    return result + "}";
 
-    }*/
+    /**
+     * Get all nodes
+     * 
+     * @param view - can be either "current", "all", or the view name
+     * @param category
+     * @return
+     */
+    public String getNodes(String view, String category) {
+
+        Collection<Node> results =
+                view.contains("current")
+                ? nodes.getNodesByCategory(category)
+                : view.contains("all")
+                ? getSession().getView("macro").getGraph().getNodeListCopy().getNodesByCategory(category)
+                : getSession().getView(view).getGraph().getNodeListCopy().getNodesByCategory(category);
+        System.out.println("view: "+view+" category: "+category+" --- resulting array size: "+results.size());
+        if (results.size() == 0) {
+            return "{}";
+        }
+
+        String result = "";
+        JSONWriter writer = null;
+
+        try {
+            writer = new JSONStringer().array();
+        } catch (JSONException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            return "{}";
+        }
+
+        try {
+            for (Node n : results) {
+                // { id: '23a53f-442c5', label: 'hello world' }
+                writer.object();
+                writer.key("id").value(n.uuid).key(n.label).value(n.label);
+                writer.endObject();
+            }
+        } catch (JSONException jSONException) {
+            return "{}";
+        }
+        try {
+            writer.endArray();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        System.out.println("data: " + writer.toString());
+        return writer.toString();
+    }
+
+    /**
+     * Get a node map by label in the current view
+     * 
+     * @param label
+     * @param mode
+     * @return
+     */
     public String getNodesByLabel(String label, String mode) {
         List<Node> results = nodes.getNodesByLabel(label, mode);
-
+        //System.out.println("label: "+label+" size: "+results.size());
         if (results.size() == 0) {
             return "{}";
         }
@@ -1584,6 +1662,11 @@ public class Main extends PApplet implements MouseWheelListener {
         return writer.toString();
     }
 
+    /**
+     * Get node attributes in the current view
+     * @param id
+     * @return
+     */
     public String getNodeAttributes(String id) {
         Node node = nodes.getNode(id);
 
@@ -1598,6 +1681,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
+    /**
+     * Get a node's neighbourhood
+     * @param id
+     * @return
+     */
     public String getNeighbourhood(String id) {
         String result = "";
 
@@ -1639,4 +1727,11 @@ public class Main extends PApplet implements MouseWheelListener {
         return writer.toString();
 
     }
+
+    public void centerOnSelection(boolean b) {
+        // check if the node is in the current view
+        centerOnSelection = b;
+
+    }
+
 }

@@ -6,8 +6,6 @@ package eu.tinasoft.services.debug;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tinaviz.Main;
 
 /**

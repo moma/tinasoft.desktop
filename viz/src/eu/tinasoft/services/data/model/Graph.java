@@ -91,6 +91,7 @@ public class Graph implements Cloneable {
     }
 
     public boolean updateFromInputStream(InputStream inputStream) {
+
         try {
             XPathReader xml = new XPathReader();
             xml.parseFromStream(inputStream);
@@ -401,6 +402,8 @@ public class Graph implements Cloneable {
         }
         return res;
     }
+
+
 
     public synchronized void putNode(eu.tinasoft.services.data.model.Node node) {
         if (storedNodes.containsKey(node.id)) {
