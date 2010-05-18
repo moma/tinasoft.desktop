@@ -29,9 +29,13 @@ public class SubGraphCopyStandalone extends NodeFilter {
 
     private String KEY_SOURCE = "source";
     private String KEY_ITEM = "item";
+    private String KEY_CATEGORY = "category";
+
     private int oldItem = -0;
     private int item = -0;
     private String source = "macro";
+    private String defaultCategory = "NO_CATEGORY";
+    private String oldCategory = defaultCategory;
 
     @Override
     public NodeList preProcessing(Session session, View localView, NodeList input) {
@@ -51,6 +55,10 @@ public class SubGraphCopyStandalone extends NodeFilter {
             localView.properties.put(root + KEY_ITEM, -1);
         }
 
+       if (!localView.properties.containsKey(root + KEY_CATEGORY)) {
+            localView.properties.put(root + KEY_CATEGORY, defaultCategory);
+        }
+
         source = (String) localView.properties.get(root + KEY_SOURCE);
         System.out.println("source=" + source);
         View sourceView = session.getView(source);
@@ -58,6 +66,9 @@ public class SubGraphCopyStandalone extends NodeFilter {
             System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got " + source);
             return output;
         }
+
+
+        String category = (String) localView.properties.get(root + KEY_CATEGORY);
 
 
         Object o = localView.properties.get(root + KEY_ITEM);
@@ -92,8 +103,8 @@ public class SubGraphCopyStandalone extends NodeFilter {
             return output;
         }
 
-        if (item != oldItem) {
-            System.out.println("updating..");
+        if (item != oldItem | !category.equals(oldCategory)) {
+            System.out.println("something (item or category) changed, updating subgraph copy....");
             NodeList newNodes = new NodeList();
 
             // do a clean copy
@@ -101,7 +112,8 @@ public class SubGraphCopyStandalone extends NodeFilter {
             newNodes.add(rootNode);
             for (int n : rootNode.weights.keys().elements()) {
                 Node neighbourNode = sourceView.getGraph().getNode(n).getDetachedClone();
-                neighbourNode.position = new PVector((float) Math.random() * 100f, (float) Math.random() * 100f);
+                if (!neighbourNode.category.equals(category)) continue;
+                neighbourNode.position = new PVector((float) Math.random() * 10f, (float) Math.random() * 10f);
                 newNodes.add(neighbourNode);
             }
             newNodes.computeExtremums();
@@ -111,6 +123,7 @@ public class SubGraphCopyStandalone extends NodeFilter {
             localView.updateFromNodeList(newNodes);
             output = new NodeList(localView.getGraph().getNodeListCopy());
             oldItem = item;
+            oldCategory = category;
         } else {
             System.out.println("nothing changed, still old category");
             output = input;

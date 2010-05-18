@@ -37,8 +37,8 @@ import java.util.Map.Entry;
 
 public class Main extends PApplet implements MouseWheelListener {
     String PATH_TO_TEST_FILE =
-          //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf"
-          "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf"
+          //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             ;
     boolean generateRandomLocalGraph = false;
     boolean loadDefaultLocalGraph = false;
@@ -103,7 +103,6 @@ public class Main extends PApplet implements MouseWheelListener {
     private int currenthighlighted = 0;
     private boolean centerOnSelection = false;
 
-    //PeasyCam cam;
     private String getSelectedNodesAsJSON() {
 
         String result = "";
@@ -120,15 +119,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 if (node.selected) {
                     writer.key(node.uuid).object();
-                    //for (int nodeId : node.weights.keys().elements()) {
-                        //Node n = getView().getNode(nodeId);
-                        //writer.key(n.uuid).object();
                         writer.key("id").value(node.uuid);
                         for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
                             writer.key(entry.getKey()).value(entry.getValue());
                         }
-                        //writer.endObject();
-                    //}
                     writer.endObject();
                 }
             }
@@ -1556,7 +1550,9 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param str
      */
     public void selectFromId(String str) {
-        getSession().selectNode(str);
+       getSession().selectNode(str);
+       nodes.selectNode(str); // so that the callback will now work
+       nodeSelected_JS_CALLBACK(nodes.getNode(str), true);
     }
 
 
@@ -1602,7 +1598,7 @@ public class Main extends PApplet implements MouseWheelListener {
             for (Node n : results) {
                 // { id: '23a53f-442c5', label: 'hello world' }
                 writer.object();
-                writer.key("id").value(n.uuid).key(n.label).value(n.label);
+                writer.key("id").value(n.uuid).key("label").value(n.label);
                 writer.endObject();
             }
         } catch (JSONException jSONException) {

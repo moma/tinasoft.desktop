@@ -78,6 +78,14 @@ public class NodeList {
                     results.add(n);
                 }
             }
+        } else if (mode.equalsIgnoreCase("containsIgnoreCase")) {
+            for (Node n : nodes) {
+                //System.out.println("checking if "+n.label+" contains ("+label+")");
+                if (n.label.toLowerCase().contains(label.toLowerCase())) {
+                    //System.out.println("okay, adding");
+                    results.add(n);
+                }
+            }
         }
 
         return results;
@@ -91,6 +99,13 @@ public class NodeList {
             }
         }
         return results;
+    }
+
+    public void selectNode(String str) {
+         for (Node n : nodes) if (n.id == str.hashCode()) {
+             n.selected = true;
+             break;
+         }
     }
 
     public class SelectedComparator implements Comparator {
@@ -302,15 +317,19 @@ public class NodeList {
                         ? NORMALIZED_MIN_EDGE_WEIGHT
                         : // sinon
                         // entre 0 et NORMALIZED_MAX_EDGE_WEIGHT
-                        (0 < minEdgeWeight && maxEdgeWeight < 1)
-                        ? ((NORMALIZED_MAX_EDGE_WEIGHT * w) / maxEdgeWeight)
+                        //(0 < minEdgeWeight && maxEdgeWeight < 1) ?
+                            ((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (
+                            PApplet.max(
+                                PApplet.abs( minEdgeWeight ),PApplet.abs( maxEdgeWeight )
+                            )
+                            ));
                         // entre 1 et NORMALIZED_MAX_EDGE_WEIGHT
-                        : PApplet.map(w,
+                        /*: PApplet.map(w,
                         minEdgeWeight, maxEdgeWeight,
-                        NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);
+                        NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);*/
 
                 n.weights.put(k, w);
-                //System.out.println("  - w2: "+n.weights.get(k));
+                System.out.println("  - w: "+w);
             }
 
         }
