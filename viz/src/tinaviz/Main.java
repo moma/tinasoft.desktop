@@ -30,15 +30,19 @@ import eu.tinasoft.services.data.model.Node;
 //import tinaviz.layout.LayoutOpenCL;
 import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.NodeList;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 //import peasy.*;
 
 public class Main extends PApplet implements MouseWheelListener {
+
     String PATH_TO_TEST_FILE =
-            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf"
-          //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             ;
     boolean generateRandomLocalGraph = false;
     boolean loadDefaultLocalGraph = false;
@@ -102,6 +106,7 @@ public class Main extends PApplet implements MouseWheelListener {
     public String js_context = "";
     private int currenthighlighted = 0;
     private boolean centerOnSelection = false;
+    private boolean loading = true;
 
     private String getSelectedNodesAsJSON() {
 
@@ -119,10 +124,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 if (node.selected) {
                     writer.key(node.uuid).object();
-                        writer.key("id").value(node.uuid);
-                        for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
-                            writer.key(entry.getKey()).value(entry.getValue());
-                        }
+                    writer.key("id").value(node.uuid);
+                    for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
+                        writer.key(entry.getKey()).value(entry.getValue());
+                    }
                     writer.endObject();
                 }
             }
@@ -143,10 +148,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
     private void nodeSelected_JS_CALLBACK(Node n, boolean left) {
 
-        String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','" + 
-                 escape(getSelectedNodesAsJSON()) + "','" + (left ? "left" : "right") + "');\",1);";
+        String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
+                + escape(getSelectedNodesAsJSON()) + "','" + (left ? "left" : "right") + "');\",1);";
         System.out.println("cmd: " + cmd);
-                if (window == null) {
+        if (window == null) {
             return; // in debug mode
         }
         window.eval(cmd);
@@ -154,10 +159,19 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-    private String escape(String str) {
-        return str.replace("\"", "\\\"").replace("'", "\\'");
+    public String valueEncoder(String str) throws UnsupportedEncodingException {
+        return URLEncoder.encode(str, "UTF-8");
     }
 
+    private String escape(String str) {
+        try {
+            return URLEncoder.encode(str, "UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+            return "";
+        }
+
+        // return str.replace("\"", "\\\"").replace("'", "\\'");
+    }
 
     private void jsSwitchToMacro() {
         session.toMacroLevel();
@@ -203,7 +217,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
         layout = new Layout();
-        
+
         /*
         try {
         layout = new LayoutOpenCL();
@@ -329,7 +343,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
             //session.animationPaused = true;
         }
-         if (generateRandomGlobalGraph) {
+        if (generateRandomGlobalGraph) {
 
             NodeList tmp = new NodeList();
             Node node;
@@ -358,12 +372,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             //session.animationPaused = true;
-        }
-        else if (loadDefaultGlobalGraph) {
+        } else if (loadDefaultGlobalGraph) {
             Console.log("loading default graph..");
             session.getMacro().getGraph().updateFromURI(
                     PATH_TO_TEST_FILE);
-      
+
 
             try {
                 session.getMacro().setProperty("cat/value", "NGram");
@@ -413,18 +426,28 @@ public class Main extends PApplet implements MouseWheelListener {
         v.screenWidth = width;
         v.screenHeight = height;
 
+
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
                 layout.macroViewLayout_TinaForce(v, nodes);
-
             }
             return;
         }
 
         NodeList n = v.popNodes();
         if (n != null) {
+             loading = false;
+            System.out.println("a");
             redrawScene.set(true);
+
         }
+
+        if (loading) {
+            System.out.println("draw loading 1");
+            drawLoading(v);
+            return;
+        }
+
 
 
         if (redrawScene.get()) {
@@ -462,7 +485,7 @@ public class Main extends PApplet implements MouseWheelListener {
             if (centerOnSelection) {
 
                 centerOnSelection = false;
-            } 
+            }
 
             PVector translate = new PVector();
             translate.set(baryCenter);
@@ -751,8 +774,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n1 == n2) {
                     continue;
                 }
-                
-   
+
+
 
                 if (!v.showLinks) {
                     if (!n1.selected && !n1.isFirstHighlight) {
@@ -791,7 +814,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 shownEdges++;
                 // if we want to draw the links, or if we clicked on a node
                 // or if we put the mouse over a node
-                
+
                 //n2.isSecondHighlight = (n1.isFirstHighlight);
 
                 // compute the average node color
@@ -805,12 +828,12 @@ public class Main extends PApplet implements MouseWheelListener {
                     stroke(constrain((m + cr * r) * 0.4f, 0, 255),
                             constrain((m + cg * r) * 0.4f, 0, 255),
                             constrain((m + cb * r) * 0.4f, 0, 255),
-                            constrain((Float)weightN1_2_N2 * 205, 50, 180));
+                            constrain((Float) weightN1_2_N2 * 205, 50, 180));
                 } else if (n1.isFirstHighlight || n2.isFirstHighlight) {
                     stroke(constrain((m + cr * r) * 0.8f, 0, 255),
                             constrain((m + cg * r) * 0.8f, 0, 255),
                             constrain((m + cb * r) * 0.8f, 0, 255),
-                            constrain((Float)weightN1_2_N2 * 205, 70, 210));
+                            constrain((Float) weightN1_2_N2 * 205, 70, 210));
                 } else {
 
                     stroke(constrain(m + cr * r, 0, 255),
@@ -1472,7 +1495,6 @@ public class Main extends PApplet implements MouseWheelListener {
         redrawIfNeeded();
     }
 
-
     /**
      * Clear and reset everything
      */
@@ -1544,17 +1566,15 @@ public class Main extends PApplet implements MouseWheelListener {
         return getView(level).getProperty(key);
     }
 
-
     /**
      * select a node from it's ID in all views
      * @param str
      */
     public void selectFromId(String str) {
-       getSession().selectNode(str);
-       nodes.selectNode(str); // so that the callback will now work
-       nodeSelected_JS_CALLBACK(nodes.getNode(str), true);
+        getSession().selectNode(str);
+        nodes.selectNode(str); // so that the callback will now work
+        nodeSelected_JS_CALLBACK(nodes.getNode(str), true);
     }
-
 
     /**
      * Unselect all nodes in all views
@@ -1563,7 +1583,6 @@ public class Main extends PApplet implements MouseWheelListener {
         getSession().unselectAll();
     }
 
-
     /**
      * Get all nodes
      * 
@@ -1571,15 +1590,15 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param category
      * @return
      */
-    public String getNodes(String view, String category) {
+    public String getNodes(String view, String category) throws UnsupportedEncodingException {
 
-        Collection<Node> results =
+        List<Node> results =
                 view.contains("current")
                 ? nodes.getNodesByCategory(category)
                 : view.contains("all")
                 ? getSession().getView("macro").getGraph().getNodeListCopy().getNodesByCategory(category)
                 : getSession().getView(view).getGraph().getNodeListCopy().getNodesByCategory(category);
-        System.out.println("view: "+view+" category: "+category+" --- resulting array size: "+results.size());
+        System.out.println("view: " + view + " category: " + category + " --- resulting array size: " + results.size());
         if (results.size() == 0) {
             return "{}";
         }
@@ -1594,11 +1613,13 @@ public class Main extends PApplet implements MouseWheelListener {
             return "{}";
         }
 
+        Collections.sort(results);
+
         try {
             for (Node n : results) {
                 // { id: '23a53f-442c5', label: 'hello world' }
                 writer.object();
-                writer.key("id").value(n.uuid).key("label").value(n.label);
+                writer.key("id").value(n.uuid).key("label").value(valueEncoder(n.label));
                 writer.endObject();
             }
         } catch (JSONException jSONException) {
@@ -1621,7 +1642,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param mode
      * @return
      */
-    public String getNodesByLabel(String label, String mode) {
+    public String getNodesByLabel(String label, String mode) throws UnsupportedEncodingException {
         List<Node> results = nodes.getNodesByLabel(label, mode);
         //System.out.println("label: "+label+" size: "+results.size());
         if (results.size() == 0) {
@@ -1641,7 +1662,10 @@ public class Main extends PApplet implements MouseWheelListener {
             for (Node n : results) {
                 writer.key(n.uuid).object();
                 for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
-                    writer.key(entry.getKey()).value(entry.getValue());
+                    writer.key(entry.getKey()).value(
+                            (entry.getValue() instanceof String)
+                            ? valueEncoder((String) entry.getValue())
+                            : entry.getValue());
                 }
                 writer.endObject();
             }
@@ -1682,7 +1706,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param id
      * @return
      */
-    public String getNeighbourhood(String id) {
+    public String getNeighbourhood(String id) throws UnsupportedEncodingException {
         String result = "";
 
         Node node = nodes.getNode(id);
@@ -1705,7 +1729,10 @@ public class Main extends PApplet implements MouseWheelListener {
                 Node n = getView().getNode(nodeId);
                 writer.key(n.uuid).object();
                 for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
-                    writer.key(entry.getKey()).value(entry.getValue());
+                    writer.key(entry.getKey()).value(
+                            (entry.getValue() instanceof String)
+                            ? valueEncoder((String) entry.getValue())
+                            : entry.getValue());
                 }
                 writer.endObject();
             }
@@ -1729,5 +1756,4 @@ public class Main extends PApplet implements MouseWheelListener {
         centerOnSelection = b;
 
     }
-
 }

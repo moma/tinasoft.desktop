@@ -4,6 +4,8 @@
  */
 package eu.tinasoft.services.data.model;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -91,7 +93,7 @@ public class NodeList {
         return results;
     }
 
-    public Collection<Node> getNodesByCategory(String category) {
+    public List<Node> getNodesByCategory(String category) {
         List<Node> results = new ArrayList<Node>();
         for (Node n : nodes) {
             if (n.category.equals(category)) {
@@ -252,6 +254,9 @@ public class NodeList {
     public Node get(int i) {
         return nodes.get(i);
     }
+    public String valueEncoder(String str) throws UnsupportedEncodingException {
+            return URLEncoder.encode(str, "UTF-8");
+    }
 
     public synchronized void normalizePositions() {
         //System.out.println("normalizing positions..");
@@ -329,7 +334,7 @@ public class NodeList {
                         NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);*/
 
                 n.weights.put(k, w);
-                System.out.println("  - w: "+w);
+                //System.out.println("  - w: "+w);
             }
 
         }

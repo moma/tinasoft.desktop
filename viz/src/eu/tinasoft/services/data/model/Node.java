@@ -22,7 +22,7 @@ import processing.core.PVector;
  *
  * @author jbilcke
  */
-public class Node {
+public class Node implements Comparable {
 
     public int id; // id
     public String uuid = "";
@@ -224,5 +224,10 @@ public class Node {
         }
         System.out.println("json: " + writer.toString());
         return writer.toString();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return label.compareTo(((Node)o).label);
     }
 }

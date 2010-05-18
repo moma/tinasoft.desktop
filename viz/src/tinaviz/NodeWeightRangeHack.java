@@ -25,7 +25,7 @@ public class NodeWeightRangeHack extends NodeFilter {
     private String KEY_EXCEPT = "except";
     private Float min = new Float(0.0f);
     private Float max = new Float(1.0f);
-    private Long except = -1L;
+    private int except = 0;
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
@@ -44,7 +44,7 @@ public class NodeWeightRangeHack extends NodeFilter {
         }
 
         if (!view.properties.containsKey(root + KEY_EXCEPT)) {
-            view.properties.put(root + KEY_EXCEPT, -1L);
+            view.properties.put(root + KEY_EXCEPT, "0");
         }
 
 
@@ -67,40 +67,31 @@ public class NodeWeightRangeHack extends NodeFilter {
         max = max * f + input.minNodeWeight;
 
 
-
-        String cat = "";
-
         o = view.properties.get(root + KEY_EXCEPT);
         if (o == null) {
-            //  System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
+            System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
             return input;
         }
-
 
         if (o instanceof String) {
-            if (((String) o).contains("::")) {
-                cat = ((String) o).split("::")[0];
-
-                except = Long.parseLong(((String) o).split("::")[1]);
-            } else if (((String) o).isEmpty()) {
-                //
-            } else {
-                Console.error("Invalid ID: " + (String) o);
-                return input;
-            }
-
-
+            except = ((String) o).hashCode();
         } else {
-            Console.error("bad type for " + root + KEY_EXCEPT + ", expected this pattern: '[a-zA-Z]+::[0_9]+'");
+            Console.error("Invalid ID: " + (String) o);
             return input;
         }
+
 
         //System.out.println("minNodeWeight:"+input.minNodeWeight+" maxNodeWeight:"+input.maxNodeWeight);
         //System.out.println("min:"+min+" max:"+max);
         for (Node n : input.nodes) {
             //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
 
-            if ((min <= n.weight && n.weight <= max)) {
+            if (except != -1) {
+                if (n.uuid.hashCode() == except) {
+                    output.add(n);
+                }
+
+            } else if ((min <= n.weight && n.weight <= max)) {
                 output.add(n);
             }
         }

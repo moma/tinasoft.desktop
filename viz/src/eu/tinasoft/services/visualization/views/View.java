@@ -45,7 +45,7 @@ public class View {
     public Graph graph = null;
     public FilterChain filters = null;
     public AtomicBoolean hasBeenRead = null;
-    public int prespatializeSteps = 0;
+    public int prespatializeSteps = 84;
     public int screenWidth = 100;
     public int screenHeight = 100;
     public Map<String, Object> properties = new HashMap<String, Object>();
