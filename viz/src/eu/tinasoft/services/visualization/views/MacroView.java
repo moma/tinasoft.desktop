@@ -16,7 +16,7 @@ public class MacroView extends View {
     public MacroView(Session aThis) {
         super(aThis);
         prespatializeSteps = 84;
-         ZOOM_CEIL = 0.1f;
+         ZOOM_CEIL = 0.025f;
          ZOOM_FLOOR = 25.0f;
          resetParams();
          graph.locked.set(false);

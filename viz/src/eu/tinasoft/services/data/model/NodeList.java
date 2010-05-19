@@ -50,7 +50,9 @@ public class NodeList {
 
         if (mode.equalsIgnoreCase("equalsIgnoreCase")) {
             for (Node n : nodes) {
+                //System.out.println("checking if "+n.label+" contains ("+label+")")
                 if (n.label.equalsIgnoreCase(label)) {
+                    //System.out.println("okay, adding");
                     results.add(n);
                 }
             }
@@ -150,7 +152,7 @@ public class NodeList {
     public float NORMALIZED_MIN_EDGE_WEIGHT = 0.0f;
     public float NORMALIZED_MAX_EDGE_WEIGHT = 1.0f;
     public float MIN_RADIUS = 1f;
-    public float MAX_RADIUS = 3f; // largely depends on the spatialization settings
+    public float MAX_RADIUS = 2f; // largely depends on the spatialization settings
     // TODO fix me
     public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
     public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;

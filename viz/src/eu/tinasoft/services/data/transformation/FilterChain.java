@@ -17,6 +17,7 @@ import eu.tinasoft.services.data.transformation.filters.NodeRadius;
 import tinaviz.SubGraphCopy;
 import tinaviz.SubGraphCopyStandalone;
 import eu.tinasoft.services.data.transformation.filters.NodeWeightRange;
+import eu.tinasoft.services.data.transformation.filters.ScreenSettings;
 import eu.tinasoft.services.data.transformation.filters.WeightSize;
 import tinaviz.NodeWeightRangeHack;
 import eu.tinasoft.services.visualization.views.View;
@@ -42,6 +43,7 @@ public class FilterChain {
         private FilterChain chain;
         private View view;
         private Session session;
+        Filter finalizer = new ScreenSettings();
 
         public FilterThread(FilterChain chain, Session session, View view, NodeList nodes) {
             this.session = session;
@@ -58,6 +60,8 @@ public class FilterChain {
                 }
                 nodes = f.preProcessing(session, view, nodes);
             }
+
+            // nodes = finalizer.preProcessing(session, view, nodes);
 
             // this assignation should be safe if we create a new node list
             chain.filteredNodes = new NodeList(nodes);
@@ -95,12 +99,17 @@ public class FilterChain {
             f = new SubGraphCopyStandalone();
         } else if (filterName.equals("NodeWeightRange")) {
             f = new NodeWeightRange();
+
         } else if (filterName.equals("NodeWeightRangeHack")) {
             f = new NodeWeightRangeHack();
+        } else if (filterName.equals("ScreenSettings")) {
+            f = new ScreenSettings();
         } else {
             return false;
         }
+
         f.setRoot(root);
+
         filters.add(f);
         //System.out.println("addFilter SUCCESS!");
         return true;
@@ -110,16 +119,24 @@ public class FilterChain {
         for (Filter f : filters) {
             if (f.getRoot().equals(filterKey)) {
                 return f;
+
+
             }
         }
         return null;
+
+
     }
 
     public void enableFilter(String filterKey) {
         for (Filter f : filters) {
             if (f.getRoot().equals(filterKey)) {
                 f.setEnabled(true);
+
+
                 break;
+
+
             }
         }
     }
@@ -128,7 +145,11 @@ public class FilterChain {
         for (Filter f : filters) {
             if (f.getRoot().equals(filterKey)) {
                 f.setEnabled(false);
+
+
                 break;
+
+
             }
         }
     }
@@ -137,10 +158,16 @@ public class FilterChain {
         for (Filter f : filters) {
             if (f.getRoot().equals(filterKey)) {
                 f.setEnabled(!f.enabled());
+
+
                 return f.enabled();
+
+
             }
         }
         return false;
+
+
     }
 
     public synchronized NodeList popNodes() {
@@ -148,27 +175,36 @@ public class FilterChain {
         // we are already filtering, please wait..
         if (filterIsRunning.get()) {
             return null;
+
+
         }
 
         // if we are up to date,
         if (graphRevision.get() == view.graph.revision.get()) {
             // check if we already popped
-            if (popLocked.get())
+            if (popLocked.get()) {
                 return null;
+            }
 
             popLocked.set(true);
-            return filteredNodes;
-        }
 
-        // if filters are up to date, not running, and not popped.. we return filtered nodes!
+
+            return filteredNodes;
+
+
+        } // if filters are up to date, not running, and not popped.. we return filtered nodes!
         if (!popLocked.get()) {
             popLocked.set(true); // no more popping!
-            return filteredNodes;
-        }
 
-        // we have to wait for the graph to be unlocked
+
+            return filteredNodes;
+
+
+        } // we have to wait for the graph to be unlocked
         if (view.graph.locked.get()) {
             return null;
+
+
         }
 
         //System.out.println("okay, graph looks unlocked, starting new filter thread..");
@@ -177,6 +213,9 @@ public class FilterChain {
         thread.start();
 
         graphRevision.set(view.graph.revision.get());
+
+
         return null;
+
     }
 }

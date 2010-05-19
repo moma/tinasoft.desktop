@@ -166,7 +166,21 @@ public class Main extends PApplet implements MouseWheelListener {
         window.call("setTimeout", message);
         // window.eval(cmd);
     }
+    private void viewChanged_JS_CALLBACK(String view) {
 
+        /*String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
+                + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "');\",1);";
+        System.out.println("cmd: " + cmd);*/
+        if (window == null) {
+            return; // in debug mode
+        }
+        String fnc =  js_context + "tinaviz.switchedTo('"+view+"')";
+
+        Object[] message = { fnc,  0 };
+        window.call("setTimeout", message);
+        // window.eval(cmd);
+    }
+    
     public Object valueEncoder(Object o) throws UnsupportedEncodingException {
         return (o instanceof String) ? URLEncoder.encode((String) o, "UTF-8") : o;
     }
@@ -183,24 +197,17 @@ public class Main extends PApplet implements MouseWheelListener {
 
     private void jsSwitchToMacro() {
         session.toMacroLevel();
-        if (window != null) {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.switchedTo('macro');\",1);");
-        }
-
+        viewChanged_JS_CALLBACK("macro");
     }
 
     private void jsSwitchToMeso() {
         session.toMesoLevel();
-        if (window != null) {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.switchedTo('meso');\",1);");
-        }
+        viewChanged_JS_CALLBACK("meso");
     }
 
     private void jsSwitchToMicro() {
         session.toMicroLevel();
-        if (window != null) {
-            window.eval("setTimeout(\"" + js_context + "tinaviz.switchedTo('micro');\",1);");
-        }
+        viewChanged_JS_CALLBACK("micro");
     }
 
     private void drawNothing(View v) {
@@ -1304,7 +1311,7 @@ public class Main extends PApplet implements MouseWheelListener {
             v.translation.mult(3.f / 4.f);
         }
         v.translation.add(lastMousePosition);
-        // System.out.println("Zoom: " + v.sceneScale);
+        System.out.println("Zoom: " + v.sceneScale);
 
 
 
@@ -1607,6 +1614,8 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public String getNodes(String view, String category) throws UnsupportedEncodingException {
 
+        String def= "[]";
+
         List<Node> results =
                 view.contains("current")
                 ? nodes.getNodesByCategory(category)
@@ -1615,17 +1624,16 @@ public class Main extends PApplet implements MouseWheelListener {
                 : getSession().getView(view).getGraph().getNodeListCopy().getNodesByCategory(category);
         System.out.println("view: " + view + " category: " + category + " --- resulting array size: " + results.size());
         if (results.size() == 0) {
-            return "{}";
+            return def;
         }
 
-        String result = "";
         JSONWriter writer = null;
 
         try {
             writer = new JSONStringer().array();
         } catch (JSONException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            return "{}";
+            return def;
         }
 
         Collections.sort(results);
@@ -1638,13 +1646,13 @@ public class Main extends PApplet implements MouseWheelListener {
                 writer.endObject();
             }
         } catch (JSONException jSONException) {
-            return "{}";
+            return def;
         }
         try {
             writer.endArray();
         } catch (JSONException ex) {
             Console.error(ex.getMessage());
-            return "{}";
+            return def;
         }
         System.out.println("data: " + writer.toString());
         return writer.toString();
@@ -1659,36 +1667,40 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public String getNodesByLabel(String label, String mode) throws UnsupportedEncodingException {
         List<Node> results = nodes.getNodesByLabel(label, mode);
-        //System.out.println("label: "+label+" size: "+results.size());
+        String def= "[]";
+
+        System.out.println("label: "+label+" size: "+results.size());
         if (results.size() == 0) {
-            return "{}";
+            return def;
         }
 
         String result = "";
         JSONWriter writer = null;
         try {
-            writer = new JSONStringer().object();
+            writer = new JSONStringer().array();
         } catch (JSONException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            return "{}";
+            return def;
         }
 
         try {
             for (Node n : results) {
-                writer.key(n.uuid).object();
+                writer.object();
+                writer.key("id").value(n.uuid);
+                writer.key("label").value(n.label);
                 for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
                     writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
                 }
                 writer.endObject();
             }
         } catch (JSONException jSONException) {
-            return "{}";
+            return def;
         }
         try {
-            writer.endObject();
+            writer.endArray();
         } catch (JSONException ex) {
             Console.error(ex.getMessage());
-            return "{}";
+            return def;
         }
         System.out.println("data: " + writer.toString());
         return writer.toString();
