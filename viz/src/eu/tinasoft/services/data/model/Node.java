@@ -194,8 +194,8 @@ public class Node implements Comparable {
     public Map<String, Object> getAttributes() {
         return (original == null) ? this.attributes : original.attributes;
     }
-    public String valueEncoder(String str) throws UnsupportedEncodingException {
-        return URLEncoder.encode(str, "UTF-8");
+    public Object valueEncoder(Object o) throws UnsupportedEncodingException {
+        return (o instanceof String) ? URLEncoder.encode((String)o, "UTF-8") : o;
     }
 
     public String getAttributesAsJSON() {
@@ -216,7 +216,7 @@ public class Node implements Comparable {
             for (Entry<String, Object> entry : getAttributes().entrySet()) {
                 try {
                     //System.out.println(" writing " + ((String) entry.getKey()) + " => " + entry.getValue());
-                    writer.key((String) entry.getKey()).value(valueEncoder((String) entry.getValue()));
+                    writer.key((String) entry.getKey()).value(valueEncoder(entry.getValue()));
                 } catch (UnsupportedEncodingException ex) {
                     Logger.getLogger(Node.class.getName()).log(Level.SEVERE, null, ex);
                 }

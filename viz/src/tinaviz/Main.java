@@ -108,7 +108,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean centerOnSelection = false;
     private boolean loading = true;
 
-    private String getSelectedNodesAsJSON()  {
+    private String getSelectedNodesAsJSON() {
 
         String result = "";
         JSONWriter writer = null;
@@ -127,7 +127,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     writer.key("id").value(node.uuid);
                     for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
                         try {
-                            writer.key(entry.getKey()).value(valueEncoder((String) entry.getValue()));
+                            writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
                         } catch (UnsupportedEncodingException ex) {
                             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -150,21 +150,24 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-    private void nodeSelected_JS_CALLBACK(Node n, boolean left)  {
+    private void nodeSelected_JS_CALLBACK(Node n, boolean left) {
 
-        String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
-                + escape(getSelectedNodesAsJSON()) + "','" + (left ? "left" : "right") + "');\",1);";
-        System.out.println("cmd: " + cmd);
+        /*String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
+                + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "');\",1);";
+        System.out.println("cmd: " + cmd);*/
         if (window == null) {
             return; // in debug mode
         }
-        window.eval(cmd);
+        String fnc =  js_context + "tinaviz.selected('" + session.getLevel() + "','"
+                + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "')";
 
-
+        Object[] message = { fnc,  0 };
+        window.call("setTimeout", message);
+        // window.eval(cmd);
     }
 
-    public String valueEncoder(String str) throws UnsupportedEncodingException {
-        return URLEncoder.encode(str, "UTF-8");
+    public Object valueEncoder(Object o) throws UnsupportedEncodingException {
+        return (o instanceof String) ? URLEncoder.encode((String) o, "UTF-8") : o;
     }
 
     private String escape(String str) {
@@ -440,17 +443,17 @@ public class Main extends PApplet implements MouseWheelListener {
 
         NodeList n = v.popNodes();
         if (n != null) {
-             loading = false;
-            System.out.println("a");
+            // loading = false;
+            //System.out.println("a");
             redrawScene.set(true);
 
         }
 
-        if (loading) {
-            System.out.println("draw loading 1");
-            drawLoading(v);
-            return;
-        }
+        /*if (loading) {
+        System.out.println("draw loading 1");
+        drawLoading(v);
+        return;
+        }*/
 
 
 
@@ -1666,10 +1669,7 @@ public class Main extends PApplet implements MouseWheelListener {
             for (Node n : results) {
                 writer.key(n.uuid).object();
                 for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
-                    writer.key(entry.getKey()).value(
-                            (entry.getValue() instanceof String)
-                            ? valueEncoder((String) entry.getValue())
-                            : entry.getValue());
+                    writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
                 }
                 writer.endObject();
             }
@@ -1682,7 +1682,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return "{}";
         }
-        //System.out.println("data: " + writer.toString());
+        System.out.println("data: " + writer.toString());
         return writer.toString();
     }
 
@@ -1733,10 +1733,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 Node n = getView().getNode(nodeId);
                 writer.key(n.uuid).object();
                 for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
-                    writer.key(entry.getKey()).value(
-                            (entry.getValue() instanceof String)
-                            ? valueEncoder((String) entry.getValue())
-                            : entry.getValue());
+                    writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
                 }
                 writer.endObject();
             }
