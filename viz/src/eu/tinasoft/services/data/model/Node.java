@@ -9,6 +9,8 @@ import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.formats.json.JSONException;
 import eu.tinasoft.services.formats.json.JSONStringer;
 import eu.tinasoft.services.formats.json.JSONWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import java.util.Map;
@@ -192,6 +194,9 @@ public class Node implements Comparable {
     public Map<String, Object> getAttributes() {
         return (original == null) ? this.attributes : original.attributes;
     }
+    public String valueEncoder(String str) throws UnsupportedEncodingException {
+        return URLEncoder.encode(str, "UTF-8");
+    }
 
     public String getAttributesAsJSON() {
 
@@ -209,8 +214,12 @@ public class Node implements Comparable {
             writer.key("y").value(position.y);
 
             for (Entry<String, Object> entry : getAttributes().entrySet()) {
-                //System.out.println(" writing " + ((String) entry.getKey()) + " => " + entry.getValue());
-                writer.key((String) entry.getKey()).value(entry.getValue());
+                try {
+                    //System.out.println(" writing " + ((String) entry.getKey()) + " => " + entry.getValue());
+                    writer.key((String) entry.getKey()).value(valueEncoder((String) entry.getValue()));
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(Node.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
         } catch (JSONException jSONException) {

@@ -108,7 +108,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean centerOnSelection = false;
     private boolean loading = true;
 
-    private String getSelectedNodesAsJSON() {
+    private String getSelectedNodesAsJSON()  {
 
         String result = "";
         JSONWriter writer = null;
@@ -126,7 +126,11 @@ public class Main extends PApplet implements MouseWheelListener {
                     writer.key(node.uuid).object();
                     writer.key("id").value(node.uuid);
                     for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
-                        writer.key(entry.getKey()).value(entry.getValue());
+                        try {
+                            writer.key(entry.getKey()).value(valueEncoder((String) entry.getValue()));
+                        } catch (UnsupportedEncodingException ex) {
+                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                     writer.endObject();
                 }
@@ -146,7 +150,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-    private void nodeSelected_JS_CALLBACK(Node n, boolean left) {
+    private void nodeSelected_JS_CALLBACK(Node n, boolean left)  {
 
         String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
                 + escape(getSelectedNodesAsJSON()) + "','" + (left ? "left" : "right") + "');\",1);";

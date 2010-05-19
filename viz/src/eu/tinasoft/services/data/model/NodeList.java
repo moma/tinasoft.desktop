@@ -254,9 +254,7 @@ public class NodeList {
     public Node get(int i) {
         return nodes.get(i);
     }
-    public String valueEncoder(String str) throws UnsupportedEncodingException {
-            return URLEncoder.encode(str, "UTF-8");
-    }
+
 
     public synchronized void normalizePositions() {
         //System.out.println("normalizing positions..");
