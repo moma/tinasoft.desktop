@@ -31,6 +31,7 @@ import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.NodeList;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
@@ -410,7 +411,7 @@ public class Main extends PApplet implements MouseWheelListener {
         // fill(255, 184);
 
         //brandingImage = getImage(new URL("tina_icon.gif"));
-        //brandingImage = loadImage("moma-crea.png");
+        brandingImage = loadImage("tina_icon.png");
 
         //Console.log("Starting visualization..");
         if (window != null) {
@@ -697,7 +698,10 @@ public class Main extends PApplet implements MouseWheelListener {
         stroke(150, 150, 150);
         strokeWeight(1);
 
-
+        image(brandingImage, width - 30, height - 25);
+        if (mouseX > width - 30 && mouseY > height - 25) {
+            cursor(HAND);
+        }
         /*
 
         loadPixels();
@@ -1135,7 +1139,11 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseMoved() {
         currenthighlighted = 0;
+        if (mouseX > width - 30 && mouseY > height - 25) {
+            cursor(HAND);
+        } else {
         cursor(ARROW);
+        }
         Node candidate = null;
         for (Node n : nodes.nodes) {
             n.isFirstHighlight = false;
