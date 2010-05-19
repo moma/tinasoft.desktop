@@ -43,7 +43,10 @@ import java.util.Map.Entry;
 public class Main extends PApplet implements MouseWheelListener {
 
     String PATH_TO_TEST_FILE =
-            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
+            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+
             ;
     boolean generateRandomLocalGraph = false;
     boolean loadDefaultLocalGraph = false;
@@ -116,7 +119,7 @@ public class Main extends PApplet implements MouseWheelListener {
         try {
             writer = new JSONStringer().object();
         } catch (JSONException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Console.error(ex.getMessage());
             return "{}";
         }
 
@@ -127,17 +130,14 @@ public class Main extends PApplet implements MouseWheelListener {
                     writer.key(node.uuid).object();
                     writer.key("id").value(node.uuid);
                     for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
-                        try {
-                            writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
-                        } catch (UnsupportedEncodingException ex) {
-                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
                     }
                     writer.endObject();
                 }
             }
 
         } catch (JSONException jSONException) {
+            Console.error(jSONException.getMessage());
             return "{}";
         }
         try {
@@ -154,35 +154,42 @@ public class Main extends PApplet implements MouseWheelListener {
     private void nodeSelected_JS_CALLBACK(Node n, boolean left) {
 
         /*String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
-                + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "');\",1);";
+        + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "');\",1);";
         System.out.println("cmd: " + cmd);*/
         if (window == null) {
             return; // in debug mode
         }
-        String fnc =  js_context + "tinaviz.selected('" + session.getLevel() + "','"
+        Console.debug("nodeSelected_JS_CALLBACK("+n+","+left);
+        String fnc = js_context + "tinaviz.selected('" + session.getLevel() + "','"
                 + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "')";
 
-        Object[] message = { fnc,  0 };
+        Object[] message = {fnc, 0};
         window.call("setTimeout", message);
         // window.eval(cmd);
     }
+
     private void viewChanged_JS_CALLBACK(String view) {
 
         /*String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
-                + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "');\",1);";
+        + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "');\",1);";
         System.out.println("cmd: " + cmd);*/
         if (window == null) {
             return; // in debug mode
         }
-        String fnc =  js_context + "tinaviz.switchedTo('"+view+"')";
-
-        Object[] message = { fnc,  0 };
+        String fnc = js_context + "tinaviz.switchedTo('" + view + "')";
+        Console.error("viewChanged_JS_CALLBACK(" + view + ")");
+        Object[] message = {fnc, 0};
         window.call("setTimeout", message);
         // window.eval(cmd);
     }
-    
-    public Object valueEncoder(Object o) throws UnsupportedEncodingException {
-        return (o instanceof String) ? URLEncoder.encode((String) o, "UTF-8") : o;
+
+    public Object valueEncoder(Object o) {
+        try {
+            return (o instanceof String) ? URLEncoder.encode((String) o, "UTF-8") : o;
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
+        }
     }
 
     private String escape(String str) {
@@ -1149,7 +1156,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (mouseX > width - 30 && mouseY > height - 25) {
             cursor(HAND);
         } else {
-        cursor(ARROW);
+            cursor(ARROW);
         }
         Node candidate = null;
         for (Node n : nodes.nodes) {
@@ -1573,8 +1580,13 @@ public class Main extends PApplet implements MouseWheelListener {
      * @return true or false
      * @throws KeyException
      */
-    public boolean setProperty(String view, String key, Object value) throws KeyException {
-        return getView(view).setProperty(key, value);
+    public boolean setProperty(String view, String key, Object value) {
+        try {
+            return getView(view).setProperty(key, value);
+        } catch (KeyException ex) {
+            Console.error(ex.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -1584,8 +1596,13 @@ public class Main extends PApplet implements MouseWheelListener {
      * @return
      * @throws KeyException
      */
-    public Object getProperty(String level, String key) throws KeyException {
-        return getView(level).getProperty(key);
+    public Object getProperty(String level, String key) {
+        try {
+            return getView(level).getProperty(key);
+        } catch (KeyException ex) {
+            Console.error(ex.getMessage());
+            return "";
+        }
     }
 
     /**
@@ -1614,7 +1631,7 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public String getNodes(String view, String category) throws UnsupportedEncodingException {
 
-        String def= "[]";
+        String def = "[]";
 
         List<Node> results =
                 view.contains("current")
@@ -1667,10 +1684,11 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public String getNodesByLabel(String label, String mode) throws UnsupportedEncodingException {
         List<Node> results = nodes.getNodesByLabel(label, mode);
-        String def= "[]";
+        String def = "[]";
 
-        System.out.println("label: "+label+" size: "+results.size());
+        System.out.println("label: " + label + " size: " + results.size());
         if (results.size() == 0) {
+            Console.error(" no results");
             return def;
         }
 
@@ -1679,30 +1697,31 @@ public class Main extends PApplet implements MouseWheelListener {
         try {
             writer = new JSONStringer().array();
         } catch (JSONException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Console.error("error when creating the json array: " + ex.getMessage());
             return def;
         }
 
-        try {
-            for (Node n : results) {
+
+        for (Node n : results) {
+            try {
                 writer.object();
                 writer.key("id").value(n.uuid);
-                writer.key("label").value(n.label);
                 for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
                     writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
                 }
                 writer.endObject();
+            } catch (JSONException jSONException) {
+                Console.error("error when adding  attributes: " + jSONException.getMessage());
             }
-        } catch (JSONException jSONException) {
-            return def;
         }
+
         try {
             writer.endArray();
         } catch (JSONException ex) {
             Console.error(ex.getMessage());
             return def;
         }
-        System.out.println("data: " + writer.toString());
+        //System.out.println("data: " + writer.toString());
         return writer.toString();
     }
 

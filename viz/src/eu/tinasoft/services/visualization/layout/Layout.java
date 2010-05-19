@@ -17,29 +17,35 @@ public class Layout {
 
     static final float EPSILON = 0.0000001f;
 
+    public void macroViewLayout_TinaForce(View v, NodeList nodes) {
 
-
-     public void macroViewLayout_TinaForce(View v, NodeList nodes) {
+        if (nodes.size() < 1) {
+            return;
+        }
 
         v.layoutIterationCount++;
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        float attraction = 20f;
+        float attraction = 5f;
 
-        float globalRepulsion = 5f;
+        float globalRepulsion = 5f;// old= 5
 
-        float cooling = 0.005f;
+        int nbNodes = nodes.size();
+
+        float cooling = (float) (0.05f / PApplet.log(nbNodes + 1f));
 
         float vlimit_max = 100f;
 
         float decay = PApplet.exp(-v.layoutIterationCount * cooling);
 
-        float gravity = 0.05f * (1 - decay);
+
+        float gravity = 0.05f / (1 + PApplet.log(nbNodes)) * (1 - decay);
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        // System.out.println(decay + " = PApplet.exp(-" + v.compteur + " * " + cooling + ")");
+        System.out.println("decay: " + decay + " = PApplet.exp(-" + v.layoutIterationCount + " * " + cooling + ")");
+        System.out.println("gravity: " + gravity);
 
         float borderDist = EPSILON;
         int n1_degree = 0;
@@ -61,7 +67,6 @@ public class Layout {
             n1_degree = n1.weights.size();
             n1x = n1.position.x;
             n1y = n1.position.y;
-
 
             for (Node n2 : nodes.nodes) {
                 if (n1 == n2) {
@@ -91,42 +96,55 @@ public class Layout {
                 float radiusSum = (n1.radius + n2.radius);
                 borderDist = dist - radiusSum;
                 float sqBorderDist = (borderDist * borderDist) / radiusSum;
-                float desiredDist = radiusSum * 2.0f;
+                float desiredDist = radiusSum * 2f;
 
-                if (borderDist <= 0.0f) {
-                    if (true) {
-                        float theta = 2 * PApplet.PI * (float) Math.random();
-                        dix = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
-                        diy = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
-                    } else {
-                        dix = (dx / desiredDist) * 2.0f;
-                        diy = (dy / desiredDist) * 2.0f;
-                    }
+
+                //if ((decay < 0.6 && borderDist <= 0.0f) | decay < 0.05) {
+
+                if (borderDist <= 0.0f && decay < 0.7) {
+
+                    float theta = 2 * PApplet.PI * (float) Math.random();
+                    dix = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
+                    diy = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
+
                     n2vx += dix;
                     n2vy += diy;
-                    n2x += n2vx + n2gvx;
-                    n2y += n2vy + n2gvy;
 
-                } else {
+                    // limit the force
+                    /*
+                    float vlimit = PApplet.min(vlimit_max, borderDist);
+                    if (PApplet.abs(n2vx) > vlimit | PApplet.abs(n2vy) > vlimit) {
+                    n2vx = (dx / dist) * vlimit;
+                    n2vy = (dy / dist) * vlimit;
+                    }
+                     */
 
+                    n2x += n2vx;
+                    n2y += n2vy;
+
+
+                }
+                if ((borderDist > 0.0f && decay > 0.1)) {
 
                     if (false) {
-                        float theta = 2 * PApplet.PI * (float) Math.random();
-                        float dix_secu = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
-                        float diy_secu = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
+                        //float theta = 2 * PApplet.PI * (float) Math.random();
+                        //float dix_secu = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
+                        //float diy_secu = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
 
                         if (borderDist < radiusSum) {
-                            n2vx += dix_secu * ((radiusSum - borderDist) / radiusSum);
-                            n2vy += diy_secu * ((radiusSum - borderDist) / radiusSum);
+                            n2vx += dx / dist * ((radiusSum - borderDist) / radiusSum);
+                            n2vy += dy / dist * ((radiusSum - borderDist) / radiusSum);
                         }
                     }
 
                     // ATTRACTION QUAND ON A UN LIEN
 
                     if (n1.weights.containsKey(n2.id)) {
+                        //System.out.println("dist: "+dist);
                         weight = (Float) n1.weights.get(n2.id);
-                        dix = (dx / dist) * PApplet.sqrt(PApplet.sqrt(weight)) * attraction;
-                        diy = (dy / dist) * PApplet.sqrt(PApplet.sqrt(weight)) * attraction;
+                        //
+                        dix = (dx / dist) * PApplet.sqrt(PApplet.sqrt(weight)) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
+                        diy = (dy / dist) * PApplet.sqrt(PApplet.sqrt(weight)) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
                         n2vx -= dix;
                         n2vy -= diy;
                     }
@@ -161,8 +179,8 @@ public class Layout {
 
                 // enforce a global size limit then save the new position
                 n2.position.set(
-                        PApplet.constrain(n2x, -6000, +6000),
-                        PApplet.constrain(n2y, -6000, +6000),
+                        PApplet.constrain(n2x, -8000, +8000),
+                        PApplet.constrain(n2y, -8000, +8000),
                         0.0f);
             }
         }
@@ -180,7 +198,7 @@ public class Layout {
      * @param v
      * @param nodes
      */
- public void macroViewLayout_TinaForce_last_working(View v, NodeList nodes) {
+    public void macroViewLayout_TinaForce_last_working(View v, NodeList nodes) {
 
         v.layoutIterationCount++;
 
