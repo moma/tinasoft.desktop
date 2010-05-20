@@ -44,8 +44,10 @@ public class Layout {
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        System.out.println("decay: " + decay + " = PApplet.exp(-" + v.layoutIterationCount + " * " + cooling + ")");
-        System.out.println("gravity: " + gravity);
+        if (false) {
+            System.out.println("decay: " + decay + " = PApplet.exp(-" + v.layoutIterationCount + " * " + cooling + ")");
+            System.out.println("gravity: " + gravity);
+        }
 
         float borderDist = EPSILON;
         int n1_degree = 0;
@@ -96,16 +98,19 @@ public class Layout {
                 float radiusSum = (n1.radius + n2.radius);
                 borderDist = dist - radiusSum;
                 float sqBorderDist = (borderDist * borderDist) / radiusSum;
-                float desiredDist = radiusSum * 2f;
-
+                float desiredDist = radiusSum * 1.5f;
 
                 //if ((decay < 0.6 && borderDist <= 0.0f) | decay < 0.05) {
 
                 if (borderDist <= 0.0f && decay < 0.7) {
-
-                    float theta = 2 * PApplet.PI * (float) Math.random();
-                    dix = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
-                    diy = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
+                    if (Math.random() < 0.05f) {
+                        float theta = 2 * PApplet.PI * (float) Math.random();
+                        dix = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
+                        diy = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
+                    } else {
+                        dix = (dx / dist) * desiredDist;
+                        diy = (dy / dist) * desiredDist;
+                    }
 
                     n2vx += dix;
                     n2vy += diy;
@@ -118,9 +123,8 @@ public class Layout {
                     n2vy = (dy / dist) * vlimit;
                     }
                      */
-
-                    n2x += n2vx;
-                    n2y += n2vy;
+                    n2x += n2vx * decay;
+                    n2y += n2vy * decay;
 
 
                 }
@@ -151,7 +155,7 @@ public class Layout {
 
                     // REPULSION
                     float rep = (n1.weights.containsKey(n2.id))
-                            ? globalRepulsion * PApplet.sqrt(n1_degree)
+                            ? globalRepulsion * n1_degree
                             : globalRepulsion;
                     n2vx += (dx / sqBorderDist) * rep;
                     n2vy += (dy / sqBorderDist) * rep;
@@ -160,21 +164,26 @@ public class Layout {
 
                     // limit the force
                     float vlimit = PApplet.min(vlimit_max, borderDist);
-                    if (PApplet.abs(n2vx) > vlimit | PApplet.abs(n2vy) > vlimit) {
-                        n2vx = (dx / dist) * vlimit;
-                        n2vy = (dy / dist) * vlimit;
+                    if (PApplet.abs(n2vx + n2gvx) > vlimit | PApplet.abs(n2vy + n2gvy) > vlimit) {
+                        float tmpdist = PApplet.sqrt(PApplet.sq(n2vx + n2gvx) + PApplet.sq(n2vy + n2gvy));
+
+                        n2vx = ((n2vx + n2gvx) / tmpdist) * vlimit;
+                        n2vy = ((n2vy + n2gvy) / tmpdist) * vlimit;
                     }
 
                     // limit the gravity force
+                    /*
                     vlimit = PApplet.min(vlimit_max, gdistance);
                     if (PApplet.abs(n2gvx) > vlimit | PApplet.abs(n2gvy) > vlimit) {
-                        n2gvx = (gdx / gdistance) * vlimit;
-                        n2gvy = (gdy / gdistance) * vlimit;
+                    n2gvx = (gdx / gdistance) * vlimit;
+                    n2gvy = (gdy / gdistance) * vlimit;
                     }
+                     *
+                     */
 
                     // apply the forces
-                    n2x += n2vx * decay + n2gvx * decay;
-                    n2y += n2vy * decay + n2gvy * decay;
+                    n2x += n2vx * decay;
+                    n2y += n2vy * decay;
                 }
 
                 // enforce a global size limit then save the new position

@@ -30,7 +30,7 @@ public class Session {
     public MacroView macro = null;
     public MesoView meso = null;
     public View micro = null;
-    public ViewLevel currentLevel = ViewLevel.MACRO;
+    public ViewLevel currentView = ViewLevel.MACRO;
     public float zoom = 3f;
     public Color background = new Color(12, 12, 12);
     public int fontsize = 12;
@@ -70,35 +70,35 @@ public class Session {
         return getView().graph;
     }
 
-    public synchronized void setLevel(String level) {
-        if (level.equals("macro")) {
-            toMacroLevel();
-        } else if (level.equals("meso")) {
-            toMesoLevel();
-        } else if (level.equals("micro")) {
-            toMicroLevel();
+    public synchronized void setView(String view) {
+        if (view.equals("macro")) {
+            toMacroView();
+        } else if (view.equals("meso")) {
+            toMesoView();
+        } else if (view.equals("micro")) {
+            toMicroView();
         }
     }
 
-    public synchronized void toMacroLevel() {
-        if (currentLevel != ViewLevel.MACRO) {
-            currentLevel = ViewLevel.MACRO;
+    public synchronized void toMacroView() {
+        if (currentView != ViewLevel.MACRO) {
+            currentView = ViewLevel.MACRO;
             macro.graph.touch();
             //macro.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
-    public synchronized void toMesoLevel() {
-        if (currentLevel != ViewLevel.MESO) {
-            currentLevel = ViewLevel.MESO;
+    public synchronized void toMesoView() {
+        if (currentView != ViewLevel.MESO) {
+            currentView = ViewLevel.MESO;
             meso.graph.touch();
             //meso.filters.popLocked.set(false); // open the pop lock!
         }
     }
 
-    public synchronized void toMicroLevel() {
-        if (currentLevel != ViewLevel.MICRO) {
-            currentLevel = ViewLevel.MICRO;
+    public synchronized void toMicroView() {
+        if (currentView != ViewLevel.MICRO) {
+            currentView = ViewLevel.MICRO;
             micro.graph.touch();
             //micro.filters.popLocked.set(false); // open the pop lock!
         }
@@ -153,8 +153,8 @@ public class Session {
     }
 
     public synchronized View getView() {
-        return (currentLevel == ViewLevel.MACRO)
-                ? macro : (currentLevel == ViewLevel.MESO)
+        return (currentView == ViewLevel.MACRO)
+                ? macro : (currentView == ViewLevel.MESO)
                 ? meso : micro;
     }
 

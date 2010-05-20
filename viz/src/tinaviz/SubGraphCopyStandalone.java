@@ -69,7 +69,11 @@ public class SubGraphCopyStandalone extends NodeFilter {
 
 
         String category = (String) localView.properties.get(root + KEY_CATEGORY);
-
+        System.out.println("read KEY_CATEGORY to "+category);
+        if (category==null) {
+            Console.error("fatal exception, SubGraphCopyStandalone/CATEGORY is null!");
+            category=defaultCategory;
+        }
 
         Object o = localView.properties.get(root + KEY_ITEM);
         if (o == null) {
@@ -77,14 +81,15 @@ public class SubGraphCopyStandalone extends NodeFilter {
             return output;
         }
 
+        System.out.println("read KEY_ITEM to "+o);
 
         if (o instanceof String) {
             item = ((String) o).hashCode();
         } else {
-            Console.error("bad type for " + root + KEY_ITEM);
+            Console.error("bad type for " + root + KEY_ITEM+": got "+o);
             return output;
         }
-        System.out.println("root is \"" + item + "\"");
+        System.out.println("KEY_ITEM resolved to " + item + "");
 
 
         if (sourceView.getGraph().size() < 1) {
@@ -103,6 +108,10 @@ public class SubGraphCopyStandalone extends NodeFilter {
             return output;
         }
 
+        System.out.println("item: "+item);
+        System.out.println("oldItem: "+oldItem);
+        System.out.println("category: "+category);
+        System.out.println("oldCategory: "+oldCategory);
         if (item != oldItem | !category.equals(oldCategory)) {
             System.out.println("something (item or category) changed, updating subgraph copy....");
             NodeList newNodes = new NodeList();

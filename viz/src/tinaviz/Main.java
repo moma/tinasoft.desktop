@@ -43,11 +43,12 @@ import java.util.Map.Entry;
 public class Main extends PApplet implements MouseWheelListener {
 
     String PATH_TO_TEST_FILE =
-            //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
-            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
-
+          //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
+
+    ;
     boolean generateRandomLocalGraph = false;
     boolean loadDefaultLocalGraph = false;
     boolean loadDefaultGlobalGraph = false;
@@ -96,14 +97,12 @@ public class Main extends PApplet implements MouseWheelListener {
     int oldScreenWidth = 0;
     int oldScreenHeight = 0;
     private Node oldSelected = null;
-    private boolean useOpenCL = false;
     private boolean recenter = true;
-    private boolean alwaysAntiAliasing = false;
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
     private int bezierSize = 18;
-    private int backgroundColor = color(255, 255, 255);
+
     private int shownEdges = 0;
     private int shownNodes = 0;
     AtomicBoolean redrawScene = new AtomicBoolean(true);
@@ -159,7 +158,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (window == null) {
             return; // in debug mode
         }
-        Console.debug("nodeSelected_JS_CALLBACK("+n+","+left);
+        Console.debug("nodeSelected_JS_CALLBACK(" + n + "," + left);
         String fnc = js_context + "tinaviz.selected('" + session.getLevel() + "','"
                 + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "')";
 
@@ -203,17 +202,17 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     private void jsSwitchToMacro() {
-        session.toMacroLevel();
+        session.toMacroView();
         viewChanged_JS_CALLBACK("macro");
     }
 
     private void jsSwitchToMeso() {
-        session.toMesoLevel();
+        session.toMesoView();
         viewChanged_JS_CALLBACK("meso");
     }
 
     private void jsSwitchToMicro() {
-        session.toMicroLevel();
+        session.toMicroView();
         viewChanged_JS_CALLBACK("micro");
     }
 
@@ -240,28 +239,11 @@ public class Main extends PApplet implements MouseWheelListener {
     public void setup() {
         layout = new Layout();
 
-        /*
-        try {
-        layout = new LayoutOpenCL();
-        } catch (CLBuildException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-
-        } catch (IOException ex) {
-        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-
-
 
         // font = loadFont(DEFAULT_FONT);
         font = createFont("Arial", 150, true);
         //String[] fontList = PFont.list();
         //println(fontList);
-
-        if (getParameter("opencl") != null) {
-            if (getParameter("opencl").equalsIgnoreCase("true")) {
-                useOpenCL = true;
-            }
-        }
 
         if (getParameter("js_context") != null) {
 
@@ -415,7 +397,7 @@ public class Main extends PApplet implements MouseWheelListener {
         //session.toMesoLevel();
 
         // in the case the reset method take the graph radius in account to zoom (but its still not the case)
-        session.toMacroLevel();
+        session.toMacroView();
         // session.toMesoLevel();
 
         // DEBUG MODE
@@ -1071,15 +1053,19 @@ public class Main extends PApplet implements MouseWheelListener {
         //drawBranding(v,p);
 
 
-        fill(0, 0, 100, 100);
-        stroke(0, 0, 0, 200);
-        strokeWeight(1.0f);
-        fill(100, 100, 255, 80);
-        p.sub(mouseX, mouseY, 0);
-        p.sub(v.translation);
+        //////////////////////
+        // SELECTION DISK => DISABLED
+        if (false) {
+            fill(0, 0, 100, 100);
+            stroke(0, 0, 0, 200);
+            strokeWeight(1.0f);
+            fill(100, 100, 255, 80);
+            p.sub(mouseX, mouseY, 0);
+            p.sub(v.translation);
 
-        p.mult(v.sceneScale);
-        ellipse(p.x, p.y, 10 * v.sceneScale, 10 * v.sceneScale);
+            p.mult(v.sceneScale);
+            ellipse(p.x, p.y, 10 * v.sceneScale, 10 * v.sceneScale);
+        }
 
     }
 
@@ -1228,12 +1214,12 @@ public class Main extends PApplet implements MouseWheelListener {
                         session.selectNode(n);
                         nodeSelected_JS_CALLBACK(n, true);
 
-                        if (session.currentLevel == ViewLevel.MACRO) {
+                        if (session.currentView == ViewLevel.MACRO) {
                             System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
 
                             session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
                             jsSwitchToMeso();
-                        } else if (session.currentLevel == ViewLevel.MESO) {
+                        } else if (session.currentView == ViewLevel.MESO) {
                             System.out.println("SWITCH TO MICRO WITH THE DOUBLE CLICK METHOD");
                             //session.getMicro().sceneScale = session.getMicro().ZOOM_CEIL + session.getMicro().ZOOM_CEIL * 0.5f;
                             //jsSwitchToMicro();
@@ -1354,7 +1340,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 //System.out.println("'- screen ratio: " + screenRatio);
                 if (v.showNodes) {
 
-                    switch (session.currentLevel) {
+                    switch (session.currentView) {
                         case MACRO:
 
                             if (screenRatio > screenRatioGoToMesoWhenZoomed) {
@@ -1582,7 +1568,30 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public boolean setProperty(String view, String key, Object value) {
         try {
-            return getView(view).setProperty(key, value);
+
+            return 
+                    view.equalsIgnoreCase("all")
+                    ? getSession().setProperty(key, value)
+                    : view.equalsIgnoreCase("current")
+                    ? getView().setProperty(key, value)
+                    : getView(view).setProperty(key, value);
+        } catch (KeyException ex) {
+            Console.error(ex.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Set a property in the current view
+     *
+     * @param key
+     * @param value
+     * @return true or false
+     * @throws KeyException
+     */
+    public boolean setProperty(String key, Object value) {
+        try {
+            return getView().setProperty(key, value);
         } catch (KeyException ex) {
             Console.error(ex.getMessage());
             return false;
@@ -1596,9 +1605,28 @@ public class Main extends PApplet implements MouseWheelListener {
      * @return
      * @throws KeyException
      */
-    public Object getProperty(String level, String key) {
+    public Object getProperty(String view, String key) {
         try {
-            return getView(level).getProperty(key);
+             return
+                    view.equalsIgnoreCase("current")
+                    ? getView().getProperty(key)
+                    : getView(view).getProperty(key);
+
+        } catch (KeyException ex) {
+            Console.error(ex.getMessage());
+            return "";
+        }
+    }
+
+    /**
+     * Get a property from the current view
+     * @param key
+     * @return
+     * @throws KeyException
+     */
+    public Object getProperty(String key) {
+        try {
+            return getView().getProperty(key);
         } catch (KeyException ex) {
             Console.error(ex.getMessage());
             return "";
