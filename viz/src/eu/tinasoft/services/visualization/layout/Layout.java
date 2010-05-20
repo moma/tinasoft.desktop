@@ -130,7 +130,7 @@ public class Layout {
                 }
                 if ((borderDist > 0.0f && decay > 0.1)) {
 
-                    if (false) {
+                    if (true) {
                         //float theta = 2 * PApplet.PI * (float) Math.random();
                         //float dix_secu = ((PApplet.cos(theta) - PApplet.sin(theta))) * desiredDist;
                         //float diy_secu = ((PApplet.cos(theta) + PApplet.sin(theta))) * desiredDist;
@@ -155,7 +155,7 @@ public class Layout {
 
                     // REPULSION
                     float rep = (n1.weights.containsKey(n2.id))
-                            ? globalRepulsion * n1_degree
+                            ? globalRepulsion * PApplet.log(n1_degree)
                             : globalRepulsion;
                     n2vx += (dx / sqBorderDist) * rep;
                     n2vy += (dy / sqBorderDist) * rep;

@@ -831,22 +831,24 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 float m = 160.0f;
                 float r = (255.0f - m) / 255.0f;
+
+
                 if (n1.selected || n2.selected) {
-                    stroke(constrain((m + cr * r) * 0.4f, 0, 255),
-                            constrain((m + cg * r) * 0.4f, 0, 255),
-                            constrain((m + cb * r) * 0.4f, 0, 255),
-                            constrain((Float) weightN1_2_N2 * 205, 50, 180));
+                    stroke(constrain((m + cr * r) *0.4f, 0, 255),
+                            constrain((m + cg * r) *0.4f, 0, 255),
+                            constrain((m + cb * r) *0.4f, 0, 255),
+                            constrain((Float) weightN1_2_N2*255.0f, 10, 230));
                 } else if (n1.isFirstHighlight || n2.isFirstHighlight) {
-                    stroke(constrain((m + cr * r) * 0.8f, 0, 255),
-                            constrain((m + cg * r) * 0.8f, 0, 255),
-                            constrain((m + cb * r) * 0.8f, 0, 255),
-                            constrain((Float) weightN1_2_N2 * 205, 70, 210));
+                    stroke(constrain((m + cr * r)*0.8f, 0, 255),
+                            constrain((m + cg * r)*0.8f, 0, 255),
+                            constrain((m + cb * r)*0.8f, 0, 255),
+                            constrain((Float) 0.8f*weightN1_2_N2*255.0f, 10, 230));
                 } else {
 
-                    stroke(constrain(m + cr * r, 0, 255),
-                            constrain(m + cg * r, 0, 255),
-                            constrain(m + cb * r, 0, 255),
-                            constrain((Float) weightN1_2_N2 * 205, 80, 255));
+                    stroke(constrain((m + cr * r)*1.0f, 0, 255),
+                            constrain((m + cg * r)*1.0f, 0, 255),
+                            constrain((m + cb * r)*1.0f, 0, 255),
+                            constrain((Float) 0.7f*weightN1_2_N2*255.0f, 10, 230));
                 }
 
 
@@ -892,19 +894,21 @@ public class Main extends PApplet implements MouseWheelListener {
             float ny = n.position.y;
 
             float rad = n.radius;// * MAX_NODE_RADIUS;
-            float rad2 = rad * 1.5f;
+            
+            float rad2 = rad * 1.3f;
+            //rad = rad * 0.9f;
 
             float nodeScreenDiameter = screenX(nx + rad2, ny) - screenX(nx - rad2, ny);
             if (nodeScreenDiameter < 1) {
                 continue;
             }
 
-            float alpha = 255;
+            float alpha = 240;
             if (n.selected) {
-                alpha = 220;
+                alpha = 200;
                 hasSelected = n;
             } else if (highlighted) {
-                alpha = 200;
+                alpha = 150;
             } else {
 
                 // degrade du radius [r=14 level=255, r=40 level=80]
@@ -937,12 +941,22 @@ public class Main extends PApplet implements MouseWheelListener {
                 fill(180, 180, 180, alpha);
                 }*/
 
-                if (n.selected) {
-                    fill(constrain(n.r * 0.4f, 0, 255), constrain(n.g * 0.4f, 0, 255), constrain(n.b * 0.4f, 0, 255), alpha);
-                } else if (n.isFirstHighlight) {
-                    fill(constrain(n.r * 0.4f + 40, 0, 255), constrain(n.g * 0.4f + 40, 0, 255), constrain(n.b * 0.4f + 40, 0, 255), alpha);
+                /*
+                    fill(0,0,0, 20);
+
+
+                if (n.shape == ShapeCategory.DISK) {
+                    ellipse(nx, ny, rad2+0.1f, rad2+0.1f);
                 } else {
-                    fill(constrain(n.r * 0.4f + 80, 0, 255), constrain(n.g * 0.4f + 80, 0, 255), constrain(n.b * 0.4f + 80, 0, 255), alpha);
+                    rect(nx, ny, rad2+0.1f, rad2+0.1f);
+                }
+*/
+                if (n.selected) {
+                    fill(constrain(n.r * 0.4f, 0, 255), constrain(n.g * 0.4f, 0, 255), constrain(n.b * 0.4f, 0, 255), alpha*0.7f);
+                } else if (n.isFirstHighlight) {
+                    fill(constrain(n.r * 0.4f + 40, 0, 255), constrain(n.g * 0.4f + 40, 0, 255), constrain(n.b * 0.4f + 40, 0, 255), alpha*0.7f);
+                } else {
+                    fill(constrain(n.r * 0.5f, 0, 255), constrain(n.g * 0.5f , 0, 255), constrain(n.b * 0.5f, 0, 255), alpha*0.3f);
                 }
 
 
@@ -953,11 +967,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
 
                 if (n.selected) {
-                    fill(constrain(n.r, 0, 255), constrain(n.g, 0, 255), constrain(n.b, 0, 255), alpha);
+                    fill(constrain(n.r, 0, 255), constrain(n.g, 0, 255), constrain(n.b, 0, 255), 255);
                 } else if (n.isFirstHighlight) {
                     fill(constrain(n.r + 40, 0, 255), constrain(n.g + 40, 0, 255), constrain(n.b + 40, 0, 255), alpha);
                 } else {
-                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha);
+                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha*0.8f);
                 }
 
                 if (n.shape == ShapeCategory.DISK) {
@@ -969,23 +983,23 @@ public class Main extends PApplet implements MouseWheelListener {
             shownNodes++;
             // skip label drawing for small nodes
             // or if we have to hide labels
-            if (nodeScreenDiameter < 12 | !(v.showLabels | n.selected | highlighted)) {
+            if (nodeScreenDiameter < 11 | !(v.showLabels | n.selected | highlighted)) {
                 continue;
             }
             if (n.selected) {
                 fill(0, 0, 0, 255);
             } else if (n.isFirstHighlight) {
-                fill(0, 0, 0, 220);
+                fill(0, 0, 0, 200);
             } else if (n.isSecondHighlight) {
-                fill(60, 60, 60, 200);
+                fill(60, 60, 60, 180);
             } else {
-                fill(0, 0, 0, alpha);
+                fill(0, 0, 0, alpha*0.7f); // we want text a bit more transparent
             }
-            textSize(rad2);
+            textSize(rad);
             n.boxHeight = rad2 * 2.0f;
             n.boxWidth = (rad2 * 2.0f + rad2 * 0.3f) + textWidth((highlighted) ? n.label : n.shortLabel) * 1.0f;
             // float sw = textWidth(s)
-            text((highlighted) ? n.label : n.shortLabel, nx + rad, ny + (rad2 / PI));
+            text((highlighted) ? n.label : n.shortLabel, nx + rad, ny + (rad / PI));
 
         } // END FOR EACH NODE
 
