@@ -81,10 +81,10 @@ public class NodeWeightRangeHack extends NodeFilter {
         }
 
 
-        //System.out.println("minNodeWeight:"+input.minNodeWeight+" maxNodeWeight:"+input.maxNodeWeight);
-        //System.out.println("min:"+min+" max:"+max);
+        System.out.println("minNodeWeight:"+input.minNodeWeight+" maxNodeWeight:"+input.maxNodeWeight);
+        System.out.println("min:"+min+" max:"+max);
         for (Node n : input.nodes) {
-            //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
+           //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
 
             if (except != -1) {
                 if (n.uuid.hashCode() == except) {

@@ -4,6 +4,7 @@
  */
 package tinaviz;
 
+import eu.tinasoft.services.session.ViewNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,6 +18,8 @@ import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.session.Session;
 
 import eu.tinasoft.services.visualization.views.View;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import processing.core.PVector;
 
 /* FIXME TODO WARNING : ADD SOME LOCKS..
@@ -30,10 +33,10 @@ public class SubGraphCopyStandalone extends NodeFilter {
     private String KEY_SOURCE = "source";
     private String KEY_ITEM = "item";
     private String KEY_CATEGORY = "category";
-
     private int oldItem = -0;
     private int item = -0;
-    private String source = "macro";
+    private String defaultSource = "macro";
+    private String source = defaultSource;
     private String defaultCategory = "NO_CATEGORY";
     private String oldCategory = defaultCategory;
 
@@ -55,24 +58,36 @@ public class SubGraphCopyStandalone extends NodeFilter {
             localView.properties.put(root + KEY_ITEM, -1);
         }
 
-       if (!localView.properties.containsKey(root + KEY_CATEGORY)) {
+        if (!localView.properties.containsKey(root + KEY_CATEGORY)) {
             localView.properties.put(root + KEY_CATEGORY, defaultCategory);
         }
 
         source = (String) localView.properties.get(root + KEY_SOURCE);
         System.out.println("source=" + source);
-        View sourceView = session.getView(source);
+
+        View sourceView;
+        try {
+            sourceView = session.getView(defaultSource);
+        } catch (ViewNotFoundException ex) {
+            Console.error("Couldn't find source view " + defaultSource + ", aborting..");
+            return output;
+        }
+
+        try {
+            sourceView = session.getView(source);
+        } catch (ViewNotFoundException ex) {
+            Console.error("Couldn't find source view " + source + ", using default one..");
+        }
         if (sourceView == null) {
             System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got " + source);
             return output;
         }
 
-
         String category = (String) localView.properties.get(root + KEY_CATEGORY);
-        System.out.println("read KEY_CATEGORY to "+category);
-        if (category==null) {
+        System.out.println("read KEY_CATEGORY to " + category);
+        if (category == null) {
             Console.error("fatal exception, SubGraphCopyStandalone/CATEGORY is null!");
-            category=defaultCategory;
+            category = defaultCategory;
         }
 
         Object o = localView.properties.get(root + KEY_ITEM);
@@ -81,12 +96,12 @@ public class SubGraphCopyStandalone extends NodeFilter {
             return output;
         }
 
-        System.out.println("read KEY_ITEM to "+o);
+        System.out.println("read KEY_ITEM to " + o);
 
         if (o instanceof String) {
             item = ((String) o).hashCode();
         } else {
-            Console.error("bad type for " + root + KEY_ITEM+": got "+o);
+            Console.error("bad type for " + root + KEY_ITEM + ": got " + o);
             return output;
         }
         System.out.println("KEY_ITEM resolved to " + item + "");
@@ -99,8 +114,8 @@ public class SubGraphCopyStandalone extends NodeFilter {
         System.out.println("current view size: " + localView.getGraph().size());
 
         /*if (localView.getGraph().size() > 0) {
-            System.out.println("view.graph.size() > 0 is TRUE !");
-            return output;
+        System.out.println("view.graph.size() > 0 is TRUE !");
+        return output;
         }*/
 
         if (!sourceView.getGraph().storedNodes.containsKey(item)) {
@@ -108,10 +123,10 @@ public class SubGraphCopyStandalone extends NodeFilter {
             return output;
         }
 
-        System.out.println("item: "+item);
-        System.out.println("oldItem: "+oldItem);
-        System.out.println("category: "+category);
-        System.out.println("oldCategory: "+oldCategory);
+        System.out.println("item: " + item);
+        System.out.println("oldItem: " + oldItem);
+        System.out.println("category: " + category);
+        System.out.println("oldCategory: " + oldCategory);
         if (item != oldItem | !category.equals(oldCategory)) {
             System.out.println("something (item or category) changed, updating subgraph copy....");
             NodeList newNodes = new NodeList();
@@ -121,7 +136,9 @@ public class SubGraphCopyStandalone extends NodeFilter {
             newNodes.add(rootNode);
             for (int n : rootNode.weights.keys().elements()) {
                 Node neighbourNode = sourceView.getGraph().getNode(n).getDetachedClone();
-                if (!neighbourNode.category.equals(category)) continue;
+                if (!neighbourNode.category.equals(category)) {
+                    continue;
+                }
                 neighbourNode.position = new PVector((float) Math.random() * 10f, (float) Math.random() * 10f);
                 newNodes.add(neighbourNode);
             }

@@ -158,17 +158,19 @@ public class Session {
                 ? meso : micro;
     }
 
-    public synchronized View getView(String v) {
+    public synchronized View getView(String v) throws ViewNotFoundException {
         if (v.equalsIgnoreCase("macro")) {
             return macro;
         }
-        if (v.equalsIgnoreCase("meso")) {
+        else if (v.equalsIgnoreCase("meso")) {
             return meso;
         }
-        if (v.equalsIgnoreCase("micro")) {
+        else if (v.equalsIgnoreCase("micro")) {
             return micro;
+        } else {
+
+        throw new ViewNotFoundException("View "+v+" not found!");
         }
-        return null;
     }
 
     public void selectNode(Node n) {

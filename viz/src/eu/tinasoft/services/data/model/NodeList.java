@@ -106,10 +106,12 @@ public class NodeList {
     }
 
     public void selectNode(String str) {
-         for (Node n : nodes) if (n.id == str.hashCode()) {
-             n.selected = true;
-             break;
-         }
+        for (Node n : nodes) {
+            if (n.id == str.hashCode()) {
+                n.selected = true;
+                break;
+            }
+        }
     }
 
     public class SelectedComparator implements Comparator {
@@ -154,8 +156,8 @@ public class NodeList {
     public float MIN_RADIUS = 1f;
     public float MAX_RADIUS = 2f; // largely depends on the spatialization settings
     // TODO fix me
-    public float NORMALIZED_MIN_NODE_WEIGHT = 1.0f;
-    public float NORMALIZED_MAX_NODE_WEIGHT = 2.0f;
+    public float NORMALIZED_MIN_NODE_WEIGHT = 0.0f;
+    public float NORMALIZED_MAX_NODE_WEIGHT = 1.0f;
     // you can set it to something like 4 for fun
     public float INITIAL_SQUARE_SIZE = 100f;
     public float MIN_X = -INITIAL_SQUARE_SIZE;
@@ -210,7 +212,7 @@ public class NodeList {
         minY = 0.0f;
         maxX = 0.0f;
         maxY = 0.0f;
-        minRadius = 0.0f;
+        minRadius = Float.MAX_VALUE;
         maxRadius = Float.MIN_VALUE;
         center = new PVector(0.0f, 0.0f);
         baryCenter = new PVector(0.0f, 0.0f);
@@ -257,7 +259,6 @@ public class NodeList {
         return nodes.get(i);
     }
 
-
     public synchronized void normalizePositions() {
         //System.out.println("normalizing positions..");
         for (Node n : nodes) {
@@ -298,17 +299,24 @@ public class NodeList {
                 n.b = 255 - 160 * n.radius;
             }
 
-            //System.out.println("n.weight = " + "PApplet.map(" + n.weight + ","
-            //      + minNodeWeight + ", " + maxNodeWeight + "," + NORMALIZED_MIN_NODE_WEIGHT + ", " + NORMALIZED_MAX_NODE_WEIGHT + ");");
+            System.out.println("n.weight = " + "PApplet.map(" + n.weight + ","
+                    + minNodeWeight + ", " + maxNodeWeight + "," + NORMALIZED_MIN_NODE_WEIGHT + ", " + NORMALIZED_MAX_NODE_WEIGHT + ");");
 
             // NORMALIZE WEIGHT
 
-            n.weight = (minNodeWeight == maxNodeWeight) ? NORMALIZED_MIN_NODE_WEIGHT : PApplet.map(n.weight,
+            n.weight =
+                    (minNodeWeight == maxNodeWeight)
+                    ? NORMALIZED_MIN_NODE_WEIGHT
+                    : PApplet.map(n.weight,
                     minNodeWeight, maxNodeWeight,
-                    NORMALIZED_MIN_NODE_WEIGHT, NORMALIZED_MAX_NODE_WEIGHT);
+                    NORMALIZED_MIN_NODE_WEIGHT, NORMALIZED_MAX_NODE_WEIGHT) /*
+                    ((NORMALIZED_MAX_NODE_WEIGHT * PApplet.abs(n.weight)) / (
+                    PApplet.max(
+                    PApplet.abs( minNodeWeight ),PApplet.abs( maxNodeWeight )
+                    )
+                    ))*/;
 
-            //System.out.println("normalized genericity:"+n.genericity+"\n");
-            //System.out.println("n.weight = " + n.weight);
+            System.out.println("n.weight = " + n.weight);
 
             // NORMALIZE WEIGHTS
             for (int k : n.weights.keys().elements()) {
@@ -320,42 +328,49 @@ public class NodeList {
                         // si pas de min ni d emax
                         (minEdgeWeight == maxEdgeWeight)
                         ? NORMALIZED_MIN_EDGE_WEIGHT
-                        : // sinon
+                        :  PApplet.map(w,
+                    minEdgeWeight, maxEdgeWeight,
+                    NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT) // sinon
                         // entre 0 et NORMALIZED_MAX_EDGE_WEIGHT
                         //(0 < minEdgeWeight && maxEdgeWeight < 1) ?
-                            ((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (
-                            PApplet.max(
-                                PApplet.abs( minEdgeWeight ),PApplet.abs( maxEdgeWeight )
-                            )
-                            ));
-                        // entre 1 et NORMALIZED_MAX_EDGE_WEIGHT
+                        /*((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (PApplet.max(
+                        PApplet.abs(minEdgeWeight), PApplet.abs(maxEdgeWeight))));*/
+                            ;
+                // entre 1 et NORMALIZED_MAX_EDGE_WEIGHT
                         /*: PApplet.map(w,
-                        minEdgeWeight, maxEdgeWeight,
-                        NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);*/
+                minEdgeWeight, maxEdgeWeight,
+                NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);*/
 
                 n.weights.put(k, w);
                 //System.out.println("  - w: "+w);
             }
 
         }
+        minNodeWeight = 0.0f;
+        maxNodeWeight = 1.0f;
+        minEdgeWeight = 0.0f;
+        maxEdgeWeight = 1.0f;
 
     }
 
-
     public PVector getBarycenter(String id) {
         for (Node n : nodes) {
-            if (id.equals(n.uuid)) return new PVector(n.position.x, n.position.y, 0);
+            if (id.equals(n.uuid)) {
+                return new PVector(n.position.x, n.position.y, 0);
+            }
         }
         return baryCenter;
     }
 
     public PVector getBarycenter(Collection<String> nodesIds) {
-        PVector bary = new PVector(0.0f,0.0f,0.0f);
+        PVector bary = new PVector(0.0f, 0.0f, 0.0f);
         Float mx = null;
         Float my = null;
         int i = 0;
         for (Node n : nodes) {
-            if (!nodesIds.contains(n.uuid)) continue;
+            if (!nodesIds.contains(n.uuid)) {
+                continue;
+            }
             mx = (mx == null) ? n.position.x : mx + n.position.x;
             my = (my == null) ? n.position.y : my + n.position.y;
             i++;
@@ -365,7 +380,6 @@ public class NodeList {
         }
         return bary;
     }
-    
 
     public synchronized void computeExtremums() {
         //System.out.println("computing extremums");

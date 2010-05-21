@@ -4,6 +4,7 @@
  */
 package tinaviz;
 
+import eu.tinasoft.services.session.ViewNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,6 +18,8 @@ import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.session.Session;
 
 import eu.tinasoft.services.visualization.views.View;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import processing.core.PVector;
 
 /* FIXME TODO WARNING : ADD SOME LOCKS..
@@ -58,7 +61,13 @@ public class SubGraphCopy extends NodeFilter {
 
         source = (String) localView.properties.get(root + KEY_SOURCE);
         System.out.println("source="+source);
-        View sourceView = session.getView(source);
+        View sourceView;
+        try {
+            sourceView = session.getView(source);
+        } catch (ViewNotFoundException ex) {
+            Console.error(ex.getMessage());
+            return input;
+        }
         if (sourceView == null) {
             System.out.println("uh oh! i am a source and my 'source' parameter is totally wrong! got " + source);
             return input;

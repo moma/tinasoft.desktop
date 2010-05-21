@@ -6,6 +6,8 @@ package eu.tinasoft.services.debug;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import tinaviz.Main;
 
 /**
@@ -71,20 +73,21 @@ public class Console {
         if (Main.window != null) {
             Main.window.eval(PREFIX+"tinaviz.logError('" + s + "');");
         }
-        System.out.println("[APPLET] ERROR "+s);
+       Logger.getLogger(Main.class.getName()).log(Level.SEVERE,  "[APPLET] ERROR "+s);
+       // System.out.println("[APPLET] ERROR "+s);
     }
 
     public static void log(String s) {
         if (Main.window != null) {
             Main.window.eval(PREFIX+"tinaviz.logNormal('" + s + "');");
         }
-        System.out.println("[APPLET] LOG "+s);
+        Logger.getLogger(Main.class.getName()).log(Level.INFO, "[APPLET] LOG "+s);
     }
 
     public static void debug(String s) {
         if (Main.window != null) {
             Main.window.eval(PREFIX+"tinaviz.logDebug('" + s + "');");
         }
-        System.out.println("[APPLET] DEBUG "+s);
+        Logger.getLogger(Main.class.getName()).log(Level.INFO,"[APPLET] DEBUG "+s);
     }
 }

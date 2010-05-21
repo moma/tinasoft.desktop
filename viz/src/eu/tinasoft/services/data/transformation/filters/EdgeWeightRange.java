@@ -73,8 +73,8 @@ public class EdgeWeightRange extends NodeFilter {
 
 
         float f = input.maxEdgeWeight - input.minEdgeWeight;
-        //System.out.println("f:" + f);
-        //System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
+        System.out.println("f:" + f);
+        System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
 
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)
@@ -92,7 +92,7 @@ public class EdgeWeightRange extends NodeFilter {
                 : (Float) o;
         //max = max * f + input.minEdgeWeight;
 
-        //System.out.println("min:"+min+" max:"+max);
+        System.out.println("min:"+min+" max:"+max);
 
         //System.out.println("threshold weight got "+input.size()+" nodes in entry");
         for (Node n : input.nodes) {

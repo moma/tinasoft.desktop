@@ -33,6 +33,7 @@ import eu.tinasoft.services.data.model.NodeList;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,7 +46,7 @@ public class Main extends PApplet implements MouseWheelListener {
     String PATH_TO_TEST_FILE =
             "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
-          //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
+            //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
 
     ;
@@ -102,7 +103,6 @@ public class Main extends PApplet implements MouseWheelListener {
     private float realWidth = 0.0f;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
     private int bezierSize = 18;
-
     private int shownEdges = 0;
     private int shownNodes = 0;
     AtomicBoolean redrawScene = new AtomicBoolean(true);
@@ -433,7 +433,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!this.isEnabled()) {
             if (v.prespatializeSteps-- > 0) {
-                layout.macroViewLayout_TinaForce(v, nodes);
+                if (!v.paused) {
+                    layout.macroViewLayout_TinaForce(v, nodes);
+                }
             }
             return;
         }
@@ -528,7 +530,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
         } else if (v.prespatializeSteps-- > 0) {
             drawLoading(v);
-            layout.macroViewLayout_TinaForce(v, nodes);
+            if (!v.paused) {
+                layout.macroViewLayout_TinaForce(v, nodes);
+            }
 
         } else {
             drawAndSpatializeRealtime(v);
@@ -795,30 +799,42 @@ public class Main extends PApplet implements MouseWheelListener {
                 // skip the node if the following cases
 
 
-                boolean directed = n1.weights.containsKey(n2.id);
-                boolean mutual = n2.weights.containsKey(n1.id);
-                if (!directed) {
-                    if (!mutual) {
-                        continue;
+
+                boolean n2_in_n1 = n1.weights.containsKey(n2.id);
+
+                if (!n2_in_n1) {
+                    continue;
+                }
+                boolean n1_in_n2 = n2.weights.containsKey(n1.id);
+
+                float w = (Float) n1.weights.get(n2.id);
+
+
+                if (n1.weight > n2.weight) {
+
+                    continue;
+                } else {
+                    if (n1.weight == n2.weight) {
+                        if (n1.id > n2.id) {
+                            continue;
+                        }
                     }
                 }
 
-                float weightN1_2_N2 = (!directed) ? 0.0f : (Float) n1.weights.get(n2.id);
-                float weightN2_2_N1 = (!mutual) ? 0.0f : (Float) n2.weights.get(n1.id);
-
-                // only print the edge in one direction
-                if (n1.weight > n2.weight) {
-                    // print
-                } else if (weightN1_2_N2 > weightN2_2_N1) {
-                    // print
-                } else if (n1.id > n2.id) {
-                    // print
-                } else {
-                    continue;
-                }
-
-
                 shownEdges++;
+
+
+                float minrad = PApplet.min(n1.radius, n2.radius);
+
+                // compute the edge thickness
+
+                // since mutal edges might have incomplete
+                // weight information, we have to try to
+                // get the weight in both nodes
+
+
+                // default
+
                 // if we want to draw the links, or if we clicked on a node
                 // or if we put the mouse over a node
 
@@ -832,25 +848,23 @@ public class Main extends PApplet implements MouseWheelListener {
                 float m = 160.0f;
                 float r = (255.0f - m) / 255.0f;
 
-
                 if (n1.selected || n2.selected) {
-                    stroke(constrain((m + cr * r) *0.4f, 0, 255),
-                            constrain((m + cg * r) *0.4f, 0, 255),
-                            constrain((m + cb * r) *0.4f, 0, 255),
-                            constrain((Float) weightN1_2_N2*255.0f, 10, 230));
+                    stroke(constrain((m + cr * r) * 0.4f, 0, 200),
+                            constrain((m + cg * r) * 0.4f, 0, 200),
+                            constrain((m + cb * r) * 0.4f, 0, 200),
+                            120);
                 } else if (n1.isFirstHighlight || n2.isFirstHighlight) {
-                    stroke(constrain((m + cr * r)*0.8f, 0, 255),
-                            constrain((m + cg * r)*0.8f, 0, 255),
-                            constrain((m + cb * r)*0.8f, 0, 255),
-                            constrain((Float) 0.8f*weightN1_2_N2*255.0f, 10, 230));
+                    stroke(constrain((m + cr * r) * 0.8f, 0, 230),
+                            constrain((m + cg * r) * 0.8f, 0, 230),
+                            constrain((m + cb * r) * 0.8f, 0, 230),
+                            120);
                 } else {
 
-                    stroke(constrain((m + cr * r)*1.0f, 0, 255),
-                            constrain((m + cg * r)*1.0f, 0, 255),
-                            constrain((m + cb * r)*1.0f, 0, 255),
-                            constrain((Float) 0.7f*weightN1_2_N2*255.0f, 10, 230));
+                    stroke(constrain((m + cr * r) * 1.0f, 0, 255),
+                            constrain((m + cg * r) * 1.0f, 0, 255),
+                            constrain((m + cb * r) * 1.0f, 0, 255),
+                            120);
                 }
-
 
 
                 float powd = PApplet.dist(n1.screenX, n1.screenY, n2.screenX, n2.screenY);
@@ -858,24 +872,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 bezierDetail((int) modulator);
 
-                // compute the edge thickness
-                if (v.highDefinition) {
-                    // since mutal edges might have incomplete
-                    // weight information, we have to try to
-                    // get the weight in both nodes
-                    float w = n1.weights.containsKey(n2.id)
-                            ? (Float) n1.weights.get(n2.id) // node 2
-                            : n2.weights.containsKey(n1.id)
-                            ? (Float) n2.weights.get(n1.id) // node 1
-                            : 1.0f; // default
 
 
-                    strokeWeight(
-                            constrain(w * v.sceneScale, 1.0f, 30.0f));
+                strokeWeight(minrad*0.3f * v.sceneScale);
 
-                } else {
-                    strokeWeight(1);
-                }
+
 
                 drawCurve(n1.position.x, n1.position.y, n2.position.x, n2.position.y);
             } // FOR NODE B
@@ -894,7 +895,7 @@ public class Main extends PApplet implements MouseWheelListener {
             float ny = n.position.y;
 
             float rad = n.radius;// * MAX_NODE_RADIUS;
-            
+
             float rad2 = rad * 1.3f;
             //rad = rad * 0.9f;
 
@@ -942,21 +943,21 @@ public class Main extends PApplet implements MouseWheelListener {
                 }*/
 
                 /*
-                    fill(0,0,0, 20);
+                fill(0,0,0, 20);
 
 
                 if (n.shape == ShapeCategory.DISK) {
-                    ellipse(nx, ny, rad2+0.1f, rad2+0.1f);
+                ellipse(nx, ny, rad2+0.1f, rad2+0.1f);
                 } else {
-                    rect(nx, ny, rad2+0.1f, rad2+0.1f);
+                rect(nx, ny, rad2+0.1f, rad2+0.1f);
                 }
-*/
+                 */
                 if (n.selected) {
-                    fill(constrain(n.r * 0.4f, 0, 255), constrain(n.g * 0.4f, 0, 255), constrain(n.b * 0.4f, 0, 255), alpha*0.7f);
+                    fill(constrain(n.r * 0.4f, 0, 255), constrain(n.g * 0.4f, 0, 255), constrain(n.b * 0.4f, 0, 255), alpha * 0.7f);
                 } else if (n.isFirstHighlight) {
-                    fill(constrain(n.r * 0.4f + 40, 0, 255), constrain(n.g * 0.4f + 40, 0, 255), constrain(n.b * 0.4f + 40, 0, 255), alpha*0.7f);
+                    fill(constrain(n.r * 0.4f + 40, 0, 255), constrain(n.g * 0.4f + 40, 0, 255), constrain(n.b * 0.4f + 40, 0, 255), alpha * 0.7f);
                 } else {
-                    fill(constrain(n.r * 0.5f, 0, 255), constrain(n.g * 0.5f , 0, 255), constrain(n.b * 0.5f, 0, 255), alpha*0.3f);
+                    fill(constrain(n.r * 0.5f, 0, 255), constrain(n.g * 0.5f, 0, 255), constrain(n.b * 0.5f, 0, 255), alpha * 0.3f);
                 }
 
 
@@ -971,7 +972,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 } else if (n.isFirstHighlight) {
                     fill(constrain(n.r + 40, 0, 255), constrain(n.g + 40, 0, 255), constrain(n.b + 40, 0, 255), alpha);
                 } else {
-                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha*0.8f);
+                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha * 0.8f);
                 }
 
                 if (n.shape == ShapeCategory.DISK) {
@@ -993,7 +994,7 @@ public class Main extends PApplet implements MouseWheelListener {
             } else if (n.isSecondHighlight) {
                 fill(60, 60, 60, 180);
             } else {
-                fill(0, 0, 0, alpha*0.7f); // we want text a bit more transparent
+                fill(0, 0, 0, alpha * 0.7f); // we want text a bit more transparent
             }
             textSize(rad);
             n.boxHeight = rad2 * 2.0f;
@@ -1140,7 +1141,7 @@ public class Main extends PApplet implements MouseWheelListener {
         return session.getView();
     }
 
-    public View getView(String v) {
+    public View getView(String v) throws ViewNotFoundException {
         return session.getView(v);
     }
 
@@ -1538,7 +1539,11 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param view
      */
     public void clear(String view) {
-        getSession().getView(view).clear();
+        try {
+            getSession().getView(view).clear();
+        } catch (ViewNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         redrawIfNeeded();
     }
 
@@ -1554,8 +1559,12 @@ public class Main extends PApplet implements MouseWheelListener {
      * "Touch" a given view (will cause the current view to update)
      * @param level
      */
-    public void touch(String view) {
+    public void touch(String view) throws ViewNotFoundException {
         getView(view).getGraph().touch();
+    }
+
+    public void touch() {
+        getView().getGraph().touch();
     }
 
     /**
@@ -1581,18 +1590,22 @@ public class Main extends PApplet implements MouseWheelListener {
      * @throws KeyException
      */
     public boolean setProperty(String view, String key, Object value) {
+
+        System.out.println("getProperty(" + view + "," + key + "," + value + ")");
+
         try {
 
-            return 
-                    view.equalsIgnoreCase("all")
+            return view.equalsIgnoreCase("all")
                     ? getSession().setProperty(key, value)
                     : view.equalsIgnoreCase("current")
                     ? getView().setProperty(key, value)
                     : getView(view).setProperty(key, value);
         } catch (KeyException ex) {
             Console.error(ex.getMessage());
-            return false;
+        } catch (ViewNotFoundException ex) {
+            Console.error(ex.getMessage());
         }
+        return false;
     }
 
     /**
@@ -1620,16 +1633,19 @@ public class Main extends PApplet implements MouseWheelListener {
      * @throws KeyException
      */
     public Object getProperty(String view, String key) {
+        Object o = null;
         try {
-             return
-                    view.equalsIgnoreCase("current")
-                    ? getView().getProperty(key)
-                    : getView(view).getProperty(key);
-
+            o = view.equalsIgnoreCase("current") ? getView().getProperty(key) : getView(view).getProperty(key);
         } catch (KeyException ex) {
             Console.error(ex.getMessage());
             return "";
+        } catch (ViewNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        System.out.println("getProperty(" + view + "," + key + ") = " + o);
+
+        return o;
     }
 
     /**
@@ -1675,12 +1691,16 @@ public class Main extends PApplet implements MouseWheelListener {
 
         String def = "[]";
 
-        List<Node> results =
-                view.contains("current")
-                ? nodes.getNodesByCategory(category)
-                : view.contains("all")
-                ? getSession().getView("macro").getGraph().getNodeListCopy().getNodesByCategory(category)
-                : getSession().getView(view).getGraph().getNodeListCopy().getNodesByCategory(category);
+        List<Node> results = new ArrayList<Node>();
+        try {
+            results = view.contains("current")
+                    ? nodes.getNodesByCategory(category)
+                    : view.contains("all")
+                    ? getSession().getView("macro").getGraph().getNodeListCopy().getNodesByCategory(category)
+                    : getSession().getView(view).getGraph().getNodeListCopy().getNodesByCategory(category);
+        } catch (ViewNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("view: " + view + " category: " + category + " --- resulting array size: " + results.size());
         if (results.size() == 0) {
             return def;
