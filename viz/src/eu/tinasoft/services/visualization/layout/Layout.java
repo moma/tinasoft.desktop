@@ -33,14 +33,14 @@ public class Layout {
 
         int nbNodes = nodes.size();
 
-        float cooling = (float) (0.05f / PApplet.log(nbNodes + 1f));
+        float cooling = (float) (0.05f / PApplet.sqrt(PApplet.sqrt(nbNodes + 1f)));
 
         float vlimit_max = 100f;
 
         float decay = PApplet.exp(-v.layoutIterationCount * cooling);
 
 
-        float gravity = 0.05f / (1 + PApplet.log(nbNodes)) * (1 - decay);
+        float gravity = 0.05f / (1 + PApplet.sqrt(PApplet.sqrt(nbNodes))) * (1 - decay);
 
         ////////////////////////////////////////////////////////////////////////////////
 
@@ -50,7 +50,7 @@ public class Layout {
         }
 
         float borderDist = EPSILON;
-        int n1_degree = 0;
+        int n1_degree = 0, n2_degree = 0;
         float dix = 0;
         float diy = 0;
         float weight = 0;
@@ -74,6 +74,9 @@ public class Layout {
                 if (n1 == n2) {
                     continue;
                 }
+
+                n2_degree = n2.weights.size();
+
                 n2vx = 0.0f;
                 n2vy = 0.0f;
                 n2gvx = 0.0f;
@@ -145,7 +148,12 @@ public class Layout {
 
                     if (n1.weights.containsKey(n2.id)) {
                         //System.out.println("dist: "+dist);
-                        weight = (Float) n1.weights.get(n2.id) +1;
+                        weight = (Float) n1.weights.get(n2.id) + 1;
+
+                        // si le noeud n'a pas de voisins
+                        if (n2_degree == 1) {
+                            attraction = attraction * 2.0f;
+                        }
                         //
                         dix = (dx / dist) * PApplet.sqrt(PApplet.sqrt(weight)) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
                         diy = (dy / dist) * PApplet.sqrt(PApplet.sqrt(weight)) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
@@ -154,9 +162,15 @@ public class Layout {
                     }
 
                     // REPULSION
-                    float rep = (n1.weights.containsKey(n2.id))
-                            ? globalRepulsion * PApplet.log(n1_degree)
-                            : globalRepulsion;
+                    float rep = globalRepulsion;
+
+                    if (n1.weights.containsKey(n2.id)) {
+                        rep = globalRepulsion * PApplet.log(n1_degree);
+
+                        if (n2_degree == 1) {
+                            rep = rep * 2.0f;
+                        }
+                    }
                     n2vx += (dx / sqBorderDist) * rep;
                     n2vy += (dy / sqBorderDist) * rep;
 
@@ -194,7 +208,6 @@ public class Layout {
             }
         }
     }
-
 
     public void macroViewLayout_ForceBlender(View v, NodeList nodes) {
         float distance = 1f;

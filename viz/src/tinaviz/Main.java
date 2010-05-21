@@ -385,7 +385,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             try {
-                session.getMacro().setProperty("cat/value", "NGram");
+                session.getMacro().setProperty("category/value", "NGram");
             } catch (KeyException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
