@@ -145,7 +145,7 @@ public class Layout {
 
                     if (n1.weights.containsKey(n2.id)) {
                         //System.out.println("dist: "+dist);
-                        weight = (Float) n1.weights.get(n2.id) + 1;
+                        weight = (Float) n1.weights.get(n2.id) +1;
                         //
                         dix = (dx / dist) * PApplet.sqrt(PApplet.sqrt(weight)) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
                         diy = (dy / dist) * PApplet.sqrt(PApplet.sqrt(weight)) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);

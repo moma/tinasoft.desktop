@@ -328,13 +328,13 @@ public class NodeList {
                         // si pas de min ni d emax
                         (minEdgeWeight == maxEdgeWeight)
                         ? NORMALIZED_MIN_EDGE_WEIGHT
-                        :  PApplet.map(w,
-                    minEdgeWeight, maxEdgeWeight,
-                    NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT) // sinon
+                        : 
+                            ((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (PApplet.max(
+                        PApplet.abs(minEdgeWeight), PApplet.abs(maxEdgeWeight))));
+                         // sinon
                         // entre 0 et NORMALIZED_MAX_EDGE_WEIGHT
                         //(0 < minEdgeWeight && maxEdgeWeight < 1) ?
-                        /*((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (PApplet.max(
-                        PApplet.abs(minEdgeWeight), PApplet.abs(maxEdgeWeight))));*/
+                        
                             ;
                 // entre 1 et NORMALIZED_MAX_EDGE_WEIGHT
                         /*: PApplet.map(w,

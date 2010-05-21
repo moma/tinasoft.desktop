@@ -111,6 +111,8 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean centerOnSelection = false;
     private boolean loading = true;
 
+
+
     private String getSelectedNodesAsJSON() {
 
         String result = "";
@@ -388,8 +390,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            session.getMacro().addFilter("Category", "cat");
+            session.getMacro().addFilter("Category", "category");
+            session.getMacro().addFilter("NodeWeightRange", "nodeWeight");
+            session.getMacro().addFilter("EdgeWeightRange", "edgeWeight");
             session.getMacro().addFilter("NodeFunction", "radiusByWeight");
+            session.getMacro().addFilter("Output", "output");
             //session.getView().paused = true;
 
         }
@@ -824,7 +829,10 @@ public class Main extends PApplet implements MouseWheelListener {
                 shownEdges++;
 
 
-                float minrad = PApplet.min(n1.radius, n2.radius);
+
+                // here, minRadius should contain the non-normalized min radius
+                // (eg. 1.0 or 4.4)
+                float minrad = nodes.minRadius;
 
                 // compute the edge thickness
 
@@ -849,14 +857,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 float r = (255.0f - m) / 255.0f;
 
                 if (n1.selected || n2.selected) {
-                    stroke(constrain((m + cr * r) * 0.4f, 0, 200),
-                            constrain((m + cg * r) * 0.4f, 0, 200),
-                            constrain((m + cb * r) * 0.4f, 0, 200),
+                    stroke(constrain((m + cr * r) * 0.35f, 0, 200),
+                            constrain((m + cg * r) * 0.35f, 0, 200),
+                            constrain((m + cb * r) * 0.35f, 0, 200),
                             120);
                 } else if (n1.isFirstHighlight || n2.isFirstHighlight) {
-                    stroke(constrain((m + cr * r) * 0.8f, 0, 230),
-                            constrain((m + cg * r) * 0.8f, 0, 230),
-                            constrain((m + cb * r) * 0.8f, 0, 230),
+                    stroke(constrain((m + cr * r) * 0.7f, 0, 230),
+                            constrain((m + cg * r) * 0.7f, 0, 230),
+                            constrain((m + cb * r) * 0.7f, 0, 230),
                             120);
                 } else {
 
@@ -872,11 +880,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 bezierDetail((int) modulator);
 
-
-
-                strokeWeight(minrad*0.3f * v.sceneScale);
-
-
+                float screenWeight = PApplet.map(w,0.0f,1.0f,minrad*0.1f,minrad*0.4f);
+                strokeWeight(screenWeight  * v.sceneScale);
 
                 drawCurve(n1.position.x, n1.position.y, n2.position.x, n2.position.y);
             } // FOR NODE B
@@ -953,9 +958,9 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
                  */
                 if (n.selected) {
-                    fill(constrain(n.r * 0.4f, 0, 255), constrain(n.g * 0.4f, 0, 255), constrain(n.b * 0.4f, 0, 255), alpha * 0.7f);
+                    fill(constrain(n.r * 0.4f, 0, 255), constrain(n.g * 0.4f, 0, 255), constrain(n.b * 0.4f, 0, 255), alpha * 0.9f);
                 } else if (n.isFirstHighlight) {
-                    fill(constrain(n.r * 0.4f + 40, 0, 255), constrain(n.g * 0.4f + 40, 0, 255), constrain(n.b * 0.4f + 40, 0, 255), alpha * 0.7f);
+                    fill(constrain(n.r * 0.4f , 0, 255), constrain(n.g * 0.4f , 0, 255), constrain(n.b * 0.4f , 0, 255), alpha * 0.7f);
                 } else {
                     fill(constrain(n.r * 0.5f, 0, 255), constrain(n.g * 0.5f, 0, 255), constrain(n.b * 0.5f, 0, 255), alpha * 0.3f);
                 }
@@ -970,9 +975,9 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (n.selected) {
                     fill(constrain(n.r, 0, 255), constrain(n.g, 0, 255), constrain(n.b, 0, 255), 255);
                 } else if (n.isFirstHighlight) {
-                    fill(constrain(n.r + 40, 0, 255), constrain(n.g + 40, 0, 255), constrain(n.b + 40, 0, 255), alpha);
+                    fill(constrain(n.r + 40, 0, 255), constrain(n.g + 40, 0, 255), constrain(n.b + 40, 0, 255), 200);
                 } else {
-                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha * 0.8f);
+                    fill(constrain(n.r + 80, 0, 255), constrain(n.g + 80, 0, 255), constrain(n.b + 80, 0, 255), alpha * 0.9f);
                 }
 
                 if (n.shape == ShapeCategory.DISK) {

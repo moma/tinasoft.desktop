@@ -13,11 +13,11 @@ import eu.tinasoft.services.data.transformation.filters.EdgeWeightRange;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.data.transformation.filters.NodeFunction;
 import eu.tinasoft.services.data.model.NodeList;
-import eu.tinasoft.services.data.transformation.filters.NodeRadius;
+import eu.tinasoft.services.data.transformation.filters.Output;
 import tinaviz.SubGraphCopy;
 import tinaviz.SubGraphCopyStandalone;
 import eu.tinasoft.services.data.transformation.filters.NodeWeightRange;
-import eu.tinasoft.services.data.transformation.filters.ScreenSettings;
+import eu.tinasoft.services.data.transformation.filters.Output;
 import eu.tinasoft.services.data.transformation.filters.WeightSize;
 import tinaviz.NodeWeightRangeHack;
 import eu.tinasoft.services.visualization.views.View;
@@ -43,9 +43,9 @@ public class FilterChain {
         private FilterChain chain;
         private View view;
         private Session session;
-        Filter finalizer = new ScreenSettings();
 
         public FilterThread(FilterChain chain, Session session, View view, NodeList nodes) {
+            
             this.session = session;
             this.view = view;
             this.nodes = nodes;
@@ -61,8 +61,8 @@ public class FilterChain {
                 nodes = f.preProcessing(session, view, nodes);
             }
 
-            // nodes = finalizer.preProcessing(session, view, nodes);
-
+            System.out.println("Finalizing scaling to screen..");
+ 
             // this assignation should be safe if we create a new node list
             chain.filteredNodes = new NodeList(nodes);
             chain.filterIsRunning.set(false);
@@ -85,8 +85,6 @@ public class FilterChain {
         Filter f = null;
         if (filterName.equals("EdgeWeightRange")) {
             f = new EdgeWeightRange();
-        } else if (filterName.equals("NodeRadius")) {
-            f = new NodeRadius();
         } else if (filterName.equals("WeightSize")) {
             f = new WeightSize();
         } else if (filterName.equals("NodeFunction")) {
@@ -99,11 +97,10 @@ public class FilterChain {
             f = new SubGraphCopyStandalone();
         } else if (filterName.equals("NodeWeightRange")) {
             f = new NodeWeightRange();
-
         } else if (filterName.equals("NodeWeightRangeHack")) {
             f = new NodeWeightRangeHack();
-        } else if (filterName.equals("ScreenSettings")) {
-            f = new ScreenSettings();
+        } else if (filterName.equals("Output")) {
+            f = new Output();
         } else {
             return false;
         }
