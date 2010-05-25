@@ -4,11 +4,8 @@
  */
 package eu.tinasoft.services.data.transformation.filters;
 
-import cern.colt.map.OpenIntIntHashMap;
 import cern.colt.map.OpenIntObjectHashMap;
 import eu.tinasoft.services.data.model.NodeList;
-import java.util.HashSet;
-import java.util.Set;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;
@@ -73,8 +70,8 @@ public class EdgeWeightRange extends NodeFilter {
 
 
         float f = input.maxEdgeWeight - input.minEdgeWeight;
-        System.out.println("f:" + f);
-        System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
+        //System.out.println("f:" + f);
+        //System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
 
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)
@@ -92,7 +89,7 @@ public class EdgeWeightRange extends NodeFilter {
                 : (Float) o;
         //max = max * f + input.minEdgeWeight;
 
-        System.out.println("min:"+min+" max:"+max);
+        //System.out.println("min:"+min+" max:"+max);
 
         //System.out.println("threshold weight got "+input.size()+" nodes in entry");
         for (Node n : input.nodes) {

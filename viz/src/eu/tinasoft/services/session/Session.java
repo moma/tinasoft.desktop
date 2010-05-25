@@ -235,4 +235,10 @@ public class Session {
     public void setBrowser(LiveConnector browser) {
         this.browser = browser;
     }
+
+    public void selectNodes(List<String> ids) {
+        for (String id : ids) {
+            selectNode(id);
+        }
+    }
 }

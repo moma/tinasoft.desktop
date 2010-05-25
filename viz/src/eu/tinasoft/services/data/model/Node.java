@@ -57,6 +57,7 @@ public class Node implements Comparable {
     public String imageURL = "http://cssociety.org/tiki-show_user_avatar.php?user=";
     public boolean isSecondHighlight = false;
 
+
     public Node(int uuid, String label, float radius, Float x, Float y) {
 
         this.id = uuid;

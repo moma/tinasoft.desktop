@@ -20,7 +20,7 @@ import eu.tinasoft.services.visualization.views.ViewLevel;
  *
  * @author jbilcke
  */
-public class Category extends NodeFilter {
+public class Normalize extends NodeFilter {
 
     private String KEY_CATEGORY = "value";
     private String KEY_MODE = "mode";
@@ -87,8 +87,10 @@ public class Category extends NodeFilter {
 
         // should we normalize positions as well?
 
-        if (view.graph.topologyChanged.get() | !oldCategory.equals(category)) {
-            output.normalizePositions();
+        if (false) {
+            if (view.graph.topologyChanged.get() | !oldCategory.equals(category)) {
+                output.normalizePositions();
+            }
         }
         oldCategory = category;
 

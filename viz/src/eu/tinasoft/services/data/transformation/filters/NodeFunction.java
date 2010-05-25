@@ -5,9 +5,7 @@
 package eu.tinasoft.services.data.transformation.filters;
 
 import eu.tinasoft.services.data.model.NodeList;
-import java.util.LinkedList;
-import java.util.List;
-import processing.core.PApplet;
+
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;

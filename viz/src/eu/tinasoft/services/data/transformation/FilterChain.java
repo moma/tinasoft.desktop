@@ -45,7 +45,7 @@ public class FilterChain {
         private Session session;
 
         public FilterThread(FilterChain chain, Session session, View view, NodeList nodes) {
-            
+
             this.session = session;
             this.view = view;
             this.nodes = nodes;
@@ -54,6 +54,7 @@ public class FilterChain {
 
         @Override
         public void run() {
+
             for (Filter f : filters) {
                 if (interrupted()) {
                     return;
@@ -62,7 +63,7 @@ public class FilterChain {
             }
 
             System.out.println("Finalizing scaling to screen..");
- 
+
             // this assignation should be safe if we create a new node list
             chain.filteredNodes = new NodeList(nodes);
             chain.filterIsRunning.set(false);

@@ -204,7 +204,7 @@ public class Graph implements Cloneable {
             }
 
             int id = uuid.hashCode();
-            
+
             String label = (xmlnodeAttributes.getNamedItem("label") != null)
                     ? xmlnodeAttributes.getNamedItem("label").getNodeValue()
                     : "" + id;
@@ -218,13 +218,13 @@ public class Graph implements Cloneable {
             node.weight = 1.0f;
 
             if (node.category.equals("NGram")) {
-                        node.r = 110;
-                        node.g = 100;
-                        node.b = 150;
+                node.r = 110;
+                node.g = 100;
+                node.b = 150;
             } else {
-                        node.r = 150;
-                        node.g = 100;
-                        node.b = 110;
+                node.r = 150;
+                node.g = 100;
+                node.b = 110;
             }
 
             org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
@@ -255,7 +255,7 @@ public class Graph implements Cloneable {
                                     // System.out.println("found attribute "+attrib.toString()+" with key "+attrib.key+" !");
 
                                     if (attrib.key.equalsIgnoreCase("weight")) {
-                             
+
                                         if (attrib.type == Float.class | attrib.type == Integer.class | attrib.type == Double.class) {
                                             node.weight = Float.parseFloat(nodeValue);
 
@@ -310,7 +310,7 @@ public class Graph implements Cloneable {
                     if (xmlnodePositionAttributes.getNamedItem("b") != null) {
                         node.b = Float.parseFloat(xmlnodePositionAttributes.getNamedItem("b").getNodeValue());
                     }
-                } 
+                }
 
                 if (node.category.equals("NGram")) {
                     node.shape = ShapeCategory.DISK;
@@ -323,8 +323,8 @@ public class Graph implements Cloneable {
 
             // debug
             //System.out.println("json: "+node.getAttributesAsJSON());
-            
-           //System.out.println(node.category + " " + node.label + " with weight " + node.weight);
+
+            //System.out.println(node.category + " " + node.label + " with weight " + node.weight);
 
             // HACK FOR BAD NGRAMS IN MESO DOCUMENTS GRAPHS
             if (session.macro.graph != this) {
@@ -362,7 +362,7 @@ public class Graph implements Cloneable {
                 src = src.split("::")[1];
             }
 
-            int source  = src.hashCode();
+            int source = src.hashCode();
 
             String trg = edgeAttributesXML.getNamedItem("target").getNodeValue();
 
@@ -400,10 +400,16 @@ public class Graph implements Cloneable {
         for (Node n : storedNodes.values()) {
             res.add(n.getProxyClone());
         }
+
+        //res.computeExtremums();
+        //res.normalize();
+
+        // should we normalize positions as well?
+
+        //res.normalizePositions();
+
         return res;
     }
-
-
 
     public synchronized void putNode(eu.tinasoft.services.data.model.Node node) {
         if (storedNodes.containsKey(node.id)) {
@@ -473,7 +479,7 @@ public class Graph implements Cloneable {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
             System.out.println("node selected, touching..");
-              touch();
+            touch();
         }
     }
 
@@ -485,7 +491,6 @@ public class Graph implements Cloneable {
 
     }
 
-  
     public void unselectAll() {
         for (Node n : storedNodes.values()) {
             n.selected = false;

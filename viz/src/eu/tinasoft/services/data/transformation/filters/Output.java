@@ -66,7 +66,7 @@ public class Output extends NodeFilter {
         for (Node n : input.nodes) {
 
             n.radius = PApplet.map(n.radius * r, input.minRadius, input.maxRadius, RADIUS_MIN, RADIUS_MAX);
-            System.out.println(n.radius + "= PApplet.map("+n.radius * r+", "+input.minRadius+", "+input.maxRadius+", "+RADIUS_MIN+", "+RADIUS_MAX+");");
+            //System.out.println(n.radius + "= PApplet.map("+n.radius * r+", "+input.minRadius+", "+input.maxRadius+", "+RADIUS_MIN+", "+RADIUS_MAX+");");
 
         }
         return input;

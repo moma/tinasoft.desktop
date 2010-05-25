@@ -114,6 +114,34 @@ public class NodeList {
         }
     }
 
+    public PVector getSelectedNodesBarycenter() {
+        PVector bary = new PVector(0.0f, 0.0f, 0.0f);
+        Float mx = null;
+        Float my = null;
+        int i = 0;
+        for (Node n : nodes) {
+            if (!n.selected)
+                continue;
+            mx = (mx == null) ? n.position.x : mx + n.position.x;
+            my = (my == null) ? n.position.y : my + n.position.y;
+            i++;
+        }
+        if (mx != null && my != null) {
+            bary.set(mx / i, my / i, 0);
+        }
+        return bary;
+    }
+
+    public void selectNodes(List<String> ids) {
+        for (String id : ids) {
+            selectNode(id);
+        }
+    }
+
+    public void unselect(String id) {
+        for (Node n : nodes) if (n.id == id.hashCode()) n.selected = false;
+    }
+
     public class SelectedComparator implements Comparator {
 
         @Override
@@ -268,9 +296,8 @@ public class NodeList {
             //System.out.println(" - radius avant:"+n.radius);
 
 
-            n.position.set(
-                    (minX == maxX) ? MIN_X : PApplet.map(n.position.x, minX, maxX, MIN_X, MAX_X),
-                    (minY == maxY) ? MIN_Y : PApplet.map(n.position.y, minY, maxY, MIN_Y, MAX_Y),
+            n.position.set(PApplet.map(n.position.x, minX, maxX, MIN_X, MAX_X),
+                     PApplet.map(n.position.y, minY, maxY, MIN_Y, MAX_Y),
                     0.0f);
 
         }
@@ -299,7 +326,7 @@ public class NodeList {
                 n.b = 255 - 160 * n.radius;
             }
 
-            System.out.println("n.weight = " + "PApplet.map(" + n.weight + ","
+            if (false) System.out.println("n.weight = " + "PApplet.map(" + n.weight + ","
                     + minNodeWeight + ", " + maxNodeWeight + "," + NORMALIZED_MIN_NODE_WEIGHT + ", " + NORMALIZED_MAX_NODE_WEIGHT + ");");
 
             // NORMALIZE WEIGHT
@@ -316,7 +343,7 @@ public class NodeList {
                     )
                     ))*/;
 
-            System.out.println("n.weight = " + n.weight);
+            if (false) System.out.println("n.weight = " + n.weight);
 
             // NORMALIZE WEIGHTS
             for (int k : n.weights.keys().elements()) {
