@@ -1080,7 +1080,7 @@ public class Main extends PApplet implements MouseWheelListener {
             //fill(0, 0, 100, 100);
             stroke(0, 0, 0, 40);
             strokeWeight(1.0f);
-            fill(00, 70, 255, 30);
+            fill(00, 100, 200, 29);
             p.add(mouseX, mouseY, 0);
             //p.sub(v.translation);
             //p.mult(v.sceneScale);
@@ -1645,6 +1645,9 @@ public class Main extends PApplet implements MouseWheelListener {
         getView().getGraph().touch();
     }
 
+    public void resetLayoutCounter() {
+        getView().resetLayoutCounter();
+    }
     /**
      * Dispatch a property to all views (this method is here to facilitate
      * configuration of a lot of filters on a lot of views)
@@ -1722,7 +1725,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println("getProperty(" + view + "," + key + ") = " + o);
+        // System.out.println("getProperty(" + view + "," + key + ") = " + o);
 
         return o;
     }

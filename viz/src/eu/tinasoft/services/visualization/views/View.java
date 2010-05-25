@@ -117,7 +117,8 @@ public class View {
     public synchronized boolean setProperty(String key, Object value) throws KeyException {
         // System.out.println("set property "+key+" to "+value+" for view "+getName());
         properties.put(key, value);
-        resetLayoutCounter();
+        // HACK
+        // resetLayoutCounter();
         return true;
     }
 
