@@ -487,7 +487,8 @@ public class Main extends PApplet implements MouseWheelListener {
                     : 1.0f;
             if (true) {
                 //System.out.println("tooBigFactor= " + tooBigFactor);
-                if (tooBigFactor > 1.0f) {
+                if (false) {
+                //if (tooBigFactor > 1.0f) {
                     // ok
                     //System.out.println("we are okay, we simply center");
                     // autocenter = false;
@@ -944,7 +945,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 // degrade du radius [r=14 level=255, r=40 level=80]
                 float minRad = 12.0f;
-                float maxRad = 25.0f;
+                float maxRad = 20.0f;
                 int maxRadColor = 200;
                 int minRadColor = 1;
 
@@ -1014,7 +1015,7 @@ public class Main extends PApplet implements MouseWheelListener {
             shownNodes++;
             // skip label drawing for small nodes
             // or if we have to hide labels
-            if (nodeScreenDiameter < 11 | !(v.showLabels | n.selected | highlighted)) {
+            if (nodeScreenDiameter < 1 | !(v.showLabels | n.selected | highlighted)) {
                 continue;
             }
             if (n.selected) {
