@@ -64,17 +64,17 @@ public class Normalize extends NodeFilter {
             //  System.out.println("  - n category == "+n.category);
             // HACK the category selector doesn't remove selecte dnodes
             if (view.getLevel() == ViewLevel.MESO && n.selected) {
-                output.add(n);
+                output.addWithoutTouching(n);
             } else {
 
                 if (n.category.equals(category)) {
                     if (keep) {
-                        output.add(n);
+                        output.addWithoutTouching(n);
                         //System.out.println("  - kept " + n.category + " " + n.label + " = " + n.weight + "\n");
                     }
                 } else {
                     if (!keep) {
-                        output.add(n);
+                        output.addWithoutTouching(n);
                         //System.out.println("  - n category == "+n.category+" added!\n");
                     }
                 }

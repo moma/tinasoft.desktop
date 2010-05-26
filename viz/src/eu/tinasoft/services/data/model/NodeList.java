@@ -4,8 +4,7 @@
  */
 package eu.tinasoft.services.data.model;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,10 +19,12 @@ import processing.core.PVector;
  * @author jbilcke
  */
 public class NodeList {
+    private boolean mayNeedRecentering = false;
 
     public NodeList(NodeList nodeList) {
         reset();
         //System.out.println("copying nodes from another node list, but clearing state..");
+        mayNeedRecentering = nodeList.getMayNeedRecentering();
         nodes = new LinkedList<Node>();
         for (Node n : nodeList.nodes) {
             nodes.add(n);
@@ -141,6 +142,60 @@ public class NodeList {
     public void unselect(String id) {
         for (Node n : nodes) if (n.id == id.hashCode()) n.selected = false;
     }
+
+    public PVector computeBaryCenter() {
+        PVector bary = new PVector(0.0f, 0.0f, 0.0f);
+        Float mx = null;
+        Float my = null;
+        int i = 0;
+        for (Node n : nodes) {
+            mx = (mx == null) ? n.position.x : mx + n.position.x;
+            my = (my == null) ? n.position.y : my + n.position.y;
+            i++;
+        }
+        if (mx != null && my != null) {
+            bary.set(mx / i, my / i, 0);
+        }
+        baryCenter = bary;
+        return baryCenter;
+    }
+
+    public float computeRadius() {
+        minX = Float.MAX_VALUE;
+        maxX = Float.MIN_VALUE;
+        minY = Float.MAX_VALUE;
+        maxY = Float.MIN_VALUE;
+        if (nodes.size() > 0) {
+             for (Node n : nodes) {
+                 maxX = PApplet.max(maxX,n.position.x);
+                 minX = PApplet.min(minX,n.position.x);
+                 maxY = PApplet.max(maxY,n.position.y);
+                 minY = PApplet.min(minY,n.position.y);
+            }
+        } else {
+             maxX =  1.0f;
+             minX = -1.0f;
+             maxY =  1.0f;
+             minY = -1.0f;
+        }
+        graphWidth = maxX - minX;
+        graphHeight = maxY - minY;
+        graphRadius = (graphWidth + graphHeight) / 2.0f;
+        return graphRadius;
+    }
+
+    public boolean getMayNeedRecentering() {
+        return mayNeedRecentering;
+    }
+
+    public void highlightNodeById(String str) {
+         int id = str.hashCode();
+        for (Node n : nodes) {
+            n.isFirstHighlight = (n.id == id);
+        }
+    }
+
+
 
     public class SelectedComparator implements Comparator {
 
@@ -279,10 +334,17 @@ public class NodeList {
                 + "maxNodeWeight=" + maxNodeWeight + ";";
     }
 
-    public void add(Node node) {
+    public void addWithoutTouching(Node node) {
         nodes.add(node);
     }
 
+    public void add(Node node) {
+                mayNeedRecentering = true;
+    }
+
+    public void setMayNeedRecentering(boolean value) {
+        mayNeedRecentering = value;
+    }
     public Node get(int i) {
         return nodes.get(i);
     }
@@ -362,7 +424,7 @@ public class NodeList {
                         // entre 0 et NORMALIZED_MAX_EDGE_WEIGHT
                         //(0 < minEdgeWeight && maxEdgeWeight < 1) ?
                         
-                            ;
+                       
                 // entre 1 et NORMALIZED_MAX_EDGE_WEIGHT
                         /*: PApplet.map(w,
                 minEdgeWeight, maxEdgeWeight,

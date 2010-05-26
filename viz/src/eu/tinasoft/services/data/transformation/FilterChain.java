@@ -54,7 +54,7 @@ public class FilterChain {
 
         @Override
         public void run() {
-
+            System.out.println("Beggining filtering..");
             for (Filter f : filters) {
                 if (interrupted()) {
                     return;
@@ -62,7 +62,7 @@ public class FilterChain {
                 nodes = f.preProcessing(session, view, nodes);
             }
 
-            System.out.println("Finalizing scaling to screen..");
+            System.out.println("End of filtering..");
 
             // this assignation should be safe if we create a new node list
             chain.filteredNodes = new NodeList(nodes);

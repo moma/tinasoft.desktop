@@ -39,6 +39,12 @@ public class Layout {
 
         float decay = PApplet.exp(-v.layoutIterationCount * cooling);
 
+        // pause is forced!
+        /*if (cooling <= 0.015f) {
+            //System.out.println("forced back to pause mode");
+            //v.paused = true;
+            //v.layoutIterationCount = 0;
+        }*/
 
         float gravity = 0.05f / (1 + PApplet.sqrt(PApplet.sqrt(nbNodes))) * (1 - decay);
 
@@ -46,7 +52,7 @@ public class Layout {
 
         if (false) {
             System.out.println("decay: " + decay + " = PApplet.exp(-" + v.layoutIterationCount + " * " + cooling + ")");
-            System.out.println("gravity: " + gravity);
+            // System.out.println("gravity: " + gravity);
         }
 
         float borderDist = EPSILON;

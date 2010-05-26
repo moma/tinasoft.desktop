@@ -398,7 +398,7 @@ public class Graph implements Cloneable {
     public synchronized NodeList getNodeListCopy() {
         NodeList res = new NodeList();
         for (Node n : storedNodes.values()) {
-            res.add(n.getProxyClone());
+            res.addWithoutTouching(n.getProxyClone());
         }
 
         //res.computeExtremums();
@@ -496,5 +496,12 @@ public class Graph implements Cloneable {
             n.selected = false;
         }
         touch();
+    }
+
+    public void highlightNodeById(String str) {
+        int id = str.hashCode();
+        for (Node n : storedNodes.values()) {
+            n.isFirstHighlight = (n.id == id);
+        }
     }
 }

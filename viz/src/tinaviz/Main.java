@@ -1,6 +1,5 @@
 package tinaviz;
 
-//import com.nativelibs4java.opencl.CLBuildException;
 import eu.tinasoft.services.visualization.layout.Layout;
 import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.data.model.ShapeCategory;
@@ -13,44 +12,39 @@ import java.security.KeyException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//import megamu.mesh.Hull;
 
 import eu.tinasoft.services.session.*;
-//import processing.opengl.*;
 import processing.core.*;
 import processing.xml.*;
 import processing.pdf.*;
 import netscape.javascript.*;
 
-import eu.tinasoft.services.protocols.browser.LiveConnector;
+import eu.tinasoft.services.protocols.browser.Browser;
 import eu.tinasoft.services.formats.json.JSONException;
 import eu.tinasoft.services.formats.json.JSONStringer;
 import eu.tinasoft.services.formats.json.JSONWriter;
 import eu.tinasoft.services.data.model.Node;
-//import tinaviz.layout.LayoutOpenCL;
 import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.NodeList;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
-//import peasy.*;
 
 public class Main extends PApplet implements MouseWheelListener {
 
     String PATH_TO_TEST_FILE =
+            //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/bipartite_graph.gexf"
             "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
             //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
 
     ;
-    String VENDOR_URL = "http://sciencemapping.com/tinaweb";
+    String VENDOR_URL = "http://tinaweb.sciencemapping.com";
+    boolean autocenter = true;
     float SELECTION_DISK_RADIUS = 150f;
     boolean generateRandomLocalGraph = false;
     boolean loadDefaultLocalGraph = false;
@@ -100,7 +94,6 @@ public class Main extends PApplet implements MouseWheelListener {
     int oldScreenWidth = 0;
     int oldScreenHeight = 0;
     private Node oldSelected = null;
-    private boolean recenter = true;
     private float oldZoomScale = -1f;
     private float realWidth = 0.0f;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
@@ -181,6 +174,9 @@ public class Main extends PApplet implements MouseWheelListener {
         Console.debug("viewChanged_JS_CALLBACK(" + view + ")");
         Object[] message = {fnc, 0};
         window.call("setTimeout", message);
+
+        System.out.println("sent order of switching view to the applet");
+        dispatchCallbackStates();
         // window.eval(cmd);
     }
 
@@ -259,13 +255,13 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
             window = JSObject.getWindow(this);
-            session.setBrowser(new LiveConnector(window));
+            session.setBrowser(new Browser(window, js_context));
             int w = 200;
             int h = 200;
             size(w, h, engine);
 
         } else {
-            session.setBrowser(new LiveConnector());
+            session.setBrowser(new Browser());
             loadDefaultGlobalGraph = true;
             size(screenWidth - 400, screenHeight - 100, engine);
         }
@@ -325,14 +321,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 node.weight = random(1.0f);
                 node.category = (random(1.0f) > 0.5f) ? "Document" : "NGram";
                 node.label = node.category + " " + node.label;
-                tmp.add(node);
+                tmp.addWithoutTouching(node);
             }
 
             for (int i = 0; i < tmp.size(); i++) {
                 root.addNeighbour(tmp.get(i), 0.1f + random(1.0f));
 
             }
-            tmp.add(root);
+            tmp.addWithoutTouching(root);
             Console.log("Generated " + tmp.size() + " nodes!");
 
             session.getMeso().getGraph().updateFromNodeList(tmp);
@@ -354,7 +350,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 node.weight = random(1.0f);
                 node.category = (random(1.0f) > 0.5f) ? "Document" : "NGram";
                 node.label = node.category + " " + node.label;
-                tmp.add(node);
+                tmp.addWithoutTouching(node);
             }
 
             for (int i = 0; i < tmp.size(); i++) {
@@ -463,48 +459,69 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-    public void draw2(View v, NodeList n) {
+    public void stopAutoCentering() {
+        if (autocenter) {
+            autocenter = false;
+            System.out.println("Stop auto centering");
+            session.getBrowser().buttonStateCallback("autoCentering", autocenter);
+        }
+    }
 
-        boolean autocenter = false;
-        if (n != null) {
-            //System.out.println("pop nodes gave something! overwriting node screen cache..");
-            nodes = n;
+    public void checkRecentering(View v) {
 
-            autocenter = v.graph.topologyChanged.getAndSet(false);
-            if (autocenter) {
-                oldZoomScale = -1f;
-            }
-
+        if (nodes.getMayNeedRecentering()) {
+            System.out.println("graph topology changed, need recentering");
+            autoCentering();
         }
 
-        if (recenter | autocenter) {
+        if (true) {
+            nodes.computeRadius();
 
-            float screenRadius = (width + height) / 2.0f;
+            float graphLength = PApplet.min(nodes.graphHeight, nodes.graphWidth);
+            float screenLength = PApplet.min(width, height);
 
-            v.sceneScale = nodes.graphRadius > 0 ? (screenRadius * 0.3f / nodes.graphRadius) : 1.0f;
-            PVector baryCenter = new PVector(nodes.baryCenter.x, nodes.baryCenter.y);
-            if (centerOnSelection) {
-                baryCenter = nodes.getSelectedNodesBarycenter();
-                centerOnSelection = false;
+            //System.out.println(v.sceneScale + " * " + graphLength + ")  < " + screenLength + ")");
+            float tooBigFactor =
+                    (graphLength != 0 && v.sceneScale != 0)
+                    ? ((screenLength * 1.0f) / (v.sceneScale * graphLength))
+                    : 1.0f;
+            if (true) {
+                //System.out.println("tooBigFactor= " + tooBigFactor);
+                if (tooBigFactor > 1.0f) {
+                    // ok
+                    //System.out.println("we are okay, we simply center");
+                    // autocenter = false;
+                } else if (autocenter) {
+                    //System.out.println("sceneScale:  " + v.sceneScale*tooBigFactor+ " = "+v.sceneScale+" * "+tooBigFactor);
+                    v.sceneScale *= tooBigFactor;
+
+                    PVector center = new PVector();
+                    if (centerOnSelection) {
+
+                        //System.out.println("centering on selected nodes");
+                        center = nodes.getSelectedNodesBarycenter();
+                        centerOnSelection = false;
+                    } else {
+                        center = nodes.center;
+                    }
+                    PVector translate = new PVector();
+                    translate.set(PVector.div(new PVector(center.x, center.y), v.sceneScale));
+                    translate.add(new PVector(width / 2.0f, height / 2.0f, 0));
+                    //System.out.println("centering " + translate.x + ", " + translate.y);
+                    v.translation.set(translate);
+                }
             }
+        }
+    }
 
-            PVector translate = new PVector();
-            translate.set(baryCenter);
+    public void draw2(View v, NodeList n) {
 
-            translate.set(PVector.div(translate, v.sceneScale));
+        if (n != null) {
+            nodes = n;
+        }
 
-            PVector screenCenter = new PVector(width / 2.0f, height / 2.0f, 0);
-            translate.add(screenCenter);
-
-            v.translation.set(translate);
-
-            if (abs(oldZoomScale - v.sceneScale) <= 0.5) {
-                recenter = false;
-                System.out.println("Automatic centering is now disabled.");
-                oldZoomScale = v.sceneScale;
-            } else {
-                oldZoomScale = v.sceneScale;
-            }
+        if (nodes.size() > 0) {
+            checkRecentering(v);
         }
 
         //session.animationPaused = tmp; // TODO replace by a lock here
@@ -532,6 +549,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             drawAndSpatializeRealtime(v);
         }
+
     }
 
     public void drawLoading(View net) {
@@ -682,7 +700,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (!v.paused) {
             layout.macroViewLayout_TinaForce(v, nodes);
+            // the layout force the pause?
+            if (v.paused) {
+                session.getBrowser().buttonStateCallback("paused", v.paused);
+            }
         }
+
 
         // TODO optimize here
         nodes.sortBySelectionStatus();
@@ -1071,6 +1094,16 @@ public class Main extends PApplet implements MouseWheelListener {
 
         //////////////////////
         // SELECTION DISK => DISABLED
+        Object o = this.getProperty("current", "selection/radius");
+        if (o != null) {
+            if (o instanceof Float) {
+                SELECTION_DISK_RADIUS = (Float) o;
+            } else if (o instanceof Integer) {
+                SELECTION_DISK_RADIUS = ((Integer) o).floatValue();
+            } else if (o instanceof Double) {
+                SELECTION_DISK_RADIUS = ((Double) o).floatValue();
+            }
+        }
         if (SELECTION_DISK_RADIUS > 1) {
 
             scale(1.0f / v.sceneScale);
@@ -1167,16 +1200,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else {
             cursor(ARROW);
         }
-        Object o = this.getProperty("current", "selection/radius");
-        if (o != null) {
-            if (o instanceof Float) {
-                SELECTION_DISK_RADIUS = (Float) o;
-            } else if (o instanceof Integer) {
-                SELECTION_DISK_RADIUS = ((Integer) o).floatValue();
-            } else if (o instanceof Double) {
-                SELECTION_DISK_RADIUS = ((Double) o).floatValue();
-            }
-        }
+
 
         Node candidate = null;
         for (Node n : nodes.nodes) {
@@ -1197,8 +1221,6 @@ public class Main extends PApplet implements MouseWheelListener {
                     continue;
                 }
 
-
-
                 if ((dist(mouseX, mouseY, nsx, nsy) < nsr)) {
                     match = true;
                 }
@@ -1212,37 +1234,37 @@ public class Main extends PApplet implements MouseWheelListener {
             /*
             if (SELECTION_DISK_RADIUS > 1) {
 
-                if (dist(mouseX, mouseY, nsx, nsy) < SELECTION_DISK_RADIUS) {
+            if (dist(mouseX, mouseY, nsx, nsy) < SELECTION_DISK_RADIUS) {
 
-                    if (candidate == null) {
-                        candidate = n;
-                    } else if (n.radius > candidate.radius) {
-                        candidate = n;
-                    }
-                    candidate.isFirstHighlight = true;
-                }
+            if (candidate == null) {
+            candidate = n;
+            } else if (n.radius > candidate.radius) {
+            candidate = n;
+            }
+            candidate.isFirstHighlight = true;
+            }
             } else {
-                //System.out.println("got candidate at x:"+nsx+",y:"+nsy+"");
-                float rad = n.radius * MAX_NODE_RADIUS;
+            //System.out.println("got candidate at x:"+nsx+",y:"+nsy+"");
+            float rad = n.radius * MAX_NODE_RADIUS;
 
-                //System.out.println("rad: "+(n.radius * MAX_NODE_RADIUS)+"= "+n.radius+" * "+MAX_NODE_RADIUS+" = n.radius * MAX_NODE_RADIUS");
-                float rad2 = rad + rad * 0.4f;
-                float nsr = screenX(n.position.x + rad2, n.position.y) - nsx;
+            //System.out.println("rad: "+(n.radius * MAX_NODE_RADIUS)+"= "+n.radius+" * "+MAX_NODE_RADIUS+" = n.radius * MAX_NODE_RADIUS");
+            float rad2 = rad + rad * 0.4f;
+            float nsr = screenX(n.position.x + rad2, n.position.y) - nsx;
 
-                //System.out.println("node ratio "+nsr);
-                if (nsr < 0.02) {
-                    continue;
-                }
+            //System.out.println("node ratio "+nsr);
+            if (nsr < 0.02) {
+            continue;
+            }
 
-                if (dist(mouseX, mouseY, nsx, nsy) < nsr) {
+            if (dist(mouseX, mouseY, nsx, nsy) < nsr) {
 
-                    if (candidate == null) {
-                        candidate = n;
-                    } else if (n.radius > candidate.radius) {
-                        candidate = n;
-                    }
-                    candidate.isFirstHighlight = true;
-                }
+            if (candidate == null) {
+            candidate = n;
+            } else if (n.radius > candidate.radius) {
+            candidate = n;
+            }
+            candidate.isFirstHighlight = true;
+            }
             }*/
 
         }
@@ -1262,6 +1284,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
         List<String> selectedIDs = new ArrayList<String>();
+
+        String singleRightClick = null;
+        String singleLeftClick = null;
 
         System.out.println("mouse clicked");
 
@@ -1305,16 +1330,16 @@ public class Main extends PApplet implements MouseWheelListener {
                         // cannot unselect the selected node in meso view
                         /*
                         if (n.selected && session.getView().getLevel() == ViewLevel.MESO) {
-                            redrawIfNeeded();
-                            return;
+                        redrawIfNeeded();
+                        return;
                         }*/
 
                         //if (!n.selected) {
                         //    System.out.println("adding " + n.uuid);
-                            leftSelectFromId(n.uuid);
-                       // } else {
+                        leftSelectFromId(n.uuid);
+                        // } else {
                         //    unselectFromId(n.uuid);
-                       // }
+                        // }
                         if (session.currentView == ViewLevel.MACRO) {
                             System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
                             session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
@@ -1327,21 +1352,28 @@ public class Main extends PApplet implements MouseWheelListener {
                     } else {
 
                         //if (!n.selected) {
-                           // System.out.println("adding " + n.uuid);
-                            leftSelectFromId(n.uuid);
-                       // } else {
-                         //   unselectFromId(n.uuid);
+                        // System.out.println("adding " + n.uuid);
+                        leftSelectFromId(n.uuid);
+                        // } else {
+                        //   unselectFromId(n.uuid);
                         //}
                     }
 
                     // RIGHT MOUSE
                 } else if (mouseButton == RIGHT) {
-                    rightSelectFromId(n.uuid);
+                    singleRightClick = n.uuid;
+                    leftSelectFromId(n.uuid);
                 }
-                
+
             }
 
         }
+        if (singleRightClick != null) {
+            rightSelectFromId(singleRightClick);
+        } else if (singleLeftClick != null) {
+            // unselectFromId(singleLeftClick);
+        }
+
         lastMousePosition.set(mouseX, mouseY, 0);
         redrawIfNeeded();
     }
@@ -1352,7 +1384,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     @Override
     public void mouseDragged() {
-        recenter = false;
+        stopAutoCentering();
         if (mouseButton == RIGHT) {
             View v = session.getView();
             PVector oldTranslation = new PVector(v.translation.x, v.translation.y, 0.0f);
@@ -1377,6 +1409,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 
+        stopAutoCentering();
 
         if (e.getUnitsToScroll() == 0) {
             return;
@@ -1539,38 +1572,19 @@ public class Main extends PApplet implements MouseWheelListener {
             zoomIn.set(false);
             lastMousePosition.set(width / 2.0f, height / 2.0f, 0);
         } else if (key == 'e') {
-            if (window != null) {
-                window.eval("" + js_context + "tinaviz.toggleEdges('" + v.getName() + "');");
-            } else {
-                v.showLinks = !v.showLinks;
-            }
-            System.out.println("show links is now " + v.showLinks);
+            v.showLinks = !v.showLinks;
+            session.getBrowser().buttonStateCallback("showEdges", v.showLinks);
         } else if (key == 't') {
-            if (window != null) {
-                window.eval("" + js_context + "tinaviz.toggleLabels('" + v.getName() + "');");
-            } else {
-                v.showLabels = !v.showLabels;
-            }
+            v.showLabels = !v.showLabels;
+            session.getBrowser().buttonStateCallback("showLabels", v.showLabels);
         } else if (key == 'n') {
-            if (window != null) {
-                window.eval("" + js_context + "tinaviz.toggleNodes('" + v.getName() + "');");
-            } else {
-                v.showNodes = !v.showNodes;
-            }
-            System.out.println("show nodes is now " + v.showNodes);
+            v.showNodes = !v.showNodes;
+            session.getBrowser().buttonStateCallback("showNodes", v.showNodes);
         } else if (key == 'r') {
-            if (window != null) {
-                window.eval("" + js_context + "tinaviz.recenter();");
-            } else {
-                recenter = true;
-            }
-            System.out.println("show nodes is now " + v.showNodes);
+            autoCentering();
         } else if (key == 'a') {
-            if (window != null) {
-                window.eval("" + js_context + "tinaviz.togglePause('" + v.getName() + "');");
-            } else {
-                v.paused = !v.paused;
-            }
+            v.paused = !v.paused;
+            session.getBrowser().buttonStateCallback("paused", v.paused);
             System.out.println("Animation paused is now " + v.paused);
 
         } else if (key == 'h') {
@@ -1603,6 +1617,16 @@ public class Main extends PApplet implements MouseWheelListener {
         redrawIfNeeded();
     }
 
+    public void dispatchCallbackStates() {
+        View v = getView();
+        session.getBrowser().buttonStateCallback("showEdges", v.showLinks);
+        session.getBrowser().buttonStateCallback("showLabels", v.showLabels);
+        session.getBrowser().buttonStateCallback("showNodes", v.showNodes);
+        session.getBrowser().buttonStateCallback("autoCentering", autocenter);
+        session.getBrowser().buttonStateCallback("paused", v.paused);
+        System.out.println("dispatched toolbar buttons states!");
+    }
+
     /**
      * Clear and reset everything
      */
@@ -1628,8 +1652,10 @@ public class Main extends PApplet implements MouseWheelListener {
     /**
      * Recenter the view
      */
-    public void recenter() {
-        recenter = true;
+    public void autoCentering() {
+        System.out.println("activating auto-centering");
+        autocenter = true;
+        session.getBrowser().buttonStateCallback("autoCentering", autocenter);
         redrawIfNeeded();
     }
 
@@ -1648,6 +1674,7 @@ public class Main extends PApplet implements MouseWheelListener {
     public void resetLayoutCounter() {
         getView().resetLayoutCounter();
     }
+
     /**
      * Dispatch a property to all views (this method is here to facilitate
      * configuration of a lot of filters on a lot of views)
@@ -1759,6 +1786,15 @@ public class Main extends PApplet implements MouseWheelListener {
      * select a node from it's ID in all views
      * @param str
      */
+    public void highlightFromId(String str) {
+      nodes.highlightNodeById(str);
+       getSession().getGraph().highlightNodeById(str);
+
+    }
+    /**
+     * select a node from it's ID in all views
+     * @param str
+     */
     public void leftSelectFromId(String str) {
         getSession().selectNode(str);
         nodes.selectNode(str); // so that the callback will now work
@@ -1821,7 +1857,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     /**
      * Get all nodes
-     * 
+     *
      * @param view - can be either "current", "all", or the view name
      * @param category
      * @return
@@ -1878,7 +1914,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     /**
      * Get a node map by label in the current view
-     * 
+     *
      * @param label
      * @param mode
      * @return

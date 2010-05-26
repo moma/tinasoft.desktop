@@ -65,7 +65,7 @@ public class NodeWeightRange extends NodeFilter {
             //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
 
             if ((min <= n.weight && n.weight <= max) ) {
-                output.add(n);
+                output.addWithoutTouching(n);
             }
         }
         return output;

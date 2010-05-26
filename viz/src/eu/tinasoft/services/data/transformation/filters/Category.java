@@ -64,17 +64,17 @@ public class Category extends NodeFilter {
             //  System.out.println("  - n category == "+n.category);
             // HACK the category selector doesn't remove selecte dnodes
             if (view.getLevel() == ViewLevel.MESO && n.selected) {
-                output.add(n);
+                output.addWithoutTouching(n);
             } else {
 
                 if (n.category.equals(category)) {
                     if (keep) {
-                        output.add(n);
+                        output.addWithoutTouching(n);
                         //System.out.println("  - kept " + n.category + " " + n.label + " = " + n.weight + "\n");
                     }
                 } else {
                     if (!keep) {
-                        output.add(n);
+                        output.addWithoutTouching(n);
                         //System.out.println("  - n category == "+n.category+" added!\n");
                     }
                 }
@@ -82,12 +82,17 @@ public class Category extends NodeFilter {
         }
 
 
+        System.out.println("computing extremums");
         output.computeExtremums();
+
+        System.out.println("normalizing variables");
         output.normalize();
 
         // should we normalize positions as well?
 
-        if (view.graph.topologyChanged.get() | !oldCategory.equals(category)) {
+
+        if (!oldCategory.equals(category)) {
+            System.out.println("normalizing positions");
             output.normalizePositions();
         }
         oldCategory = category;

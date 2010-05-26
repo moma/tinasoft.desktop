@@ -4,7 +4,7 @@
  */
 package eu.tinasoft.services.session;
 
-import eu.tinasoft.services.protocols.browser.LiveConnector;
+import eu.tinasoft.services.protocols.browser.Browser;
 import eu.tinasoft.services.data.model.Graph;
 import eu.tinasoft.services.visualization.views.MicroView;
 import eu.tinasoft.services.visualization.views.ViewLevel;
@@ -35,11 +35,11 @@ public class Session {
     public Color background = new Color(12, 12, 12);
     public int fontsize = 12;
     public AtomicBoolean hasBeenRead = new AtomicBoolean(false);
-    public LiveConnector browser = null;
+    public Browser browser = null;
 
     public Session() {
         // graph = new Graph();
-        browser = new LiveConnector();
+        browser = new Browser();
         macro = new MacroView(this);
         meso = new MesoView(this);
         micro = new MicroView(this);
@@ -232,7 +232,7 @@ public class Session {
         return true;
     }
 
-    public void setBrowser(LiveConnector browser) {
+    public void setBrowser(Browser browser) {
         this.browser = browser;
     }
 
@@ -240,5 +240,9 @@ public class Session {
         for (String id : ids) {
             selectNode(id);
         }
+    }
+
+    public Browser getBrowser() {
+        return browser;
     }
 }

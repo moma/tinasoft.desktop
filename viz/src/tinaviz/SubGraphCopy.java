@@ -131,8 +131,8 @@ public class SubGraphCopy extends NodeFilter {
 
         Map<Integer, Node> sources = sourceView.graph.storedNodes;
         Node rootNode = sources.get(item).getDetachedClone();
-        newNodes.add(rootNode);
-        output.add(rootNode.getProxyClone());
+        newNodes.addWithoutTouching(rootNode);
+        output.addWithoutTouching(rootNode.getProxyClone());
         System.out.println("added root at x:"+rootNode.position.x+" y:"+rootNode.position.y+" with "+rootNode.weights.size()+" neighbours");
         System.out.println("cat: " + cat + " category:" + category);
 
@@ -155,8 +155,8 @@ public class SubGraphCopy extends NodeFilter {
                     //System.out.println("  - trying to add node x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
                      //System.out.println("  - trying to add "+localNode.category+" " + localNode.label + " with weight "+ localNode.weight + " ");
 
-                    newNodes.add(localNode);
-                    output.add(localNode.getProxyClone());
+                    newNodes.addWithoutTouching(localNode);
+                    output.addWithoutTouching(localNode.getProxyClone());
                     //System.out.println("  - added neighbour "+clonedNeighbourNode.label+ " ");
 
                 }
@@ -200,9 +200,9 @@ public class SubGraphCopy extends NodeFilter {
                     localNode.position = new PVector((float) Math.random() * 100f,(float) Math.random() * 100f);
 
                     
-                    newNodes.add(localNode);
+                    newNodes.addWithoutTouching(localNode);
                     rootNode.addNeighbour(neighbourID);
-                    output.add(localNode.getProxyClone());
+                    output.addWithoutTouching(localNode.getProxyClone());
 
                 } else {
                     // already in the graph
@@ -210,7 +210,7 @@ public class SubGraphCopy extends NodeFilter {
                     // System.out.println("  - node is already in graph x:" + localNode.x + " y:" + localNode.y + " (" + localNode.neighbours.size() + " edges)");
 
                     rootNode.addNeighbour(neighbourID);
-                    output.add(localNode.getProxyClone());
+                    output.addWithoutTouching(localNode.getProxyClone());
                 }
 
 

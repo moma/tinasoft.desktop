@@ -5,11 +5,6 @@
 package tinaviz;
 
 import eu.tinasoft.services.session.ViewNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import java.util.List;
-import java.util.Map;
 
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
@@ -18,8 +13,7 @@ import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.session.Session;
 
 import eu.tinasoft.services.visualization.views.View;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import processing.core.PVector;
 
 /* FIXME TODO WARNING : ADD SOME LOCKS..
@@ -133,21 +127,29 @@ public class SubGraphCopyStandalone extends NodeFilter {
 
             // do a clean copy
             Node rootNode = sourceView.getGraph().getNode(item).getDetachedClone();
-            newNodes.add(rootNode);
+            newNodes.addWithoutTouching(rootNode);
             for (int n : rootNode.weights.keys().elements()) {
                 Node neighbourNode = sourceView.getGraph().getNode(n).getDetachedClone();
                 if (!neighbourNode.category.equals(category)) {
                     continue;
                 }
                 neighbourNode.position = new PVector((float) Math.random() * 10f, (float) Math.random() * 10f);
-                newNodes.add(neighbourNode);
+                newNodes.addWithoutTouching(neighbourNode);
             }
+
+            System.out.println("computing extremums, and normalizing positions");
+            
             newNodes.computeExtremums();
             newNodes.normalize();
+            newNodes.normalizePositions();
+
+            System.out.println("newNodes size: "+newNodes.size());
 
             localView.getGraph().clear();
             localView.updateFromNodeList(newNodes);
+            System.out.println("localView size: "+localView.getGraph().size());
             output = new NodeList(localView.getGraph().getNodeListCopy());
+            System.out.println("output size: "+output.size());
             oldItem = item;
             oldCategory = category;
         } else {
