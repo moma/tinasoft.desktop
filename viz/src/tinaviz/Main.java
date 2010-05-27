@@ -26,8 +26,10 @@ import eu.tinasoft.services.formats.json.JSONWriter;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.NodeList;
+import eu.tinasoft.services.formats.json.JSONEncoder;
+import eu.tinasoft.services.visualization.rendering.drawing.RecordingFormat;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +56,7 @@ public class Main extends PApplet implements MouseWheelListener {
     public PVector ref = new PVector();
     public PVector drawerTranslation = new PVector();
     public PVector drawerLastPosition = new PVector();
+    public boolean graphStillVisible = true;
     public Layout layout;
     static int MAXLINKS = 512;
     float zoomRatio = 1.0f;
@@ -72,14 +75,14 @@ public class Main extends PApplet implements MouseWheelListener {
     //float screenRatioGoToMesoWhenZoomed = 0.55f;
     float screenRatioSelectNodeWhenZoomed = 0.4f;
     float screenRatioGoToMesoWhenZoomed = 0.7f;
-    AtomicBoolean zooming = new AtomicBoolean(false);
-    AtomicBoolean zoomIn = new AtomicBoolean(false);
     private RecordingFormat recordingMode = RecordingFormat.NONE;
     private String recordPath = "graph.pdf";
+    AtomicBoolean zooming = new AtomicBoolean(false);
+    AtomicBoolean zoomIn = new AtomicBoolean(false);
     AtomicBoolean mouseClickLeft = new AtomicBoolean(false);
     AtomicBoolean mouseClickRight = new AtomicBoolean(false);
     AtomicBoolean debug = new AtomicBoolean(false);
-    public static JSObject window = null;
+    AtomicBoolean redrawScene = new AtomicBoolean(true);
     private int recordingWidth = 100;
     private int recordingHeight = 100;
     private String DEFAULT_FONT = "ArialMT-150.vlw";
@@ -90,103 +93,26 @@ public class Main extends PApplet implements MouseWheelListener {
     float MAX_NODE_RADIUS = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_WEIGHT = 1.0f; // node radius is normalized to 1.0 for each node, then mult with this value
     float MAX_EDGE_THICKNESS = 20.0f;
-    private Long selectNode = null;
     int oldScreenWidth = 0;
     int oldScreenHeight = 0;
-    private Node oldSelected = null;
-    private float oldZoomScale = -1f;
-    private float realWidth = 0.0f;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
     private int bezierSize = 18;
     private int shownEdges = 0;
     private int shownNodes = 0;
-    AtomicBoolean redrawScene = new AtomicBoolean(true);
     public String js_context = "";
     private int currenthighlighted = 0;
     private boolean centerOnSelection = false;
     private boolean loading = true;
 
-    private String getSelectedNodesAsJSON() {
-
-        String result = "";
-        JSONWriter writer = null;
-        try {
-            writer = new JSONStringer().object();
-        } catch (JSONException ex) {
-            Console.error(ex.getMessage());
-            return "{}";
-        }
-
-        try {
-            for (Node node : nodes.nodes) {
-
-                if (node.selected) {
-                    writer.key(node.uuid).object();
-                    writer.key("id").value(node.uuid);
-                    for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
-                        writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
-                    }
-                    writer.endObject();
-                }
-            }
-
-        } catch (JSONException jSONException) {
-            Console.error(jSONException.getMessage());
-            return "{}";
-        }
-        try {
-            writer.endObject();
-        } catch (JSONException ex) {
-            Console.error(ex.getMessage());
-            return "{}";
-        }
-        System.out.println("data: " + writer.toString());
-        return writer.toString();
-
-    }
-
     private void nodeSelected_JS_CALLBACK(boolean left) {
-
-        /*String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
-        + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "');\",1);";
-        System.out.println("cmd: " + cmd);*/
-        if (window == null) {
-            return; // in debug mode
-        }
-
-        String fnc = js_context + "tinaviz.selected('" + session.getLevel() + "','"
-                + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "')";
-
-        Object[] message = {fnc, 0};
-        window.call("setTimeout", message);
-        // window.eval(cmd);
+        getSession().getBrowser().callAndForget("selected", "'" + getSession().getLevel() + "','"
+                + nodes.getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "'");
     }
 
     private void viewChanged_JS_CALLBACK(String view) {
-
-        /*String cmd = "setTimeout(\"" + js_context + "tinaviz.selected('" + session.getLevel() + "','"
-        + getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "');\",1);";
-        System.out.println("cmd: " + cmd);*/
-        if (window == null) {
-            return; // in debug mode
-        }
-        String fnc = js_context + "tinaviz.switchedTo('" + view + "')";
-        Console.debug("viewChanged_JS_CALLBACK(" + view + ")");
-        Object[] message = {fnc, 0};
-        window.call("setTimeout", message);
-
-        System.out.println("sent order of switching view to the applet");
+        System.out.println("calling getSession().getBrowser().async(\"switchedTo\", \"'" + view + "'\");");
+        getSession().getBrowser().callAndForget("switchedTo", "'" + view + "'");
         dispatchCallbackStates();
-        // window.eval(cmd);
-    }
-
-    public Object valueEncoder(Object o) {
-        try {
-            return (o instanceof String) ? URLEncoder.encode((String) o, "UTF-8") : o;
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            return "";
-        }
     }
 
     private void jsSwitchToMacro() {
@@ -208,11 +134,6 @@ public class Main extends PApplet implements MouseWheelListener {
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
     }
-
-    public enum RecordingFormat {
-
-        NONE, CURRENT_PICTURE, PDF, BIG_PICTURE;
-    };
 
     enum quality {
 
@@ -239,7 +160,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         }
 
-        Console.setPrefix(js_context);
+
 
         String engine = P2D;
         if (getParameter("engine") != null) {
@@ -253,9 +174,8 @@ public class Main extends PApplet implements MouseWheelListener {
                 engine = JAVA2D;
 
             }
-
-            window = JSObject.getWindow(this);
-            session.setBrowser(new Browser(window, js_context));
+            session.setBrowser(new Browser(JSObject.getWindow(this), js_context));
+            Console.setBrowser(session.getBrowser());
             int w = 200;
             int h = 200;
             size(w, h, engine);
@@ -401,11 +321,9 @@ public class Main extends PApplet implements MouseWheelListener {
         brandingImage = loadImage("tina_icon.png");
 
         //Console.log("Starting visualization..");
-        if (window != null) {
-            window.eval("" + js_context + "tinaviz.init();");
-        }
-        Console.log("Visualization started..");
 
+        session.getBrowser().init();
+        Console.log("Visualization started..");
         /*
         cam = new PeasyCam(this, 100);
         cam.setMinimumDistance(50);
@@ -488,12 +406,14 @@ public class Main extends PApplet implements MouseWheelListener {
             if (true) {
                 //System.out.println("tooBigFactor= " + tooBigFactor);
                 if (false) {
-                //if (tooBigFactor > 1.0f) {
+                    //if (tooBigFactor > 1.0f) {
                     // ok
                     //System.out.println("we are okay, we simply center");
                     // autocenter = false;
                 } else if (autocenter) {
-                    //System.out.println("sceneScale:  " + v.sceneScale*tooBigFactor+ " = "+v.sceneScale+" * "+tooBigFactor);
+                    if (Math.random() < 0.05) {
+                        System.out.println("sceneScale:  " + v.sceneScale * tooBigFactor + " = " + v.sceneScale + " * " + tooBigFactor);
+                    }
                     v.sceneScale *= tooBigFactor;
 
                     PVector center = new PVector();
@@ -1090,7 +1010,7 @@ public class Main extends PApplet implements MouseWheelListener {
         line(15, 15, 15, 5);
         line(15, 16, 15, 17);
          */
-        selectNode = null;
+
 
 
         //////////////////////
@@ -1337,7 +1257,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
                         //if (!n.selected) {
                         //    System.out.println("adding " + n.uuid);
-                        leftSelectFromId(n.uuid);
+
+                        singleLeftClick = n.uuid;
+                        leftSelectFromId(singleLeftClick);
                         // } else {
                         //    unselectFromId(n.uuid);
                         // }
@@ -1354,7 +1276,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
                         //if (!n.selected) {
                         // System.out.println("adding " + n.uuid);
-                        leftSelectFromId(n.uuid);
+
+                        singleLeftClick = n.uuid;
+                        leftSelectFromId(singleLeftClick);
+                        //leftSelectFromId(n.uuid);
                         // } else {
                         //   unselectFromId(n.uuid);
                         //}
@@ -1363,18 +1288,17 @@ public class Main extends PApplet implements MouseWheelListener {
                     // RIGHT MOUSE
                 } else if (mouseButton == RIGHT) {
                     singleRightClick = n.uuid;
-                    leftSelectFromId(n.uuid);
+                    unselectFromId(n.uuid);
                 }
 
             }
 
         }
         if (singleRightClick != null) {
-            rightSelectFromId(singleRightClick);
+            nodeSelected_JS_CALLBACK(false);
         } else if (singleLeftClick != null) {
-            // unselectFromId(singleLeftClick);
+            nodeSelected_JS_CALLBACK(true);
         }
-
         lastMousePosition.set(mouseX, mouseY, 0);
         redrawIfNeeded();
     }
@@ -1620,11 +1544,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
     public void dispatchCallbackStates() {
         View v = getView();
-        session.getBrowser().buttonStateCallback("showEdges", v.showLinks);
-        session.getBrowser().buttonStateCallback("showLabels", v.showLabels);
-        session.getBrowser().buttonStateCallback("showNodes", v.showNodes);
-        session.getBrowser().buttonStateCallback("autoCentering", autocenter);
-        session.getBrowser().buttonStateCallback("paused", v.paused);
+        Browser b = getSession().getBrowser();
+        b.buttonStateCallback("showEdges", v.showLinks);
+        b.buttonStateCallback("showLabels", v.showLabels);
+        b.buttonStateCallback("showNodes", v.showNodes);
+        b.buttonStateCallback("autoCentering", autocenter);
+        b.buttonStateCallback("paused", v.paused);
         System.out.println("dispatched toolbar buttons states!");
     }
 
@@ -1700,7 +1625,7 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public boolean setProperty(String view, String key, Object value) {
 
-        System.out.println("getProperty(" + view + "," + key + "," + value + ")");
+        System.out.println("setProperty(" + view + "," + key + "," + value + ")");
 
         try {
 
@@ -1788,10 +1713,11 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param str
      */
     public void highlightFromId(String str) {
-      nodes.highlightNodeById(str);
-       getSession().getGraph().highlightNodeById(str);
+        nodes.highlightNodeById(str);
+        getSession().getGraph().highlightNodeById(str);
 
     }
+
     /**
      * select a node from it's ID in all views
      * @param str
@@ -1799,7 +1725,6 @@ public class Main extends PApplet implements MouseWheelListener {
     public void leftSelectFromId(String str) {
         getSession().selectNode(str);
         nodes.selectNode(str); // so that the callback will now work
-        nodeSelected_JS_CALLBACK(true);
     }
 
     /**
@@ -1809,7 +1734,6 @@ public class Main extends PApplet implements MouseWheelListener {
     public void rightSelectFromId(String str) {
         getSession().selectNode(str);
         nodes.selectNode(str); // so that the callback will now work
-        nodeSelected_JS_CALLBACK(false);
     }
 
     /**
@@ -1897,7 +1821,7 @@ public class Main extends PApplet implements MouseWheelListener {
             for (Node n : results) {
                 // { id: '23a53f-442c5', label: 'hello world' }
                 writer.object();
-                writer.key("id").value(n.uuid).key("label").value(valueEncoder(n.label));
+                writer.key("id").value(n.uuid).key("label").value(JSONEncoder.valueEncoder(n.label));
                 writer.endObject();
             }
         } catch (JSONException jSONException) {
@@ -1945,7 +1869,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 writer.object();
                 writer.key("id").value(n.uuid);
                 for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
-                    writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
+                    writer.key(entry.getKey()).value(JSONEncoder.valueEncoder(entry.getValue()));
                 }
                 writer.endObject();
             } catch (JSONException jSONException) {
@@ -1987,46 +1911,11 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param id
      * @return
      */
-    public String getNeighbourhood(String id) throws UnsupportedEncodingException {
-        String result = "";
+    public String getNeighbourhood(String view, String id) throws UnsupportedEncodingException, ViewNotFoundException {
 
-        Node node = nodes.getNode(id);
-
-        if (node == null) {
-            return "{}";
-        }
-        JSONWriter writer = null;
-
-
-        try {
-            writer = new JSONStringer().object();
-        } catch (JSONException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            return "{}";
-        }
-
-        try {
-            for (int nodeId : node.weights.keys().elements()) {
-                Node n = getView().getNode(nodeId);
-                writer.key(n.uuid).object();
-                for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
-                    writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
-                }
-                writer.endObject();
-            }
-
-        } catch (JSONException jSONException) {
-            return "{}";
-        }
-        try {
-            writer.endObject();
-        } catch (JSONException ex) {
-            Console.error(ex.getMessage());
-            return "{}";
-        }
-        //System.out.println("data: " + writer.toString());
-        return writer.toString();
-
+        return (view == null | view.isEmpty() | view.equalsIgnoreCase("current"))
+                ? nodes.getNeighbourhoodAsJSON(id)
+                : getView(view).getGraph().getNeighbourhoodAsJSON(id);
     }
 
     public void centerOnSelection() {

@@ -4,6 +4,7 @@
  */
 package eu.tinasoft.services.debug;
 
+import eu.tinasoft.services.protocols.browser.Browser;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Level;
@@ -16,7 +17,7 @@ import tinaviz.Main;
  */
 public class Console {
 
-    private static String PREFIX = "";
+    private static Browser browser = new Browser();
     
     /**
      * Given a Throwable, gets the full stack trace for the
@@ -65,29 +66,24 @@ public class Console {
         debug(Console.getStackTraceAsString(t));
     }
 
-    public static void setPrefix(String prefix) {
-        PREFIX=prefix;
-    }
 
     public static void error(String s) {
-        if (Main.window != null) {
-            Main.window.eval(PREFIX+"tinaviz.logError('" + s + "');");
-        }
+       browser.callAndForget("logError","'"+s+"'");
        Logger.getLogger(Main.class.getName()).log(Level.SEVERE,  "[APPLET] ERROR "+s);
        // System.out.println("[APPLET] ERROR "+s);
     }
 
     public static void log(String s) {
-        if (Main.window != null) {
-            Main.window.eval(PREFIX+"tinaviz.logNormal('" + s + "');");
-        }
+       browser.callAndForget("logNormal","'"+s+"'");
         Logger.getLogger(Main.class.getName()).log(Level.INFO, "[APPLET] LOG "+s);
     }
 
     public static void debug(String s) {
-        if (Main.window != null) {
-            Main.window.eval(PREFIX+"tinaviz.logDebug('" + s + "');");
-        }
+       browser.callAndForget("logDeubg","'"+s+"'");
         Logger.getLogger(Main.class.getName()).log(Level.INFO,"[APPLET] DEBUG "+s);
+    }
+
+    public static void setBrowser(Browser browser) {
+        Console.browser = browser;
     }
 }

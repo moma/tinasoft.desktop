@@ -14,5 +14,7 @@ public class ViewNotFoundException extends Exception {
     ViewNotFoundException(String string) {
         super(string);
     }
-
+    ViewNotFoundException() {
+        super("view not found!");
+    }
 }

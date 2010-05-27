@@ -4,13 +4,18 @@
  */
 package eu.tinasoft.services.data.model;
 
-
+import eu.tinasoft.services.debug.Console;
+import eu.tinasoft.services.formats.json.JSONEncoder;
+import eu.tinasoft.services.formats.json.JSONException;
+import eu.tinasoft.services.formats.json.JSONStringer;
+import eu.tinasoft.services.formats.json.JSONWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -31,14 +36,18 @@ public class NodeList {
         }
         computeExtremums();
     }
-
-    public Node getNode(String id) {
+    private Node getNode(int nodeId) {
         for (Node node : nodes) {
-            if (node.uuid.equals(id)) {
+            if (node.id == nodeId) {
                 return node;
             }
         }
         return null;
+    }
+
+
+    public Node getNode(String id) {
+        return getNode(id.hashCode());
     }
 
     /** getNodesByLabel
@@ -128,7 +137,9 @@ public class NodeList {
             i++;
         }
         if (mx != null && my != null) {
+            if (i != 0) {
             bary.set(mx / i, my / i, 0);
+            } 
         }
         return bary;
     }
@@ -145,8 +156,8 @@ public class NodeList {
 
     public PVector computeBaryCenter() {
         PVector bary = new PVector(0.0f, 0.0f, 0.0f);
-        Float mx = null;
-        Float my = null;
+        Float mx = 0.0f;
+        Float my = 0.0f;
         int i = 0;
         for (Node n : nodes) {
             mx = (mx == null) ? n.position.x : mx + n.position.x;
@@ -154,7 +165,9 @@ public class NodeList {
             i++;
         }
         if (mx != null && my != null) {
+            if (i != 0) {
             bary.set(mx / i, my / i, 0);
+            } 
         }
         baryCenter = bary;
         return baryCenter;
@@ -193,6 +206,85 @@ public class NodeList {
         for (Node n : nodes) {
             n.isFirstHighlight = (n.id == id);
         }
+    }
+
+    public String getNeighbourhoodAsJSON(String id) {
+        String result = "";
+
+        Node node = getNode(id);
+
+        if (node == null) {
+            return "{}";
+        }
+        JSONWriter writer = null;
+
+
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+
+        try {
+            for (int nodeId : node.weights.keys().elements()) {
+                Node n = getNode(nodeId);
+                writer.key(n.uuid).object();
+                for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
+                    writer.key(entry.getKey()).value(JSONEncoder.valueEncoder(entry.getValue()));
+                }
+                writer.endObject();
+            }
+
+        } catch (JSONException jSONException) {
+            Console.error(jSONException.getMessage());
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        //System.out.println("data: " + writer.toString());
+        return writer.toString();
+    }
+
+    public String getSelectedNodesAsJSON() {
+        String result = "";
+        JSONWriter writer = null;
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+
+        try {
+            for (Node node : nodes) {
+
+                if (node.selected) {
+                    writer.key(node.uuid).object();
+                    writer.key("id").value(node.uuid);
+                    for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
+                        writer.key(entry.getKey()).value(JSONEncoder.valueEncoder(entry.getValue()));
+                    }
+                    writer.endObject();
+                }
+            }
+
+        } catch (JSONException jSONException) {
+            Console.error(jSONException.getMessage());
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        System.out.println("data: " + writer.toString());
+        return writer.toString();
     }
 
 
@@ -465,7 +557,9 @@ public class NodeList {
             i++;
         }
         if (mx != null && my != null) {
+            if (i != 0) {
             bary.set(mx / i, my / i, 0);
+            }
         }
         return bary;
     }
@@ -474,15 +568,19 @@ public class NodeList {
         //System.out.println("computing extremums");
         reset();
 
-        Float mx = null;
-        Float my = null;
+        Float mx = 0.0f;
+        Float my = 0.0f;
         for (Node n : nodes) {
             computeExtremumsKernel(n);
             mx = (mx == null) ? n.position.x : mx + n.position.x;
             my = (my == null) ? n.position.y : my + n.position.y;
         }
+
+        baryCenter.set(0.0f,0.0f,0.0f);
         if (mx != null && my != null) {
-            baryCenter.set(mx / nodes.size(), my / nodes.size(), 0);
+            if (nodes.size()!=0) {
+                baryCenter.set(mx / nodes.size(), my / nodes.size(), 0);
+            }
         }
 
         aftermath();

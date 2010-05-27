@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package eu.tinasoft.services.protocols.browser;
 
 import netscape.javascript.JSObject;
@@ -13,30 +12,45 @@ import netscape.javascript.JSObject;
  */
 public class Browser {
 
-    private boolean enabled = false;
-    public JSObject window = null;
-
-    public String prefix = "";
+    public JSObject window;
+    public String jsContextPrefix;
+    public String apiPrefix;
 
     public Browser(JSObject window, String prefix) {
         this.window = window;
-        this.enabled = true;
-    }
- 
-    public Browser() {
-        this.enabled = true;
+        this.jsContextPrefix = prefix;
+        this.apiPrefix = "tinaviz.";
     }
 
-   public Object eval(String cmd) {
-         return window.eval(cmd);
+    public Browser() {
+        this.window = null;
+        this.jsContextPrefix = "";
+        this.apiPrefix = "tinaviz.";
     }
-   public Object tinaviz(String cmd) {
-       if (window==null) return null;
-         return window.eval(prefix + "tinaviz."+cmd+";");
-         // .call("parent.tinaviz.getWidth", null)
-         //return window.call()
+
+    public Object call(String fnc, Object[] args) {
+        System.out.println("calling "+fnc);
+        return (window!=null)?window.call(fnc, args):null;
     }
-   public void buttonStateCallback(String attr, boolean state) {
-       tinaviz("buttonStateCallback('"+attr+"',"+(state ? "true":"false")+")");
-   }
+
+    public Object callAndWait(String fnc) {
+        return (window!=null)?window.call(fnc,null):null;
+    }
+
+    public Object setTimeout(Object[] message) {
+        return call("setTimeout", message);
+    }
+
+    public Object callAndForget(String func, String args) {
+        Object[] message = {jsContextPrefix + apiPrefix + func + "( " + args + ")", 0};
+        return setTimeout(message);
+    }
+
+    public void buttonStateCallback(String attr, boolean state) {
+        callAndForget("buttonStateCallback", "'" + attr + "'," + (state ? "true" : "false") + "");
+    }
+
+    public void init() {
+        callAndForget("init","");
+    }
 }

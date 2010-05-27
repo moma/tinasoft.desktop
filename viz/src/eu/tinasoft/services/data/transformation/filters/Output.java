@@ -25,7 +25,7 @@ public class Output extends NodeFilter {
     public float MAX_RADIUS_MAGNIFIER = 3.0f;
 
     public float RADIUS_MIN = 5.0f;
-    public float RADIUS_MAX = 20.0f;
+    public float RADIUS_MAX = 30.0f;
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {

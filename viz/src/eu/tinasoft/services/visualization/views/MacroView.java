@@ -4,7 +4,6 @@
  */
 package eu.tinasoft.services.visualization.views;
 
-import processing.core.PVector;
 import eu.tinasoft.services.session.Session;
 
 /**
@@ -16,6 +15,8 @@ public class MacroView extends View {
     public MacroView(Session aThis) {
         super(aThis);
         prespatializeSteps = 84;
+
+         ZOOM_CEIL = 0.03f;
          ZOOM_CEIL = 0.025f;
          ZOOM_FLOOR = 25.0f;
          resetParams();

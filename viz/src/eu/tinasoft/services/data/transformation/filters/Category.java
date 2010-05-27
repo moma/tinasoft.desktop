@@ -5,11 +5,7 @@
 package eu.tinasoft.services.data.transformation.filters;
 
 import eu.tinasoft.services.data.model.NodeList;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;
@@ -26,6 +22,8 @@ public class Category extends NodeFilter {
     private String KEY_MODE = "mode";
     private String category = "Document";
     private String oldCategory = "__OLD_CATEGORY__";
+
+    private boolean HACK_ME = false;
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
@@ -93,7 +91,9 @@ public class Category extends NodeFilter {
 
         if (!oldCategory.equals(category)) {
             System.out.println("normalizing positions");
-            output.normalizePositions();
+            if (!HACK_ME)
+                output.normalizePositions();
+            //HACK_ME = true;
         }
         oldCategory = category;
 

@@ -15,10 +15,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import eu.tinasoft.services.debug.Console;
+import eu.tinasoft.services.formats.json.JSONEncoder;
+import eu.tinasoft.services.formats.json.JSONException;
+import eu.tinasoft.services.formats.json.JSONStringer;
+import eu.tinasoft.services.formats.json.JSONWriter;
 
 import eu.tinasoft.services.session.Attribute;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.formats.xml.XPathReader;
+import java.util.Map.Entry;
 
 /**
  * Graph container - todo rename it
@@ -503,5 +508,47 @@ public class Graph implements Cloneable {
         for (Node n : storedNodes.values()) {
             n.isFirstHighlight = (n.id == id);
         }
+    }
+
+    public String getNeighbourhoodAsJSON(String id) {
+         String result = "";
+
+        Node node = getNode(id.hashCode());
+
+        if (node == null) {
+            return "{}";
+        }
+        JSONWriter writer = null;
+
+
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+
+        try {
+            for (int nodeId : node.weights.keys().elements()) {
+                Node n = getNode(nodeId);
+                writer.key(n.uuid).object();
+                for (Entry<String, Object> entry : n.getAttributes().entrySet()) {
+                    writer.key(entry.getKey()).value(JSONEncoder.valueEncoder(entry.getValue()));
+                }
+                writer.endObject();
+            }
+
+        } catch (JSONException jSONException) {
+            Console.error(jSONException.getMessage());
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+        //System.out.println("data: " + writer.toString());
+        return writer.toString();
     }
 }

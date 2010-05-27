@@ -13,6 +13,10 @@ import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.session.Session;
 
 import eu.tinasoft.services.visualization.views.View;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import processing.core.PVector;
 
@@ -84,6 +88,7 @@ public class SubGraphCopyStandalone extends NodeFilter {
             category = defaultCategory;
         }
 
+        /*
         Object o = localView.properties.get(root + KEY_ITEM);
         if (o == null) {
             System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
@@ -100,60 +105,72 @@ public class SubGraphCopyStandalone extends NodeFilter {
         }
         System.out.println("KEY_ITEM resolved to " + item + "");
 
-
+*/
+        
         if (sourceView.getGraph().size() < 1) {
             System.out.println("original graph is zero-sized.. ");
             return output;
         }
-        System.out.println("current view size: " + localView.getGraph().size());
+        System.out.println("MESO current view size: " + localView.getGraph().size());
 
         /*if (localView.getGraph().size() > 0) {
         System.out.println("view.graph.size() > 0 is TRUE !");
         return output;
         }*/
 
+        /*
         if (!sourceView.getGraph().storedNodes.containsKey(item)) {
             System.out.println("the key doesn't exists! but that's probably not that bad.");
             return output;
         }
-
-        System.out.println("item: " + item);
-        System.out.println("oldItem: " + oldItem);
-        System.out.println("category: " + category);
-        System.out.println("oldCategory: " + oldCategory);
+*/
+        
+        System.out.println("MESO item: " + item);
+        System.out.println("MESO oldItem: " + oldItem);
+        System.out.println("MESO category: " + category);
+        System.out.println("MESO oldCategory: " + oldCategory);
         if (item != oldItem | !category.equals(oldCategory)) {
-            System.out.println("something (item or category) changed, updating subgraph copy....");
+            System.out.println("MESO something (item or category) changed, updating subgraph copy....");
             NodeList newNodes = new NodeList();
 
+            Map<Integer, Node> strdnds = sourceView.getGraph().storedNodes;
             // do a clean copy
-            Node rootNode = sourceView.getGraph().getNode(item).getDetachedClone();
-            newNodes.addWithoutTouching(rootNode);
-            for (int n : rootNode.weights.keys().elements()) {
-                Node neighbourNode = sourceView.getGraph().getNode(n).getDetachedClone();
-                if (!neighbourNode.category.equals(category)) {
-                    continue;
+            List<Node> rootNodes = new ArrayList<Node>();
+            for (Entry<Integer, Node> e : sourceView.getGraph().storedNodes.entrySet()) {
+                if (e.getValue().selected) {
+                    Node rootNode =
+                            sourceView.getGraph().getNode(e.getKey()).getDetachedClone(); // we want the clone
+                    newNodes.addWithoutTouching(rootNode);
+                    for (int n : rootNode.weights.keys().elements()) {
+                        Node neighbourNode = sourceView.getGraph().getNode(n).getDetachedClone();
+                        if (!neighbourNode.category.equals(category)) {
+                            continue;
+                        }
+                        neighbourNode.position = new PVector((float) Math.random() * 10f, (float) Math.random() * 10f);
+                        newNodes.addWithoutTouching(neighbourNode);
+                    }
+
                 }
-                neighbourNode.position = new PVector((float) Math.random() * 10f, (float) Math.random() * 10f);
-                newNodes.addWithoutTouching(neighbourNode);
             }
 
-            System.out.println("computing extremums, and normalizing positions");
-            
+
+            System.out.println("MESO computing extremums, and normalizing positions");
+
             newNodes.computeExtremums();
             newNodes.normalize();
             newNodes.normalizePositions();
 
-            System.out.println("newNodes size: "+newNodes.size());
+            System.out.println("MESO newNodes size: " + newNodes.size());
 
             localView.getGraph().clear();
             localView.updateFromNodeList(newNodes);
-            System.out.println("localView size: "+localView.getGraph().size());
+            System.out.println("MESO localView size: " + localView.getGraph().size());
             output = new NodeList(localView.getGraph().getNodeListCopy());
-            System.out.println("output size: "+output.size());
+            System.out.println("MESO output size: " + output.size());
             oldItem = item;
             oldCategory = category;
         } else {
-            System.out.println("nothing changed, still old category");
+            System.out.println("MESO nothing changed, still old category");
             output = input;
         }
 
