@@ -312,6 +312,7 @@ public class NodeList {
 
 
 
+
     public class SelectedComparator implements Comparator {
 
         @Override
@@ -378,6 +379,8 @@ public class NodeList {
     public float minNodeWeight;
     public float maxNodeWeight;
     public int nbEdges;
+    public int nbVisibleEdges=1;
+
     private Comparator comp = new SelectedComparator();
 
     public NodeList(List<Node> nodes) {
@@ -454,6 +457,7 @@ public class NodeList {
     }
 
     public void add(Node node) {
+
                 mayNeedRecentering = true;
     }
 

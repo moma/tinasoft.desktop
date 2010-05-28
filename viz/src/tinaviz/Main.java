@@ -97,8 +97,8 @@ public class Main extends PApplet implements MouseWheelListener {
     int oldScreenHeight = 0;
     private PVector cameraDelta = new PVector(0.0f, 0.0f, 0.0f);
     private int bezierSize = 18;
-    private int shownEdges = 0;
-    private int shownNodes = 0;
+    private int visibleEdges = 0;
+    private int visibleNodes = 0;
     public String js_context = "";
     private int currenthighlighted = 0;
     private boolean centerOnSelection = false;
@@ -574,29 +574,29 @@ public class Main extends PApplet implements MouseWheelListener {
         boolean antialiasing = false;
         int resolution = 0;
 
-        if (shownEdges < 150) {
+        if (visibleEdges < 150) {
             resolution = 60;
-        } else if (shownEdges < 300) {
+        } else if (visibleEdges < 300) {
             resolution = 50;
-        } else if (shownEdges < 600) {
+        } else if (visibleEdges < 600) {
             resolution = 40;
-        } else if (shownEdges < 900) {
+        } else if (visibleEdges < 900) {
             resolution = 35;
-        } else if (shownEdges < 1500) {
+        } else if (visibleEdges < 1500) {
             resolution = 30;
-        } else if (shownEdges < 3000) {
+        } else if (visibleEdges < 3000) {
             resolution = 25;
-        } else if (shownEdges < 4000) {
+        } else if (visibleEdges < 4000) {
             resolution = 20;
-        } else if (shownEdges < 5000) {
+        } else if (visibleEdges < 5000) {
             resolution = 15;
-        } else if (shownEdges < 6000) {
+        } else if (visibleEdges < 6000) {
             resolution = 12;
-        } else if (shownEdges < 8000) {
+        } else if (visibleEdges < 8000) {
             resolution = 10;
-        } else if (shownEdges < 10000) {
+        } else if (visibleEdges < 10000) {
             resolution = 7;
-        } else if (shownEdges < 15000) {
+        } else if (visibleEdges < 15000) {
             resolution = 6;
         } else {
             resolution = 6;
@@ -664,15 +664,18 @@ public class Main extends PApplet implements MouseWheelListener {
         fill(80);
         textSize(12);
 
+        nodes.nbVisibleEdges = (visibleEdges<1) ? 1 : visibleEdges;
+
+        
         if (debug.get()) {
             text("" + ((int) frameRate) + " img/sec", 10f, 13f);
-            text("" + shownNodes + "/" + nodes.size() + " nodes", 80f, 13f);
-            text("" + shownEdges + "/" + nodes.nbEdges + " edges", 190f, 13f);
+            text("" + visibleNodes + "/" + nodes.size() + " nodes", 80f, 13f);
+            text("" + visibleEdges + "/" + nodes.nbEdges + " edges", 190f, 13f);
             text("aliasing: " + (resolution >= 40) + "    resolution: " + resolution, 310f, 13f);
             fill(0);
         }
-        shownNodes = 0;
-        shownEdges = 0;
+        visibleNodes = 0;
+        visibleEdges = 0;
         //pushMatrix();
 
         translate(v.translation.x, v.translation.y);
@@ -765,7 +768,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     }
                 }
 
-                shownEdges++;
+                visibleEdges++;
 
 
 
@@ -925,7 +928,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     rect(nx, ny, rad, rad);
                 }
             } // end of "if show nodes"
-            shownNodes++;
+            visibleNodes++;
             // skip label drawing for small nodes
             // or if we have to hide labels
             if (nodeScreenDiameter < 1 | !(v.showLabels | n.selected | highlighted)) {
