@@ -483,15 +483,15 @@ public class Graph implements Cloneable {
     public void selectNodeById(int id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
-            System.out.println("node selected, touching..");
-            touch();
+            System.out.println("node selected, NOT touching..");
+            //touch();
         }
     }
 
     public void unselectNodeById(int id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
-            touch();
+            //touch();
         }
 
     }

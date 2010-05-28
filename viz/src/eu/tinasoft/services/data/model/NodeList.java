@@ -287,6 +287,29 @@ public class NodeList {
         return writer.toString();
     }
 
+    public PVector getSelectedNodesCenter() {
+        float minX = Float.MAX_VALUE;
+        float maxX = Float.MIN_VALUE;
+        float minY = Float.MAX_VALUE;
+        float maxY = Float.MIN_VALUE;
+        if (nodes.size() > 0) {
+             for (Node n : nodes) {
+                 if (!n.selected) continue;
+                 maxX = PApplet.max(maxX,n.position.x);
+                 minX = PApplet.min(minX,n.position.x);
+                 maxY = PApplet.max(maxY,n.position.y);
+                 minY = PApplet.min(minY,n.position.y);
+            }
+        } else {
+             return center;
+        }
+        return new PVector(minX + (maxX - minX) / 2.0f, minY + (maxY - minY) / 2.0f, 0.0f);
+    }
+
+    public void unselectAll() {
+        for (Node n : nodes) n.selected = false;
+    }
+
 
 
     public class SelectedComparator implements Comparator {

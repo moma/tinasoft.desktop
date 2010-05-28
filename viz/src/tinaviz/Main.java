@@ -383,55 +383,48 @@ public class Main extends PApplet implements MouseWheelListener {
             System.out.println("Stop auto centering");
             session.getBrowser().buttonStateCallback("autoCentering", autocenter);
         }
+        centerOnSelection = false;
     }
 
     public void checkRecentering(View v) {
 
+        /*
         if (nodes.getMayNeedRecentering()) {
-            System.out.println("graph topology changed, need recentering");
-            autoCentering();
+        System.out.println("graph topology changed, need recentering");
+        autoCentering();
         }
+         */
 
-        if (true) {
+        if (autocenter) {
             nodes.computeRadius();
 
-            float graphLength = PApplet.min(nodes.graphHeight, nodes.graphWidth);
-            float screenLength = PApplet.min(width, height);
+            float graphHeight = nodes.graphHeight * v.sceneScale;
+            float graphWidth = nodes.graphWidth * v.sceneScale;
 
-            //System.out.println(v.sceneScale + " * " + graphLength + ")  < " + screenLength + ")");
-            float tooBigFactor =
-                    (graphLength != 0 && v.sceneScale != 0)
-                    ? ((screenLength * 1.0f) / (v.sceneScale * graphLength))
-                    : 1.0f;
-            if (true) {
-                //System.out.println("tooBigFactor= " + tooBigFactor);
-                if (false) {
-                    //if (tooBigFactor > 1.0f) {
-                    // ok
-                    //System.out.println("we are okay, we simply center");
-                    // autocenter = false;
-                } else if (autocenter) {
-                    if (Math.random() < 0.05) {
-                        System.out.println("sceneScale:  " + v.sceneScale * tooBigFactor + " = " + v.sceneScale + " * " + tooBigFactor);
-                    }
-                    v.sceneScale *= tooBigFactor;
 
-                    PVector center = new PVector();
-                    if (centerOnSelection) {
-
-                        //System.out.println("centering on selected nodes");
-                        center = nodes.getSelectedNodesBarycenter();
-                        centerOnSelection = false;
-                    } else {
-                        center = nodes.center;
-                    }
-                    PVector translate = new PVector();
-                    translate.set(PVector.div(new PVector(center.x, center.y), v.sceneScale));
-                    translate.add(new PVector(width / 2.0f, height / 2.0f, 0));
-                    //System.out.println("centering " + translate.x + ", " + translate.y);
-                    v.translation.set(translate);
-                }
+            if ((graphWidth * height) / (graphHeight) < width) {
+                v.sceneScale = v.sceneScale * height / graphHeight / 1.1f;
+            } else {
+                v.sceneScale = v.sceneScale * width / graphWidth / 1.1f;
             }
+
+            // System.out.println("sceneScale:  " + v.sceneScale);
+
+            PVector center = new PVector();
+            if (centerOnSelection) {
+
+                //System.out.println("centering on selected nodes");
+                center = nodes.getSelectedNodesCenter();
+                //centerOnSelection = false;
+            } else {
+                center = nodes.center;
+            }
+
+            PVector translate = new PVector();
+            translate.set(PVector.div(new PVector(center.x, center.y), v.sceneScale));
+            translate.add(new PVector(width / 2.0f, height / 2.0f, 0));
+            v.translation.set(translate);
+
         }
     }
 
@@ -1507,7 +1500,10 @@ public class Main extends PApplet implements MouseWheelListener {
             session.getBrowser().buttonStateCallback("showNodes", v.showNodes);
         } else if (key == 'r') {
             autoCentering();
-        } else if (key == 'a') {
+        } else if (key == 's') {
+            centerOnSelection();
+            autoCentering();
+        }  else if (key == 'a') {
             v.paused = !v.paused;
             session.getBrowser().buttonStateCallback("paused", v.paused);
             System.out.println("Animation paused is now " + v.paused);
@@ -1771,6 +1767,7 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public void unselect() {
         getSession().unselectAll();
+        nodes.unselectAll();
     }
 
     private void unselectFromId(String id) {
