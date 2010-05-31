@@ -40,7 +40,7 @@ public class Main extends PApplet implements MouseWheelListener {
     String PATH_TO_TEST_FILE =
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/bipartite_graph.gexf"
             "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
-           // "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
+            // "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
             //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
 
@@ -113,21 +113,6 @@ public class Main extends PApplet implements MouseWheelListener {
         System.out.println("calling getSession().getBrowser().async(\"switchedTo\", \"'" + view + "'\");");
         getSession().getBrowser().callAndForget("switchedTo", "'" + view + "'");
         dispatchCallbackStates();
-    }
-
-    private void jsSwitchToMacro() {
-        session.toMacroView();
-        viewChanged_JS_CALLBACK("macro");
-    }
-
-    private void jsSwitchToMeso() {
-        session.toMesoView();
-        viewChanged_JS_CALLBACK("meso");
-    }
-
-    private void jsSwitchToMicro() {
-        session.toMicroView();
-        viewChanged_JS_CALLBACK("micro");
     }
 
     private void drawNothing(View v) {
@@ -1265,7 +1250,7 @@ public class Main extends PApplet implements MouseWheelListener {
                         if (session.currentView == ViewLevel.MACRO) {
                             System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
                             session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
-                            jsSwitchToMeso();
+                            setView("meso");
                         } else if (session.currentView == ViewLevel.MESO) {
                             System.out.println("SWITCH TO MICRO WITH THE DOUBLE CLICK METHOD");
                             //session.getMicro().sceneScale = session.getMicro().ZOOM_CEIL + session.getMicro().ZOOM_CEIL * 0.5f;
@@ -1430,7 +1415,7 @@ public class Main extends PApplet implements MouseWheelListener {
                     }
                     System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
                     session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
-                    jsSwitchToMeso();
+                    setView("meso");
 
                     redrawIfNeeded();
                     return;
@@ -1467,10 +1452,159 @@ public class Main extends PApplet implements MouseWheelListener {
                     session.getMacro().sceneScale = session.getMacro().ZOOM_FLOOR - session.getMacro().ZOOM_FLOOR * 0.5f;
                     // TODO center the graph to the current selection
                     session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2.0f;
-                    jsSwitchToMacro();
+                    setView("macro");
                 }
                 break;
         }
+
+        redrawIfNeeded();
+    }
+
+    //@Override
+    public void mouseWheelMoved_BACKUP(MouseWheelEvent e) {
+
+        stopAutoCentering();
+
+        if (e.getUnitsToScroll() == 0) {
+            return;
+        }
+
+        showBranding = false;
+        View v = getView();
+
+        lastMousePosition.set(mouseX, mouseY, 0);
+        v.translation.sub(lastMousePosition);
+
+        // IF WE WANT TO ZOOM IN
+        if (e.getWheelRotation() < 0) {
+
+            float ratio = 4.0f / 3.0f;
+            float potentialZoomLevel = v.sceneScale * ratio;
+
+            if (v.tryToSetZoom(potentialZoomLevel)) {
+                v.translation.mult(4.f / 3.f);
+            } else {
+                // HACK we can't zoom, except if we are in the meso
+                if (v.getLevel() == ViewLevel.MESO) {
+                    v.sceneScale = potentialZoomLevel;
+                    v.translation.mult(4.f / 3.f);
+                }
+            }
+
+            Node bestMatchForSwitch = null;
+            Node bestMatchForSelection = null;
+
+            for (Node n : nodes.nodes) {
+
+                float rad = n.radius * MAX_NODE_RADIUS;
+                float rad2 = rad + rad * 0.4f;
+                float nsx = screenX(n.position.x, n.position.y);
+                float nsy = screenY(n.position.x, n.position.y);
+
+                if (!(nsx > width * 0.2f
+                        && nsx < width * 0.8f
+                        && nsy > height * 0.2f
+                        && nsy < height * 0.8f)) {
+                    continue;
+                }
+
+                float nsr = screenX(n.position.x + (rad2), n.position.y) - nsx;
+                if (nsr < 2) {
+                    continue;
+                }
+
+                float screenRatio = (((nsr * 2.0f) / (float) width) + ((nsr * 2.0f) / (float) height)) / 2.0f;
+                //System.out.println("nsr: " + nsr);
+                //System.out.println("'- screen ratio: " + screenRatio);
+                if (v.showNodes) {
+
+                    switch (session.currentView) {
+                        case MACRO:
+
+                            if (screenRatio > screenRatioGoToMesoWhenZoomed) {
+                                if (bestMatchForSwitch != null) {
+
+                                    if (rad2 > bestMatchForSwitch.radius) {
+                                        bestMatchForSelection = null;
+                                        bestMatchForSwitch = n;
+                                    }
+                                } else {
+                                    bestMatchForSelection = null;
+                                    bestMatchForSwitch = n;
+                                }
+                            } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
+                                if (bestMatchForSelection != null) {
+
+                                    if (rad2 > bestMatchForSelection.radius) {
+                                        bestMatchForSelection = n;
+                                    }
+                                } else {
+                                    bestMatchForSelection = n;
+                                }
+                            }
+                            break;
+                    }
+                }
+
+                if (bestMatchForSwitch != null) {
+
+                    // disable the macro to meso switch when the nodes can't be shown
+
+                    if (!bestMatchForSwitch.selected) {
+                        bestMatchForSwitch.selected = true;
+                        session.selectNode(bestMatchForSwitch);
+                        nodeSelected_JS_CALLBACK(true);
+                    }
+                    System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
+                    //session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
+
+                    setView("meso");
+
+
+                    redrawIfNeeded();
+                    return;
+
+                } else if (bestMatchForSelection != null) {
+                    if (!bestMatchForSelection.selected) {
+                        bestMatchForSelection.selected = true;
+                        session.selectNode(bestMatchForSelection);
+                        nodeSelected_JS_CALLBACK(true);
+                    }
+
+                    redrawIfNeeded();
+                    return;
+                }
+            }
+        } else {
+
+            // ZOOM OUT
+            float ratio = 3.0f / 4.0f;
+            float potentialZoomLevel = v.sceneScale * ratio;
+
+
+            if (v.getLevel() == ViewLevel.MESO) {
+                if (potentialZoomLevel < v.ZOOM_CEIL) {
+                }
+                v.sceneScale *= ratio;
+                v.translation.mult(ratio);
+            }
+
+            if (v.tryToMultiplyZoom(ratio)) {
+                v.translation.mult(ratio);
+            } else {
+                // HACK we can't zoom, except if we are in the meso
+                if (v.getLevel() == ViewLevel.MESO) {
+                    v.sceneScale *= ratio;
+                    v.translation.mult(ratio);
+                }
+            }
+        }
+
+        v.translation.add(lastMousePosition);
+        System.out.println("Zoom: " + v.sceneScale);
+
+
+
 
         redrawIfNeeded();
     }
@@ -1941,5 +2075,21 @@ public class Main extends PApplet implements MouseWheelListener {
     public void centerOnSelection() {
         // check if the node is in the current view
         centerOnSelection = true;
+    }
+
+    public boolean setView(String view) {
+        if (view.equalsIgnoreCase("current")) {
+            viewChanged_JS_CALLBACK(view);
+            return true;
+        }
+
+        if (session.setView(view)) {
+            viewChanged_JS_CALLBACK(view);
+        } else {
+            Console.error("set view failed..");
+            return false;
+        }
+
+        return true;
     }
 }

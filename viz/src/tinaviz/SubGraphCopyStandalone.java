@@ -29,10 +29,9 @@ import processing.core.PVector;
 public class SubGraphCopyStandalone extends NodeFilter {
 
     private String KEY_SOURCE = "source";
-    private String KEY_ITEM = "item";
+
     private String KEY_CATEGORY = "category";
-    private int oldItem = -0;
-    private int item = -0;
+
     private String defaultSource = "macro";
     private String source = defaultSource;
     private String defaultCategory = "NO_CATEGORY";
@@ -52,10 +51,7 @@ public class SubGraphCopyStandalone extends NodeFilter {
         }
 
 
-        if (!localView.properties.containsKey(root + KEY_ITEM)) {
-            localView.properties.put(root + KEY_ITEM, -1);
-        }
-
+ 
         if (!localView.properties.containsKey(root + KEY_CATEGORY)) {
             localView.properties.put(root + KEY_CATEGORY, defaultCategory);
         }
@@ -125,17 +121,14 @@ public class SubGraphCopyStandalone extends NodeFilter {
         }
 */
         
-        System.out.println("MESO item: " + item);
-        System.out.println("MESO oldItem: " + oldItem);
+
         System.out.println("MESO category: " + category);
         System.out.println("MESO oldCategory: " + oldCategory);
-        if (item != oldItem | !category.equals(oldCategory)) {
+        //if (!category.equals(oldCategory)) {
+       
             System.out.println("MESO something (item or category) changed, updating subgraph copy....");
             NodeList newNodes = new NodeList();
 
-            Map<Integer, Node> strdnds = sourceView.getGraph().storedNodes;
-            // do a clean copy
-            List<Node> rootNodes = new ArrayList<Node>();
             for (Entry<Integer, Node> e : sourceView.getGraph().storedNodes.entrySet()) {
                 if (e.getValue().selected) {
                     Node rootNode =
@@ -167,12 +160,9 @@ public class SubGraphCopyStandalone extends NodeFilter {
             System.out.println("MESO localView size: " + localView.getGraph().size());
             output = new NodeList(localView.getGraph().getNodeListCopy());
             System.out.println("MESO output size: " + output.size());
-            oldItem = item;
+   
             oldCategory = category;
-        } else {
-            System.out.println("MESO nothing changed, still old category");
-            output = input;
-        }
+
 
         return output;
     }

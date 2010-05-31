@@ -272,7 +272,7 @@ public class Graph implements Cloneable {
                                     }
 
                                     // store the attributes in the node map
-                                    //System.out.println("storing attribute "+attrib.key+" with attr id "+attributeId);
+                                    System.out.println("storing attribute "+attrib.key+" with attr id "+attributeId);
 
                                     node.attributes.put(attrib.key,
                                             (attrib.type == Integer.class)
@@ -548,7 +548,7 @@ public class Graph implements Cloneable {
             Console.error(ex.getMessage());
             return "{}";
         }
-        //System.out.println("data: " + writer.toString());
+        System.out.println("GRAPH.getNeighbourhoodAsJSON: " + writer.toString());
         return writer.toString();
     }
 }

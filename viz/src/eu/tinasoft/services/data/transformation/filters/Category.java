@@ -19,7 +19,7 @@ import eu.tinasoft.services.visualization.views.ViewLevel;
  */
 public class Category extends NodeFilter {
 
-    private String KEY_CATEGORY = "value";
+    private String KEY_CATEGORY = "category";
     private String KEY_MODE = "mode";
     private String category = "Document";
     private String oldCategory = "__OLD_CATEGORY__";

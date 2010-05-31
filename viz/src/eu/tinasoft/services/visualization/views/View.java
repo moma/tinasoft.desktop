@@ -80,12 +80,16 @@ public class View {
 
     public synchronized boolean tryToSetZoom (float newValue) {
 
-        if ((newValue > ZOOM_CEIL)&&(newValue < ZOOM_FLOOR)) {
+        // HACK disable the limit in meso view
+        boolean HACKED = true;
+        
+        if (HACKED | (newValue >= ZOOM_CEIL)&&(newValue <= ZOOM_FLOOR)) {
             sceneScale = newValue;
             return true;
         }
         return false;
     }
+
     // TODO refactor these two..
     public synchronized boolean toggleLinks() {
         showLinks = !showLinks;

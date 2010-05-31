@@ -70,14 +70,17 @@ public class Session {
         return getView().graph;
     }
 
-    public synchronized void setView(String view) {
+    public synchronized boolean setView(String view) {
         if (view.equals("macro")) {
             toMacroView();
         } else if (view.equals("meso")) {
             toMesoView();
         } else if (view.equals("micro")) {
             toMicroView();
+        } else {
+            return false;
         }
+        return true;
     }
 
     public synchronized void toMacroView() {

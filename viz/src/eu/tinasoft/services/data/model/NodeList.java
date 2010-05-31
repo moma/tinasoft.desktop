@@ -256,7 +256,7 @@ public class NodeList {
             Console.error(ex.getMessage());
             return "{}";
         }
-        //System.out.println("data: " + writer.toString());
+        System.out.println("getNeighbourhoodAsJSON: " + writer.toString());
         return writer.toString();
     }
 

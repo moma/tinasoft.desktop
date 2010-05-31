@@ -65,12 +65,10 @@ public class Layout {
 
         //float gravity = 0.05f / (1 + PApplet.sqrt(PApplet.sqrt(nbNodes))) * (1 - decay);
 
-
-
         ////////////////////////////////////////////////////////////////////////////////
 
 
-        if (true && Math.random() < 0.5f) {
+        if (false && Math.random() < 0.5f) {
             System.out.println("decay: " + decay + " = PApplet.exp(-" + v.layoutIterationCount + " * " + cooling + ")");
             System.out.println("gravity: " + gravity);
 

@@ -45,22 +45,7 @@ public class Output extends NodeFilter {
                 : (Float) o;
 
        r = PApplet.map(r,0.0f,1.0f,MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
-       r = 1.0f;
 
-            /*
-            for (Object w : n.weights.values().elements()) {
-
-                 w = (Float) (
-                         (MAX_SCREEN_EDGE_WEIGHT * PApplet.abs((Float)w))
-                         /
-                         (PApplet.max(
-                        PApplet.abs(input.minEdgeWeight),
-                        PApplet.abs(input.maxEdgeWeight)))
-                     );
-
-               // w = (Float) PApplet.map((Float)w,input.,1.0f,MIN_SCREEN_EDGE_WEIGHT, MAX_SCREEN_EDGE_WEIGHT);
-            }
-             */
        //System.out.println("radius magnifier: "+r);
 
         for (Node n : input.nodes) {
