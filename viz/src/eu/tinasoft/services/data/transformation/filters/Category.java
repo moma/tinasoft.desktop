@@ -4,6 +4,7 @@
  */
 package eu.tinasoft.services.data.transformation.filters;
 
+import cern.colt.map.OpenIntObjectHashMap;
 import eu.tinasoft.services.data.model.NodeList;
 
 import eu.tinasoft.services.data.model.Node;
@@ -22,7 +23,6 @@ public class Category extends NodeFilter {
     private String KEY_MODE = "mode";
     private String category = "Document";
     private String oldCategory = "__OLD_CATEGORY__";
-
     private boolean HACK_ME = false;
 
     @Override
@@ -66,14 +66,32 @@ public class Category extends NodeFilter {
             } else {
 
                 if (n.category.equals(category)) {
+                    
                     if (keep) {
+
+                        OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
+                        for (int nb : n.weights.keys().elements()) {
+                            if (input.hasNode(nb)) {
+                                //System.out.println("keeping node" + nb);
+                                weights.put(nb, n.weights.get(nb));
+                            }
+                        }
+                        n.weights = weights;
                         output.addWithoutTouching(n);
+
                         //System.out.println("  - kept " + n.category + " " + n.label + " = " + n.weight + "\n");
                     }
                 } else {
                     if (!keep) {
+
+                       OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
+                        for (int nb : n.weights.keys().elements()) {
+                            if (input.hasNode(nb))
+                                weights.put(nb, n.weights.get(nb));
+                        }
+                        n.weights = weights;
                         output.addWithoutTouching(n);
-                        //System.out.println("  - n category == "+n.category+" added!\n");
+
                     }
                 }
             }
@@ -91,8 +109,9 @@ public class Category extends NodeFilter {
 
         if (!oldCategory.equals(category)) {
             System.out.println("normalizing positions");
-            if (!HACK_ME)
+            if (!HACK_ME) {
                 output.normalizePositions();
+            }
             //HACK_ME = true;
         }
         oldCategory = category;

@@ -4,6 +4,7 @@
  */
 package eu.tinasoft.services.data.model;
 
+import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.formats.json.JSONEncoder;
 import eu.tinasoft.services.formats.json.JSONException;
@@ -321,6 +322,14 @@ public class NodeList {
         for (Node n : nodes) {
             n.selected = false;
         }
+    }
+
+    public boolean hasNode(int nb) {
+
+        for (Node ni : nodes) {
+            if (ni.id==nb) return true;
+        }
+        return false;
     }
 
     public class SelectedComparator implements Comparator {

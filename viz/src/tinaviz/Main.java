@@ -40,7 +40,7 @@ public class Main extends PApplet implements MouseWheelListener {
     String PATH_TO_TEST_FILE =
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/bipartite_graph.gexf"
             "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
-            //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
+           // "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
             //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
 
@@ -291,12 +291,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             try {
-                session.getMacro().setProperty("category/value", "NGram");
+                session.getMacro().setProperty("category/value", "Document");
             } catch (KeyException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            session.getMacro().addFilter("Category", "category");
+            //session.getMacro().addFilter("Category", "category");
             session.getMacro().addFilter("NodeWeightRange", "nodeWeight");
             session.getMacro().addFilter("EdgeWeightRange", "edgeWeight");
             session.getMacro().addFilter("NodeFunction", "radiusByWeight");

@@ -39,26 +39,26 @@ public class Layout {
 
         float decay = PApplet.exp(-v.layoutIterationCount * cooling);
 
-        float gravityFactor = 5f;
+        float gravityFactor = 200f; // 200 est bien pour les projets
 
         float graphWidth = nodes.graphWidth;
-        
+
         float gravity = 0;
 
 
         // si le graphe est déjà un peu spatialisé, on met la gravité normale, sans actualisation
         // sinon on met une gravité progressive
-        if (graphWidth > 2*nodes.MAX_RADIUS * PApplet.sqrt(nodes.nbEdges)) {
-            gravity = gravityFactor / (1 + PApplet.sqrt(nodes.nbEdges)) ;
+        if (graphWidth > 2 * nodes.MAX_RADIUS * PApplet.sqrt(nodes.nbEdges)) {
+            gravity = gravityFactor / (1 + PApplet.log(nodes.nbEdges));
         } else {
-            gravity = gravityFactor / (1 + PApplet.sqrt(nodes.nbEdges))  * (1 - decay);
+            gravity = gravityFactor / (1 + PApplet.log(nodes.nbEdges)) * (1 - decay);
         }
 
         // pause is forced!
         /*if (cooling <= 0.015f) {
-            //System.out.println("forced back to pause mode");
-            //v.paused = true;
-            //v.layoutIterationCount = 0;
+        //System.out.println("forced back to pause mode");
+        //v.paused = true;
+        //v.layoutIterationCount = 0;
         }*/
 
         //float gravity = 0.05f / (1 + PApplet.sqrt(PApplet.sqrt(nbNodes))) * (1 - decay);
@@ -70,7 +70,7 @@ public class Layout {
         ////////////////////////////////////////////////////////////////////////////////
 
 
-        if (false && Math.random() < 0.5f) {
+        if (true && Math.random() < 0.5f) {
             System.out.println("decay: " + decay + " = PApplet.exp(-" + v.layoutIterationCount + " * " + cooling + ")");
             System.out.println("gravity: " + gravity);
 
@@ -103,6 +103,7 @@ public class Layout {
                 }
 
                 n2_degree = n2.weights.size();
+
 
                 n2vx = 0.0f;
                 n2vy = 0.0f;
@@ -159,13 +160,13 @@ public class Layout {
                 // ATTENTION ATTENTION ATTE ATTENTION ATTENTION ATTENTION
                 // LE DEGREE A L'AIR INVALIDE (CF VISUAL ANALYTICS)
                 // ATTENTION ATTENTION ATTE ATTENTION ATTENTION ATTENTION
-                
-                boolean nodeisAloneAndFar = (n2_degree <= 2 && dist > nodes.MAX_RADIUS * 20.0f);
+
+                boolean nodeisAloneAndFar = (n2_degree <= 1 && dist > nodes.MAX_RADIUS * 20.0f);
 
                 /*if (n2.label.equals("visual analytics")) {
 
-                    System.out.println("("+n2_degree+" == 1 && "+dist+" > "+nodes.MAX_RADIUS+" * 10.0f)");
-                    System.out.println("visual analytics is alone and far? => "+nodeisAloneAndFar);
+                System.out.println("("+n2_degree+" == 1 && "+dist+" > "+nodes.MAX_RADIUS+" * 10.0f)");
+                System.out.println("visual analytics is alone and far? => "+nodeisAloneAndFar);
                 }*/
                 // si le noeud est tout seul, isolé et trop loin, on le laisse revenir
                 if ((borderDist > 0.0f && decay > 0.1) | nodeisAloneAndFar) {
@@ -184,12 +185,12 @@ public class Layout {
                         weight = (Float) n1.weights.get(n2.id) + 1;
 
                         // si le noeud n'a pas d'autres voisins
-                        if (n2_degree <= 2) {
+                        if (n2_degree <= 1) {
                             attraction = attraction * 2.0f;
                         }
                         //
-                        dix = (dx / dist) * (PApplet.sqrt(PApplet.sqrt(weight))+0.5f) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
-                        diy = (dy / dist) * (PApplet.sqrt(PApplet.sqrt(weight))+0.5f) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
+                        dix = (dx / dist) * (PApplet.sqrt(PApplet.sqrt(weight)) + 0.5f) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
+                        diy = (dy / dist) * (PApplet.sqrt(PApplet.sqrt(weight)) + 0.5f) * attraction * PApplet.log(1 + PApplet.abs(borderDist) / 2);
                         n2vx -= dix;
                         n2vy -= diy;
                     }
