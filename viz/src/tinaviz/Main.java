@@ -105,7 +105,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean loading = true;
 
     private void nodeSelected_JS_CALLBACK(boolean left) {
-        getSession().getBrowser().callAndForget("selected", "'" + getSession().getLevel() + "','"
+        getSession().getBrowser().callAndForget("selected", "'" + getView().getName() + "','"
                 + nodes.getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "'");
     }
 
@@ -395,6 +395,7 @@ public class Main extends PApplet implements MouseWheelListener {
         }
          */
 
+        float RECENTERING_MARGIN = 1.0f;
         if (autocenter) {
             nodes.computeRadius();
 
@@ -402,10 +403,10 @@ public class Main extends PApplet implements MouseWheelListener {
             float graphWidth = nodes.graphWidth * v.sceneScale;
 
 
-            if ((graphWidth * height) / (graphHeight) < width) {
-                v.sceneScale = v.sceneScale * height / graphHeight / 1.1f;
+            if ((graphWidth * height) / (graphHeight) < (width * RECENTERING_MARGIN)) {
+                v.tryToSetZoom(v.sceneScale * height / (graphHeight / 1.1f));
             } else {
-                v.sceneScale = v.sceneScale * width / graphWidth / 1.1f;
+                v.tryToSetZoom(v.sceneScale * width / (graphWidth / 1.1f));
             }
 
             // System.out.println("sceneScale:  " + v.sceneScale);
@@ -1020,6 +1021,8 @@ public class Main extends PApplet implements MouseWheelListener {
             } else if (o instanceof Double) {
                 SELECTION_DISK_RADIUS = ((Double) o).floatValue();
             }
+        } else {
+            // don't touch
         }
         if (SELECTION_DISK_RADIUS > 1) {
 
@@ -1344,16 +1347,17 @@ public class Main extends PApplet implements MouseWheelListener {
 
         // TODO check for limits before
         if (e.getWheelRotation() < 0) {
-            v.sceneScale *= 4.f / 3.f;
-            v.translation.mult(4.f / 3.f);
+            if (v.tryToMultiplyZoom(4.f / 3.f)) {
+                v.translation.mult(4.f / 3.f);
+            }
         } else {
-            v.sceneScale *= 3.f / 4.f;
-            v.translation.mult(3.f / 4.f);
+
+            if (v.tryToMultiplyZoom(3.f / 4.f)) {
+                v.translation.mult(3.f / 4.f);
+            }
         }
         v.translation.add(lastMousePosition);
         System.out.println("Zoom: " + v.sceneScale);
-
-
 
         if (e.getWheelRotation() < 0) {
 
@@ -1589,6 +1593,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param level
      */
     public synchronized int touch(String view) throws ViewNotFoundException {
+
         return getView(view).getGraph().touch();
     }
 
@@ -1624,7 +1629,7 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public boolean setProperty(String view, String key, Object value) {
 
-        System.out.println("setProperty(" + view + "," + key + "," + value + ")");
+        System.out.println("setProperty " + view + "." + key + " = " + value + "");
 
         try {
 
@@ -1634,8 +1639,10 @@ public class Main extends PApplet implements MouseWheelListener {
                     ? getView().setProperty(key, value)
                     : getView(view).setProperty(key, value);
         } catch (KeyException ex) {
+            System.out.println("error: " + ex);
             Console.error(ex.getMessage());
         } catch (ViewNotFoundException ex) {
+            System.out.println("error: " + ex);
             Console.error(ex.getMessage());
         }
         return false;
@@ -1650,6 +1657,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @throws KeyException
      */
     public boolean setProperty(String key, Object value) {
+        System.out.println("setProperty " + key + " = " + value + "");
         try {
             return getView().setProperty(key, value);
         } catch (KeyException ex) {
@@ -1666,18 +1674,21 @@ public class Main extends PApplet implements MouseWheelListener {
      * @throws KeyException
      */
     public Object getProperty(String view, String key) {
-        Object o = null;
+
+        Object o = "";
         try {
             o = view.equalsIgnoreCase("current") ? getView().getProperty(key)
                     : getView(view).getProperty(key);
         } catch (KeyException ex) {
+            System.out.println("error, got key exception " + ex);
             Console.error(ex.getMessage());
-            return "";
         } catch (ViewNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("error, got key exception " + ex);
+            Console.error(ex.getMessage());
         }
-
-        // System.out.println("getProperty(" + view + "," + key + ") = " + o);
+        if (!(view.equals("current") && key.equals("selection/radius"))) {
+            System.out.println(o + " = getProperty(" + view + "," + key + ")");
+        }
 
         return o;
     }
@@ -1689,12 +1700,21 @@ public class Main extends PApplet implements MouseWheelListener {
      * @throws KeyException
      */
     public Object getProperty(String key) {
+        System.out.println("getProperty(" + key + ")");
+
+        Object o = "";
         try {
-            return getView().getProperty(key);
+            o = getView().getProperty(key);
         } catch (KeyException ex) {
             Console.error(ex.getMessage());
-            return "";
+
+
         }
+        if (!key.equals("selection/radius")) {
+            System.out.println(o + " = getProperty(" + key + ")");
+        }
+
+        return o;
     }
 
     /**

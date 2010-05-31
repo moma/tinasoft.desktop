@@ -37,6 +37,10 @@ public class Node implements Comparable {
     public boolean s = false; // switch
     public int degree = 0;
     public OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
+
+    // for each weight: -> it's position in the calculated distribution
+    public OpenIntObjectHashMap weightsDistribution = new OpenIntObjectHashMap();
+    
     //public Set<Long> neighbours = new HashSet<Long>(32);
     //public Map<Long, Float> weights = new HashMap<Long, Float>();
     public boolean selected = false;
@@ -164,7 +168,10 @@ public class Node implements Comparable {
         for (int k : node.weights.keys().elements()) {
             this.weights.put(k, node.weights.get(k));
         }
-
+        
+        for (Entry<String,Object> e : node.attributes.entrySet()) {
+            this.attributes.put(e.getKey(), e.getValue());
+        }
     }
 
     public Node getProxyClone() {

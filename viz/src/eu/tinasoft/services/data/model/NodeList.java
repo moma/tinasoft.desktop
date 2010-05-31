@@ -9,12 +9,15 @@ import eu.tinasoft.services.formats.json.JSONEncoder;
 import eu.tinasoft.services.formats.json.JSONException;
 import eu.tinasoft.services.formats.json.JSONStringer;
 import eu.tinasoft.services.formats.json.JSONWriter;
+import java.lang.Float;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -24,6 +27,7 @@ import processing.core.PVector;
  * @author jbilcke
  */
 public class NodeList {
+
     private boolean mayNeedRecentering = false;
 
     public NodeList(NodeList nodeList) {
@@ -36,6 +40,7 @@ public class NodeList {
         }
         computeExtremums();
     }
+
     private Node getNode(int nodeId) {
         for (Node node : nodes) {
             if (node.id == nodeId) {
@@ -44,7 +49,6 @@ public class NodeList {
         }
         return null;
     }
-
 
     public Node getNode(String id) {
         return getNode(id.hashCode());
@@ -130,16 +134,17 @@ public class NodeList {
         Float my = null;
         int i = 0;
         for (Node n : nodes) {
-            if (!n.selected)
+            if (!n.selected) {
                 continue;
+            }
             mx = (mx == null) ? n.position.x : mx + n.position.x;
             my = (my == null) ? n.position.y : my + n.position.y;
             i++;
         }
         if (mx != null && my != null) {
             if (i != 0) {
-            bary.set(mx / i, my / i, 0);
-            } 
+                bary.set(mx / i, my / i, 0);
+            }
         }
         return bary;
     }
@@ -151,7 +156,11 @@ public class NodeList {
     }
 
     public void unselect(String id) {
-        for (Node n : nodes) if (n.id == id.hashCode()) n.selected = false;
+        for (Node n : nodes) {
+            if (n.id == id.hashCode()) {
+                n.selected = false;
+            }
+        }
     }
 
     public PVector computeBaryCenter() {
@@ -166,8 +175,8 @@ public class NodeList {
         }
         if (mx != null && my != null) {
             if (i != 0) {
-            bary.set(mx / i, my / i, 0);
-            } 
+                bary.set(mx / i, my / i, 0);
+            }
         }
         baryCenter = bary;
         return baryCenter;
@@ -179,17 +188,17 @@ public class NodeList {
         minY = Float.MAX_VALUE;
         maxY = Float.MIN_VALUE;
         if (nodes.size() > 0) {
-             for (Node n : nodes) {
-                 maxX = PApplet.max(maxX,n.position.x);
-                 minX = PApplet.min(minX,n.position.x);
-                 maxY = PApplet.max(maxY,n.position.y);
-                 minY = PApplet.min(minY,n.position.y);
+            for (Node n : nodes) {
+                maxX = PApplet.max(maxX, n.position.x);
+                minX = PApplet.min(minX, n.position.x);
+                maxY = PApplet.max(maxY, n.position.y);
+                minY = PApplet.min(minY, n.position.y);
             }
         } else {
-             maxX =  1.0f;
-             minX = -1.0f;
-             maxY =  1.0f;
-             minY = -1.0f;
+            maxX = 1.0f;
+            minX = -1.0f;
+            maxY = 1.0f;
+            minY = -1.0f;
         }
         graphWidth = maxX - minX;
         graphHeight = maxY - minY;
@@ -202,7 +211,7 @@ public class NodeList {
     }
 
     public void highlightNodeById(String str) {
-         int id = str.hashCode();
+        int id = str.hashCode();
         for (Node n : nodes) {
             n.isFirstHighlight = (n.id == id);
         }
@@ -293,25 +302,26 @@ public class NodeList {
         float minY = Float.MAX_VALUE;
         float maxY = Float.MIN_VALUE;
         if (nodes.size() > 0) {
-             for (Node n : nodes) {
-                 if (!n.selected) continue;
-                 maxX = PApplet.max(maxX,n.position.x);
-                 minX = PApplet.min(minX,n.position.x);
-                 maxY = PApplet.max(maxY,n.position.y);
-                 minY = PApplet.min(minY,n.position.y);
+            for (Node n : nodes) {
+                if (!n.selected) {
+                    continue;
+                }
+                maxX = PApplet.max(maxX, n.position.x);
+                minX = PApplet.min(minX, n.position.x);
+                maxY = PApplet.max(maxY, n.position.y);
+                minY = PApplet.min(minY, n.position.y);
             }
         } else {
-             return center;
+            return center;
         }
         return new PVector(minX + (maxX - minX) / 2.0f, minY + (maxY - minY) / 2.0f, 0.0f);
     }
 
     public void unselectAll() {
-        for (Node n : nodes) n.selected = false;
+        for (Node n : nodes) {
+            n.selected = false;
+        }
     }
-
-
-
 
     public class SelectedComparator implements Comparator {
 
@@ -379,8 +389,7 @@ public class NodeList {
     public float minNodeWeight;
     public float maxNodeWeight;
     public int nbEdges;
-    public int nbVisibleEdges=1;
-
+    public int nbVisibleEdges = 1;
     private Comparator comp = new SelectedComparator();
 
     public NodeList(List<Node> nodes) {
@@ -458,12 +467,13 @@ public class NodeList {
 
     public void add(Node node) {
 
-                mayNeedRecentering = true;
+        mayNeedRecentering = true;
     }
 
     public void setMayNeedRecentering(boolean value) {
         mayNeedRecentering = value;
     }
+
     public Node get(int i) {
         return nodes.get(i);
     }
@@ -478,7 +488,7 @@ public class NodeList {
 
 
             n.position.set(PApplet.map(n.position.x, minX, maxX, MIN_X, MAX_X),
-                     PApplet.map(n.position.y, minY, maxY, MIN_Y, MAX_Y),
+                    PApplet.map(n.position.y, minY, maxY, MIN_Y, MAX_Y),
                     0.0f);
 
         }
@@ -487,6 +497,16 @@ public class NodeList {
     public synchronized void normalize() {
         //System.out.println("normalizing..");
 
+        int totalNumberOfWeightsValues = 0;
+        
+        for (Node n : nodes) {
+            totalNumberOfWeightsValues += n.weights.size();
+        }
+
+        System.out.println("max / 100: "+(totalNumberOfWeightsValues / 100.0f));
+        int rat = (int) (totalNumberOfWeightsValues / 100.0f);
+
+        int i = 0;
         for (Node n : nodes) {
             n.radius = (minRadius == maxRadius)
                     ? MIN_RADIUS
@@ -507,8 +527,10 @@ public class NodeList {
                 n.b = 255 - 160 * n.radius;
             }
 
-            if (false) System.out.println("n.weight = " + "PApplet.map(" + n.weight + ","
-                    + minNodeWeight + ", " + maxNodeWeight + "," + NORMALIZED_MIN_NODE_WEIGHT + ", " + NORMALIZED_MAX_NODE_WEIGHT + ");");
+            if (false) {
+                System.out.println("n.weight = " + "PApplet.map(" + n.weight + ","
+                        + minNodeWeight + ", " + maxNodeWeight + "," + NORMALIZED_MIN_NODE_WEIGHT + ", " + NORMALIZED_MAX_NODE_WEIGHT + ");");
+            }
 
             // NORMALIZE WEIGHT
 
@@ -524,7 +546,9 @@ public class NodeList {
                     )
                     ))*/;
 
-            if (false) System.out.println("n.weight = " + n.weight);
+            if (false) {
+                System.out.println("n.weight = " + n.weight);
+            }
 
             // NORMALIZE WEIGHTS
             for (int k : n.weights.keys().elements()) {
@@ -536,23 +560,25 @@ public class NodeList {
                         // si pas de min ni d emax
                         (minEdgeWeight == maxEdgeWeight)
                         ? NORMALIZED_MIN_EDGE_WEIGHT
-                        : 
-                            ((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (PApplet.max(
+                        : ((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (PApplet.max(
                         PApplet.abs(minEdgeWeight), PApplet.abs(maxEdgeWeight))));
-                         // sinon
-                        // entre 0 et NORMALIZED_MAX_EDGE_WEIGHT
-                        //(0 < minEdgeWeight && maxEdgeWeight < 1) ?
-                        
-                       
+                // sinon
+                // entre 0 et NORMALIZED_MAX_EDGE_WEIGHT
+                //(0 < minEdgeWeight && maxEdgeWeight < 1) ?
+
+
                 // entre 1 et NORMALIZED_MAX_EDGE_WEIGHT
                         /*: PApplet.map(w,
                 minEdgeWeight, maxEdgeWeight,
                 NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);*/
 
                 n.weights.put(k, w);
+
+                n.weightsDistribution.put(k, PApplet.map(i, 0, totalNumberOfWeightsValues, 0.01f, 1.0f));
                 //System.out.println("  - w: "+w);
             }
 
+            i++;
         }
         minNodeWeight = 0.0f;
         maxNodeWeight = 1.0f;
@@ -585,7 +611,7 @@ public class NodeList {
         }
         if (mx != null && my != null) {
             if (i != 0) {
-            bary.set(mx / i, my / i, 0);
+                bary.set(mx / i, my / i, 0);
             }
         }
         return bary;
@@ -603,9 +629,9 @@ public class NodeList {
             my = (my == null) ? n.position.y : my + n.position.y;
         }
 
-        baryCenter.set(0.0f,0.0f,0.0f);
+        baryCenter.set(0.0f, 0.0f, 0.0f);
         if (mx != null && my != null) {
-            if (nodes.size()!=0) {
+            if (nodes.size() != 0) {
                 baryCenter.set(mx / nodes.size(), my / nodes.size(), 0);
             }
         }

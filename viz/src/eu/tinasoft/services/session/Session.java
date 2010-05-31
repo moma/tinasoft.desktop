@@ -148,7 +148,12 @@ public class Session {
         }
     }
 
+    @Deprecated
     public synchronized String getLevel() {
+        return getView().getName();
+    }
+
+    public synchronized String getName() {
         return getView().getName();
     }
 
@@ -159,7 +164,9 @@ public class Session {
     }
 
     public synchronized View getView(String v) throws ViewNotFoundException {
-        if (v.equalsIgnoreCase("macro")) {
+        if (v.equalsIgnoreCase("current")) {
+            return getView();
+        } else if (v.equalsIgnoreCase("macro")) {
             return macro;
         }
         else if (v.equalsIgnoreCase("meso")) {

@@ -69,7 +69,8 @@ public class Layout {
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        if (Math.random() < 0.5f) {
+
+        if (false && Math.random() < 0.5f) {
             System.out.println("decay: " + decay + " = PApplet.exp(-" + v.layoutIterationCount + " * " + cooling + ")");
             System.out.println("gravity: " + gravity);
 

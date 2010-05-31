@@ -73,6 +73,19 @@ public class View {
         layoutIterationCount = 0;
     }
 
+    public synchronized boolean tryToMultiplyZoom (float ratio) {
+        return tryToSetZoom(sceneScale*ratio);
+    }
+    
+
+    public synchronized boolean tryToSetZoom (float newValue) {
+
+        if ((newValue > ZOOM_CEIL)&&(newValue < ZOOM_FLOOR)) {
+            sceneScale = newValue;
+            return true;
+        }
+        return false;
+    }
     // TODO refactor these two..
     public synchronized boolean toggleLinks() {
         showLinks = !showLinks;
