@@ -475,7 +475,7 @@ public class Graph implements Cloneable {
         touch();
     }
 
-    public int touch() {
+    public synchronized int touch() {
         //System.out.println("incrementing graph revision to "+(revision.get()+1));
         return revision.incrementAndGet();
     }
@@ -496,11 +496,11 @@ public class Graph implements Cloneable {
 
     }
 
-    public void unselectAll() {
+    public synchronized int unselectAll() {
         for (Node n : storedNodes.values()) {
             n.selected = false;
         }
-        touch();
+        return touch();
     }
 
     public void highlightNodeById(String str) {

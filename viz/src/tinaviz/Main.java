@@ -664,9 +664,9 @@ public class Main extends PApplet implements MouseWheelListener {
         fill(80);
         textSize(12);
 
-        nodes.nbVisibleEdges = (visibleEdges<1) ? 1 : visibleEdges;
+        nodes.nbVisibleEdges = (visibleEdges < 1) ? 1 : visibleEdges;
 
-        
+
         if (debug.get()) {
             text("" + ((int) frameRate) + " img/sec", 10f, 13f);
             text("" + visibleNodes + "/" + nodes.size() + " nodes", 80f, 13f);
@@ -1506,7 +1506,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } else if (key == 's') {
             centerOnSelection();
             autoCentering();
-        }  else if (key == 'a') {
+        } else if (key == 'a') {
             v.paused = !v.paused;
             session.getBrowser().buttonStateCallback("paused", v.paused);
             System.out.println("Animation paused is now " + v.paused);
@@ -1588,12 +1588,12 @@ public class Main extends PApplet implements MouseWheelListener {
      * "Touch" a given view (will cause the current view to update)
      * @param level
      */
-    public void touch(String view) throws ViewNotFoundException {
-        getView(view).getGraph().touch();
+    public synchronized int touch(String view) throws ViewNotFoundException {
+        return getView(view).getGraph().touch();
     }
 
-    public void touch() {
-        getView().getGraph().touch();
+    public synchronized int touch() {
+        return getView().getGraph().touch();
     }
 
     public void resetLayoutCounter() {

@@ -48,10 +48,10 @@ public class Layout {
 
         // si le graphe est déjà un peu spatialisé, on met la gravité normale, sans actualisation
         // sinon on met une gravité progressive
-        if (graphWidth > 2*nodes.MAX_RADIUS * PApplet.sqrt(nodes.nbVisibleEdges)) {
-            gravity = gravityFactor / (1 + PApplet.sqrt(nodes.nbVisibleEdges)) ;
+        if (graphWidth > 2*nodes.MAX_RADIUS * PApplet.sqrt(nodes.nbEdges)) {
+            gravity = gravityFactor / (1 + PApplet.sqrt(nodes.nbEdges)) ;
         } else {
-            gravity = gravityFactor / (1 + PApplet.sqrt(nodes.nbVisibleEdges))  * (1 - decay);
+            gravity = gravityFactor / (1 + PApplet.sqrt(nodes.nbEdges))  * (1 - decay);
         }
 
         // pause is forced!
