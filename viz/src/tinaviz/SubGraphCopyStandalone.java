@@ -14,6 +14,7 @@ import eu.tinasoft.services.session.Session;
 
 import eu.tinasoft.services.visualization.views.View;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,9 +30,7 @@ import processing.core.PVector;
 public class SubGraphCopyStandalone extends NodeFilter {
 
     private String KEY_SOURCE = "source";
-
     private String KEY_CATEGORY = "category";
-
     private String defaultSource = "macro";
     private String source = defaultSource;
     private String defaultCategory = "NO_CATEGORY";
@@ -44,6 +43,8 @@ public class SubGraphCopyStandalone extends NodeFilter {
             return output;
         }
 
+        HashMap<Integer, Node> oldSelection = new HashMap<Integer, Node>();
+
         System.out.println("debugging subgraph copier");
 
         if (!localView.properties.containsKey(root + KEY_SOURCE)) {
@@ -51,7 +52,7 @@ public class SubGraphCopyStandalone extends NodeFilter {
         }
 
 
- 
+
         if (!localView.properties.containsKey(root + KEY_CATEGORY)) {
             localView.properties.put(root + KEY_CATEGORY, defaultCategory);
         }
@@ -84,67 +85,69 @@ public class SubGraphCopyStandalone extends NodeFilter {
             category = defaultCategory;
         }
 
-        /*
-        Object o = localView.properties.get(root + KEY_ITEM);
-        if (o == null) {
-            System.out.println("uh oh! i am a source and my 'item' parameter is null! you're gonna have a bad day man.. ");
-            return output;
-        }
-
-        System.out.println("read KEY_ITEM to " + o);
-
-        if (o instanceof String) {
-            item = ((String) o).hashCode();
-        } else {
-            Console.error("bad type for " + root + KEY_ITEM + ": got " + o);
-            return output;
-        }
-        System.out.println("KEY_ITEM resolved to " + item + "");
-
-*/
-        
         if (sourceView.getGraph().size() < 1) {
             System.out.println("original graph is zero-sized.. ");
             return output;
         }
         System.out.println("MESO current view size: " + localView.getGraph().size());
 
-        /*if (localView.getGraph().size() > 0) {
-        System.out.println("view.graph.size() > 0 is TRUE !");
-        return output;
-        }*/
-
-        /*
-        if (!sourceView.getGraph().storedNodes.containsKey(item)) {
-            System.out.println("the key doesn't exists! but that's probably not that bad.");
-            return output;
-        }
-*/
-        
-
         System.out.println("MESO category: " + category);
         System.out.println("MESO oldCategory: " + oldCategory);
-        //if (!category.equals(oldCategory)) {
-       
-            System.out.println("MESO something (item or category) changed, updating subgraph copy....");
-            NodeList newNodes = new NodeList();
 
-            for (Entry<Integer, Node> e : sourceView.getGraph().storedNodes.entrySet()) {
-                if (e.getValue().selected) {
+        boolean categoryChanged = !category.equals(oldCategory);
+        boolean renormalizationNeeded = false;
+
+
+        for (Entry<Integer, Node> e : sourceView.getGraph().storedNodes.entrySet()) {
+            if (true) break;
+            if (e.getValue().selected) {
+
+                // TODO:  update if current selection != old selection
+                if (categoryChanged) {
                     Node rootNode =
                             sourceView.getGraph().getNode(e.getKey()).getDetachedClone(); // we want the clone
-                    newNodes.addWithoutTouching(rootNode);
+
+                    //newNodes.addWithoutTouching(rootNode);
                     for (int n : rootNode.weights.keys().elements()) {
                         Node neighbourNode = sourceView.getGraph().getNode(n).getDetachedClone();
                         if (!neighbourNode.category.equals(category)) {
                             continue;
                         }
-                        neighbourNode.position = new PVector((float) Math.random() * 10f, (float) Math.random() * 10f);
-                        newNodes.addWithoutTouching(neighbourNode);
+
+                    }
+                }
+
+            }
+        }
+
+        if (categoryChanged) {
+
+            System.out.println("MESO something (item or category) changed, updating subgraph copy....");
+            NodeList newNodes = new NodeList();
+
+            for (Entry<Integer, Node> e : sourceView.getGraph().storedNodes.entrySet()) {
+                if (e.getValue().selected) {
+
+                    // TODO:  update if current selection != old selection
+
+                    if (categoryChanged) {
+                        Node rootNode =
+                                sourceView.getGraph().getNode(e.getKey()).getDetachedClone(); // we want the clone
+
+                        newNodes.addWithoutTouching(rootNode);
+                        for (int n : rootNode.weights.keys().elements()) {
+                            Node neighbourNode = sourceView.getGraph().getNode(n).getDetachedClone();
+                            if (!neighbourNode.category.equals(category)) {
+                                continue;
+                            }
+                            neighbourNode.position = new PVector((float) Math.random() * 10f, (float) Math.random() * 10f);
+                            newNodes.addWithoutTouching(neighbourNode);
+                        }
                     }
 
                 }
             }
+
 
 
             System.out.println("MESO computing extremums, and normalizing positions");
@@ -160,10 +163,14 @@ public class SubGraphCopyStandalone extends NodeFilter {
             System.out.println("MESO localView size: " + localView.getGraph().size());
             output = new NodeList(localView.getGraph().getNodeListCopy());
             System.out.println("MESO output size: " + output.size());
-   
-            oldCategory = category;
 
+            oldCategory = category;
+        } else {
+            System.out.println("MESO nothing changed, still old category");
+            output = input;
+        }
 
         return output;
     }
 }
+

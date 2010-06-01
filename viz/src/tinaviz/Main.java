@@ -104,9 +104,14 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean centerOnSelection = false;
     private boolean loading = true;
 
-    private void nodeSelected_JS_CALLBACK(boolean left) {
-        getSession().getBrowser().callAndForget("selected", "'" + getView().getName() + "','"
-                + nodes.getSelectedNodesAsJSON() + "','" + (left ? "left" : "right") + "'");
+    private void nodeSelected_JS_CALLBACK(String view, MouseButton mouseSide) {
+        getSession().getBrowser().callAndForget("selected", "'" + view + "','"
+                + nodes.getSelectedNodesAsJSON() + "','" + (
+                mouseSide == MouseButton.DOUBLELEFT ? "doubleLeft" :
+                mouseSide == MouseButton.LEFT ? "left" :
+                mouseSide == MouseButton.RIGHT ? "right" :
+                "none"
+                ) + "'");
     }
 
     private void viewChanged_JS_CALLBACK(String view) {
@@ -120,7 +125,7 @@ public class Main extends PApplet implements MouseWheelListener {
         scale(v.sceneScale);
     }
 
-    enum quality {
+     enum quality {
 
         FASTEST, // no stroke on circle, no stroke weight
         FASTER, // no stroke on circle, no stroke weight
@@ -1184,19 +1189,20 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
+    public enum MouseButton {
+
+        NONE, LEFT, DOUBLELEFT, RIGHT;
+    };
+
     @Override
     public void mouseClicked() {
-
-
-        List<String> selectedIDs = new ArrayList<String>();
-
-        String singleRightClick = null;
-        String singleLeftClick = null;
-
-        System.out.println("mouse clicked");
+        List<Integer> selectedIDs = new ArrayList<Integer>();
+        List<Integer> unselectedIDs = new ArrayList<Integer>();
+        MouseButton mouseSide = MouseButton.NONE;
 
         if (mouseX > width - 30 && mouseY > height - 25) {
             link(VENDOR_URL, "_new");
+            return;
         }
 
         for (Node n : nodes.nodes) {
@@ -1206,7 +1212,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
             if (SELECTION_DISK_RADIUS > 1) {
                 if ((dist(mouseX, mouseY, nsx, nsy) < SELECTION_DISK_RADIUS / 2.0f)) {
-                    match = true;
+                } else {
+                    continue;
                 }
             } else {
                 float rad = n.radius * MAX_NODE_RADIUS;
@@ -1215,74 +1222,50 @@ public class Main extends PApplet implements MouseWheelListener {
                 if (nsr < 2) {
                     continue;
                 }
-
-
-
                 if ((dist(mouseX, mouseY, nsx, nsy) < nsr)) {
                     match = true;
+                } else {
+                    continue;
                 }
             }
 
 
-            if (match) {
-                // LEFT CLICK ON NODES
-                if (mouseButton == LEFT) {
-                    //System.out.println("left mouse clicked!");
-
-
-                    if (mouseEvent != null && mouseEvent.getClickCount() == 2) {
-
-                        // cannot unselect the selected node in meso view
-                        /*
-                        if (n.selected && session.getView().getLevel() == ViewLevel.MESO) {
-                        redrawIfNeeded();
-                        return;
-                        }*/
-
-                        //if (!n.selected) {
-                        //    System.out.println("adding " + n.uuid);
-
-                        singleLeftClick = n.uuid;
-                        leftSelectFromId(singleLeftClick);
-                        // } else {
-                        //    unselectFromId(n.uuid);
-                        // }
-                        if (session.currentView == ViewLevel.MACRO) {
-                            System.out.println("SWITCH TO MESO WITH THE DOUBLE CLICK METHOD");
-                            session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL * 2f;
-                            setView("meso");
-                        } else if (session.currentView == ViewLevel.MESO) {
-                            System.out.println("SWITCH TO MICRO WITH THE DOUBLE CLICK METHOD");
-                            //session.getMicro().sceneScale = session.getMicro().ZOOM_CEIL + session.getMicro().ZOOM_CEIL * 0.5f;
-                            //jsSwitchToMicro();
-                        }
-                    } else {
-
-                        //if (!n.selected) {
-                        // System.out.println("adding " + n.uuid);
-
-                        singleLeftClick = n.uuid;
-                        leftSelectFromId(singleLeftClick);
-                        //leftSelectFromId(n.uuid);
-                        // } else {
-                        //   unselectFromId(n.uuid);
-                        //}
-                    }
-
-                    // RIGHT MOUSE
-                } else if (mouseButton == RIGHT) {
-                    singleRightClick = n.uuid;
-                    unselectFromId(n.uuid);
+            if (mouseButton == LEFT) {
+                if (mouseEvent != null && mouseEvent.getClickCount() == 2) {
+                    mouseSide = MouseButton.DOUBLELEFT;
+                } else {
+                    mouseSide = MouseButton.LEFT;
                 }
-
+                n.selected = true;
+                selectedIDs.add(n.id);
+            } else if (mouseButton == RIGHT) {
+                mouseSide = MouseButton.RIGHT;
+                n.selected = false;
+                unselectedIDs.add(n.id);
             }
+        }
 
+        // if we have a double click, we unselect nodes in all views, graphs..
+        if (mouseSide == MouseButton.DOUBLELEFT) {
+            unselect();
+        } else {
+            for (int i : unselectedIDs) {
+                getSession().unselectNode(i);
+            }
         }
-        if (singleRightClick != null) {
-            nodeSelected_JS_CALLBACK(false);
-        } else if (singleLeftClick != null) {
-            nodeSelected_JS_CALLBACK(true);
+
+        // we select our new nodes in all views, graphs..
+        for (int i : selectedIDs) {
+            nodes.selectNode(i);
+            getSession().selectNode(i);
         }
+
+        // in all cases, we call the callback function
+        if (mouseSide != MouseButton.NONE) {
+            System.out.println("calling callback("+mouseSide+")");
+            nodeSelected_JS_CALLBACK(getView().getName(),mouseSide);
+        }
+
         lastMousePosition.set(mouseX, mouseY, 0);
         redrawIfNeeded();
     }
@@ -1342,7 +1325,7 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
         v.translation.add(lastMousePosition);
-        System.out.println("Zoom: " + v.sceneScale);
+        // System.out.println("Zoom: " + v.sceneScale);
 
         if (e.getWheelRotation() < 0) {
 
@@ -1405,29 +1388,20 @@ public class Main extends PApplet implements MouseWheelListener {
                 }
 
                 if (bestMatchForSwitch != null) {
-
-                    // disable the macro to meso switch when the nodes can't be shown
-
                     if (!bestMatchForSwitch.selected) {
                         bestMatchForSwitch.selected = true;
                         session.selectNode(bestMatchForSwitch);
-                        nodeSelected_JS_CALLBACK(true);
+                        nodeSelected_JS_CALLBACK(v.getName(), MouseButton.DOUBLELEFT);
                     }
-                    System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
-                    session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
-                    setView("meso");
-
-                    redrawIfNeeded();
+                    //redrawIfNeeded();
                     return;
-
                 } else if (bestMatchForSelection != null) {
                     if (!bestMatchForSelection.selected) {
                         bestMatchForSelection.selected = true;
                         session.selectNode(bestMatchForSelection);
-                        nodeSelected_JS_CALLBACK(true);
+                        nodeSelected_JS_CALLBACK(v.getName(), MouseButton.LEFT);
                     }
-
-                    redrawIfNeeded();
+                    //redrawIfNeeded();
                     return;
                 }
             }
@@ -1460,154 +1434,6 @@ public class Main extends PApplet implements MouseWheelListener {
         redrawIfNeeded();
     }
 
-    //@Override
-    public void mouseWheelMoved_BACKUP(MouseWheelEvent e) {
-
-        stopAutoCentering();
-
-        if (e.getUnitsToScroll() == 0) {
-            return;
-        }
-
-        showBranding = false;
-        View v = getView();
-
-        lastMousePosition.set(mouseX, mouseY, 0);
-        v.translation.sub(lastMousePosition);
-
-        // IF WE WANT TO ZOOM IN
-        if (e.getWheelRotation() < 0) {
-
-            float ratio = 4.0f / 3.0f;
-            float potentialZoomLevel = v.sceneScale * ratio;
-
-            if (v.tryToSetZoom(potentialZoomLevel)) {
-                v.translation.mult(4.f / 3.f);
-            } else {
-                // HACK we can't zoom, except if we are in the meso
-                if (v.getLevel() == ViewLevel.MESO) {
-                    v.sceneScale = potentialZoomLevel;
-                    v.translation.mult(4.f / 3.f);
-                }
-            }
-
-            Node bestMatchForSwitch = null;
-            Node bestMatchForSelection = null;
-
-            for (Node n : nodes.nodes) {
-
-                float rad = n.radius * MAX_NODE_RADIUS;
-                float rad2 = rad + rad * 0.4f;
-                float nsx = screenX(n.position.x, n.position.y);
-                float nsy = screenY(n.position.x, n.position.y);
-
-                if (!(nsx > width * 0.2f
-                        && nsx < width * 0.8f
-                        && nsy > height * 0.2f
-                        && nsy < height * 0.8f)) {
-                    continue;
-                }
-
-                float nsr = screenX(n.position.x + (rad2), n.position.y) - nsx;
-                if (nsr < 2) {
-                    continue;
-                }
-
-                float screenRatio = (((nsr * 2.0f) / (float) width) + ((nsr * 2.0f) / (float) height)) / 2.0f;
-                //System.out.println("nsr: " + nsr);
-                //System.out.println("'- screen ratio: " + screenRatio);
-                if (v.showNodes) {
-
-                    switch (session.currentView) {
-                        case MACRO:
-
-                            if (screenRatio > screenRatioGoToMesoWhenZoomed) {
-                                if (bestMatchForSwitch != null) {
-
-                                    if (rad2 > bestMatchForSwitch.radius) {
-                                        bestMatchForSelection = null;
-                                        bestMatchForSwitch = n;
-                                    }
-                                } else {
-                                    bestMatchForSelection = null;
-                                    bestMatchForSwitch = n;
-                                }
-                            } else if (screenRatio > screenRatioSelectNodeWhenZoomed) {
-                                if (bestMatchForSelection != null) {
-
-                                    if (rad2 > bestMatchForSelection.radius) {
-                                        bestMatchForSelection = n;
-                                    }
-                                } else {
-                                    bestMatchForSelection = n;
-                                }
-                            }
-                            break;
-                    }
-                }
-
-                if (bestMatchForSwitch != null) {
-
-                    // disable the macro to meso switch when the nodes can't be shown
-
-                    if (!bestMatchForSwitch.selected) {
-                        bestMatchForSwitch.selected = true;
-                        session.selectNode(bestMatchForSwitch);
-                        nodeSelected_JS_CALLBACK(true);
-                    }
-                    System.out.println("SWITCH TO MESO WITH THE BIG ZOOM METHOD");
-                    //session.getMeso().sceneScale = session.getMeso().ZOOM_CEIL + session.getMeso().ZOOM_CEIL * 0.5f;
-
-                    setView("meso");
-
-
-                    redrawIfNeeded();
-                    return;
-
-                } else if (bestMatchForSelection != null) {
-                    if (!bestMatchForSelection.selected) {
-                        bestMatchForSelection.selected = true;
-                        session.selectNode(bestMatchForSelection);
-                        nodeSelected_JS_CALLBACK(true);
-                    }
-
-                    redrawIfNeeded();
-                    return;
-                }
-            }
-        } else {
-
-            // ZOOM OUT
-            float ratio = 3.0f / 4.0f;
-            float potentialZoomLevel = v.sceneScale * ratio;
-
-
-            if (v.getLevel() == ViewLevel.MESO) {
-                if (potentialZoomLevel < v.ZOOM_CEIL) {
-                }
-                v.sceneScale *= ratio;
-                v.translation.mult(ratio);
-            }
-
-            if (v.tryToMultiplyZoom(ratio)) {
-                v.translation.mult(ratio);
-            } else {
-                // HACK we can't zoom, except if we are in the meso
-                if (v.getLevel() == ViewLevel.MESO) {
-                    v.sceneScale *= ratio;
-                    v.translation.mult(ratio);
-                }
-            }
-        }
-
-        v.translation.add(lastMousePosition);
-        System.out.println("Zoom: " + v.sceneScale);
-
-
-
-
-        redrawIfNeeded();
-    }
 
     @Override
     public void keyPressed() {
@@ -1731,7 +1557,11 @@ public class Main extends PApplet implements MouseWheelListener {
         return getView(view).getGraph().touch();
     }
 
-    public synchronized int touch() {
+    @Deprecated
+   public synchronized int touch() {
+        return commitProperties();
+    }
+    public synchronized int commitProperties() {
         return getView().getGraph().touch();
     }
 
@@ -1856,9 +1686,11 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param str
      */
     public void selectFromId(String str) {
-        getSession().selectNode(str);
-        nodes.selectNode(str); // so that the callback will now work
-        nodeSelected_JS_CALLBACK(true);
+        Session s = getSession();
+        s.selectNode(str);
+        nodes.selectNode(str);
+        System.out.println("selectFromId("+str+") called from javascript, calling nodeSelected_JS_CALLBACK(MouseButton.LEFT)");
+        nodeSelected_JS_CALLBACK(s.getView().getName(), MouseButton.LEFT);
     }
 
     /**
@@ -1871,53 +1703,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
     }
 
-    /**
-     * select a node from it's ID in all views
-     * @param str
-     */
-    public void leftSelectFromId(String str) {
-        getSession().selectNode(str);
-        nodes.selectNode(str); // so that the callback will now work
-    }
-
-    /**
-     * select a node from it's ID in all views
-     * @param str
-     */
-    public void rightSelectFromId(String str) {
-        getSession().selectNode(str);
-        nodes.selectNode(str); // so that the callback will now work
-    }
-
-    /**
-     * select a node from it's ID in all views
-     * @param str
-     */
-    public void selectFromIds(List<String> ids) {
-        getSession().selectNodes(ids);
-        nodes.selectNodes(ids); // so that the callback will now work
-        nodeSelected_JS_CALLBACK(true);
-    }
-
-    /**
-     * select a node from it's ID in all views
-     * @param str
-     */
-    public void leftSelectFromIds(List<String> ids) {
-        getSession().selectNodes(ids);
-        nodes.selectNodes(ids); // so that the callback will now work
-        nodeSelected_JS_CALLBACK(true);
-    }
-
-    /**
-     * select a node from it's ID in all views
-     * @param str
-     */
-    public void rightSelectFromIds(List<String> ids) {
-        getSession().selectNodes(ids);
-        nodes.selectNodes(ids); // so that the callback will now work
-        nodeSelected_JS_CALLBACK(false);
-    }
 
     /**
      * Unselect all nodes in all views
@@ -1925,13 +1710,6 @@ public class Main extends PApplet implements MouseWheelListener {
     public void unselect() {
         getSession().unselectAll();
         nodes.unselectAll();
-    }
-
-    private void unselectFromId(String id) {
-        getSession().unselectNode(id);
-        nodes.unselect(id); // so that the callback will now work
-        nodeSelected_JS_CALLBACK(true);
-
     }
 
     /**
@@ -2080,11 +1858,13 @@ public class Main extends PApplet implements MouseWheelListener {
     public boolean setView(String view) {
         if (view.equalsIgnoreCase("current")) {
             viewChanged_JS_CALLBACK(view);
+            nodeSelected_JS_CALLBACK(view, MouseButton.LEFT);
             return true;
         }
 
         if (session.setView(view)) {
             viewChanged_JS_CALLBACK(view);
+            nodeSelected_JS_CALLBACK(view, MouseButton.LEFT);
         } else {
             Console.error("set view failed..");
             return false;

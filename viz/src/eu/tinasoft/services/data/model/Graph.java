@@ -23,7 +23,11 @@ import eu.tinasoft.services.formats.json.JSONWriter;
 import eu.tinasoft.services.session.Attribute;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.formats.xml.XPathReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
+import processing.core.PVector;
 
 /**
  * Graph container - todo rename it
@@ -118,6 +122,7 @@ public class Graph implements Cloneable {
         locked.set(true);
         String meta = "/gexf/graph/tina/";
         Console.log("parsing..");
+        Map<String, List<Node>> normalizeMyNodes = new HashMap<String, List<Node>>();
 
         Double zoomValue = (Double) xml.read(meta + "zoom/@value", XPathConstants.NUMBER);
         sessionAttributes.put("zoom", (zoomValue != null) ? zoomValue.floatValue() : 1.0f);
@@ -324,6 +329,10 @@ public class Graph implements Cloneable {
                 }
 
 
+                if (!normalizeMyNodes.containsKey(node.category)) {
+                    normalizeMyNodes.put(node.category, new ArrayList<Node>());
+                }
+                 normalizeMyNodes.get(node.category).add(node);
             }
 
             // debug
@@ -394,6 +403,15 @@ public class Graph implements Cloneable {
 
         Console.log("graph loaded!");
 
+        Console.log("one-time normalization..");
+
+
+
+        for (Entry<String,List<Node>> e : normalizeMyNodes.entrySet()) {
+              NodeListNormalizer.normalize(e.getValue(), "category", e.getKey());
+        }
+
+ 
         locked.set(false);
         touch();
         return true;
@@ -475,7 +493,13 @@ public class Graph implements Cloneable {
         touch();
     }
 
+    @Deprecated
     public synchronized int touch() {
+        //System.out.println("incrementing graph revision to "+(revision.get()+1));
+        return commitProperties();
+    }
+
+    public synchronized int commitProperties() {
         //System.out.println("incrementing graph revision to "+(revision.get()+1));
         return revision.incrementAndGet();
     }
@@ -511,7 +535,6 @@ public class Graph implements Cloneable {
     }
 
     public String getNeighbourhoodAsJSON(String id) {
-         String result = "";
 
         Node node = getNode(id.hashCode());
 
@@ -539,16 +562,16 @@ public class Graph implements Cloneable {
             }
 
         } catch (JSONException jSONException) {
-            Console.error(jSONException.getMessage());
+            Console.error("cannot create json: " +jSONException.getMessage());
             return "{}";
         }
         try {
             writer.endObject();
         } catch (JSONException ex) {
-            Console.error(ex.getMessage());
+            Console.error("cannot create json: "+ex.getMessage());
             return "{}";
         }
-        System.out.println("GRAPH.getNeighbourhoodAsJSON: " + writer.toString());
+        if (false) System.out.println("GRAPH.getNeighbourhoodAsJSON: " + writer.toString());
         return writer.toString();
     }
 }

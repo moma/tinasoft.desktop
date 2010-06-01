@@ -4,21 +4,19 @@
  */
 package eu.tinasoft.services.data.model;
 
-import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.formats.json.JSONEncoder;
 import eu.tinasoft.services.formats.json.JSONException;
 import eu.tinasoft.services.formats.json.JSONStringer;
 import eu.tinasoft.services.formats.json.JSONWriter;
-import java.lang.Float;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -256,7 +254,7 @@ public class NodeList {
             Console.error(ex.getMessage());
             return "{}";
         }
-        System.out.println("getNeighbourhoodAsJSON: " + writer.toString());
+        if (false) System.out.println("getNeighbourhoodAsJSON: " + writer.toString());
         return writer.toString();
     }
 
@@ -326,11 +324,21 @@ public class NodeList {
 
     public boolean hasNode(int nb) {
 
-        for (Node ni : nodes) {
-            if (ni.id==nb) return true;
+        for (Node n : nodes) {
+            if (n.id==nb) return true;
         }
         return false;
     }
+
+    public void selectNode(int id) {
+        setSelectNode(id,true);
+    }
+    public void setSelectNode(int id, boolean value) {
+        for (Node n : nodes) {
+            if (n.id==id) n.selected = value;
+        }
+    }
+
 
     public class SelectedComparator implements Comparator {
 
@@ -454,20 +462,20 @@ public class NodeList {
         return "minX=" + minX + ", "
                 + "minY=" + minY + ", "
                 + "maxX=" + maxX + ", "
-                + "maxY=" + maxY + ", "
+                + "maxY=" + maxY + ", \n"
                 + "minRadius=" + minRadius + ", "
                 + "maxRadius=" + maxRadius + ", "
                 + "graphWidth=" + graphWidth + ","
                 + "graphHeight=" + graphHeight + ","
-                + "graphRadius=" + graphRadius + ","
+                + "graphRadius=" + graphRadius + ", \n"
                 + "centerX=" + center.x + ", "
                 + "centerY=" + center.y + ", "
                 + "baryCenterX=" + baryCenter.x + ", "
-                + "baryCenterY=" + baryCenter.y + ", "
+                + "baryCenterY=" + baryCenter.y + ", \n"
                 + "minEdgeWeight=" + minEdgeWeight + ", "
                 + "maxEdgeWeight=" + maxEdgeWeight + ";"
                 + "minNodeWeight=" + minNodeWeight + ", "
-                + "maxNodeWeight=" + maxNodeWeight + ";";
+                + "maxNodeWeight=" + maxNodeWeight + ";\n";
     }
 
     public void addWithoutTouching(Node node) {
