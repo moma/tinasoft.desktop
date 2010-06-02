@@ -37,7 +37,7 @@ public class NodeFilter implements Filter {
         }
         for (Node n : input.nodes) {
             Node n2 = node(session, view, n);
-            if (n2 != null) output.addWithoutTouching(n2);
+            if (n2 != null) output.add(n2);
         }
         return output;
     }

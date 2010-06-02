@@ -34,7 +34,7 @@ public class Node implements Comparable {
     public float boxWidth = 1.0f;
     public float boxHeight = 1.0f;
     public PVector position = new PVector();
-    public boolean s = false; // switch
+    public boolean     s = false; // switch
     public int degree = 0;
     public OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
 

@@ -4,6 +4,7 @@
  */
 package eu.tinasoft.services.data.transformation.filters;
 
+import eu.tinasoft.services.data.model.Metrics;
 import eu.tinasoft.services.data.model.NodeList;
 
 import eu.tinasoft.services.data.model.Node;
@@ -26,6 +27,8 @@ public class NodeWeightRange extends NodeFilter {
     public NodeList preProcessing(Session session, View view, NodeList input) {
         NodeList output = new NodeList();
 
+        Metrics metrics = input.getMetrics();
+
         if (!enabled()) {
             return input;
         }
@@ -38,7 +41,7 @@ public class NodeWeightRange extends NodeFilter {
             view.properties.put(root + KEY_MAX, 1.0f);
         }
 
-        float f = input.maxNodeWeight - input.minNodeWeight;
+        float f = metrics.maxNodeWeight - metrics.minNodeWeight;
 
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)
@@ -55,17 +58,17 @@ public class NodeWeightRange extends NodeFilter {
                 : (Float) o;
         
                 System.out.println("min:"+min+" max:"+max);
-        min = min * f + input.minNodeWeight;
+        min = min * f + metrics.minNodeWeight;
 
-        max = max * f + input.minNodeWeight;
+        max = max * f + metrics.minNodeWeight;
         
-        System.out.println("--------------------------\nminNodeWeight:"+input.minNodeWeight+" maxNodeWeight:"+input.maxNodeWeight);
+        System.out.println("--------------------------\nminNodeWeight:"+metrics.minNodeWeight+" maxNodeWeight:"+metrics.maxNodeWeight);
         System.out.println("min2:"+min+" max2:"+max);
         for (Node n : input.nodes) {
             //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
 
             if ((min <= n.weight && n.weight <= max) ) {
-                output.addWithoutTouching(n);
+                output.add(n);
             }
         }
         return output;

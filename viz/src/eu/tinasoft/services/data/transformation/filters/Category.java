@@ -62,7 +62,7 @@ public class Category extends NodeFilter {
             //  System.out.println("  - n category == "+n.category);
             // HACK the category selector doesn't remove selecte dnodes
             if (view.getLevel() == ViewLevel.MESO && n.selected) {
-                output.addWithoutTouching(n);
+                output.add(n);
             } else {
 
                 if (n.category.equals(category)) {
@@ -77,7 +77,7 @@ public class Category extends NodeFilter {
                             }
                         }
                         n.weights = weights;
-                        output.addWithoutTouching(n);
+                        output.add(n);
 
                         //System.out.println("  - kept " + n.category + " " + n.label + " = " + n.weight + "\n");
                     }
@@ -90,7 +90,7 @@ public class Category extends NodeFilter {
                                 weights.put(nb, n.weights.get(nb));
                         }
                         n.weights = weights;
-                        output.addWithoutTouching(n);
+                        output.add(n);
 
                     }
                 }
@@ -98,22 +98,23 @@ public class Category extends NodeFilter {
         }
 
 
+        /*
         System.out.println("computing extremums");
         output.computeExtremums();
 
         System.out.println("normalizing variables");
-        output.normalize();
+        output.normalize();*/
 
         // should we normalize positions as well?
 
-
+/*
         if (!oldCategory.equals(category)) {
             System.out.println("normalizing positions");
             if (!HACK_ME) {
                 output.normalizePositions();
             }
             //HACK_ME = true;
-        }
+        }*/
         oldCategory = category;
 
         //System.out.println("OUTPUT OF THe NORMALIZATION="+output.toString());

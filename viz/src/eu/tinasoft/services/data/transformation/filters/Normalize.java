@@ -5,11 +5,7 @@
 package eu.tinasoft.services.data.transformation.filters;
 
 import eu.tinasoft.services.data.model.NodeList;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;
@@ -64,17 +60,17 @@ public class Normalize extends NodeFilter {
             //  System.out.println("  - n category == "+n.category);
             // HACK the category selector doesn't remove selecte dnodes
             if (view.getLevel() == ViewLevel.MESO && n.selected) {
-                output.addWithoutTouching(n);
+                output.add(n);
             } else {
 
                 if (n.category.equals(category)) {
                     if (keep) {
-                        output.addWithoutTouching(n);
+                        output.add(n);
                         //System.out.println("  - kept " + n.category + " " + n.label + " = " + n.weight + "\n");
                     }
                 } else {
                     if (!keep) {
-                        output.addWithoutTouching(n);
+                        output.add(n);
                         //System.out.println("  - n category == "+n.category+" added!\n");
                     }
                 }
@@ -82,7 +78,7 @@ public class Normalize extends NodeFilter {
         }
 
 
-        output.computeExtremums();
+        output.computeMetrics();
         output.normalize();
 
         // should we normalize positions as well?

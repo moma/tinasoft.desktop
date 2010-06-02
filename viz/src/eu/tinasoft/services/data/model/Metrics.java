@@ -34,6 +34,8 @@ public class Metrics {
     public float averageNodeWeight;
     public float averageNodeRadius;
     public float averageEdgeWeight;
+    public int nbVisibleNodes;
+    public int nbVisibleEdges;
 
     Metrics() {
         reset();
@@ -59,8 +61,31 @@ public class Metrics {
         maxNodeRadius = 0.0f;
         nbNodes = 0;
         nbEdges = 0;
+        nbVisibleNodes = 0;
+        nbVisibleEdges = 0;
         averageNodeWeight = 0.0f;
         averageNodeRadius = 0.0f;
         averageEdgeWeight = 0.0f;
+    }
+
+        @Override
+    public String toString() {
+        return "minX=" + minX + ", "
+                + "minY=" + minY + ", \n"
+                + "maxX=" + maxX + ", "
+                + "maxY=" + maxY + ", \n"
+                + "minRadius=" + minRadius + ", "
+                + "maxRadius=" + maxRadius + ", \n"
+                + "graphWidth=" + graphWidth + ","
+                + "graphHeight=" + graphHeight + ","
+                + "graphRadius=" + graphRadius + ", \n"
+                + "centerX=" + center.x + ", "
+                + "centerY=" + center.y + ", "
+                + "baryCenterX=" + baryCenter.x + ", "
+                + "baryCenterY=" + baryCenter.y + ", \n"
+                + "minEdgeWeight=" + minEdgeWeight + ", "
+                + "maxEdgeWeight=" + maxEdgeWeight + ";"
+                + "minNodeWeight=" + minNodeWeight + ", "
+                + "maxNodeWeight=" + maxNodeWeight + ";\n";
     }
 }

@@ -405,33 +405,21 @@ public class Graph implements Cloneable {
 
         Console.log("one-time normalization..");
 
-
-
         for (Entry<String,List<Node>> e : normalizeMyNodes.entrySet()) {
-              NodeListNormalizer.normalize(e.getValue(), "category", e.getKey());
+            System.out.println("computing metrics for "+e.getKey());
+                Metrics metrics = NodeListNormalizer.computeMetrics(e.getValue());
+               System.out.println("normalizing "+e.getKey());
+              NodeListNormalizer.normalize(e.getValue(), metrics, "category", e.getKey());
         }
 
  
         locked.set(false);
-        touch();
+        commitProperties();
         return true;
     }
 
-    // call by the drawer when isSynced is false
     public synchronized NodeList getNodeListCopy() {
-        NodeList res = new NodeList();
-        for (Node n : storedNodes.values()) {
-            res.addWithoutTouching(n.getProxyClone());
-        }
-
-        //res.computeExtremums();
-        //res.normalize();
-
-        // should we normalize positions as well?
-
-        //res.normalizePositions();
-
-        return res;
+        return new NodeList(storedNodes.values());
     }
 
     public synchronized void putNode(eu.tinasoft.services.data.model.Node node) {
@@ -440,21 +428,21 @@ public class Graph implements Cloneable {
         } else {
             storedNodes.get(node.id).cloneDataFrom(node);
         }
-        touch();
+        commitProperties();
     }
 
     public synchronized void addNode(eu.tinasoft.services.data.model.Node node) {
         if (!storedNodes.containsKey(node.id)) {
             storedNodes.put(node.id, node);
         }
-        touch();
+        commitProperties();
     }
 
     public synchronized void updateNode(eu.tinasoft.services.data.model.Node node) {
         if (storedNodes.containsKey(node.id)) {
             storedNodes.get(node.id).cloneDataFrom(node);
         }
-        touch();
+        commitProperties();
     }
 
     public synchronized void addNeighbour(eu.tinasoft.services.data.model.Node node1, eu.tinasoft.services.data.model.Node node2, Float weight) {
@@ -464,7 +452,7 @@ public class Graph implements Cloneable {
             node1.addNeighbour(node2, weight);
             storedNodes.put(node1.id, node1);
         }
-        touch();
+        commitProperties();
     }
 
     public synchronized void addNodes(NodeList nodes) {
@@ -473,7 +461,7 @@ public class Graph implements Cloneable {
         }
         // TODO touch?
         System.out.println("Graph.addNodes() and touch() but not computed new metrics!");
-        touch();
+        commitProperties();
 
     }
 
@@ -490,7 +478,15 @@ public class Graph implements Cloneable {
         nodeAttributes.clear();
         edgeAttributes.clear();
         sessionAttributes.clear();
-        touch();
+        commitProperties();
+    }
+
+
+    public synchronized int commitProperties() {
+               //System.out.println("incrementing graph revision to "+(revision.get()+1));
+        return revision.incrementAndGet();
+
+
     }
 
     @Deprecated
@@ -499,23 +495,18 @@ public class Graph implements Cloneable {
         return commitProperties();
     }
 
-    public synchronized int commitProperties() {
-        //System.out.println("incrementing graph revision to "+(revision.get()+1));
-        return revision.incrementAndGet();
-    }
-
     public void selectNodeById(int id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
             System.out.println("node selected, NOT touching..");
-            //touch();
+            //commitProperties();
         }
     }
 
     public void unselectNodeById(int id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = false;
-            //touch();
+            //commitProperties();
         }
 
     }
@@ -524,7 +515,7 @@ public class Graph implements Cloneable {
         for (Node n : storedNodes.values()) {
             n.selected = false;
         }
-        return touch();
+        return commitProperties();
     }
 
     public void highlightNodeById(String str) {
@@ -571,7 +562,47 @@ public class Graph implements Cloneable {
             Console.error("cannot create json: "+ex.getMessage());
             return "{}";
         }
-        if (false) System.out.println("GRAPH.getNeighbourhoodAsJSON: " + writer.toString());
+        if (true) System.out.println("GRAPH.getNeighbourhoodAsJSON: " + writer.toString());
         return writer.toString();
     }
+
+    public String getSelectedNodesAsJSON() {
+        String result = "";
+        JSONWriter writer = null;
+        try {
+            writer = new JSONStringer().object();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+
+        try {
+            for (Entry<Integer,Node> e : storedNodes.entrySet()) {
+                Node node = e.getValue();
+
+                if (node.selected) {
+                    System.out.println("node is selected");
+                    writer.key(node.uuid).object();
+                    writer.key("id").value(node.uuid);
+                    for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
+                        writer.key(entry.getKey()).value(JSONEncoder.valueEncoder(entry.getValue()));
+                    }
+                    writer.endObject();
+                }
+            }
+
+        } catch (JSONException jSONException) {
+            Console.error(jSONException.getMessage());
+            return "{}";
+        }
+        try {
+            writer.endObject();
+        } catch (JSONException ex) {
+            Console.error(ex.getMessage());
+            return "{}";
+        }
+       System.out.println("GRAPH.getSelectedNodesAsJSON():"+ writer.toString() );
+        return writer.toString();
+    }
+
 }

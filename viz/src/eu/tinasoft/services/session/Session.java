@@ -86,7 +86,7 @@ public class Session {
     public synchronized void toMacroView() {
         if (currentView != ViewLevel.MACRO) {
             currentView = ViewLevel.MACRO;
-            macro.graph.touch();
+            macro.graph.commitProperties();
             //macro.filters.popLocked.set(false); // open the pop lock!
         }
     }
@@ -94,7 +94,7 @@ public class Session {
     public synchronized void toMesoView() {
         if (currentView != ViewLevel.MESO) {
             currentView = ViewLevel.MESO;
-            meso.graph.touch();
+            meso.graph.commitProperties();
             //meso.filters.popLocked.set(false); // open the pop lock!
         }
     }
@@ -102,7 +102,7 @@ public class Session {
     public synchronized void toMicroView() {
         if (currentView != ViewLevel.MICRO) {
             currentView = ViewLevel.MICRO;
-            micro.graph.touch();
+            micro.graph.commitProperties();
             //micro.filters.popLocked.set(false); // open the pop lock!
         }
     }

@@ -25,6 +25,7 @@ import eu.tinasoft.services.formats.json.JSONStringer;
 import eu.tinasoft.services.formats.json.JSONWriter;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.computing.MathFunctions;
+import eu.tinasoft.services.data.model.Metrics;
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.formats.json.JSONEncoder;
 import eu.tinasoft.services.visualization.rendering.drawing.RecordingFormat;
@@ -104,21 +105,7 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean centerOnSelection = false;
     private boolean loading = true;
 
-    private void nodeSelected_JS_CALLBACK(String view, MouseButton mouseSide) {
-        getSession().getBrowser().callAndForget("selected", "'" + view + "','"
-                + nodes.getSelectedNodesAsJSON() + "','" + (
-                mouseSide == MouseButton.DOUBLELEFT ? "doubleLeft" :
-                mouseSide == MouseButton.LEFT ? "left" :
-                mouseSide == MouseButton.RIGHT ? "right" :
-                "none"
-                ) + "'");
-    }
 
-    private void viewChanged_JS_CALLBACK(String view) {
-        System.out.println("calling getSession().getBrowser().async(\"switchedTo\", \"'" + view + "'\");");
-        getSession().getBrowser().callAndForget("switchedTo", "'" + view + "'");
-        dispatchCallbackStates();
-    }
 
     private void drawNothing(View v) {
         translate(v.translation.x, v.translation.y);
@@ -231,14 +218,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 node.weight = random(1.0f);
                 node.category = (random(1.0f) > 0.5f) ? "Document" : "NGram";
                 node.label = node.category + " " + node.label;
-                tmp.addWithoutTouching(node);
+                tmp.add(node);
             }
 
             for (int i = 0; i < tmp.size(); i++) {
                 root.addNeighbour(tmp.get(i), 0.1f + random(1.0f));
 
             }
-            tmp.addWithoutTouching(root);
+            tmp.add(root);
             Console.log("Generated " + tmp.size() + " nodes!");
 
             session.getMeso().getGraph().updateFromNodeList(tmp);
@@ -260,7 +247,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 node.weight = random(1.0f);
                 node.category = (random(1.0f) > 0.5f) ? "Document" : "NGram";
                 node.label = node.category + " " + node.label;
-                tmp.addWithoutTouching(node);
+                tmp.add(node);
             }
 
             for (int i = 0; i < tmp.size(); i++) {
@@ -387,11 +374,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
         float RECENTERING_MARGIN = 1.0f;
         if (autocenter) {
-            nodes.computeRadius();
+            System.out.println("checkRecentering("+v.getName()+"): autorecentering is true, computing metrics..");
+            Metrics metrics = nodes.computeMetrics();
 
-            float graphHeight = nodes.graphHeight * v.sceneScale;
-            float graphWidth = nodes.graphWidth * v.sceneScale;
-
+            float graphHeight = metrics.graphHeight * v.sceneScale;
+            float graphWidth = metrics.graphWidth * v.sceneScale;
 
             if ((graphWidth * height) / (graphHeight) < (width * RECENTERING_MARGIN)) {
                 v.tryToSetZoom(v.sceneScale * height / (graphHeight / 1.1f));
@@ -408,7 +395,7 @@ public class Main extends PApplet implements MouseWheelListener {
                 center = nodes.getSelectedNodesCenter();
                 //centerOnSelection = false;
             } else {
-                center = nodes.center;
+                center = metrics.center;
             }
 
             PVector translate = new PVector();
@@ -615,6 +602,7 @@ public class Main extends PApplet implements MouseWheelListener {
         // TODO optimize here
         nodes.sortBySelectionStatus();
 
+        Metrics metrics = nodes.getMetrics();
 
         background(255);
 
@@ -655,13 +643,12 @@ public class Main extends PApplet implements MouseWheelListener {
         fill(80);
         textSize(12);
 
-        nodes.nbVisibleEdges = (visibleEdges < 1) ? 1 : visibleEdges;
-
+        metrics.nbVisibleEdges = (visibleEdges < 1) ? 1 : visibleEdges;
 
         if (debug.get()) {
             text("" + ((int) frameRate) + " img/sec", 10f, 13f);
-            text("" + visibleNodes + "/" + nodes.size() + " nodes", 80f, 13f);
-            text("" + visibleEdges + "/" + nodes.nbEdges + " edges", 190f, 13f);
+            text("" + metrics.nbVisibleNodes + "/" + metrics.nbNodes + " nodes", 80f, 13f);
+            text("" + metrics.nbVisibleEdges + "/" + metrics.nbEdges + " edges", 190f, 13f);
             text("aliasing: " + (resolution >= 40) + "    resolution: " + resolution, 310f, 13f);
             fill(0);
         }
@@ -765,7 +752,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 // here, minRadius should contain the non-normalized min radius
                 // (eg. 1.0 or 4.4)
-                float minrad = nodes.minRadius;
+                float minrad = metrics.minRadius;
 
                 // compute the edge thickness
 
@@ -1513,7 +1500,7 @@ public class Main extends PApplet implements MouseWheelListener {
         b.buttonStateCallback("showNodes", v.showNodes);
         b.buttonStateCallback("autoCentering", autocenter);
         b.buttonStateCallback("paused", v.paused);
-        System.out.println("dispatched toolbar buttons states!");
+        //System.out.println("dispatched toolbar buttons states!");
     }
 
     /**
@@ -1554,7 +1541,7 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public synchronized int touch(String view) throws ViewNotFoundException {
 
-        return getView(view).getGraph().touch();
+        return getView(view).getGraph().commitProperties();
     }
 
     @Deprecated
@@ -1562,7 +1549,7 @@ public class Main extends PApplet implements MouseWheelListener {
         return commitProperties();
     }
     public synchronized int commitProperties() {
-        return getView().getGraph().touch();
+        return getView().getGraph().commitProperties();
     }
 
     public void resetLayoutCounter() {
@@ -1593,7 +1580,7 @@ public class Main extends PApplet implements MouseWheelListener {
      */
     public boolean setProperty(String view, String key, Object value) {
 
-        System.out.println("setProperty " + view + "." + key + " = " + value + "");
+        //System.out.println("setProperty " + view + "." + key + " = " + value + "");
 
         try {
 
@@ -1621,7 +1608,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @throws KeyException
      */
     public boolean setProperty(String key, Object value) {
-        System.out.println("setProperty " + key + " = " + value + "");
+       // System.out.println("setProperty " + key + " = " + value + "");
         try {
             return getView().setProperty(key, value);
         } catch (KeyException ex) {
@@ -1651,7 +1638,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
         }
         if (!(view.equals("current") && key.equals("selection/radius"))) {
-            System.out.println(o + " = getProperty(" + view + "," + key + ")");
+            //System.out.println(o + " = getProperty(" + view + "," + key + ")");
         }
 
         return o;
@@ -1686,11 +1673,13 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param str
      */
     public void selectFromId(String str) {
+        System.out.println("BEFORE selectFromId("+str+")...");
         Session s = getSession();
         s.selectNode(str);
         nodes.selectNode(str);
-        System.out.println("selectFromId("+str+") called from javascript, calling nodeSelected_JS_CALLBACK(MouseButton.LEFT)");
+        System.out.println("DURING selectFromId("+str+"), called s.selectNode(..) and nodes.selectNode(..)");
         nodeSelected_JS_CALLBACK(s.getView().getName(), MouseButton.LEFT);
+        System.out.println("AFTER selectFromId("+str+") called from javascript, calling nodeSelected_JS_CALLBACK("+s.getView().getName()+",MouseButton.LEFT)");
     }
 
     /**
@@ -1765,7 +1754,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return def;
         }
-        System.out.println("data: " + writer.toString());
+        System.out.println( writer.toString() + "= getNodes(String view, String category)");
         return writer.toString();
     }
 
@@ -1815,7 +1804,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return def;
         }
-        //System.out.println("data: " + writer.toString());
+                System.out.println( writer.toString() + "= MAIN.getNodesByLabel("+label+","+mode+")");
         return writer.toString();
     }
 
@@ -1850,12 +1839,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 : getView(view).getGraph().getNeighbourhoodAsJSON(id);
     }
 
+
     public void centerOnSelection() {
         // check if the node is in the current view
         centerOnSelection = true;
     }
 
     public boolean setView(String view) {
+        System.out.println("setView("+view+")");
         if (view.equalsIgnoreCase("current")) {
             viewChanged_JS_CALLBACK(view);
             nodeSelected_JS_CALLBACK(view, MouseButton.LEFT);
@@ -1864,12 +1855,41 @@ public class Main extends PApplet implements MouseWheelListener {
 
         if (session.setView(view)) {
             viewChanged_JS_CALLBACK(view);
-            nodeSelected_JS_CALLBACK(view, MouseButton.LEFT);
+            nodeSelected_JS_CALLBACK("macro", MouseButton.LEFT);
         } else {
             Console.error("set view failed..");
             return false;
         }
 
         return true;
+    }
+
+
+      private String getSelectNodesJSON(String view) {
+          System.out.println("getSelectedNodesAsJSON("+view+")");
+          if (view.equalsIgnoreCase("current")) {
+              return nodes.getSelectedNodesAsJSON();
+          }
+        try {
+            return getView(view).getGraph().getSelectedNodesAsJSON();
+        } catch (ViewNotFoundException ex) {
+            Console.error("couldn't get select nodes as JSON: "+ex+", returning {}");
+            return "{}";
+        }
+      }
+    private void nodeSelected_JS_CALLBACK(String view, MouseButton mouseSide) {
+        getSession().getBrowser().callAndForget("selected", "'" + view + "','"
+                + getSelectNodesJSON(view) + "','" + (
+                mouseSide == MouseButton.DOUBLELEFT ? "doubleLeft" :
+                mouseSide == MouseButton.LEFT ? "left" :
+                mouseSide == MouseButton.RIGHT ? "right" :
+                "none"
+                ) + "'");
+    }
+
+    private void viewChanged_JS_CALLBACK(String view) {
+        System.out.println("calling getSession().getBrowser().async(\"switchedTo\", \"'" + view + "'\");");
+        getSession().getBrowser().callAndForget("switchedTo", "'" + view + "'");
+        dispatchCallbackStates();
     }
 }

@@ -29,7 +29,7 @@ public class Browser {
     }
 
     public Object call(String fnc, Object[] args) {
-        System.out.println("calling "+fnc);
+        //System.out.println("calling "+fnc);
         return (window!=null)?window.call(fnc, args):null;
     }
 

@@ -69,7 +69,7 @@ public class EdgeWeightRange extends NodeFilter {
         }
 
 
-        float f = input.maxEdgeWeight - input.minEdgeWeight;
+        float f = input.getMetrics().maxEdgeWeight - input.getMetrics().minEdgeWeight;
         //System.out.println("f:" + f);
         //System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
 

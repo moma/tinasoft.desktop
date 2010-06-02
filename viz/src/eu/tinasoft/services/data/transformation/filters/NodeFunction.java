@@ -31,8 +31,9 @@ public class NodeFunction extends NodeFilter {
         }
 
         // hmm..
-        input.minRadius = input.minNodeWeight;
-        input.maxRadius = input.maxNodeWeight;
+        System.out.println("(NodeFunction.java / line 34) RADIUS HACK, FIX ME");
+        input.getMetrics().minRadius = input.getMetrics().minNodeWeight;
+        input.getMetrics().maxRadius = input.getMetrics().maxNodeWeight;
 
         return input;
     }

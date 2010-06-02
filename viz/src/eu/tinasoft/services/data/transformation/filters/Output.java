@@ -4,6 +4,7 @@
  */
 package eu.tinasoft.services.data.transformation.filters;
 
+import eu.tinasoft.services.data.model.Metrics;
 import eu.tinasoft.services.data.model.NodeList;
 import java.util.List;
 import processing.core.PApplet;
@@ -37,6 +38,7 @@ public class Output extends NodeFilter {
             view.properties.put(root + KEY_NODE_SIZE_RATIO, 0.125f);
         }
 
+        Metrics metrics = input.getMetrics();
         Object o = view.properties.get(root + KEY_NODE_SIZE_RATIO);
         Float r = (o instanceof Integer)
                 ? new Float((Integer) o)
@@ -50,7 +52,7 @@ public class Output extends NodeFilter {
 
         for (Node n : input.nodes) {
 
-            n.radius = PApplet.map(n.radius * r, input.minRadius, input.maxRadius, RADIUS_MIN, RADIUS_MAX);
+            n.radius = PApplet.map(n.radius * r, metrics.minRadius, metrics.maxRadius, RADIUS_MIN, RADIUS_MAX);
             //System.out.println(n.radius + "= PApplet.map("+n.radius * r+", "+input.minRadius+", "+input.maxRadius+", "+RADIUS_MIN+", "+RADIUS_MAX+");");
 
         }

@@ -193,7 +193,7 @@ public class NodeListNormalizer {
                     continue;
                 }
                 if (!n.attributes.get(attr).equals(value)) {
-                    System.out.println("not normalizing "+n.uuid+" because "+n.category);
+                    //System.out.println("not normalizing "+n.uuid+" because "+n.category);
                     continue;
                 }
             }

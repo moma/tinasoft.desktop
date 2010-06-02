@@ -4,6 +4,7 @@
  */
 package eu.tinasoft.services.data.transformation;
 
+import eu.tinasoft.services.data.model.Metrics;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,6 +14,7 @@ import eu.tinasoft.services.data.transformation.filters.EdgeWeightRange;
 import eu.tinasoft.services.session.Session;
 import eu.tinasoft.services.data.transformation.filters.NodeFunction;
 import eu.tinasoft.services.data.model.NodeList;
+import eu.tinasoft.services.data.model.NodeListNormalizer;
 import eu.tinasoft.services.data.transformation.filters.Output;
 import tinaviz.SubGraphCopyStandalone;
 import eu.tinasoft.services.data.transformation.filters.NodeWeightRange;
@@ -53,7 +55,8 @@ public class FilterChain {
 
         @Override
         public void run() {
-            System.out.println("Beggining filtering..");
+            //System.out.println("Beggining filtering..");
+
             for (Filter f : filters) {
                 if (interrupted()) {
                     return;
@@ -61,7 +64,7 @@ public class FilterChain {
                 nodes = f.preProcessing(session, view, nodes);
             }
 
-            System.out.println("End of filtering..");
+            //System.out.println("End of filtering..");
 
             // this assignation should be safe if we create a new node list
             chain.filteredNodes = new NodeList(nodes);
