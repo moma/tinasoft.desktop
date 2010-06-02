@@ -156,14 +156,14 @@ public class SubGraphCopyStandalone extends NodeFilter {
                         Node rootNode =
                                 sourceView.getGraph().getNode(e.getKey()).getDetachedClone(); // we want the clone
 
-                        newNodes.addWithoutTouching(rootNode);
+                        newNodes.add(rootNode);
                         for (int n : rootNode.weights.keys().elements()) {
                             Node neighbourNode = sourceView.getGraph().getNode(n).getDetachedClone();
                             if (!neighbourNode.category.equals(category)) {
                                 continue;
                             }
                             neighbourNode.position = new PVector((float) Math.random() * 10f, (float) Math.random() * 10f);
-                            newNodes.addWithoutTouching(neighbourNode);
+                            newNodes.add(neighbourNode);
                         }
                     
 
@@ -174,7 +174,7 @@ public class SubGraphCopyStandalone extends NodeFilter {
 
             if (debugMeso)System.out.println("MESO computing extremums, and normalizing positions");
 
-            newNodes.computeExtremums();
+            newNodes.computeMetrics();
             newNodes.normalize();
             newNodes.normalizePositions();
 

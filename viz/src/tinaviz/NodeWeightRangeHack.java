@@ -4,8 +4,8 @@
  */
 package tinaviz;
 
-import java.util.LinkedList;
-import java.util.List;
+import eu.tinasoft.services.data.model.Metrics;
+
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.transformation.NodeFilter;
 import eu.tinasoft.services.session.Session;
@@ -33,6 +33,8 @@ public class NodeWeightRangeHack extends NodeFilter {
             return input;
         }
 
+        Metrics metrics = input.getMetrics();
+
         NodeList output = new NodeList();
 
         if (!view.properties.containsKey(root + KEY_MIN)) {
@@ -48,7 +50,7 @@ public class NodeWeightRangeHack extends NodeFilter {
         }
 
 
-        float f = input.maxNodeWeight - input.minNodeWeight;
+        float f = metrics.maxNodeWeight - metrics.minNodeWeight;
 
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)
@@ -56,7 +58,7 @@ public class NodeWeightRangeHack extends NodeFilter {
                 : (o instanceof Double)
                 ? new Float((Double) o)
                 : (Float) o;
-        min = min * f + input.minNodeWeight;
+        min = min * f + metrics.minNodeWeight;
 
         o = view.properties.get(root + KEY_MAX);
         max = (o instanceof Integer)
@@ -64,7 +66,7 @@ public class NodeWeightRangeHack extends NodeFilter {
                 : (o instanceof Double)
                 ? new Float((Double) o)
                 : (Float) o;
-        max = max * f + input.minNodeWeight;
+        max = max * f + metrics.minNodeWeight;
 
 
         o = view.properties.get(root + KEY_EXCEPT);
@@ -81,18 +83,18 @@ public class NodeWeightRangeHack extends NodeFilter {
         }
 
 
-        System.out.println("minNodeWeight:"+input.minNodeWeight+" maxNodeWeight:"+input.maxNodeWeight);
+        System.out.println("minNodeWeight:"+metrics.minNodeWeight+" maxNodeWeight:"+metrics.maxNodeWeight);
         System.out.println("min:"+min+" max:"+max);
         for (Node n : input.nodes) {
            //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
 
             if (except != -1) {
                 if (n.uuid.hashCode() == except) {
-                    output.addWithoutTouching(n);
+                    output.add(n);
                 }
 
             } else if ((min <= n.weight && n.weight <= max)) {
-                output.addWithoutTouching(n);
+                output.add(n);
             }
         }
         return output;
