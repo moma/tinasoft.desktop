@@ -355,7 +355,7 @@ public class NodeList {
     }
 
     public void reset() {
-        nodes.clear();
+        nodes = new LinkedList<Node>();
         metrics.reset();
     }
 

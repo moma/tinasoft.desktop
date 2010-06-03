@@ -40,7 +40,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     String PATH_TO_TEST_FILE =
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/bipartite_graph.gexf"
-            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            "file:///home/uxmal/Checkout/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             // "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
             //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
@@ -268,17 +268,18 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             try {
-                session.getMacro().setProperty("category/value", "Document");
+                session.getMacro().setProperty("category/category", "Document");
             } catch (KeyException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            //session.getMacro().addFilter("Category", "category");
+        
             session.getMacro().addFilter("NodeWeightRange", "nodeWeight");
             session.getMacro().addFilter("EdgeWeightRange", "edgeWeight");
             session.getMacro().addFilter("NodeFunction", "radiusByWeight");
-            session.getMacro().addFilter("Output", "output");
-            //session.getView().paused = true;
+            //session.getMacro().addFilter("Output", "output");
+
+            session.getView().paused = true;
 
         }
         //cenNGramesoView();
@@ -374,8 +375,8 @@ public class Main extends PApplet implements MouseWheelListener {
 
         float RECENTERING_MARGIN = 1.0f;
         if (autocenter) {
-            System.out.println("checkRecentering("+v.getName()+"): autorecentering is true, computing metrics..");
-            Metrics metrics = nodes.computeMetrics();
+            //System.out.println("checkRecentering("+v.getName()+"): autorecentering is true, computing metrics..");
+            Metrics metrics = nodes.getMetrics();
 
             float graphHeight = metrics.graphHeight * v.sceneScale;
             float graphWidth = metrics.graphWidth * v.sceneScale;
@@ -390,7 +391,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
             PVector center = new PVector();
             if (centerOnSelection) {
-
                 //System.out.println("centering on selected nodes");
                 center = nodes.getSelectedNodesCenter();
                 //centerOnSelection = false;
