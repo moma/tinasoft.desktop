@@ -5,6 +5,7 @@
 package eu.tinasoft.services.data.transformation.filters;
 
 import cern.colt.map.OpenIntObjectHashMap;
+import eu.tinasoft.services.data.model.Metrics;
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.data.transformation.NodeFilter;
@@ -69,7 +70,8 @@ public class EdgeWeightRange extends NodeFilter {
         }
 
 
-        float f = input.getMetrics().maxEdgeWeight - input.getMetrics().minEdgeWeight;
+        Metrics metrics = input.getMetrics();
+        float f = metrics.maxEdgeWeight - metrics.minEdgeWeight;
         //System.out.println("f:" + f);
         //System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
 

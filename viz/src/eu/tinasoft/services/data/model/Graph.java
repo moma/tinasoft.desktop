@@ -165,7 +165,7 @@ public class Graph implements Cloneable {
             org.w3c.dom.NamedNodeMap nodeAttributesXML = attributeXML.getAttributes();
             String attrsClass = nodeAttributesXML.getNamedItem("class").getNodeValue();
             if (attrsClass.equalsIgnoreCase("node")) {
-                org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) attributeXML.getChildNodes();
+                org.w3c.dom.NodeList xmlnodeChildren = attributeXML.getChildNodes();
                 for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
                     org.w3c.dom.Node n = xmlnodeChildren.item(j);
                     if (n.getNodeName().equalsIgnoreCase("attribute")) {
@@ -180,7 +180,7 @@ public class Graph implements Cloneable {
                     }
                 }
             } else if (attrsClass.equalsIgnoreCase("edge")) {
-                org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) attributeXML.getChildNodes();
+                org.w3c.dom.NodeList xmlnodeChildren = attributeXML.getChildNodes();
                 for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
                     org.w3c.dom.Node n = xmlnodeChildren.item(j);
                     if (n.getNodeName().equalsIgnoreCase("attribute")) {
@@ -205,12 +205,13 @@ public class Graph implements Cloneable {
 
             org.w3c.dom.NamedNodeMap xmlnodeAttributes = xmlnode.getAttributes();
 
-            String uuid = (String) xmlnodeAttributes.getNamedItem("id").getNodeValue();
+            String uuid = xmlnodeAttributes.getNamedItem("id").getNodeValue();
             String cat = "BAD_CATEGORY";
 
             if (uuid.contains("::")) {
                 cat = uuid.split("::")[0];
                 uuid = uuid.split("::")[1];
+                System.out.println("got category "+cat+" via ID!");
             }
 
             int id = uuid.hashCode();
@@ -237,7 +238,7 @@ public class Graph implements Cloneable {
                 node.b = 110;
             }
 
-            org.w3c.dom.NodeList xmlnodeChildren = (org.w3c.dom.NodeList) xmlnode.getChildNodes();
+            org.w3c.dom.NodeList xmlnodeChildren = xmlnode.getChildNodes();
 
             for (int j = 0; j < xmlnodeChildren.getLength(); j++) {
                 org.w3c.dom.Node n = xmlnodeChildren.item(j);
@@ -273,11 +274,14 @@ public class Graph implements Cloneable {
                                     } else if (attrib.key.equalsIgnoreCase("category")) {
                                         if (attrib.type == String.class) {
                                             node.category = nodeValue;
+                                            //System.out.println("could read category: "+node.category);
+                                        } else {
+                                            System.out.println("couldn't read category "+nodeValue);
                                         }
                                     }
 
                                     // store the attributes in the node map
-                                    System.out.println("storing attribute "+attrib.key+" with attr id "+attributeId);
+                                    // System.out.println("storing attribute "+attrib.key+" with attr id "+attributeId);
 
                                     node.attributes.put(attrib.key,
                                             (attrib.type == Integer.class)
@@ -329,10 +333,7 @@ public class Graph implements Cloneable {
                 }
 
 
-                if (!normalizeMyNodes.containsKey(node.category)) {
-                    normalizeMyNodes.put(node.category, new ArrayList<Node>());
-                }
-                 normalizeMyNodes.get(node.category).add(node);
+
             }
 
             // debug
@@ -356,7 +357,10 @@ public class Graph implements Cloneable {
                 storedNodes.put(id, node);
             }
 
-
+                if (!normalizeMyNodes.containsKey(node.category)) {
+                    normalizeMyNodes.put(node.category, new ArrayList<Node>());
+                }
+                 normalizeMyNodes.get(node.category).add(node);
 
         }
 
@@ -387,7 +391,7 @@ public class Graph implements Cloneable {
             int target = trg.hashCode();
 
             String type = (edgeAttributesXML.getNamedItem("type") != null)
-                    ? (String) edgeAttributesXML.getNamedItem("type").getNodeValue()
+                    ? edgeAttributesXML.getNamedItem("type").getNodeValue()
                     : "undirected";
             Float weight = (edgeAttributesXML.getNamedItem("weight") != null)
                     ? Float.parseFloat(edgeAttributesXML.getNamedItem("weight").getNodeValue()) : 1.0f;
@@ -407,8 +411,8 @@ public class Graph implements Cloneable {
 
         for (Entry<String,List<Node>> e : normalizeMyNodes.entrySet()) {
             System.out.println("computing metrics for "+e.getKey());
-                Metrics metrics = NodeListNormalizer.computeMetrics(e.getValue());
-               System.out.println("normalizing "+e.getKey());
+              Metrics metrics = NodeListNormalizer.computeMetrics(e.getValue());
+              // System.out.println("normalizing "+e.getKey());
               NodeListNormalizer.normalize(e.getValue(), metrics, "category", e.getKey());
         }
 

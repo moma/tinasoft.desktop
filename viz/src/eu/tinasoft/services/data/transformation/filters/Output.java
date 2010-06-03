@@ -20,13 +20,11 @@ import eu.tinasoft.services.visualization.views.View;
 public class Output extends NodeFilter {
 
     private String KEY_NODE_SIZE_RATIO = "nodeSizeRatio";
-
     // the range of the sliders
-    public float MIN_RADIUS_MAGNIFIER = 0.1f;
-    public float MAX_RADIUS_MAGNIFIER = 3.0f;
-
-    public float RADIUS_MIN = 5.0f;
-    public float RADIUS_MAX = 30.0f;
+    public static float MIN_RADIUS_MAGNIFIER = 0.1f;
+    public static float MAX_RADIUS_MAGNIFIER = 3.0f;
+    public static float RADIUS_MIN = 5.0f;
+    public static float RADIUS_MAX = 30.0f;
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
@@ -34,11 +32,13 @@ public class Output extends NodeFilter {
             return input;
         }
 
+        NodeList output = new NodeList();
+
         if (!view.properties.containsKey(root + KEY_NODE_SIZE_RATIO)) {
             view.properties.put(root + KEY_NODE_SIZE_RATIO, 0.125f);
         }
 
-        Metrics metrics = input.getMetrics();
+        Metrics metrics = input.computeMetrics();
         Object o = view.properties.get(root + KEY_NODE_SIZE_RATIO);
         Float r = (o instanceof Integer)
                 ? new Float((Integer) o)
@@ -46,16 +46,29 @@ public class Output extends NodeFilter {
                 ? new Float((Double) o)
                 : (Float) o;
 
-       r = PApplet.map(r,0.0f,1.0f,MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
+        r = PApplet.map(r, 0.0f, 1.0f, MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
 
-       //System.out.println("radius magnifier: "+r);
+        r = 10.0f;
+        System.out.println("radius magnifier: " + r);
+        System.out.println(metrics);
 
         for (Node n : input.nodes) {
 
-            n.radius = PApplet.map(n.radius * r, metrics.minRadius, metrics.maxRadius, RADIUS_MIN, RADIUS_MAX);
-            //System.out.println(n.radius + "= PApplet.map("+n.radius * r+", "+input.minRadius+", "+input.maxRadius+", "+RADIUS_MIN+", "+RADIUS_MAX+");");
+            if (metrics.minRadius == metrics.maxRadius) {
+                if (metrics.minRadius == 0) {
+                    n.radius = RADIUS_MIN;
+                } else {
+                    n.radius = metrics.minRadius;
+                }
+            } else {
+                n.radius = PApplet.map(n.radius*r, metrics.minRadius, metrics.maxRadius, RADIUS_MIN, RADIUS_MAX);
+            }
+            
+            System.out.println("saving new node radius "+n.radius);
+            output.add(n);
 
         }
-        return input;
+
+        return output;
     }
 }

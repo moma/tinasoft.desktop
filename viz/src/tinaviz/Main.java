@@ -27,6 +27,7 @@ import eu.tinasoft.services.data.model.Node;
 import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.Metrics;
 import eu.tinasoft.services.data.model.NodeList;
+import eu.tinasoft.services.data.transformation.filters.Output;
 import eu.tinasoft.services.formats.json.JSONEncoder;
 import eu.tinasoft.services.visualization.rendering.drawing.RecordingFormat;
 import java.io.UnsupportedEncodingException;
@@ -40,7 +41,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     String PATH_TO_TEST_FILE =
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/bipartite_graph.gexf"
-            "file:///home/uxmal/Checkout/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             // "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
             //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
@@ -268,16 +269,18 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             try {
-                session.getMacro().setProperty("category/category", "Document");
+                session.getMacro().setProperty("category/category", "NGram");
             } catch (KeyException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-        
-            session.getMacro().addFilter("NodeWeightRange", "nodeWeight");
-            session.getMacro().addFilter("EdgeWeightRange", "edgeWeight");
+   
+            session.getMacro().addFilter("Category", "category");
+            //session.getMacro().addFilter("NodeWeightRange", "nodeWeight");
+            //session.getMacro().addFilter("EdgeWeightRange", "edgeWeight");
             session.getMacro().addFilter("NodeFunction", "radiusByWeight");
-            //session.getMacro().addFilter("Output", "output");
+
+            // output denormalize and decxide the final screen size (it does not normalize to 0 -> 1 !)
+            session.getMacro().addFilter("Output", "output");
 
             session.getView().paused = true;
 
@@ -740,19 +743,20 @@ public class Main extends PApplet implements MouseWheelListener {
                     continue;
                 } else {
                     if (n1.weight == n2.weight) {
+                        //System.out.println("same node wieght, choosing an arbitrary direction..");
                         if (n1.id > n2.id) {
                             continue;
                         }
+
                     }
                 }
 
+                //System.out.println("not skipped!");
                 visibleEdges++;
 
 
 
-                // here, minRadius should contain the non-normalized min radius
-                // (eg. 1.0 or 4.4)
-                float minrad = metrics.minRadius;
+  
 
                 // compute the edge thickness
 
@@ -799,10 +803,26 @@ public class Main extends PApplet implements MouseWheelListener {
                 float modulator = constrain(PApplet.map(powd, 8, width, 1, 90), 1, 90);
 
                 bezierDetail((int) modulator);
-
-                float screenWeight = PApplet.map(w, 0.0f, 1.0f, minrad * 0.1f, minrad * 0.4f);
+                              // here, minRadius should contain the non-normalized min radius
+                // (eg. 1.0 or 4.4)
+                //float minrad = metrics.minRadius;
+                float coeff = 0.25f;
+                float screenWeight = 
+                        (metrics.minEdgeWeight == metrics.maxEdgeWeight)
+                        ? Output.RADIUS_MIN*coeff
+                        : PApplet.map(w,
+                        metrics.minEdgeWeight,
+                        metrics.maxEdgeWeight,
+                        Output.RADIUS_MIN*coeff,
+                        Output.RADIUS_MAX*coeff);
+                /*System.out.println(
+                        PApplet.map(w,
+                        metrics.minEdgeWeight,
+                        metrics.maxEdgeWeight,
+                        Output.RADIUS_MIN*coeff,
+                        Output.RADIUS_MAX*coeff) +" = map("+w+", "+metrics.minEdgeWeight+", "+metrics.maxEdgeWeight+", "+Output.RADIUS_MIN+", "+Output.RADIUS_MAX+")");
+                */
                 strokeWeight(screenWeight * v.sceneScale);
-
                 drawCurve(n1.position.x, n1.position.y, n2.position.x, n2.position.y);
             } // FOR NODE B
         }   // FOr NODE A

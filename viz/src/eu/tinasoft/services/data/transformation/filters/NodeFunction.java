@@ -4,7 +4,6 @@
  */
 package eu.tinasoft.services.data.transformation.filters;
 
-import eu.tinasoft.services.data.model.Metrics;
 import eu.tinasoft.services.data.model.NodeList;
 
 import eu.tinasoft.services.data.model.Node;
@@ -24,20 +23,9 @@ public class NodeFunction extends NodeFilter {
         if (!enabled()) {
             return input;
         }
-
-        Metrics metrics = input.getMetrics();
-
         for (Node n : input.nodes) {
-               System.out.println(" node "+n.category+" funct: "+(n.radius * n.weight)+ " = "+n.radius+" * "+n.weight);
               n.radius *= n.weight;
- 
         }
-
-        // hmm..
-        //System.out.println("(NodeFunction.java / line 34) RADIUS HACK, FIX ME");
-        //input.getMetrics().minRadius = input.getMetrics().minNodeWeight;
-        //input.getMetrics().maxRadius = input.getMetrics().maxNodeWeight;
-
         return input;
     }
 }

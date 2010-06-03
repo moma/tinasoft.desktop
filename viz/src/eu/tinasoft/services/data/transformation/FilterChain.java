@@ -57,16 +57,23 @@ public class FilterChain {
         public void run() {
             //System.out.println("Beggining filtering..");
 
+            // remove this after debug, because this compute is useless
+
+            System.out.println("\nFILTERS BEGIN ---");
+
+            Metrics metrics = null;
+
             for (Filter f : filters) {
                 if (interrupted()) {
                     return;
                 }
+                metrics = nodes.computeMetrics();
+                System.out.println("PREVIOUS FILTER GAVE "+metrics+"\n NEW FILTER "+f.getRoot()+" GOING TO BE APPLIED");
                 nodes = f.preProcessing(session, view, nodes);
+                
             }
-
-            //System.out.println("End of filtering..");
-
             // this assignation should be safe if we create a new node list
+            System.out.println("FILTERS ENDED ---\n"+metrics);
             chain.filteredNodes = new NodeList(nodes);
             chain.filterIsRunning.set(false);
             chain.popLocked.set(false);

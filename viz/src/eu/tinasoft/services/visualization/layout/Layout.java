@@ -36,7 +36,7 @@ public class Layout {
         float globalRepulsion = 5f;// old= 5
 
 
-        float cooling = (float) (0.05f / PApplet.sqrt(PApplet.sqrt(metrics.nbNodes + 1f)));
+        float cooling = (0.05f / PApplet.sqrt(PApplet.sqrt(metrics.nbNodes + 1f)));
 
         float vlimit_max = 100f;
 
@@ -185,6 +185,7 @@ public class Layout {
                         //System.out.println("dist: "+dist);
                         weight = (Float) n1.weights.get(n2.id) + 1;
 
+                        //System.out.println("weight:"+weight);
                         // si le noeud n'a pas d'autres voisins
                         if (n2_degree <= 1) {
                             attraction = attraction * 2.0f;
