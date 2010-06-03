@@ -23,8 +23,8 @@ public class Output extends NodeFilter {
     // the range of the sliders
     public static float MIN_RADIUS_MAGNIFIER = 0.1f;
     public static float MAX_RADIUS_MAGNIFIER = 3.0f;
-    public static float RADIUS_MIN = 5.0f;
-    public static float RADIUS_MAX = 30.0f;
+    public static float RADIUS_MIN = 3.0f;
+    public static float RADIUS_MAX = 20.0f;
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
@@ -48,23 +48,18 @@ public class Output extends NodeFilter {
 
         r = PApplet.map(r, 0.0f, 1.0f, MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
 
-        r = 10.0f;
-        System.out.println("radius magnifier: " + r);
-        System.out.println(metrics);
+        if (metrics.minNodeRadius == 0 && metrics.maxNodeRadius == 0) {
+            // in this bad case, we use the minimal radius size
+            for (Node n : input.nodes) {
+                n.radius = RADIUS_MIN * r;
+            }
+            output.computeMetrics();
+            return output;
+        }
 
         for (Node n : input.nodes) {
-
-            if (metrics.minRadius == metrics.maxRadius) {
-                if (metrics.minRadius == 0) {
-                    n.radius = RADIUS_MIN;
-                } else {
-                    n.radius = metrics.minRadius;
-                }
-            } else {
-                n.radius = PApplet.map(n.radius*r, metrics.minRadius, metrics.maxRadius, RADIUS_MIN, RADIUS_MAX);
-            }
-            
-            System.out.println("saving new node radius "+n.radius);
+            n.radius = PApplet.map(n.radius, metrics.minNodeRadius, metrics.maxNodeRadius, RADIUS_MIN, RADIUS_MAX);
+            n.radius *= r;
             output.add(n);
 
         }

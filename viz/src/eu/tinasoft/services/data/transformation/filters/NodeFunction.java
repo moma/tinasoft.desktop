@@ -24,7 +24,7 @@ public class NodeFunction extends NodeFilter {
             return input;
         }
         for (Node n : input.nodes) {
-              n.radius *= n.weight;
+              n.radius = n.weight;
         }
         return input;
     }

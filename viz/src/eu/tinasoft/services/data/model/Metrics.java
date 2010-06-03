@@ -16,8 +16,7 @@ public class Metrics {
     public float minY;
     public float maxX;
     public float maxY;
-    public float minRadius;
-    public float maxRadius;
+
     public PVector center;
     public PVector baryCenter;
     public float graphWidth;
@@ -46,8 +45,6 @@ public class Metrics {
         minY = 0.0f;
         maxX = 0.0f;
         maxY = 0.0f;
-        minRadius = 0.0f;
-        maxRadius = 0.0f;
         center = new PVector(0.0f, 0.0f);
         baryCenter = new PVector(0.0f, 0.0f);
         graphWidth = 0.0f;
@@ -74,15 +71,15 @@ public class Metrics {
                 + "minY=" + minY + ", \n"
                 + "maxX=" + maxX + ", "
                 + "maxY=" + maxY + ", \n"
-                + "minRadius=" + minRadius + ", "
-                + "maxRadius=" + maxRadius + ", \n"
-                + "graphWidth=" + graphWidth + ","
-                + "graphHeight=" + graphHeight + ","
-                + "graphRadius=" + graphRadius + ", \n"
+                + "minNodeRadius=" + minNodeRadius + ", "
+                + "maxNodeRadius=" + maxNodeRadius + ", \n"
+               // + "graphWidth=" + graphWidth + ","
+                //+ "graphHeight=" + graphHeight + ","
+               // + "graphRadius=" + graphRadius + ", \n"
                 + "centerX=" + center.x + ", "
                 + "centerY=" + center.y + ", "
-                + "baryCenterX=" + baryCenter.x + ", "
-                + "baryCenterY=" + baryCenter.y + ", \n"
+                //+ "baryCenterX=" + baryCenter.x + ", "
+                //+ "baryCenterY=" + baryCenter.y + ", \n"
                 + "minEdgeWeight=" + minEdgeWeight + ", "
                 + "maxEdgeWeight=" + maxEdgeWeight + ";"
                 + "minNodeWeight=" + minNodeWeight + ", "

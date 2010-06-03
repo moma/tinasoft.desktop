@@ -282,7 +282,7 @@ public class Main extends PApplet implements MouseWheelListener {
             // output denormalize and decxide the final screen size (it does not normalize to 0 -> 1 !)
             session.getMacro().addFilter("Output", "output");
 
-            session.getView().paused = true;
+            session.getView().paused = false;
 
         }
         //cenNGramesoView();
@@ -335,6 +335,7 @@ public class Main extends PApplet implements MouseWheelListener {
             // loading = false;
             //System.out.println("a");
             redrawScene.set(true);
+         System.out.println("metrics.minRadius :"+n.getMetrics().minNodeRadius);
 
         }
 
@@ -380,6 +381,7 @@ public class Main extends PApplet implements MouseWheelListener {
         if (autocenter) {
             //System.out.println("checkRecentering("+v.getName()+"): autorecentering is true, computing metrics..");
             Metrics metrics = nodes.getMetrics();
+
 
             float graphHeight = metrics.graphHeight * v.sceneScale;
             float graphWidth = metrics.graphWidth * v.sceneScale;
@@ -806,21 +808,31 @@ public class Main extends PApplet implements MouseWheelListener {
                               // here, minRadius should contain the non-normalized min radius
                 // (eg. 1.0 or 4.4)
                 //float minrad = metrics.minRadius;
-                float coeff = 0.25f;
+
+                // TODO optimization is feasible here! and also, it should use min adn max radius, not RAD MIN RAD MAX
+
+               // float minRad = (metrics.minNodeRadius == 0 ? Output.RADIUS_MIN : metrics.minNodeRadius)*0.2f;
+                //float maxRad = (metrics.maxNodeRadius == 0 ? Output.RADIUS_MIN : metrics.maxNodeRadius)*0.5f;
+                float mn = PApplet.min ( n1.radius, n2.radius );
+                //float realMaxRad = PApplet.max ( n1.radius, n2.radius );
+                float minRad = mn == 0 ? Output.RADIUS_MIN : mn*0.2f;
+                float maxRad = mn == 0 ? Output.RADIUS_MIN : mn*0.5f;
                 float screenWeight = 
                         (metrics.minEdgeWeight == metrics.maxEdgeWeight)
-                        ? Output.RADIUS_MIN*coeff
+                        ? maxRad
                         : PApplet.map(w,
                         metrics.minEdgeWeight,
                         metrics.maxEdgeWeight,
-                        Output.RADIUS_MIN*coeff,
-                        Output.RADIUS_MAX*coeff);
-                /*System.out.println(
+                        minRad,
+                        maxRad);
+
+                /*
+                System.out.println(
                         PApplet.map(w,
                         metrics.minEdgeWeight,
                         metrics.maxEdgeWeight,
-                        Output.RADIUS_MIN*coeff,
-                        Output.RADIUS_MAX*coeff) +" = map("+w+", "+metrics.minEdgeWeight+", "+metrics.maxEdgeWeight+", "+Output.RADIUS_MIN+", "+Output.RADIUS_MAX+")");
+                        minRad,
+                        maxRad) +" = map("+w+", "+metrics.minEdgeWeight+", "+metrics.maxEdgeWeight+", "+minRad+", "+ maxRad+")");
                 */
                 strokeWeight(screenWeight * v.sceneScale);
                 drawCurve(n1.position.x, n1.position.y, n2.position.x, n2.position.y);

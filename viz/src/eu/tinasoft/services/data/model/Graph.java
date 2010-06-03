@@ -410,7 +410,7 @@ public class Graph implements Cloneable {
         Console.log("one-time normalization..");
 
         for (Entry<String,List<Node>> e : normalizeMyNodes.entrySet()) {
-            System.out.println("computing metrics for "+e.getKey());
+            //System.out.println("computing metrics for "+e.getKey());
               Metrics metrics = NodeListNormalizer.computeMetrics(e.getValue());
               // System.out.println("normalizing "+e.getKey());
               NodeListNormalizer.normalize(e.getValue(), metrics, "category", e.getKey());

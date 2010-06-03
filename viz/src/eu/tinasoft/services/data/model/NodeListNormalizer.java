@@ -122,28 +122,22 @@ public class NodeListNormalizer {
         for (Node n : nodes) {
             if (n.position.x < metrics.minX) metrics.minX = n.position.x;
             if (n.position.y < metrics.minY) metrics.minY = n.position.y;
+
             if (n.position.x > metrics.maxX) metrics.maxX = n.position.x;
             if (n.position.y > metrics.maxY) metrics.maxY = n.position.y;
 
-            // NODE WEIGHT
-            //System.out.print("n.weight: "+n.weight);
             if (n.weight < metrics.minNodeWeight) metrics.minNodeWeight = n.weight;
             if (n.weight > metrics.maxNodeWeight) metrics.maxNodeWeight = n.weight;
-             //System.out.println("maxNodeWeight: "+metrics.maxNodeWeight+"\n");
 
-            // NODE WEIGHT
             if (n.radius < metrics.minNodeRadius) metrics.minNodeRadius = n.radius;
             if (n.radius > metrics.maxNodeRadius) metrics.maxNodeRadius = n.radius;
-
             metrics.averageNodeRadius += n.radius;
             metrics.averageNodeWeight += n.weight;
 
             for (int k : n.weights.keys().elements()) {
                 float w = (Float) n.weights.get(k);
-                //System.out.print("w: "+w);
                 if (w < metrics.minEdgeWeight) metrics.minEdgeWeight = w;
                 if (w > metrics.maxEdgeWeight) metrics.maxEdgeWeight = w;
-                //System.out.println("maxEdgeWeight: "+metrics.maxEdgeWeight+"\n");
                 metrics.averageEdgeWeight += w;
                 metrics.nbEdges++;
             }
@@ -152,19 +146,15 @@ public class NodeListNormalizer {
             metrics.baryCenter.y += n.position.y;
         }
 
-        //System.out.println("min node weight:" +metrics.minNodeWeight+" maxNodeWeight:"+metrics.maxNodeWeight);
-        //System.out.println("min node radius: "+metrics.minNodeRadius+"\n");
-
         metrics.averageNodeWeight /= size;
         metrics.averageNodeRadius /= size;
         metrics.averageEdgeWeight /= metrics.nbEdges;
-        // compute the barycenter (divide the sum by the size to get the average)
+
         metrics.baryCenter.div(size);
 
         metrics.graphWidth = (metrics.maxX - metrics.minX);
         metrics.graphHeight = (metrics.maxY - metrics.minY);
         metrics.graphRadius = (metrics.graphWidth + metrics.graphHeight) / 2.0f;
-
 
         metrics.center.set(
                 (metrics.graphWidth / 2.0f) + metrics.minX,
@@ -201,14 +191,13 @@ public class NodeListNormalizer {
                 }
             }
 
-
             // todo: check it isn't bigger than max
             n.radius =
-                    (metrics.minRadius == metrics.maxRadius)
+                    (metrics.minNodeRadius == metrics.maxNodeRadius)
                     ?  1
                     : PApplet.map(n.radius,
-                    metrics.minRadius,
-                    metrics.maxRadius,
+                    metrics.minNodeRadius,
+                    metrics.maxNodeRadius,
                     MIN_RADIUS,
                     MAX_RADIUS);
 

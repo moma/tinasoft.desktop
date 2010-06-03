@@ -59,7 +59,7 @@ public class FilterChain {
 
             // remove this after debug, because this compute is useless
 
-            System.out.println("\nFILTERS BEGIN ---");
+            //System.out.println("\nFILTERS BEGIN ---");
 
             Metrics metrics = null;
 
@@ -68,12 +68,12 @@ public class FilterChain {
                     return;
                 }
                 metrics = nodes.computeMetrics();
-                System.out.println("PREVIOUS FILTER GAVE "+metrics+"\n NEW FILTER "+f.getRoot()+" GOING TO BE APPLIED");
+                //System.out.println("PREVIOUS FILTER GAVE "+metrics+"\n NEW FILTER "+f.getRoot()+" GOING TO BE APPLIED");
                 nodes = f.preProcessing(session, view, nodes);
                 
             }
             // this assignation should be safe if we create a new node list
-            System.out.println("FILTERS ENDED ---\n"+metrics);
+            //System.out.println("FILTERS ENDED ---\n"+metrics);
             chain.filteredNodes = new NodeList(nodes);
             chain.filterIsRunning.set(false);
             chain.popLocked.set(false);
