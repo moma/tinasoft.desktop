@@ -303,8 +303,7 @@ public class NodeList {
     }
 
     public Metrics computeMetrics() {
-       metrics = NodeListNormalizer.computeMetrics(nodes);
-       System.out.println("GRRR "+metrics.maxNodeRadius);
+      metrics = NodeListNormalizer.computeMetrics(nodes);
        return metrics;
     }
 

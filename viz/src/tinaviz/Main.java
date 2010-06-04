@@ -3,7 +3,6 @@ package tinaviz;
 import eu.tinasoft.services.visualization.layout.Layout;
 import eu.tinasoft.services.debug.Console;
 import eu.tinasoft.services.data.model.ShapeCategory;
-import eu.tinasoft.services.visualization.views.ViewLevel;
 import eu.tinasoft.services.visualization.views.View;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -41,7 +40,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     String PATH_TO_TEST_FILE =
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/bipartite_graph.gexf"
-            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+           "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             // "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
             //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
@@ -335,7 +334,7 @@ public class Main extends PApplet implements MouseWheelListener {
             // loading = false;
             //System.out.println("a");
             redrawScene.set(true);
-         System.out.println("metrics.minRadius :"+n.getMetrics().minNodeRadius);
+         System.out.println("metrics.minNodeRadius :"+n.getMetrics().minNodeRadius);
 
         }
 
@@ -377,21 +376,26 @@ public class Main extends PApplet implements MouseWheelListener {
         }
          */
 
-        float RECENTERING_MARGIN = 1.0f;
+        boolean autozoom = true;
+
+
         if (autocenter) {
             //System.out.println("checkRecentering("+v.getName()+"): autorecentering is true, computing metrics..");
-            Metrics metrics = nodes.getMetrics();
-
+            Metrics metrics = nodes.computeMetrics();
+            //System.out.println("recentering..."+metrics);
 
             float graphHeight = metrics.graphHeight * v.sceneScale;
             float graphWidth = metrics.graphWidth * v.sceneScale;
+            float graphMax = PApplet.max(graphHeight, graphWidth);
 
-            if ((graphWidth * height) / (graphHeight) < (width * RECENTERING_MARGIN)) {
-                v.tryToSetZoom(v.sceneScale * height / (graphHeight / 1.1f));
+            
+            if ((graphWidth * height) / (graphHeight) < (width * 1.0f)) {
+                v.tryToSetZoom(v.sceneScale * height / graphHeight / v.RECENTERING_MARGIN);
             } else {
-                v.tryToSetZoom(v.sceneScale * width / (graphWidth / 1.1f));
+                v.tryToSetZoom(v.sceneScale * width / graphWidth / v.RECENTERING_MARGIN);
             }
 
+            //v.tryToSetToZoom(v.sceneScale )
             // System.out.println("sceneScale:  " + v.sceneScale);
 
             PVector center = new PVector();
@@ -404,9 +408,11 @@ public class Main extends PApplet implements MouseWheelListener {
             }
 
             PVector translate = new PVector();
-            translate.set(PVector.div(new PVector(center.x, center.y), v.sceneScale));
             translate.add(new PVector(width / 2.0f, height / 2.0f, 0));
+            translate.sub(PVector.mult(center, v.sceneScale));
             v.translation.set(translate);
+ 
+
 
         }
     }
@@ -619,7 +625,6 @@ public class Main extends PApplet implements MouseWheelListener {
         //drawBranding(v,p);
 
 
-
         //background(53,59,61);
 
         stroke(150, 150, 150);
@@ -666,7 +671,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
         //pushMatrix();
 
-
+        /*
+        fill(0,0,0);
+        ellipse(metrics.baryCenter.x,metrics.baryCenter.y, 2,2);
+         
+         */
         /*
 
         int x=0;
@@ -1569,7 +1578,9 @@ public class Main extends PApplet implements MouseWheelListener {
 
     /**
      * "Touch" a given view (will cause the current view to update)
-     * @param level
+     * @param view
+     * @return
+     * @throws ViewNotFoundException
      */
     public synchronized int touch(String view) throws ViewNotFoundException {
 
@@ -1608,7 +1619,6 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param key
      * @param value
      * @return true or false
-     * @throws KeyException
      */
     public boolean setProperty(String view, String key, Object value) {
 
@@ -1637,7 +1647,6 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param key
      * @param value
      * @return true or false
-     * @throws KeyException
      */
     public boolean setProperty(String key, Object value) {
        // System.out.println("setProperty " + key + " = " + value + "");
@@ -1651,10 +1660,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
     /**
      * Get a property from a given view
-     * @param level
+     *
+     * @param view
      * @param key
      * @return
-     * @throws KeyException
      */
     public Object getProperty(String view, String key) {
 
@@ -1680,7 +1689,6 @@ public class Main extends PApplet implements MouseWheelListener {
      * Get a property from the current view
      * @param key
      * @return
-     * @throws KeyException
      */
     public Object getProperty(String key) {
         System.out.println("getProperty(" + key + ")");
@@ -1739,6 +1747,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param view - can be either "current", "all", or the view name
      * @param category
      * @return
+     * @throws UnsupportedEncodingException
      */
     public String getNodes(String view, String category) throws UnsupportedEncodingException {
 
@@ -1796,6 +1805,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param label
      * @param mode
      * @return
+     * @throws UnsupportedEncodingException
      */
     public String getNodesByLabel(String label, String mode) throws UnsupportedEncodingException {
         List<Node> results = nodes.getNodesByLabel(label, mode);
@@ -1861,8 +1871,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
     /**
      * Get a node's neighbourhood
+     * @param view
      * @param id
      * @return
+     * @throws UnsupportedEncodingException
+     * @throws ViewNotFoundException
      */
     public String getNeighbourhood(String view, String id) throws UnsupportedEncodingException, ViewNotFoundException {
 

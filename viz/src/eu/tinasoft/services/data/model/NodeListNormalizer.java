@@ -4,6 +4,8 @@
  */
 package eu.tinasoft.services.data.model;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
+import eu.tinasoft.services.computing.MathFunctions;
 import java.util.List;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -68,12 +70,12 @@ public class NodeListNormalizer {
 
         for (Node n : nodes) {
             // MIN
-            minX = PApplet.min(minX, n.position.x);
-            minY = PApplet.min(minY, n.position.y);
+            if (n.position.x < minX) minX = n.position.x;
+            if (n.position.y < minX) minY = n.position.y;
 
             // MAX
-            maxX = PApplet.max(maxX, n.position.x);
-            maxY = PApplet.max(maxY, n.position.y);
+            if (n.position.x > maxX) maxX = n.position.x;
+            if (n.position.y > maxX) maxY = n.position.y;
         }
 
         return new PVector(((maxX - minX) / 2.0f) + minX, ((maxY - minY) / 2.0f) + minY);
@@ -122,13 +124,10 @@ public class NodeListNormalizer {
         for (Node n : nodes) {
             if (n.position.x < metrics.minX) metrics.minX = n.position.x;
             if (n.position.y < metrics.minY) metrics.minY = n.position.y;
-
             if (n.position.x > metrics.maxX) metrics.maxX = n.position.x;
             if (n.position.y > metrics.maxY) metrics.maxY = n.position.y;
-
             if (n.weight < metrics.minNodeWeight) metrics.minNodeWeight = n.weight;
             if (n.weight > metrics.maxNodeWeight) metrics.maxNodeWeight = n.weight;
-
             if (n.radius < metrics.minNodeRadius) metrics.minNodeRadius = n.radius;
             if (n.radius > metrics.maxNodeRadius) metrics.maxNodeRadius = n.radius;
             metrics.averageNodeRadius += n.radius;
@@ -186,16 +185,12 @@ public class NodeListNormalizer {
                     continue;
                 }
                 if (!n.attributes.get(attr).equals(value)) {
-                    //System.out.println("not normalizing "+n.uuid+" because "+n.category);
                     continue;
                 }
             }
 
             // todo: check it isn't bigger than max
-            n.radius =
-                    (metrics.minNodeRadius == metrics.maxNodeRadius)
-                    ?  1
-                    : PApplet.map(n.radius,
+            n.radius = MathFunctions.map(n.radius,
                     metrics.minNodeRadius,
                     metrics.maxNodeRadius,
                     MIN_RADIUS,
@@ -215,9 +210,7 @@ public class NodeListNormalizer {
 
             // NORMALIZE WEIGHT
             // todo check is < max
-            n.weight =
-                    metrics.minNodeWeight == metrics.maxNodeWeight ? 1
-                    : PApplet.map(n.weight,
+            n.weight = MathFunctions.map(n.weight,
                     metrics.minNodeWeight, metrics.maxNodeWeight,
                     NORMALIZED_MIN_NODE_WEIGHT, NORMALIZED_MAX_NODE_WEIGHT);
 
@@ -229,7 +222,7 @@ public class NodeListNormalizer {
                         ? ( metrics.minEdgeWeight == 0 ? NORMALIZED_MIN_EDGE_WEIGHT : metrics.minEdgeWeight )
                         : ((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (PApplet.max(
                         PApplet.abs(metrics.minEdgeWeight), PApplet.abs(metrics.maxEdgeWeight))));*/
-                w = (metrics.minEdgeWeight == metrics.minEdgeWeight) ? 1 : PApplet.map(w, metrics.minEdgeWeight, metrics.maxEdgeWeight, NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);
+                w = MathFunctions.map(w, metrics.minEdgeWeight, metrics.maxEdgeWeight, NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);
                 //System.out.println("EDGE NORMLAZ = "+w+" = PApplet.map("+w+","+metrics.minEdgeWeight+","+metrics.maxEdgeWeight+","+NORMALIZED_MIN_EDGE_WEIGHT+","+NORMALIZED_MAX_EDGE_WEIGHT+")");
                 n.weights.put(k, w);
                 n.weightsDistribution.put(k, PApplet.map(i, 0, metrics.nbEdges, 0.01f, 1.0f));

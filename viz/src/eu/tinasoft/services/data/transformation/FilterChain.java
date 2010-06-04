@@ -66,12 +66,15 @@ public class FilterChain {
             for (Filter f : filters) {
                 if (interrupted()) {
                     return;
+
+
                 }
                 metrics = nodes.computeMetrics();
                 //System.out.println("PREVIOUS FILTER GAVE "+metrics+"\n NEW FILTER "+f.getRoot()+" GOING TO BE APPLIED");
                 nodes = f.preProcessing(session, view, nodes);
                 
             }
+            metrics = nodes.computeMetrics();
             // this assignation should be safe if we create a new node list
             //System.out.println("FILTERS ENDED ---\n"+metrics);
             chain.filteredNodes = new NodeList(nodes);

@@ -4,6 +4,7 @@
  */
 package eu.tinasoft.services.data.transformation.filters;
 
+import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.Metrics;
 import eu.tinasoft.services.data.model.NodeList;
 import java.util.List;
@@ -21,16 +22,13 @@ public class Output extends NodeFilter {
 
     private String KEY_NODE_SIZE_RATIO = "nodeSizeRatio";
     // the range of the sliders
-    public static float MIN_RADIUS_MAGNIFIER = 0.1f;
-    public static float MAX_RADIUS_MAGNIFIER = 3.0f;
+    public static float MIN_RADIUS_MAGNIFIER = 0.2f;
+    public static float MAX_RADIUS_MAGNIFIER = 2.0f;
     public static float RADIUS_MIN = 3.0f;
     public static float RADIUS_MAX = 20.0f;
 
     @Override
     public NodeList preProcessing(Session session, View view, NodeList input) {
-        if (!enabled()) {
-            return input;
-        }
 
         NodeList output = new NodeList();
 
@@ -46,24 +44,15 @@ public class Output extends NodeFilter {
                 ? new Float((Double) o)
                 : (Float) o;
 
-        r = PApplet.map(r, 0.0f, 1.0f, MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
-
-        if (metrics.minNodeRadius == 0 && metrics.maxNodeRadius == 0) {
-            // in this bad case, we use the minimal radius size
-            for (Node n : input.nodes) {
-                n.radius = RADIUS_MIN * r;
-            }
-            output.computeMetrics();
-            return output;
-        }
+        r = MathFunctions.map(r, 0.0f, 1.0f, MIN_RADIUS_MAGNIFIER, MAX_RADIUS_MAGNIFIER);
 
         for (Node n : input.nodes) {
-            n.radius = PApplet.map(n.radius, metrics.minNodeRadius, metrics.maxNodeRadius, RADIUS_MIN, RADIUS_MAX);
+            float old = n.radius;
+            n.radius = MathFunctions.map(n.radius, metrics.minNodeRadius, metrics.maxNodeRadius, RADIUS_MIN, RADIUS_MAX);
+
             n.radius *= r;
             output.add(n);
-
         }
-
         return output;
     }
 }

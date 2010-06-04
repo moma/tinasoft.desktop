@@ -57,13 +57,10 @@ public class NodeWeightRange extends NodeFilter {
                 ? new Float((Double) o)
                 : (Float) o;
         
-                System.out.println("min:"+min+" max:"+max);
         min = min * f + metrics.minNodeWeight;
 
         max = max * f + metrics.minNodeWeight;
-        
-        System.out.println("--------------------------\nminNodeWeight:"+metrics.minNodeWeight+" maxNodeWeight:"+metrics.maxNodeWeight);
-        System.out.println("min2:"+min+" max2:"+max);
+
         for (Node n : input.nodes) {
             //System.out.println("genericity: ["+min+" <= "+n.weight+" <= "+max);
 

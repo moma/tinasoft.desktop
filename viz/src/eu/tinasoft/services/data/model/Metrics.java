@@ -71,18 +71,19 @@ public class Metrics {
                 + "minY=" + minY + ", \n"
                 + "maxX=" + maxX + ", "
                 + "maxY=" + maxY + ", \n"
-                + "minNodeRadius=" + minNodeRadius + ", "
-                + "maxNodeRadius=" + maxNodeRadius + ", \n"
-               // + "graphWidth=" + graphWidth + ","
-                //+ "graphHeight=" + graphHeight + ","
-               // + "graphRadius=" + graphRadius + ", \n"
+                //+ "minNodeRadius=" + minNodeRadius + ", "
+               // + "maxNodeRadius=" + maxNodeRadius + ", \n"
+                + "graphWidth=" + graphWidth + ","
+                + "graphHeight=" + graphHeight + ","
+                + "graphRadius=" + graphRadius + ", \n"
                 + "centerX=" + center.x + ", "
                 + "centerY=" + center.y + ", "
-                //+ "baryCenterX=" + baryCenter.x + ", "
-                //+ "baryCenterY=" + baryCenter.y + ", \n"
-                + "minEdgeWeight=" + minEdgeWeight + ", "
-                + "maxEdgeWeight=" + maxEdgeWeight + ";"
-                + "minNodeWeight=" + minNodeWeight + ", "
-                + "maxNodeWeight=" + maxNodeWeight + ";\n";
+                + "baryCenterX=" + baryCenter.x + ", "
+                + "baryCenterY=" + baryCenter.y + ", \n"
+                //+ "minEdgeWeight=" + minEdgeWeight + ", "
+                //+ "maxEdgeWeight=" + maxEdgeWeight + ";"
+                //+ "minNodeWeight=" + minNodeWeight + ", "
+                //+ "maxNodeWeight=" + maxNodeWeight
+                + ";\n";
     }
 }

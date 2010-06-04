@@ -52,6 +52,7 @@ public class View {
     public PVector dragDelta = new PVector(0.0f, 0.0f);
     public CenteringMode centeringMode = CenteringMode.FREE_MOVE;
     public int layoutIterationCount = 0;
+    public float RECENTERING_MARGIN = 1.2f;
 
     public View(Session session) {
         graph = new Graph(session);

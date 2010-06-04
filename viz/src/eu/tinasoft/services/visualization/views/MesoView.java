@@ -20,6 +20,8 @@ public class MesoView extends View {
         centeringMode = CenteringMode.SELECTED_GRAPH_BARYCENTER;
         ZOOM_CEIL = 0.2f;
         ZOOM_FLOOR = 28.0f;
+        RECENTERING_MARGIN = 1.5f;
+
         resetParams();
        graph.locked.set(false);
     }

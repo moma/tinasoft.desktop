@@ -65,50 +65,6 @@ public class Category extends NodeFilter {
             }
         }
 
-        /*
-         *
-
-        for (Node n : input.nodes) {
-        //  System.out.println("  - n category == "+n.category);
-        // HACK the category selector doesn't remove selected nodes in meso
-        if (view.getLevel() == ViewLevel.MESO && n.selected) {
-        output.add(n);
-        } else {
-
-        if (n.category.equals(category)) {
-
-        if (keep) {
-
-        OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
-        for (int nb : n.weights.keys().elements()) {
-        if (input.hasNode(nb)) {
-        //System.out.println("keeping node" + nb);
-        weights.put(nb, n.weights.get(nb));
-        }
-        }
-        n.weights = weights;
-        output.add(n);
-
-        //System.out.println("  - kept " + n.category + " " + n.label + " = " + n.weight + "\n");
-        }
-        } else {
-        if (!keep) {
-
-        OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
-        for (int nb : n.weights.keys().elements()) {
-        if (input.hasNode(nb))
-        weights.put(nb, n.weights.get(nb));
-        }
-        n.weights = weights;
-        output.add(n);
-
-        }
-        }
-        }
-        }
-
-         */
-        System.out.println("category filter ask for recomputation of radius/weight..");
         output.computeMetrics();
         output.normalize();
 

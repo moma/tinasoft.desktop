@@ -405,15 +405,17 @@ public class Graph implements Cloneable {
 
         }
 
-        Console.log("graph loaded!");
-
-        Console.log("one-time normalization..");
+        Console.log("normalizing graph..");
 
         for (Entry<String,List<Node>> e : normalizeMyNodes.entrySet()) {
             //System.out.println("computing metrics for "+e.getKey());
               Metrics metrics = NodeListNormalizer.computeMetrics(e.getValue());
               // System.out.println("normalizing "+e.getKey());
               NodeListNormalizer.normalize(e.getValue(), metrics, "category", e.getKey());
+              /*
+              for (Node n : e.getValue()) {
+                  n.position.set((float)Math.random()*100.0f,(float)Math.random()*100.0f,0);
+              }*/
         }
 
  
@@ -464,9 +466,8 @@ public class Graph implements Cloneable {
             addNode(node);
         }
         // TODO touch?
-        System.out.println("Graph.addNodes() and touch() but not computed new metrics!");
+        //System.out.println("Graph.addNodes() and touch() but not computed new metrics!");
         commitProperties();
-
     }
 
     public synchronized int size() {
@@ -502,7 +503,7 @@ public class Graph implements Cloneable {
     public void selectNodeById(int id) {
         if (storedNodes.containsKey(id)) {
             storedNodes.get(id).selected = true;
-            System.out.println("node selected, NOT touching..");
+            //System.out.println("node selected, NOT touching..");
             //commitProperties();
         }
     }
@@ -585,7 +586,7 @@ public class Graph implements Cloneable {
                 Node node = e.getValue();
 
                 if (node.selected) {
-                    System.out.println("node is selected");
+                    //System.out.println("node is selected");
                     writer.key(node.uuid).object();
                     writer.key("id").value(node.uuid);
                     for (Entry<String, Object> entry : node.getAttributes().entrySet()) {
