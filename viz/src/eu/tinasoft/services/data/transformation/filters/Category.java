@@ -60,8 +60,9 @@ public class Category extends NodeFilter {
 
         for (Node n : input.nodes) {
             if (n.category.equals(category)) {
-                System.out.println("adding node "+n.category+" / "+n.uuid+" "+n.weight);
+                //System.out.println("adding node "+n.category+" / "+n.uuid+" weight: "+n.weight+"  radius: "+n.radius);
                 output.add(n);
+
             }
         }
 

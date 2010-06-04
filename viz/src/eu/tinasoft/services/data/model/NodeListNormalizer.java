@@ -263,4 +263,8 @@ public class NodeListNormalizer {
         return nodes;
 
     }
+
+    static void normalizePositions(List<Node> nodes, Metrics metrics, String string, String key) {
+        nodes = normalizePositions(nodes, metrics);
+    }
 }

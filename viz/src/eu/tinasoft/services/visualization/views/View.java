@@ -82,7 +82,7 @@ public class View {
     public synchronized boolean tryToSetZoom (float newValue) {
 
         // HACK disable the limit in meso view
-        boolean HACKED = true;
+        boolean HACKED = false;
         
         if (HACKED | (newValue >= ZOOM_CEIL)&&(newValue <= ZOOM_FLOOR)) {
             sceneScale = newValue;

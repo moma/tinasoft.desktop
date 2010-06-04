@@ -40,7 +40,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     String PATH_TO_TEST_FILE =
             //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/bipartite_graph.gexf"
-           "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
+            "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/FET60bipartite_graph_cooccurrences_.gexf" //"file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf";
             // "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/test.gexf"
             //  "file:///home/jbilcke/Checkouts/git/TINA/tinaweb/html/CSSScholarsMay2010.gexf"
             ;
@@ -105,14 +105,12 @@ public class Main extends PApplet implements MouseWheelListener {
     private boolean centerOnSelection = false;
     private boolean loading = true;
 
-
-
     private void drawNothing(View v) {
         translate(v.translation.x, v.translation.y);
         scale(v.sceneScale);
     }
 
-     enum quality {
+    enum quality {
 
         FASTEST, // no stroke on circle, no stroke weight
         FASTER, // no stroke on circle, no stroke weight
@@ -268,11 +266,11 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
             try {
-                session.getMacro().setProperty("category/category", "NGram");
+                session.getMacro().setProperty("category/category", "Document");
             } catch (KeyException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-   
+
             session.getMacro().addFilter("Category", "category");
             //session.getMacro().addFilter("NodeWeightRange", "nodeWeight");
             //session.getMacro().addFilter("EdgeWeightRange", "edgeWeight");
@@ -334,7 +332,7 @@ public class Main extends PApplet implements MouseWheelListener {
             // loading = false;
             //System.out.println("a");
             redrawScene.set(true);
-         System.out.println("metrics.minNodeRadius :"+n.getMetrics().minNodeRadius);
+            System.out.println("metrics.minNodeRadius :" + n.getMetrics().minNodeRadius);
 
         }
 
@@ -388,7 +386,7 @@ public class Main extends PApplet implements MouseWheelListener {
             float graphWidth = metrics.graphWidth * v.sceneScale;
             float graphMax = PApplet.max(graphHeight, graphWidth);
 
-            
+
             if ((graphWidth * height) / (graphHeight) < (width * 1.0f)) {
                 v.tryToSetZoom(v.sceneScale * height / graphHeight / v.RECENTERING_MARGIN);
             } else {
@@ -411,7 +409,7 @@ public class Main extends PApplet implements MouseWheelListener {
             translate.add(new PVector(width / 2.0f, height / 2.0f, 0));
             translate.sub(PVector.mult(center, v.sceneScale));
             v.translation.set(translate);
- 
+
 
 
         }
@@ -671,11 +669,14 @@ public class Main extends PApplet implements MouseWheelListener {
 
         //pushMatrix();
 
-        /*
+        
         fill(0,0,0);
         ellipse(metrics.baryCenter.x,metrics.baryCenter.y, 2,2);
-         
-         */
+
+
+        fill(255,0,0);
+        ellipse(0,0, 2,2);
+
         /*
 
         int x=0;
@@ -767,7 +768,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
 
-  
+
 
                 // compute the edge thickness
 
@@ -814,19 +815,19 @@ public class Main extends PApplet implements MouseWheelListener {
                 float modulator = constrain(PApplet.map(powd, 8, width, 1, 90), 1, 90);
 
                 bezierDetail((int) modulator);
-                              // here, minRadius should contain the non-normalized min radius
+                // here, minRadius should contain the non-normalized min radius
                 // (eg. 1.0 or 4.4)
                 //float minrad = metrics.minRadius;
 
                 // TODO optimization is feasible here! and also, it should use min adn max radius, not RAD MIN RAD MAX
 
-               // float minRad = (metrics.minNodeRadius == 0 ? Output.RADIUS_MIN : metrics.minNodeRadius)*0.2f;
+                // float minRad = (metrics.minNodeRadius == 0 ? Output.RADIUS_MIN : metrics.minNodeRadius)*0.2f;
                 //float maxRad = (metrics.maxNodeRadius == 0 ? Output.RADIUS_MIN : metrics.maxNodeRadius)*0.5f;
-                float mn = PApplet.min ( n1.radius, n2.radius );
+                float mn = PApplet.min(n1.radius, n2.radius);
                 //float realMaxRad = PApplet.max ( n1.radius, n2.radius );
-                float minRad = mn == 0 ? Output.RADIUS_MIN : mn*0.2f;
-                float maxRad = mn == 0 ? Output.RADIUS_MIN : mn*0.5f;
-                float screenWeight = 
+                float minRad = mn == 0 ? Output.RADIUS_MIN : mn * 0.2f;
+                float maxRad = mn == 0 ? Output.RADIUS_MIN : mn * 0.5f;
+                float screenWeight =
                         (metrics.minEdgeWeight == metrics.maxEdgeWeight)
                         ? maxRad
                         : PApplet.map(w,
@@ -837,12 +838,12 @@ public class Main extends PApplet implements MouseWheelListener {
 
                 /*
                 System.out.println(
-                        PApplet.map(w,
-                        metrics.minEdgeWeight,
-                        metrics.maxEdgeWeight,
-                        minRad,
-                        maxRad) +" = map("+w+", "+metrics.minEdgeWeight+", "+metrics.maxEdgeWeight+", "+minRad+", "+ maxRad+")");
-                */
+                PApplet.map(w,
+                metrics.minEdgeWeight,
+                metrics.maxEdgeWeight,
+                minRad,
+                maxRad) +" = map("+w+", "+metrics.minEdgeWeight+", "+metrics.maxEdgeWeight+", "+minRad+", "+ maxRad+")");
+                 */
                 strokeWeight(screenWeight * v.sceneScale);
                 drawCurve(n1.position.x, n1.position.y, n2.position.x, n2.position.y);
             } // FOR NODE B
@@ -1264,34 +1265,46 @@ public class Main extends PApplet implements MouseWheelListener {
                 } else {
                     mouseSide = MouseButton.LEFT;
                 }
-                n.selected = true;
-                selectedIDs.add(n.id);
+
+                if (n.selected) {
+                    unselectedIDs.add(n.id);
+                } else {
+                    selectedIDs.add(n.id);
+                }
+
+                n.selected = !n.selected;
+
             } else if (mouseButton == RIGHT) {
+                /*
                 mouseSide = MouseButton.RIGHT;
                 n.selected = false;
                 unselectedIDs.add(n.id);
+                 */
             }
         }
 
+        
+
         // if we have a double click, we unselect nodes in all views, graphs..
-        if (mouseSide == MouseButton.DOUBLELEFT) {
-            unselect();
-        } else {
-            for (int i : unselectedIDs) {
-                getSession().unselectNode(i);
-            }
+        //if (mouseSide == MouseButton.DOUBLELEFT) {
+        //unselect();
+        //} else {
+        for (int i : unselectedIDs) {
+        getSession().unselectNode(i);
         }
+        //}
 
         // we select our new nodes in all views, graphs..
         for (int i : selectedIDs) {
-            nodes.selectNode(i);
-            getSession().selectNode(i);
+        nodes.selectNode(i);
+        getSession().selectNode(i);
         }
+
 
         // in all cases, we call the callback function
         if (mouseSide != MouseButton.NONE) {
-            System.out.println("calling callback("+mouseSide+")");
-            nodeSelected_JS_CALLBACK(getView().getName(),mouseSide);
+            System.out.println("calling callback(" + mouseSide + ")");
+            nodeSelected_JS_CALLBACK(getView().getName(), mouseSide);
         }
 
         lastMousePosition.set(mouseX, mouseY, 0);
@@ -1444,6 +1457,7 @@ public class Main extends PApplet implements MouseWheelListener {
             case MESO:
                 System.out.println("scele scale: " + v.sceneScale + " zoom floor:" + v.ZOOM_FLOOR + " zoom ceil:" + v.ZOOM_CEIL);
                 if (v.sceneScale > v.ZOOM_FLOOR) {
+
                     v.sceneScale *= 3.f / 4.f;
                     v.translation.mult(3.f / 4.f);
                     //v.sceneScale = v.ZOOM_FLOOR;
@@ -1461,7 +1475,6 @@ public class Main extends PApplet implements MouseWheelListener {
 
         redrawIfNeeded();
     }
-
 
     @Override
     public void keyPressed() {
@@ -1588,9 +1601,10 @@ public class Main extends PApplet implements MouseWheelListener {
     }
 
     @Deprecated
-   public synchronized int touch() {
+    public synchronized int touch() {
         return commitProperties();
     }
+
     public synchronized int commitProperties() {
         return getView().getGraph().commitProperties();
     }
@@ -1649,7 +1663,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @return true or false
      */
     public boolean setProperty(String key, Object value) {
-       // System.out.println("setProperty " + key + " = " + value + "");
+        // System.out.println("setProperty " + key + " = " + value + "");
         try {
             return getView().setProperty(key, value);
         } catch (KeyException ex) {
@@ -1713,13 +1727,13 @@ public class Main extends PApplet implements MouseWheelListener {
      * @param str
      */
     public void selectFromId(String str) {
-        System.out.println("BEFORE selectFromId("+str+")...");
+        System.out.println("BEFORE selectFromId(" + str + ")...");
         Session s = getSession();
         s.selectNode(str);
         nodes.selectNode(str);
-        System.out.println("DURING selectFromId("+str+"), called s.selectNode(..) and nodes.selectNode(..)");
+        System.out.println("DURING selectFromId(" + str + "), called s.selectNode(..) and nodes.selectNode(..)");
         nodeSelected_JS_CALLBACK(s.getView().getName(), MouseButton.LEFT);
-        System.out.println("AFTER selectFromId("+str+") called from javascript, calling nodeSelected_JS_CALLBACK("+s.getView().getName()+",MouseButton.LEFT)");
+        System.out.println("AFTER selectFromId(" + str + ") called from javascript, calling nodeSelected_JS_CALLBACK(" + s.getView().getName() + ",MouseButton.LEFT)");
     }
 
     /**
@@ -1731,7 +1745,6 @@ public class Main extends PApplet implements MouseWheelListener {
         getSession().getGraph().highlightNodeById(str);
 
     }
-
 
     /**
      * Unselect all nodes in all views
@@ -1795,7 +1808,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return def;
         }
-        System.out.println( writer.toString() + "= getNodes(String view, String category)");
+        System.out.println(writer.toString() + "= getNodes(String view, String category)");
         return writer.toString();
     }
 
@@ -1846,7 +1859,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return def;
         }
-                System.out.println( writer.toString() + "= MAIN.getNodesByLabel("+label+","+mode+")");
+        System.out.println(writer.toString() + "= MAIN.getNodesByLabel(" + label + "," + mode + ")");
         return writer.toString();
     }
 
@@ -1884,14 +1897,13 @@ public class Main extends PApplet implements MouseWheelListener {
                 : getView(view).getGraph().getNeighbourhoodAsJSON(id);
     }
 
-
     public void centerOnSelection() {
         // check if the node is in the current view
         centerOnSelection = true;
     }
 
     public boolean setView(String view) {
-        System.out.println("setView("+view+")");
+        System.out.println("setView(" + view + ")");
         if (view.equalsIgnoreCase("current")) {
             viewChanged_JS_CALLBACK(view);
             nodeSelected_JS_CALLBACK(view, MouseButton.LEFT);
@@ -1909,27 +1921,25 @@ public class Main extends PApplet implements MouseWheelListener {
         return true;
     }
 
-
-      private String getSelectNodesJSON(String view) {
-          System.out.println("getSelectedNodesAsJSON("+view+")");
-          if (view.equalsIgnoreCase("current")) {
-              return nodes.getSelectedNodesAsJSON();
-          }
+    private String getSelectNodesJSON(String view) {
+        System.out.println("getSelectedNodesAsJSON(" + view + ")");
+        if (view.equalsIgnoreCase("current")) {
+            return nodes.getSelectedNodesAsJSON();
+        }
         try {
             return getView(view).getGraph().getSelectedNodesAsJSON();
         } catch (ViewNotFoundException ex) {
-            Console.error("couldn't get select nodes as JSON: "+ex+", returning {}");
+            Console.error("couldn't get select nodes as JSON: " + ex + ", returning {}");
             return "{}";
         }
-      }
+    }
+
     private void nodeSelected_JS_CALLBACK(String view, MouseButton mouseSide) {
         getSession().getBrowser().callAndForget("selected", "'" + view + "','"
-                + getSelectNodesJSON(view) + "','" + (
-                mouseSide == MouseButton.DOUBLELEFT ? "doubleLeft" :
-                mouseSide == MouseButton.LEFT ? "left" :
-                mouseSide == MouseButton.RIGHT ? "right" :
-                "none"
-                ) + "'");
+                + getSelectNodesJSON(view) + "','" + (mouseSide == MouseButton.DOUBLELEFT ? "doubleLeft"
+                : mouseSide == MouseButton.LEFT ? "left"
+                : mouseSide == MouseButton.RIGHT ? "right"
+                : "none") + "'");
     }
 
     private void viewChanged_JS_CALLBACK(String view) {

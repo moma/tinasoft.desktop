@@ -412,9 +412,13 @@ public class Graph implements Cloneable {
               Metrics metrics = NodeListNormalizer.computeMetrics(e.getValue());
               // System.out.println("normalizing "+e.getKey());
               NodeListNormalizer.normalize(e.getValue(), metrics, "category", e.getKey());
+              NodeListNormalizer.normalizePositions(e.getValue(), metrics, "category", e.getKey());
+              
               /*
+              int i = 0;
               for (Node n : e.getValue()) {
-                  n.position.set((float)Math.random()*100.0f,(float)Math.random()*100.0f,0);
+                  n.position.x()
+                  //n.position.set((float)Math.random()*100.0f,(float)Math.random()*100.0f,0);
               }*/
         }
 
