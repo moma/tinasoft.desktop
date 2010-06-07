@@ -22,8 +22,8 @@ public class Output extends NodeFilter {
 
     private String KEY_NODE_SIZE_RATIO = "nodeSizeRatio";
     // the range of the sliders
-    public static float MIN_RADIUS_MAGNIFIER = 0.2f;
-    public static float MAX_RADIUS_MAGNIFIER = 2.0f;
+    public static float MIN_RADIUS_MAGNIFIER = 0.1f;
+    public static float MAX_RADIUS_MAGNIFIER = 1.5f;
     public static float RADIUS_MIN = 3.0f;
     public static float RADIUS_MAX = 20.0f;
 

@@ -669,13 +669,15 @@ public class Main extends PApplet implements MouseWheelListener {
 
         //pushMatrix();
 
-        
+        /*
         fill(0,0,0);
         ellipse(metrics.baryCenter.x,metrics.baryCenter.y, 2,2);
 
 
         fill(255,0,0);
         ellipse(0,0, 2,2);
+
+         */
 
         /*
 
@@ -1262,17 +1264,17 @@ public class Main extends PApplet implements MouseWheelListener {
             if (mouseButton == LEFT) {
                 if (mouseEvent != null && mouseEvent.getClickCount() == 2) {
                     mouseSide = MouseButton.DOUBLELEFT;
+                    selectedIDs.add(n.id);
+                    n.selected = true;
                 } else {
                     mouseSide = MouseButton.LEFT;
+                    if (n.selected) {
+                        unselectedIDs.add(n.id);
+                    } else {
+                        selectedIDs.add(n.id);
+                    }
+                    n.selected = !n.selected;
                 }
-
-                if (n.selected) {
-                    unselectedIDs.add(n.id);
-                } else {
-                    selectedIDs.add(n.id);
-                }
-
-                n.selected = !n.selected;
 
             } else if (mouseButton == RIGHT) {
                 /*
@@ -1283,21 +1285,21 @@ public class Main extends PApplet implements MouseWheelListener {
             }
         }
 
-        
+
 
         // if we have a double click, we unselect nodes in all views, graphs..
         //if (mouseSide == MouseButton.DOUBLELEFT) {
         //unselect();
         //} else {
         for (int i : unselectedIDs) {
-        getSession().unselectNode(i);
+            getSession().unselectNode(i);
         }
         //}
 
         // we select our new nodes in all views, graphs..
         for (int i : selectedIDs) {
-        nodes.selectNode(i);
-        getSession().selectNode(i);
+            nodes.selectNode(i);
+            getSession().selectNode(i);
         }
 
 
@@ -1318,7 +1320,7 @@ public class Main extends PApplet implements MouseWheelListener {
     @Override
     public void mouseDragged() {
         stopAutoCentering();
-        if (mouseButton == RIGHT) {
+        if (mouseButton == RIGHT | mouseButton == LEFT) {
             View v = session.getView();
             PVector oldTranslation = new PVector(v.translation.x, v.translation.y, 0.0f);
 
@@ -1458,12 +1460,11 @@ public class Main extends PApplet implements MouseWheelListener {
                 System.out.println("scele scale: " + v.sceneScale + " zoom floor:" + v.ZOOM_FLOOR + " zoom ceil:" + v.ZOOM_CEIL);
                 if (v.sceneScale > v.ZOOM_FLOOR) {
 
-                    v.sceneScale *= 3.f / 4.f;
-                    v.translation.mult(3.f / 4.f);
+                    //v.sceneScale *= 3.f / 4.f;
+                    ///v.translation.mult(3.f / 4.f);
                     //v.sceneScale = v.ZOOM_FLOOR;
-                    //System.out.println("switch in to micro");
-                }
-                if (v.sceneScale < v.ZOOM_CEIL) {
+                    System.out.println("switch in to micro");
+                } else if (v.sceneScale < v.ZOOM_CEIL) {
                     System.out.println("switch out to macro");
                     session.getMacro().sceneScale = session.getMacro().ZOOM_FLOOR - session.getMacro().ZOOM_FLOOR * 0.5f;
                     // TODO center the graph to the current selection

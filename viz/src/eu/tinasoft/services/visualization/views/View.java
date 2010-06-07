@@ -37,7 +37,7 @@ public class View {
     public float inerX;
     public float inerY;
     public float inerZ;
-    public float ZOOM_CEIL = 0.025f;
+    public float ZOOM_CEIL = 0.026f;
     public float ZOOM_FLOOR = 25.0f;
     public float repulsion = 0.001f;
     public float attraction = 0.0001f;

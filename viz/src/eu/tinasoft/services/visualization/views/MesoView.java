@@ -18,8 +18,8 @@ public class MesoView extends View {
         super(aThis);
         spatializeWhenMoving = true;
         centeringMode = CenteringMode.SELECTED_GRAPH_BARYCENTER;
-        ZOOM_CEIL = 0.2f;
-        ZOOM_FLOOR = 28.0f;
+        ZOOM_CEIL = 0.27f;
+        ZOOM_FLOOR = 30.0f;
         RECENTERING_MARGIN = 1.5f;
 
         resetParams();
