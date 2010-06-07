@@ -375,6 +375,345 @@ var getNGram = function(ngramid) {
 };
 
 
+ /* useful for fullscreen mode */
+function getScreenWidth() {
+    var x = 0;
+    if (self.innerHeight) {
+            x = self.innerWidth;
+    }
+    else if (document.documentElement && document.documentElement.clientHeight) {
+            x = document.documentElement.clientWidth;
+    }
+    else if (document.body) {
+            x = document.body.clientWidth;
+    }
+    return x;
+}
+
+/* useful for fullscreen mode */
+function getScreenHeight() {
+    var y = 0;
+    if (self.innerHeight) {
+        y = self.innerHeight;
+    }
+    else if (document.documentElement && document.documentElement.clientHeight) {
+        y = document.documentElement.clientHeight;
+    }
+    else if (document.body) {
+        y = document.body.clientHeight;
+    }
+
+    return y;
+}
+
+$(function(){
+    $.extend($.fn.disableTextSelect = function() {
+        return this.each(function() {
+            if($.browser.mozilla){//Firefox $("#sliderEdgeWeight")
+                $(this).css('MozUserSelect','none');
+            } else if($.browser.msie) {//IE
+                $(this).bind('selectstart',function(){return false;});
+            } else {//Opera, etc.
+                $(this).mousedown(function(){return false;});
+            }
+        });
+    });
+});
+
+/*
+ * utility modifying the Object prototype
+ * to get its lenght
+ */
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+/*
+ * utility returning a list
+ * from the values of a given object
+ */
+Object.values = function(obj) {
+    var values = new Array();
+    for (key in obj) {
+        values.push(obj[key]);
+    }
+    return values;
+};
+
+/*
+ * utility to safely decode encoded
+ * values from JSON sent by the java applet
+ */
+function decodeJSON(encvalue) {
+    if (encvalue !== undefined)
+        return decodeURIComponent(encvalue).replace(/\+/g, " ").replace(/%21/g, "!").replace(/%27/g, "'").replace(/%28/g, "(").replace(/%29/g, ")").replace(/%2A/g, "*");
+    else
+        return "";
+};
+
+/*
+ * Asynchronously displays of node list
+ */
+function displayNodeRow(label, id, category) {
+    //console.console.log("inserting "+label);
+    $("#node_table > tbody").append(
+        $("<tr></tr>").append(
+            $("<td id='"+id+"'></td>").text(label).click( function(eventObject) {
+                //switch to meso view
+                tinaviz.viewMeso(id, category);
+            })
+        )
+    );
+};
+
+/*
+ * Infodiv object need tinaviz object to retrieve data
+ */
+function InfoDiv(divid) {
+
+    return {
+    id: divid,
+    selection : {},
+    neighbours : {},
+    label : $( "#node_label" ),
+    contents : $( "#node_contents" ),
+    cloud : $( "#node_neighbourhood" ),
+    unselect_button: $( "#toggle-unselect" ),
+    table: $("#node_table > tbody"),
+    data: {},
+    categories: {
+        'NGram' : 'keywords',
+        'Document': 'projects',
+    },
+    last_category: "",
+    /*
+    * dispatch current category displayed
+    */
+    display_current_category: function() {
+        var current_view = tinaviz.getView();
+        var current_cat = tinaviz.getProperty("current","category/category");
+        if (current_cat !== undefined)
+            var opposite = this.categories[tinaviz.getOppositeCategory(current_cat)];
+            //$("#title_acc_1").text("current selection of "+ this.categories[current_cat]);
+        if (opposite !== undefined)
+            if (current_view == "macro")
+                $("#toggle-switch").button("option", "label", "switch to "+ opposite);
+            else
+                $("#toggle-switch").button("option", "label", "view " + opposite + " neighbours");
+        else
+            $("#toggle-switch").button("option", "label", "switch category");
+    },
+    /*
+    * dispatch current view displayed
+    */
+    display_current_view: function() {
+        var current_view = tinaviz.getView();
+        tinaviz.logNormal( current_view );
+        if (current_view !== undefined) {
+            var level = $("#level");
+        level.empty().html(current_view + " level <span class='ui-icon ui-icon-help icon-right' title='></span>");
+            var title = $("#infodiv > h3:first");
+            if (current_view == "meso") {
+                level.addClass("ui-state-highlight");
+                $("#level > span").attr("title","zoom out to switch to the macro view");
+                title.addClass("ui-state-highlight");
+            }
+            else {
+                level.removeClass("ui-state-highlight");
+                $("#level > span").attr("title","zoom in or double click on a node to switch to is meso view");
+                title.removeClass("ui-state-highlight");
+            }
+        }
+    },
+
+    alphabeticListSort: function( listitems, textkey ) {
+        listitems.sort(function(a, b) {
+            var compA = a[textkey].toUpperCase();
+            var compB = b[textkey].toUpperCase();
+            return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+        })
+        return listitems;
+
+    },
+
+    /*
+     * Generic sorting DOM lists
+     */
+    alphabeticJquerySort: function(parentdiv, childrendiv, separator) {
+        var listitems = parentdiv.children(childrendiv).get();
+        listitems.sort(function(a, b) {
+           var compA = $(a).html().toUpperCase();
+           var compB = $(b).html().toUpperCase();
+           return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+        })
+        $.each(listitems, function(idx, itm) {
+            if ( idx != 0 && idx != listitems.length )
+                parentdiv.append(separator);
+            parentdiv.append(itm);
+        });
+        return parentdiv;
+    },
+
+    /*
+     * updates the tag cloud
+     * of the opposite nodes of a given selection
+     */
+    updateTagCloud: function( viewLevel ) {
+        /* builds aggregated tag object */
+        if (Object.size( this.selection ) == 0) return;
+        var tempcloud = {};
+        for (var nodeid in this.selection) {
+            // gets the full neighbourhood for the tag cloud
+            var nb = tinaviz.getNeighbourhood(viewLevel,nodeid);
+            var taglist = new Array();
+            for (var nbid in nb) {
+                if ( tempcloud[nbid] !== undefined )
+                    tempcloud[nbid]['degree']++;
+                // pushes a node if belongs to the opposite category
+                else if (this.selection[nodeid]['category'] != nb[nbid]['category']) {
+                    //tinaviz.logNormal("adding to tag cloud : "+decodeJSON(nb[nbid]['label']));
+                    tempcloud[nbid] = {
+                        'id': nbid,
+                        'label' : decodeJSON(nb[nbid]['label']),
+                        'degree' : 1,
+                        'occurrences': parseInt(nb[nbid]['occurrences']),
+                        'category': decodeJSON(nb[nbid]['category']),
+                    };
+                }
+            }
+        }
+        var sorted_tags = this.alphabeticListSort( Object.values( tempcloud ), 'label' );
+        //tinaviz.logNormal(sorted_tags);
+        /* some display sizes const */
+        var sizecoef = 15;
+        var const_doc_tag = 12;
+        var tooltip = "";
+        /* displays tag cloud */
+        var tagcloud = $("<p></p>");
+        for (var i = 0; i < sorted_tags.length; i++) {
+            var tag = sorted_tags[i];
+            var tagid = tag['id'];
+            var tagspan = $("<span id='"+tagid+"'></span>");
+            tagspan.addClass('ui-widget-content');
+            tagspan.addClass('tinaviz_node');
+            tagspan.html(tag['label']);
+            (function() {
+                var attached_id = tagid;
+                var attached_cat =  tag['category'];
+                tagspan.click( function() {
+                    //tinaviz.logNormal("clicked on " + tagid + " - " +tag['label']);
+                    //switch to meso view
+                    tinaviz.viewMeso(attached_id, attached_cat);
+                });
+            })();
+            // sets the tag's text size
+            if (sorted_tags.length == 1) {
+                if ( tag['category'] == 'Document' )
+                    tagspan.css('font-size', const_doc_tag);
+                else
+                    tagspan.css('font-size',
+                        Math.floor( sizecoef*Math.log( 1.5 + tag['occurrences'] ) )
+                    );
+                tooltip = "click on a label to switch to its meso view - size is proportional to edge weight";
+            }
+            else {
+                tagspan.css('font-size',
+                    Math.floor( sizecoef*Math.log( 1.5 + tag['degree'] ) )
+                );
+                tooltip = "click on a label to switch to its meso view - size is proportional to the degree";
+            }
+            // appends the final tag to the cloud paragraph
+            tagcloud.append(tagspan);
+            if (i != sorted_tags.length-1 && sorted_tags.length > 1)
+                tagcloud.append(", &nbsp;");
+        }
+        // updates the main cloud  div
+        this.cloud.empty();
+        this.cloud.append( '<h3>selection related to <span class="ui-icon ui-icon-help icon-right" title="'+tooltip+'"></span></h3>' );
+        this.cloud.append( tagcloud );
+    },
+
+    /*
+     * updates the label and content DOM divs
+     */
+    updateInfo: function(lastselection) {
+        var current_cat = tinaviz.getProperty("current", "category/category");
+        tinaviz.logNormal("current category = "+current_cat);
+        var labelinnerdiv = $("<div></div>");
+        var contentinnerdiv = $("<div></div>");
+        for(var id in lastselection) {
+            var node = lastselection[id];
+            if (node.category == current_cat)  {
+                this.selection[id] = lastselection[id];
+                labelinnerdiv.append( $("<b></b>").html(decodeJSON(node.label)) );
+                // displays contents only if it's a document
+                if ( node.category == 'Document' && node.content != null ) {
+                    contentinnerdiv.append( $("<b></b>").html(decodeJSON(node.label)) );
+                    contentinnerdiv.append( $("<p></p>").html(decodeJSON(node.content)) );
+                }
+            }
+        }
+        if (Object.size( this.selection ) != 0) {
+            this.label.empty();
+            this.unselect_button.show();
+            this.contents.empty();
+            this.label.append( this.alphabeticJquerySort( labelinnerdiv, "b", ", &nbsp;" ));
+            this.contents.append( contentinnerdiv );
+        }
+        else
+            this.reset();
+    },
+
+    /*
+     * updates the infodiv contents
+     */
+    update: function(view, lastselection) {
+        if ( Object.size ( lastselection ) == 0 ) {
+            this.reset();
+            return;
+        }
+        this.updateInfo(lastselection);
+        this.updateTagCloud("macro");
+        return;
+    },
+
+    /*
+     * Resets the entire infodiv
+     */
+    reset: function() {
+        this.unselect_button.hide();
+        this.label.empty().append($("<h2></h2>").html("empty selection"));
+        this.contents.empty().append($("<h4></h4>").html("click on a node to begin exploration"));
+        this.cloud.empty();
+        this.selection = {};
+        this.neighbours = {};
+        return;
+    },
+
+    /*
+     * Init the node list
+     */
+    updateNodeList: function(node_list, category) {
+        if (category != this.last_category) {
+            this.table.empty();
+            this.last_category = category;
+            for (var i = 0; i < node_list.length; i++ ) {
+                (function () {
+                    var rowLabel = decodeJSON(node_list[i]['label']);
+                    var rowId = decodeJSON(node_list[i]['id']);
+                    var rowCat = category;
+                    // asynchronously displays the node list
+                    setTimeout("displayNodeRow(\""+rowLabel+"\",\""+rowId+"\",\""+rowCat+"\")", 0);
+                })();
+            }
+        }
+    },
+
+    } // end of return
+};
 
 function getWidth() {
     var x = 0;
@@ -438,13 +777,15 @@ function resizeApplet() {
     $('#infodiv').css("height",""+(h-50)+"px");
     $('#infodiv').css("width",""+(300)+"px");
     tinaviz.size(w - 350,h);
+    
+   //$("#infodiv").css( 'height', getScreenHeight() - $("#hd").height() - $("#ft").height() - 60);
 }
 
 
 // wait for the DOM to be loaded
 $(document).ready(function() {
-    $("#tabs").tabs( { disabled: [2,3] } );;
-
+    //$("#tabs").tabs( { disabled: [2,3] } );;
+    $("#tabs").tabs();
     $('#hide').hide();
     /* restores cache vars */
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
@@ -453,20 +794,20 @@ $(document).ready(function() {
 
         // MAGIC TRICK FOR THE JAVA IFRAME
         if (ui.index == 2) {
-            if (tinaviz.disabled()) {
+            if (!tinaviz.isEnabled()) {
                 resizeApplet();
-                tinaviz.enable();
+                tinaviz.setEnabled(true);
             }
-            tinaviz.setLevel("macro");
+            tinaviz.setView("macro");
         } else if (ui.index == 3) {
-            if (tinaviz.disabled()) {
+            if (!tinaviz.isEnabled()) {
                 resizeApplet();
-                tinaviz.enable();
+                tinaviz.setEnabled(true);
             }
-            tinaviz.setLevel("meso");
+            tinaviz.setView("meso");
         } else {
             // hide the frame; magic!
-            tinaviz.disable();
+            tinaviz.setEnabled(false);
             $('#vizframe').css("height","0px");
             $('#vizframe').css("width","0px");
 
@@ -507,88 +848,222 @@ $(document).ready(function() {
             orientation: "horizontal",
     });
 
-
-    // MACRO SLIDERS
-
-
-    $("#macroSlider_edgeWeight").slider({
-        range: true,
-    values: [0, 200],
-        animate: true,
-        slide: function(event, ui) {
-            tinaviz.setProperty("macro", "edgeWeight/min", ui.values[0] / 200.0);
-            tinaviz.setProperty("macro", "edgeWeight/max", ui.values[1] / 200.0);
-            tinaviz.touch("macro");
-        }
-    });
-    $("#macroSlider_nodeWeight").slider({
-        range: true,
-        values: [0, 200],
-        animate: true,
-        slide: function(event, ui) {
-            tinaviz.setProperty("macro", "nodeWeight/min", ui.values[0] / 200.0);
-            tinaviz.setProperty("macro", "nodeWeight/max", ui.values[1] / 200.0);
-            tinaviz.touch("macro");
-        }
-    });
-
-    $("#macroSlider_nodeSize").slider({
-        value: 25.0,
-        max: 200.0,// precision/size
-        animate: true,
-        slide: function(event, ui) {
-        tinaviz.setProperty("macro", "radius/value", ui.value / 200.0);
-        tinaviz.touch("macro");
-    }});
-
-
-
-    $("#mesoSlider_edgeWeight").slider({
-        range: true,
-    values: [0, 200],
-        animate: true,
-        slide: function(event, ui) {
-            tinaviz.setProperty("meso", "edgeWeight/min", ui.values[0] / 200.0);
-            tinaviz.setProperty("meso", "edgeWeight/max", ui.values[1] / 200.0);
-            tinaviz.touch("meso");
-        }
-    });
-    $("#mesoSlider_nodeWeight").slider({
-        range: true,
-    values: [0, 200],
-        animate: true,
-        slide: function(event, ui) {
-            tinaviz.setProperty("meso", "nodeWeight/min", ui.values[0] / 200.0);
-            tinaviz.setProperty("meso", "nodeWeight/max", ui.values[1] / 200.0);
-            tinaviz.touch("meso");
-        }
-    });
-
-    $("#mesoSlider_nodeSize").slider({
-
-        value: 25.0,
-        max: 200.0,// precision/size
-        animate: true,
-        slide: function(event, ui) {
-        tinaviz.setProperty("meso", "radius/value", ui.value / 200.0);
-        tinaviz.touch("meso");
-    }});
-
     /* Fetch data into table */
     displayListCorpora( "graph_table" );
     displayListCorpora( "corpora_table" );
 
-
-
-    // TINASOFT WINDOW IS RESIZED
     $(window).bind('resize', function() {
-        // check if the applet is ready
         if (tinaviz.enabled()) {
             resizeApplet();
         }
     });
+    
+
+    //No text selection on elements with a class of 'noSelect'
+    /*
+    $('.noSelect').disableTextSelect();
+    $('.noSelect').hover(function() {
+        $(this).css('cursor','default');
+    }, function() {
+        $(this).css('cursor','auto');
+    });*/
 
 
+    var infodiv = new InfoDiv("#infodiv");
+
+    // auto-adjusting infodiv height
+    var new_size = tinaviz.getHeight() - 40;
+    $(infodiv.id).css( 'height', new_size);
+
+    $(infodiv.id).accordion({
+        fillSpace: true,
+    });
+
+    // cleans infodiv
+    infodiv.reset();
+    // passing infodiv to tinaviz is REQUIRED
+    tinaviz.infodiv = infodiv;
+
+    // TODO : handler to open a graph file
+    /*$('#htoolbar input[type=file]').change(function(e){
+        tinaviz.clear();
+        tinaviz.loadAbsoluteGraph( $(this).val() );
+    });*/
+
+    // all hover and c$( ".selector" ).slider( "option", "values", [1,5,9] );lick logic for buttons
+    $(".fg-button:not(.ui-state-disabled)")
+    .hover(
+        function(){
+            $(this).addClass("ui-state-hover");
+        },
+        function(){
+            $(this).removeClass("ui-state-hover");
+        }
+    )
+    .mousedown(function(){
+        $(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
+        if( $(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active') ) {
+            $(this).removeClass("ui-state-active");
+        }
+        else {
+            $(this).addClass("ui-state-active");
+        }
+    })
+    .mouseup(function(){
+        if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button,  .fg-buttonset-multi .fg-button') ) {
+            $(this).removeClass("ui-state-active");
+        }
+    });
+
+    // binds the click event to tinaviz.searchNodes()
+
+    $("#search").submit(function() {
+      var txt = $("#search_input").val();
+      if (txt=="") {
+            tinaviz.unselect();
+      } else {
+            tinaviz.searchNodes(txt, "containsIgnoreCase");
+      }
+      return false;
+    });
+    /*
+    $("#search").keypress(function() {
+      var txt = $("#search_input").val();
+      if (txt=="") {
+        tinaviz.unselect();
+      } else {
+           tinaviz.highlightNodes(txt, "containsIgnoreCase");
+      }
+    });
+    */
+    $("#search_button").button({
+        text: false,
+        icons: {
+            primary: 'ui-icon-search'
+        }
+    }).click( function(eventObject) {
+          var txt = $("#search_input").val();
+          if (txt=="") {
+                tinaviz.unselect();
+          } else {
+                tinaviz.searchNodes(txt, "containsIgnoreCase");
+          }
+    });
+
+    // SLIDERS INIT
+    $.extend($.ui.slider.defaults, {
+        //range: "min",
+        min: 0,
+        max: 100,
+        value: 100.0,
+        animate: true,
+        orientation: "horizontal",
+    });
+
+    // MACRO SLIDERS
+    $("#sliderEdgeWeight").slider({
+        range: true,
+        values: [0, 100],
+        animate: true,
+        slide: function(event, ui) {
+            tinaviz.setProperty("current", "edgeWeight/min", ui.values[0] / 100.0);
+            tinaviz.setProperty("current", "edgeWeight/max", ui.values[1] / 100.0);
+            tinaviz.resetLayoutCounter();
+            tinaviz.touch();
+        }
+    });
+
+    $("#sliderNodeWeight").slider({
+        range: true,
+        values: [0, 100],
+        animate: true,
+        slide: function(event, ui) {
+            tinaviz.setProperty("current", "nodeWeight/min", ui.values[0] / 100.0);
+            tinaviz.setProperty("current", "nodeWeight/max", ui.values[1] / 100.0);
+            tinaviz.resetLayoutCounter();
+            tinaviz.touch();
+        }
+    });
+    /*
+    $("#sliderNodeSize").slider({
+        value: 50.0,
+        max: 100.0,// precision/size
+        animate: true,
+        slide: function(event, ui) {
+            tinaviz.setProperty("current", "output/nodeSizeRatio", ui.value / 100.0);
+            //tinaviz.resetLayoutCounter();
+            tinaviz.touch();
+        }}
+    );
+*/
+    $("#sliderSelectionZone").slider({
+        value: 1.0,
+        max: 300.0, // max disk radius, in pixel
+        animate: true,
+        slide: function(event, ui) {
+            tinaviz.setProperty("current", "selection/radius", ui.value);
+            tinaviz.touch();
+        }
+    });
+
+    $("#toggle-showLabels").click(function(event) {
+        tinaviz.toggleLabels();
+    });
+
+    $("#toggle-showNodes").click(function(event) {
+        tinaviz.toggleNodes();
+    });
+
+    $("#toggle-showEdges").click(function(event) {
+        tinaviz.toggleEdges();
+    });
+
+    $("#toggle-paused").button({
+        icons: {primary:'ui-icon-pause'},
+        text: true,
+        label: "pause",
+    })
+    .click(function(event) {
+        tinaviz.togglePause();
+        if( $("#toggle-paused").button('option','icons')['primary'] == 'ui-icon-pause'  ) {
+            $("#toggle-paused").button('option','icons',{'primary':'ui-icon-play'});
+            $("#toggle-paused").button('option','label',"play");
+        }
+        else {
+            $("#toggle-paused").button('option','icons',{'primary':'ui-icon-pause'});
+            $("#toggle-paused").button('option','label',"pause");
+        }
+    });
+
+    $("#toggle-unselect").button({
+        icons: {primary:'ui-icon-close'},
+    }).click(function(event) {
+        tinaviz.unselect();
+    });
+
+    $("#toggle-autoCentering").button({
+        text: true,
+        icons: {
+            primary: 'ui-icon-home'
+        }
+    })
+    .click(function(event) {
+        tinaviz.autoCentering();
+    });
+
+    $("#toggle-switch").button({
+        text: true,
+        icons: {
+            primary: 'ui-icon-arrows'
+        },
+    }).click(function(event) {
+        tinaviz.toggleCategory("current");
+    });
+
+   $('#waitMessage').effect('pulsate', {}, 'fast');
+
+    // magic trick for applet loading rights
+    
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
     var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
     var appletPath;

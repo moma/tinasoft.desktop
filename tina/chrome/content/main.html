@@ -183,161 +183,184 @@
                 <div style="clear:both;"></div>
             </div>
             <div id="tabs-2" class="ui-corner-bottom">
-              <div id="htoolbar" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div id="htoolbar" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
 
-                <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                   <a href="#"
+                       <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
+                            <a href="#"
                       onclick="#"
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
-                </div>
+                        </div>
 
-                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a id="toggle-labels-macro"
-                           href="#"
-                           onclick="tinaviz.toggleLabels('macro')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
-                           title="labels"><span class="ui-icon ui-icon-labels"></span> Labels</a>
-                        <a id="toggle-nodes-macro"
-                           href="#"
-                           onclick="tinaviz.toggleNodes('macro')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
-                           title="nodes"><span class="ui-icon ui-icon-nodes"></span> Nodes</a>
-                        <a id="toggle-edges-macro"
-                           href="#"
-                           onclick="tinaviz.toggleEdges('macro')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
-                           title="edges"><span class="ui-icon ui-icon-edges"></span> Edges</a>
-                    </div>
 
-                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a id="toggle-pause-macro"
-                           href="#"
-                           onclick="tinaviz.togglePause('macro')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
-                           title="pause"><span class="ui-icon ui-icon-pause"></span> Pause</a>
-                    </div>
+                        <button id="toggle-paused" class="fg-button toolbar-left">pause</button>
+                        <button id="toggle-switch" class="fg-button toolbar-left">switch category</button>
 
-                    <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#"
-                           onclick="tinaviz.unselect()"
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                           title="unselect"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
-                        <a href="#"
-                           onclick="tinaviz.recenter()"
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                           title="recenter"><span class="ui-icon ui-icon-pause"></span> Reset</a>
-                    </div>
+                        <!-- TEMPORARY DISABLED - FOR THE ONLINE VERSION -->
+                        <!--
+                        <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
 
-                    <!--
-                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a href="#"
-                           onclick="tinaviz.toggleProjects()"
-                           class="fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-left"
-                           title="projects"><span class="ui-icon ui-icon-projects"></span> Projects</a>
-                        <a href="#"
-                           onclick="tinaviz.toggleTerms()"
-                           class="fg-button ui-state-default ui-state-disabled fg-button-icon-left ui-corner-right"
-                           title="terms"><span class="ui-icon ui-icon-terms"></span> Fields</a>
-                    </div>
-                    -->
+                                <a id="toggle-showLabels"
+                                   href="#"
+                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
+                                   title="hide/show labels"><span class="ui-icon ui-icon-labels"></span> <span class="noSelect">Labels</span></a>
+                                <a id="toggle-showNodes"
+                                   href="#"
+                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
+                                   title="hide/show nodes"><span class="ui-icon ui-icon-nodes"></span> <span class="noSelect">Nodes</span></a>
+                                <a id="toggle-showEdges"
+                                   href="#"
+                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
+                                   title="hide/show edges"><span class="ui-icon ui-icon-edges"></span> <span class="noSelect">Edges</span></a>
 
-                      <!--
-                      <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#"
-                           onclick="tinaviz.search($('searchfield').val())"
-                           class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
-                       </div>
-                       -->
-                </div>
+                        </div>
+
+                        <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                            <a id="toggle-paused"
+                               href="#"
+                               class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
+                               title="pause spatialization"><span class="ui-icon ui-icon-thunder"></span> <span class="noSelect">Run layout</span></a>
+                        </div>
+                        -->
+
+                        <div id="sliders_view" class="sliders toolbar-left">
+                            <div class="slider">
+                                <span class="sliderLabel noSelect">magnify</span>
+                                <div id="sliderNodeSize"></div>
+                            </div>
+                            
+                            <div class="slider smallslider">
+                                <span class="sliderLabel noSelect">cursor size</span>
+                                <div id="sliderSelectionZone"></div>
+
+                            </div>
+                        </div>
+
+                        <div id="sliders_topology" class="sliders toolbar-left">
+                            <div class="slider">
+                                <span class="sliderLabel noSelect">edges filter</span>
+                                <div id="sliderEdgeWeight"></div>
+                            </div>
+                            <div class="slider">
+                                <span class="sliderLabel noSelect">nodes filter</span>
+                                <div id="sliderNodeWeight"></div>
+                            </div>
+                        </div>
+                        <div id="level" class="ui-widget-content toolbar-left ui-corner-all"></div>
+                        <!-- end of sliders -->
+                        <!--<div class="fg-buttonset ui-helper-clearfix fg-button">-->
+                            <!--<a href="#"
+                              id="open"
+                              class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
+                              title="pause">-->
+                              <!--<input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input> -->
+                              <!--<input id="inputgraph" type="file" value="Open">-->
+                            <!--</a> -->
+                        <!--</div>-->
+                        <button id="toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
+                        <form id="search" action="#" class="toolbar-right">
+                            <input id="search_input" type="text" value="">
+                            <button id="search_button" class="fg-button">search</button>
+                        </form>
+                        </div> <!-- End of BUTTON SET -->
+
+                    </div><!-- End of htoolbar -->
+                    
                 <div class="sliders">
-                    <!--<div id="macro_repulsion" class="threshold"></div>-->
-                   <!--<div class="slider">Node weight<div id="macroSlider_nodeWeight"></div></div>-->
-                   <div class="slider">Edge weight<div id="macroSlider_edgeWeight"></div></div>
-                   <div class="slider">Node size<div id="macroSlider_nodeSize"></div></div>
-                   <!--<div class="slider">Edge size<div id="macroSlider_edgeSize"></div></div>-->
+                    <!--<div id="meso_repulsion" class="threshold"></div>-->
+                   <!--<div class="slider">Node weight<div id="mesoSlider_nodeWeight"></div></div>-->
+                   <div class="slider">Edge weight<div id="mesoSlider_edgeWeight"></div></div>
+                   <div class="slider">Node size<div id="mesoSlider_nodeSize"></div></div>
+                   <!--<div class="slider">Edge size<div id="mesoSlider_edgeSize"></div></div>-->
                 </div><!-- end of sliders -->
                 <div id="tabfiller" class="tabfiller"></div>
             </div>
 
             <div id="tabs-3" class="ui-corner-bottom">
 
-               <div id="htoolbar2" class="fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div id="htoolbar2" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
 
-
-                <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                   <a href="#"
+                       <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
+                            <a href="#"
                       onclick="#"
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
                       title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
-                </div>
+                        </div>
 
 
-                <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a id="toggle-labels-meso"
-                           href="#"
-                           onclick="tinaviz.toggleLabels('meso')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
-                           title="labels"><span class="ui-icon ui-icon-labels"></span> Labels</a>
-                        <a id="toggle-nodes-meso"
-                           href="#"
-                           onclick="tinaviz.toggleNodes('meso')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
-                           title="nodes"><span class="ui-icon ui-icon-nodes"></span> Nodes</a>
-                        <a id="toggle-edges-meso"
-                           href="#"
-                           onclick="tinaviz.toggleEdges('meso')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
-                           title="edges"><span class="ui-icon ui-icon-edges"></span> Edges</a>
-                    </div>
+                        <button id="toggle-paused" class="fg-button toolbar-left">pause</button>
+                        <button id="toggle-switch" class="fg-button toolbar-left">switch category</button>
 
-                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a id="toggle-pause-meso"
-                           href="#"
-                           onclick="tinaviz.togglePause('meso')"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
-                           title="pause"><span class="ui-icon ui-icon-pause"></span> Pause</a>
-                    </div>
+                        <!-- TEMPORARY DISABLED - FOR THE ONLINE VERSION -->
+                        <!--
+                        <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
 
-                    <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#"
-                           onclick="tinaviz.unselect()"
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                           title="unselect"><span class="ui-icon ui-icon-pause"></span> Unselect</a>
-                        <a href="#"
-                           onclick="tinaviz.recenter()"
-                           class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                           title="recenter"><span class="ui-icon ui-icon-pause"></span> Reset</a>
-                    </div>
+                                <a id="toggle-showLabels"
+                                   href="#"
+                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
+                                   title="hide/show labels"><span class="ui-icon ui-icon-labels"></span> <span class="noSelect">Labels</span></a>
+                                <a id="toggle-showNodes"
+                                   href="#"
+                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
+                                   title="hide/show nodes"><span class="ui-icon ui-icon-nodes"></span> <span class="noSelect">Nodes</span></a>
+                                <a id="toggle-showEdges"
+                                   href="#"
+                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
+                                   title="hide/show edges"><span class="ui-icon ui-icon-edges"></span> <span class="noSelect">Edges</span></a>
 
-                    <!--
-                    <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                        <a href="#"
-                           onclick="tinaviz.toggleProjects()"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-corner-left"
-                           title="projects"><span class="ui-icon ui-icon-projects"></span> Projects</a>
-                        <a href="#"
-                           onclick="tinaviz.toggleTerms()"
-                           class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-corner-right"
-                           title="terms"><span class="ui-icon ui-icon-terms"></span> Fields</a>
-                    </div>
-                    -->
+                        </div>
 
-                <!--
-                <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#" onclick="tinaviz.reproject()" class="fg-button ui-state-default ui-state-disabled fg-button-icon-solo  ui-corner-all" title="projection"><span class="ui-icon ui-icon-arrows"></span> project</a>
-                       </div>
-                       -->
+                        <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
+                            <a id="toggle-paused"
+                               href="#"
+                               class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
+                               title="pause spatialization"><span class="ui-icon ui-icon-thunder"></span> <span class="noSelect">Run layout</span></a>
+                        </div>
+                        -->
 
+                        <div id="sliders_view" class="sliders toolbar-left">
+                            <div class="slider">
+                                <span class="sliderLabel noSelect">magnify</span>
+                                <div id="sliderNodeSize"></div>
+                            </div>
+                            
+                            <div class="slider smallslider">
+                                <span class="sliderLabel noSelect">cursor size</span>
+                                <div id="sliderSelectionZone"></div>
 
-                       <!--
-                      <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                        <a href="#"
-                           onclick="tinaviz.search($('searchfield').val())"
-                           class="fg-button ui-state-default fg-button-icon-right ui-corner-all" title="search"><span class="ui-icon ui-icon-search"></span><input id="searchfield" name="searchfield" style="width: 60px; height:10px; margin: 1px;"/></a>
-                       </div>
-                       -->
-                </div><!-- end of toolbar -->
+                            </div>
+                        </div>
+
+                        <div id="sliders_topology" class="sliders toolbar-left">
+                            <div class="slider">
+                                <span class="sliderLabel noSelect">edges filter</span>
+                                <div id="sliderEdgeWeight"></div>
+                            </div>
+                            <div class="slider">
+                                <span class="sliderLabel noSelect">nodes filter</span>
+                                <div id="sliderNodeWeight"></div>
+                            </div>
+                        </div>
+                        <div id="level" class="ui-widget-content toolbar-left ui-corner-all"></div>
+                        <!-- end of sliders -->
+                        <!--<div class="fg-buttonset ui-helper-clearfix fg-button">-->
+                            <!--<a href="#"
+                              id="open"
+                              class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
+                              title="pause">-->
+                              <!--<input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input> -->
+                              <!--<input id="inputgraph" type="file" value="Open">-->
+                            <!--</a> -->
+                        <!--</div>-->
+                        <button id="toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
+                        <form id="search" action="#" class="toolbar-right">
+                            <input id="search_input" type="text" value="">
+                            <button id="search_button" class="fg-button">search</button>
+                        </form>
+                        </div> <!-- End of BUTTON SET -->
+
+                    </div><!-- End of htoolbar -->
+                    
                 <div class="sliders">
                     <!--<div id="meso_repulsion" class="threshold"></div>-->
                    <!--<div class="slider">Node weight<div id="mesoSlider_nodeWeight"></div></div>-->

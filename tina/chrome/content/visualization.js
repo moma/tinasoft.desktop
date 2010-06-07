@@ -1,329 +1,696 @@
+
+
 function Tinaviz() {
-  var wrapper = null;
-  var applet = null;
-  var width = null;
-  var height = null;
 
-  var currentMacroViewSame = true;
-  var currentMesoViewSame = true;
-  var currentMacroFilter = "";
-  return {
-    init: function() {
-        if (wrapper != null || applet != null) return;
-        wrapper = $('#vizframe').contents().find('#tinaviz')[0];
-        applet = wrapper.getSubApplet();
-        //this.size(this.getWidth(),this.getHeight());
+    var wrapper = null;
+    var applet = null;
+    var cbsAwait = {};
+    var cbsRun = {};
+    this.isReady = 0;
+    this.infodiv = null;
 
-        this.setLevel("macro");
+    //return {
+        this.init= function() {
+            if (wrapper != null || applet != null) return;
+            wrapper = $('#tinaviz')[0];
+            if (wrapper == null) return;
+            applet = wrapper.getSubApplet();
+            if (applet == null) return;
+            this.auto_resize();
+            this.main();
+            this.isReady = 1;
+        }
+        /************************
+         * Main method
+         *
+         ************************/
+        this.main = function() {
+
+            this.logDebug("starting tinasoft desktop..");
+
+            this.setView("macro");
+
+            this.dispatchProperty("edgeWeight/min", 0.0);
+            this.dispatchProperty("edgeWeight/max", 1.0);
+            this.dispatchProperty("nodeWeight/min", 0.0);
+            this.dispatchProperty("nodeWeight/max", 1.0);
+            this.dispatchProperty("category/category", "NGram");
+            this.dispatchProperty("output/nodeSizeMin", 5.0);
+            this.dispatchProperty("output/nodeSizeMax", 20.0);
+            this.dispatchProperty("output/nodeSizeRatio", 50.0/100.0);
+
+            this.dispatchProperty("selection/radius", 1.0);
+
+            this.bindFilter("Category", "category", "macro");
+
+            this.bindFilter("NodeWeightRange",  "nodeWeight", "macro");
+            this.bindFilter("EdgeWeightRange", "edgeWeight",  "macro");
+            this.bindFilter("NodeFunction", "radiusByWeight", "macro");
+            this.bindFilter("Output", "output", "macro");
+
+            this.bindFilter("SubGraphCopyStandalone", "category", "meso");
+            this.setProperty("meso", "category/source", "macro");
+            this.setProperty("meso", "category/category", "Document");
+            this.setProperty("meso", "category/mode", "keep");
+            this.bindFilter("NodeWeightRange",  "nodeWeight", "meso");
+            this.bindFilter("EdgeWeightRange", "edgeWeight",  "meso");
+            this.bindFilter("NodeFunction", "radiusByWeight", "meso");
+            this.bindFilter("Output", "output", "meso");
+
+            //this.togglePause();
+
+            // init the node list with ngrams
+            this.updateNodes( "macro", "NGram" );
+            // cache the document list
+            this.getNodes( "macro", "Document" );
+
+            this.logDebug("enabling applet tab..");
+            //$( "#tabs" ).enable();
+            $( "#tabs" ).tabs( "option", "disabled", false );
         
-        var v = "macro";
-        
-        // activate
+            $("#waitMessage").hide();
+            this.infodiv.display_current_category();
+            this.infodiv.display_current_view();
+        }
+
+        /************************
+         * Core applet methods
+         *
+         ************************/
+
         /*
-        this.toggleLabels(v);
-        this.toggleNodes(v);
-        this.toggleEdges(v);
-        this.togglePause(v);
+         * Core method communicating with the applet
+         */
+        this.bindFilter= function(name, path, view) {
+            if (applet == null) return;
+            if (view == null) return applet.getSession().addFilter(name, path);
+            return applet.getView(view).addFilter(name, path);
+        }
+
+        /*
+         * Core method communicating with the applet
+         */
+        this.dispatchProperty= function(key,value) {
+            if (applet == null) return;
+            return applet.setProperty("all",key,value);
+        }
+
+        /*
+         * Core method communicating with the applet
+         */
+        this.setProperty= function(view,key,value) {
+            if (applet == null) return;
+            return applet.setProperty(view,key,value);
+        }
+
+        /*
+         * Core method communicating with the applet
+         */
+        this.getProperty= function(view,key) {
+            if (applet == null) return;
+            return applet.getProperty(view,key);
+        }
+
+        /*
+         * Commands switching between view levels
+         */
+        this.setView = function(view) {
+            if (applet == null) return;
+            applet.setView(view);
+        }
+
+        /*
+         * Gets the the view level name
+         */
+        this.getView = function(view) {
+            if (applet == null) return;
+            return applet.getView().getName();
+        }
+
+        /*
+         * Commits the applet's parameters
+         * Accept an optional callback to give some reaction to events
+         */
+        this.touch= function(view) {
+            if (applet == null) return;
+            //this.logNormal("touch("+view+")");
+            if (view===undefined) {
+                applet.touch();
+            } else {
+                applet.touch(view);
+            }
+        }
+
+        /*
+         *  Adds a node to the current selection
+         */
+        this.selectFromId = function( id ) {
+            if (applet == null) return;
+            return applet.selectFromId(id);
+        }
+
+        this.resetLayoutCounter= function(view) {
+            if (applet == null) return;
+            // TODO switch to the other view
+            applet.resetLayoutCounter();
+        }
+
+        /*
+         *  Get the current state of the applet
+         */
+        this.isEnabled = function() {
+            if (applet == null) {
+                return false;
+            } else {
+                return applet.isEnabled();
+            }
+        }
+        /*
+         *  Set the current state of the applet to enable
+         */
+        this.setEnabled =  function(value) {
+            if (applet == null) return;
+            applet.setEnabled(value);
+        }
+
+        
+        /*
+        * Search nodes
         */
-
-        //this.setProperty("macro", "layout/repulsion", 0.5);
-        
-        // load default values (eg. from settings)
-	    this.dispatchProperty("edgeWeight/min", 0.0);
-	    this.dispatchProperty("edgeWeight/max", 1.0);
-	    
-	    this.dispatchProperty("nodeWeight/min", 0.0);
-	    this.dispatchProperty("nodeWeight/max", 1.0);
-	    
-	    this.dispatchProperty("radiusByWeight/max", 100.0/200.0);
-	    
-	    // we want to keep documents
-	    this.dispatchProperty("category/value", "NGram");
-	    this.dispatchProperty("category/mode", "keep");
-	        
-		this.dispatchProperty("radius/value",  25.0/200.0); // because we set default value to 25/200 in the GUI
-		
-		// we want to create a "batchviz's local exploration"-like behaviour?
-		//  it's trivial with the new architecture! use the "explorer" filter
-
-	    // create a new "Category()" filter instance, which use the "category" namespace, and attach it to the "macro" new
-	    // and YES, you can define filters or properties at any time, it's totally asynchronous ;)
-	    
-		this.bindFilter("Category",             "category",           "macro");
-
-		//this.bindFilter("NodeWeightRange",  "nodeWeight",         "macro");
-		
-		// filter by edge threshold
-		this.bindFilter("EdgeWeightRange",  "edgeWeight",         "macro");
-		
-	    this.bindFilter("NodeFunction",        "radiusByWeight",     "macro");
-		
-		
-		this.bindFilter("NodeRadius",           "radius",             "macro");  
-		this.bindFilter("WeightSize",           "weightSize",         "macro");
-        //this.bindFilter("Layout",           "layout",   "macro");
-  
-  
-        // MESO LOCAL EXPLORATION FILTERS
-        // create a local graph in the meso view, from the macro view
-        this.bindFilter("SubGraphCopy",         "subgraph",           "meso");
-        this.setProperty("meso", "subgraph/source", "macro");
-		this.setProperty("meso", "subgraph/item", "");
-		this.setProperty("meso", "subgraph/category", "NGram");
-				
-		//this.bindFilter("Category",             "category",           "meso");
-				
-		// filter by genericity
-		//this.bindFilter("NodeWeightRange",  "nodeWeight",         "meso");
-		
-		// filter by edge threshold
-		this.bindFilter("EdgeWeightRange",  "edgeWeight",         "meso");
-
-
-		// multiply the radius by the genericity
-		this.bindFilter("NodeFunction",         "radiusByWeight",     "meso");
-		
-		// multiply the radius by the GUI slider value
-		this.bindFilter("NodeRadius",           "radius",             "meso");
-		
-		// multiply the radius by the GUI slider value
-		this.bindFilter("WeightSize",           "weightSize",         "meso");
-        // this.bindFilter("Layout",           "layout",   "meso");
-
-        // disable the applet when on another tab (to save CPU)
-        // WARNING, DISABLING THE APPLET IN OPENGL CAUSE AN INFINITE LOOP
-        this.disable();
-
-        // finally, once the gexf is loaded, we light the tab!
-        this.logDebug("enabling applet tab..");
-        //$( "#tabs" ).enable();
-        $( "#tabs" ).tabs( "option", "disabled", false );
-        //$("#tabs").data('disabled.tabs', []);
-    },
-
-    size: function(w,h) {
-        if (applet == null) return;
-        wrapper.width = w;
-        wrapper.height = h;
-        // update the overlay layout (eg. recenter the toolbars)
-        //$('.htoolbar').css('left', (  (wrapper.width - parseInt($('#htoolbariframe').css('width'))) / 2   ));
-    },
-
-    recenter: function() {
-        if (applet == null) return false;
-        return applet.recenter();
-    },
-    
-    // Public methods
-    loadFromURI: function(view,uri) {
-        if (applet == null) return false;
-        return applet.getSession().updateFromURI(view,uri);
-    },
-    loadFromString: function(view,gexf) {
-        if (applet == null) return false;
-        return applet.getSession().updateFromString(view,gexf);
-    },
-
-    setGenericityRange: function(from,to) {
-        if (applet == null) return;
-        //applet.updateViewFromString(gexf);
-    },
-
-    toggleLabels: function(view) {
-        if (applet != null) $('#toggle-labels-'+view).toggleClass("ui-state-active", applet.getView(view).toggleLabels());
-    },
-    toggleNodes: function(view) {
-        if (applet != null) $('#toggle-nodes-'+view).toggleClass("ui-state-active", applet.getView(view).toggleNodes());
-    },
-    toggleEdges: function(view) {
-        if (applet != null) $('#toggle-edges-'+view).toggleClass("ui-state-active", applet.getView(view).toggleEdges());
-    },
-    togglePause: function(view) {
-        if (applet != null) $('#toggle-pause-'+view).toggleClass("ui-state-active", applet.getView(view).togglePause());
-    },
-
-    unselect: function() {
-        if (applet == null) return;
-        applet.unselect();
-        this.setProperty("meso", "subgraph/item", "");
-        applet.clear("meso");
-        //applet.resetCamera("meso");
-    },
-    
-    clear: function() {
-        if (applet == null) return;
-        try {
-            applet.clear();
-        } catch (e) {
-            this.logError("exception: "+e);
-
+        this.getNodesByLabel = function(label, type) {
+            if (applet == null) return {};
+            return $.parseJSON( applet.getNodesByLabel(label, type));
         }
-    },
-    
-    nodeSelected: function(level,x,y,id,label,attr, mouse) {
-        if (mouse=="left") {
-            nodeLeftClicked(level,x,y,id,label,$.parseJSON(attr));
-        } else if (mouse == "right") {
-            nodeRightClicked(level,x,y,id,label,$.parseJSON(attr));
-        }
-    },
-    nodeRightClicked: function(level,x,y,id,label,attr) {
-        if (applet == null) return;
-        
-        this.logDebug("nodeRightClicked called on "+level+" "+label+" "+attr.category+"");
 
-         // here 'attr' is the category of the current selected node!
-         // and cat the current filter
-        /*if (id == null) { $('#sidebariframe').hide(); }
-        else            { $('#sidebariframe').show(); }*/
-        var cat = this.getProperty(level, "category/value");
         /*
-         if (cat=="Document") {
-                this.setProperty(level, "category/value", "NGram");
-                this.touch(level);
-            } else if (cat=="NGram") {
-                this.setProperty(level, "category/value", "Document");
-                this.touch(level);
+        * Search and select nodes
+        */
+        this.searchNodes= function(label, type) {
+            if (applet == null) return {};
+            var matchlist = this.getNodesByLabel(label, type);
+            for (var i = 0; i < matchlist.length; i++ ) {
+                applet.selectFromId( decodeJSON( matchlist[i]['id'] ) );
+                // todo: auto center!!
+                //applet.
             }
-            if (id != this.getProperty(level, "subgraph/item")) {
-                applet.clear("meso");
-                this.setProperty("meso", "subgraph/item", id);
-           }
-           */
-        if (level == "macro") {
-            if (attr=="Document") {
-                this.setProperty("macro", "category/value", "NGram");
-                currentMacroFilter="NGram";
-                this.touch("macro");
-                this.printDocument(x,y,id,label,attr);
-            } else if (attr=="NGram") {
-                this.setProperty("macro", "category/value", "Document");
-                currentMacroFilter="Document";
-                this.touch("macro");
-                this.printNGram(x,y,id,label,attr);
-            } 
-        } else if (level == "meso") { // si dans meso
-           
-             //console.log("right click, level meso!");
-            applet.clear("meso");
-             //console.log("subgraph/item" + attr+"::"+id);
-            this.setProperty("meso", "subgraph/item", attr.category+"::"+id);
-            //console.log("result of subgraph/item: " + this.getProperty("meso", "subgraph/item"));
-             if (currentMacroFilter=="Document") {
-                 //console.log("currentMacroFilter is Document");
-                this.setProperty("meso", "subgraph/category", "NGram");
-                 //console.log("subgraph/category should be NGram, but is "+this.getProperty("meso", "subgraph/category"));
-                currentMacroFilter = "NGram";
-             } else if (currentMacroFilter=="NGram") {
-             
-                 //console.log("currentMacroFilter is NGram");
-                 this.setProperty("meso", "subgraph/category", "Document");
-                 //console.log("subgraph/category should be NGram, but is "+this.getProperty("meso", "subgraph/category"));
-                currentMacroFilter = "Document";
-             }
-            
-            if (attr=="Document") { 
-                this.printDocument(x,y,id,label,attr);
-            } else if (attr=="NGram") {
-                this.printNGram(x,y,id,label,attr);
+        }
+
+        /*
+        * Highlight nodes
+        */
+        this.highlightNodes= function(label, type) {
+            if (applet == null) return {};
+            var matchlist = this.getNodesByLabel(label, type);
+            for (var i = 0; i < matchlist.length; i++ ) {
+                applet.highlightFromId( decodeJSON( matchlist[i]['id'] ) );
+                // todo: auto center!!
+                //applet.
             }
-            
-            this.touch("meso");
-        } 
-    },
-    nodeLeftClicked: function(level,x,y,id,label,attr) {
-        if (applet == null) return;
-        this.logDebug("nodeLeftClicked called level="+level+", id="+label+", id="+id+", attr="+attr+",");
-        if (id==null) {
-            $('#infodiv').html("<h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>");
-            //applet.recenter();
-            //applet.clear("meso");
-            return;
         }
 
-         this.logDebug("nodeLeftClicked called on level: "+level+" id: "+id+" label: "+label+" attr: "+attr+"");
+        this.touchCallback= function(view, cb) {
+            if (applet == null) return;
+            if (view==null) {
+                applet.touch();
+            }
+            if (cb==null) {
+               applet.touch(view);
+            } else {
+                this.enqueueCb(applet.touch(view),cb);
+            }
+        }
+
+        /*
+        * recenter the graph
+        */
+        this.autoCentering= function() {
+            if (applet == null) return false;
+            return applet.autoCentering();
+        }
+
+        /*
+         *  Gets lattributes o a given node
+         */
+        this.getNodeAttributes = function(id) {
+            if (applet == null) return;
+            return $.parseJSON( applet.getNodesAttributes(id) );
+        }
+
+        /*
+         * Gets the list of neighbours for a given node
+         */
+        this.getNeighbourhood = function(view,id) {
+            if (applet == null) return;
+            return $.parseJSON( applet.getNeighbourhood(view,id) );
+        }
+
+
+        /************************
+         * Core Callback system
+         *
+         ************************/
+
+        /*
+         * Push a callback in the queue
+         */
+        this.enqueueCb=function(id,cb) {
+            cbsAwait[id] = cb;
+        }
+
+        /*
+         * Runs a callback
+         */
+        this.runCb=function(id) {
+            cbsRun[i]();
+            delete cbsRun[i];
+        }
+        /**
+         * Put a callback for the "await" list to the "run" list
+         *
+         */
+        this.activateCb=function(id) {
+            cbsRun[id] = cbsAwait[id];
+            delete cbsAwait[id];
+            return id;
+        }
+
+        /**
+         * How the callback system works:
+         *
+         * When the client call the "touch()" method, an update of the current view is
+         * scheduled by the applet, then the id of the new revision will be stored together
+         * with a callback address, by the javascript.
+         *
+         * As soon as the current view will reach this revision (or a greater one) the
+         * corresponding callback(s) will be called, then removed from the stack.
+         *
+         */
+        this.cbSync=function(id) {
+            for (i in cbsAwait) {
+                if (i<=id) {
+                    setTimeout("tinaviz.runCb("+this.activateCb(i)+")",0);
+                }
+            }
+        }
+
+        /********************************
+         *
+         * Mouse Callback system
+         *
+         ********************************/
+
+        /*
+         *  Callback of right clics
+         */
+        this.nodeRightClicked = function(view, data) {
+            if (applet == null) return;
+            //if (view == "meso") {
+                //this.toggleCategory(view);
+            //}
+        }
+
+        /*
+         *  Callback of left clics
+         */
+        this.nodeLeftClicked = function(view, data) {
+            if ( data == null ) return;
+            // copies the category from view to meso
+            //if (view == "meso") {
+                //this.toggleCategory(view);
+                //this.setProperty("meso", "category/category", this.getProperty(view, "category/category"));
+            //}
+        }
+
+        /*
+         *  Callback of double left clics
+         */
+        this.leftDoubleClicked = function(view, data) {
+            var category = this.getProperty("current", "category/category");
+            this.logNormal( "after double-clic, category = "+category );
+            for (var id in data) {
+                this.viewMeso(decodeJSON(id), category);
+                break;
+            }
+            /*if (view =="macro") {
+            }
+            if (view == "meso") {
+                //this.toggleCategory(view);
+            }*/
+        }
+
+        /*
+         *  Callback of a node selection/clics
+         */
+        this.selected = function(view, attr, mouse) {
+            if (attr == null) return;
+            // always updates infodiv
+            data = $.parseJSON(attr);
+            this.infodiv.reset();
+            this.infodiv.update(view, data);
+
+            // left == selected a node
+            if ( mouse == "left" ) {
+                //this.nodeLeftClicked(view,data);
+            }
+            //right == unselected a node
+            else if ( mouse == "right" ) {
+                //this.nodeRightClicked(view,data);
+            }
+            else if (mouse == "doubleLeft") {
+                this.leftDoubleClicked(view, data);
+            }
+        }
+
+        /**
+        * Callback after CHANGING THE VIEW LEVEL
+        */
+        this.switchedTo = function(view, selected) {
+            if (applet == null) return;
+
+            this.autoCentering();
+            /*if (view=="macro") {
+                $("#toggle-project").button('enable');
+            } else if (view=="meso") {
+                $("#toggle-project").button('disable');
+            }*/
+
+            // update the buttons
+            $("#sliderEdgeWeight").slider( "option", "values", [
+                this.getProperty(view, "edgeWeight/min"),
+                this.getProperty(view, "edgeWeight/max")*100
+            ]);
+            $("#sliderNodeWeight").slider( "option", "values", [
+                this.getProperty(view, "nodeWeight/min"),
+                this.getProperty(view, "nodeWeight/max")*100
+            ]);
+            this.infodiv.display_current_category();
+            this.infodiv.display_current_view();
+            switchTab(level);
+        }
+        /************************
+         *
+         * I/O system
+         *
+         ************************/
+
+        // TODO: use a cross-browser compatible way of getting the current URL
+        this.readGraphJava= function(view,graphURL) {
+            // window.location.href
+            // window.location.pathname
+            var sPath = document.location.href;
+            var gexfURL = sPath.substring(0, sPath.lastIndexOf('/') + 1) + graphURL;
+            applet.getSession().updateFromURI(view,gexfURL);
+            $('#waitMessage').hide();
+        }
+
+        this.readGraphAJAX= function(view,graphURL) {
+            if (applet == null) return;
+            $.ajax({
+                url: graphURL,
+                type: "GET",
+                dataType: "text",
+                beforeSend: function() { $('#waitMessage').show(); },
+                error: function() { $('#waitMessage').show(); },
+                success: function(gexf) {
+                   applet.getSession().updateFromString(view,gexf);
+                   $('#waitMessage').hide();
+               }
+            });
+        }
+
+        this.loadRelativeGraph= function(view,filename) {
+        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+        var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
+        var gexfPath;// = path + filename;
+        if (path.search(/\\/) != -1) { gexfPath = path + "\\"+filename }
+        else { gexfPath = path + "/"+filename  }
+
+        this.logDebug("going to load "+filename);
+        var file =
+            Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+        this.logDebug("initWithPath: "+gexfPath);
+        file.initWithPath(gexfPath);
         
-         applet.clear("meso");
-         this.setProperty("meso", "subgraph/item", attr.category+"::"+id);
-                
-         if (attr=="Document") {
-		        this.setProperty("meso", "subgraph/category", "NGram");
-		        currentMacroFilter="NGram";
-                this.touch("meso");
-         } else if (attr=="NGram") {  
-		        this.setProperty("meso", "subgraph/category", "Document");
-		        currentMacroFilter="Document";
-                this.touch("meso");              
-         }
-         
-         if (level=="meso") this.recenter();
+
         
-        // finally, we update the pane
-        if (attr=="Document") {
-                this.printDocument(x,y,id,label);
-            } else if (attr=="NGram") {
-                this.printNGram(x,y,id,label);
-         }
-    },
+        var destDirPath;
+        var destDir = Components.classes["@mozilla.org/file/local;1"]
+        .createInstance(Components.interfaces.nsILocalFile);
+        if (path.search(/\\/) != -1) {   destDirPath = path + "\\chrome\\content\\applet\\"; }
+        else {   destDirPath = path + "/chrome/content/applet/"; }
+        
+       
+        var finaFile =
+             Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+        finaFile.initWithPath(destDirPath+"current.gexf");
+        if (finaFile.exists()) finaFile.remove(false);
+        
+        destDir.initWithPath(destDirPath);
+        //console.log("file.copyTo("+destDir+",\"current.gexf\");");
+        file.copyTo(destDir,"current.gexf");
+        
+        this.logDebug("destDirPath + current.gexf: "+destDirPath+"current.gexf");
 
-    takePDFPicture: function () {
-        var outputFilePath = "graph.pdf";
-        var result;
-        try {
-            result = viz.takePDFPicture(outputFilePath);
-        } catch (e) {
-            this.logError(e);
-            return;
-        }
-        this.logDebug('Saving to '+outputFilePath+'</p>');
-        setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
-    },
-
-    takePicture: function() {
-        var outputFilePath = "graph.png";
-        var result;
-        try {
-            result = viz.takePicture(outputFilePath);
-        } catch (e) {
-             console.log(e);
-             return;
-        }
-        this.logDebug('Saving to '+outputFilePath+'</p>');
-        setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
-    },
+        finaFile =
+             Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+        finaFile.initWithPath(destDirPath+"current.gexf");
+        
+        var uri =
+              Components.classes["@mozilla.org/network/protocol;1?name=file"]
+                .createInstance(Components.interfaces.nsIFileProtocolHandler)
+                    .getURLSpecFromFile(finaFile);
+                    
+        this.logDebug("loading absolute graph: "+uri);
+        result = this.openGraph(view,uri);
+    }
     
+        this.openGraph = function(view,relativePath) {
+            if (applet == null) return;
+            applet.getSession().updateFromURI(view,path);
+        }
 
-   getNeighbours: function(node_category, node_id, neighbours_category) {
-       this.logDebug("getNeighbours: function("+node_category+", "+node_id+", "+neighbours_category+")");
-       if (node_category=="NGram") {
-           var ng = getNGram( node_id );
-           this.logDebug("ng= "+JSON.stringify(ng));
-           if (ng == null) return null;
-           var neighbours = ng["edges"][neighbours_category];
-           
-           //if ((neighbours.constructor.toString().indexOf("Array") != -1)) {
-            var keys = [];
-            for (var k in neighbours)keys.push(""+k+","+neighbours[k]);
-            return keys.join(";");
-           /*} else {
-             this.logDebug("error, database returned "+JSON.stringify(neighbours));
-           }*/
-       } else if (node_category=="Document") {
-           var doc = getDocument( node_id );
-           this.logDebug("doc= "+JSON.stringify(doc));
-           if (doc == null) return null;
-           var neighbours = doc["edges"][neighbours_category];
-           
-           //if ((neighbours.constructor.toString().indexOf("Array") != -1)) {
-            var keys = [];
-            for (var k in neighbours)keys.push(""+k+","+neighbours[k]);
-            return keys.join(";");
-           /*} else {
-             this.logDebug("error, database returned "+JSON.stringify(neighbours));
-           }*/
-       }
-       return "";
-    },
+        /***********************************
+         *
+         * Manual actions controler system
+         *
+         ***********************************/
+        /*
+         * hide/show labels
+         */
+        this.toggleLabels = function() {
+            if (applet == null) return;
+            return applet.getView().toggleLabels();
+        }
+
+        /*
+         * hide/show nodes
+         */
+        this.toggleNodes = function() {
+            if (applet == null) return;
+            return applet.getView().toggleNodes();
+        }
+
+        /*
+         * hide/show edges
+         */
+        this.toggleEdges = function() {
+            if (applet == null) return;
+            return applet.getView().toggleLinks();
+        }
+
+        /*
+         * play/pause layout engine
+         */
+        this.togglePause = function() {
+            if (applet == null) return;
+            return applet.getView().togglePause();
+        }
+
+        /*
+         * toggles HD rendering
+         */
+        this.toggleHD = function() {
+            if (applet == null) return;
+            return applet.getView().toggleHD();
+        }
+        /*
+        * Get the opposite category name (the NOT DISPLAYED one)
+        */
+        this.getOppositeCategory = function(cat) {
+            if (cat == "Document")
+                return "NGram";
+            else if (cat == "NGram")
+                return "Document";
+            else alert("error, cannot get opposite category of "+cat);
+
+        }
+
+        /**
+         * Manually toggles the category
+         */
+        this.toggleCategory = function(view) {
+            if (applet == null) return;
+            // get and set the new category to display
+            var next_cat = this.getOppositeCategory( this.getProperty(view, "category/category"));
+            this.setProperty(view, "category/category", next_cat);
+            //this.unselect();
+            // resets the layout
+            this.resetLayoutCounter();
+            this.touch();
+            this.autoCentering();
+            // updates the node list table
+            this.updateNodes(view, next_cat);
+            // adds neighbour nodes (from next_cat) to the selection of the macro view
+            /*for(var id in this.infodiv.selection) {
+                var neighbours = this.getNeighbourhood("macro", id);
+                for (var neighbourId in neighbours) {
+                    if (neighbours[neighbourId].category == next_cat) {
+                        this.logNormal( "selecting a neighbour "+neighbourId );
+                        //this.selectFromId(neighbourId);
+                    }
+                }
+            }*/
+        }
+
+        /**
+         * Manually toggles the view to meso given an id
+         */
+        this.viewMeso = function(id, category) {
+            // selects unique node
+            this.unselect();
+            this.selectFromId(id);
+            // sets the category of the graph
+            this.setProperty("meso", "category/category", category);
+            //this.setProperty("macro", "category/category", category);
+            this.setView("meso");
+            this.touch("meso");
+            this.updateNodes("meso", category);
+        }
+
+
+        /*
+        * Manually unselects all nodes
+        */
+        this.unselect= function() {
+            if (applet == null) return;
+            applet.unselect();
+            this.infodiv.reset();
+            //if (this.getView() == "meso") {
+               // this.setView("macro");
+                //tinaviz.resetLayoutCounter();
+                
+                //this.autoCentering();
+            //}
+            this.touch("current");
+            //applet.clear("meso");
+        }
+
+
+        /*
+         *  Retrieves list of nodes
+         */
+        this.getNodes = function(view, category) {
+            if (applet == null) return;
+            this.infodiv.data[category] = $.parseJSON( applet.getNodes(view, category) );
+            return this.infodiv.data[category];
+        }
+        /*
+         *  Fires the update of node list cache and display
+         */
+        this.updateNodes = function(view, category)  {
+            if ( category == this.infodiv.last_category ) return;
+            this.infodiv.display_current_category();
+            if (this.infodiv.data[category] === undefined)
+                this.infodiv.updateNodeList( this.getNodes( view, category ), category );
+            else
+                this.infodiv.updateNodeList( this.infodiv.data[category], category );
+        }
+
+
+        /*
+         *  Try to log an error with firebug otherwise alert it
+         */
+        this.logError= function(msg) {
+            try {
+                console.error(msg);
+            }
+            catch (e){
+                alert(msg);
+                return;
+            }
+        }
+        /*
+         *  Try to log an normal msg with firebug otherwise returns
+         */
+        this.logNormal = function(msg) {
+            try {
+                console.log(msg);
+            }
+            catch (e) {
+                return;
+            }
+        }
+
+
+        /****************************************
+         *
+         * HTML VIZ DIV ADJUSTING/ACTION
+         *
+         ****************************************/
+
+        /*
+         * Dynamic div width
+         */
+        this.getWidth= function() {
+            return $("#vizdiv").width();
+        }
+
+        /*
+         * Dynamic div height
+         */
+        this.getHeight= function() {
+            return getScreenHeight() - $("#hd").height() - $("#ft").height() - 50;
+        }
+        /*
+         * Callback changing utton states
+         */
+        this.buttonStateCallback = function(button, enabled) {
+            $(document).ready(
+                function() {
+                    // state = "disable"; if (enabled) { state = "enable"; }
+                    $("#toggle-"+button).toggleClass("ui-state-active", enabled);
+                    //$("#toggle-"+button).button(state);
+                }
+            );
+        }
+
+        /*
+         * PUBLIC METHOD, AUTOMATIC RESIZE THE APPLET
+         */
+        this.auto_resize = function() {
+           this.size(this.getWidth(), this.getHeight());
+        }
+
+        /*
+         * PRIVATE METHOD, RESIZE THE APPLET
+         */
+        this.size= function(width, height) {
+            if (wrapper == null || applet == null) return;
+            wrapper.width = width;
+            wrapper.height = height;
+            $('#tinaviz').css('width',width);
+            $('#tinaviz').css('height',height);
+        }
+    //};
+}
+
+var tinaviz = new Tinaviz();
+
+
+/*
 
     downloadFile: function(outputFilePath, timeout) {
         var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
@@ -499,154 +866,43 @@ function Tinaviz() {
            }
         });
     },
+ 
 
-    enabled: function() {
-        if (applet == null) return false;
-        return applet.isEnabled();
-    },
-    disabled: function() {
-        if (applet == null) return true;
-        return !applet.isEnabled();
-    },
-    enable:  function() {
-        if (applet == null) return;
-        applet.setEnabled(true);
-    },
-    disable:  function() {
-        if (applet == null) return;
-        applet.storeResolution();
-        applet.setEnabled(false);
-    },
-    
-    setLevel: function(level) {
-        if (applet == null) return;
-        applet.getSession().setLevel(level);
-        applet.setAntiAliasing((level!="macro"));
+    takePDFPicture: function () {
+        var outputFilePath = "graph.pdf";
+        var result;
+        try {
+            result = viz.takePDFPicture(outputFilePath);
+        } catch (e) {
+            this.logError(e);
+            return;
+        }
+        this.logDebug('Saving to '+outputFilePath+'</p>');
+        setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
     },
 
+    takePicture: function() {
+        var outputFilePath = "graph.png";
+        var result;
+        try {
+            result = viz.takePicture(outputFilePath);
+        } catch (e) {
+             console.log(e);
+             return;
+        }
+        this.logDebug('Saving to '+outputFilePath+'</p>');
+        setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
+    },
+    
+*/
 
-    logError: function(msg) {
-        console.error(msg);
-    },
-    logNormal: function(msg) {
-       console.log(msg);
-    },
-    logDebug: function(msg) {
-       console.log("DEBUG "+msg);
-    },
-    switchedTo: function(level) {
-        switchTab(level);
-    },
 
-    getWidth: function() {
-        return getAppletWidth();
-    },
-    
-    getHeight: function() {
-       return getAppletHeight();
-    },
-    
-    /*
-    bindFilter: function(name, path, level) {
-        if (applet == null) return;
-        if (level == null) return applet.getSession().addFilter("tinaviz.filters."+name, path);
-        return applet.getView(level).addFilter("tinaviz.filters."+name, path);
-    },*/
-    
-             
-    bindFilter: function(name, path, level) {
-        if (applet == null) return;
-        if (level == null) return applet.getSession().addFilter(name, path);
-        return applet.getView(level).addFilter(name, path);
-    }, 
-    
-    dispatchProperty: function(key,value) {
-        if (applet == null) return;
-        return applet.getSession().setProperty(key,value);
-    },
-    
-    setProperty: function(level,key,value) {
-        if (applet == null) return;
-        return applet.getView(level).setProperty(key,value);
-    },
-    
-    getProperty: function(level,key,value) {
-        if (applet == null) return;
-        return applet.getView(level).getProperty(key);
-    },
-    
-    touch: function(level) {
-        applet.getView(level).getGraph().touch();
-    },
-    
-    search: function(txt) {
-        this.logNormal("Searching is not implemented yet..");
-    },
+/*
 
-  selectNode: function(id) {
-    applet.selectFromId(id);
-  },
-
-     printNGram: function(x,y,id,label,attr) {
-         this.logDebug("printNGram= "+id);
-         var ng = getNGram( id );
-         this.logDebug("ng= "+ng);
-         if (ng == null) return null;
-         // don't query the DB if we are on a "lambda" graph
-         
-         delete ng['py/object'];
-         ng["edges_data"] = { "Document" : {}, "Corpus" : {} };
-          for (var doc in ng["edges"]["Document"]) {
-               var obj = getDocument(doc);
-               if (obj == null) { delete ng["edges"]["Document"][doc];} 
-               else {  ng["edges_data"]["Document"][doc] = obj;}
-          }
-         
-         $('#infodiv').html(Shotenjin.render("\n\
-         <h1 class=\"nodedetailsh1\">Field <strong>${label}</strong></h1>\n\
-         <h3 class=\"nodedetailsh3\">Contained in these projects:</h3>\n\
-         <p class=\"nodedetailsp\">\n\
-         <?js var first; for (var doc in edges['Document']) { first=doc; break; } ?>\
-             <a href=\"javascript:tinaviz.selectNode('#{doc}')\" class=\"detailtext\">#{edges_data['Document'][first]['label']}</a> \
-         <?js for (var doc in edges['Document']) { if (doc == first) continue; ?>\
-           <br/><a href=\"javascript:tinaviz.selectNode('#{doc}')\" class=\"detailtext\">#{edges_data['Document'][doc]['label']}</a>\
-         <?js } ?>.\
-         </p>\n", ng));
-         
-
-    },
-
-     printDocument: function(x,y,id,label,attr) {
-     this.logDebug("printDocument= "+id);
-     var doc = getDocument( id );
-     this.logDebug("doc= "+doc);
-     if (doc == null) return null;
-     // don't query the DB if we are on a "lambda" graph
-          
-     delete doc['py/object'];
-     doc["edges_data"] = { "NGram" : {}, "Corpus" : {} };
-      for (var ng in doc["edges"]["NGram"]) {
-           var obj = getNGram(ng);
-           if (obj == null) { delete doc["edges"]["NGram"][ng];} 
-           else {  doc["edges_data"]["NGram"][ng] = obj;}
-      }
-     
-     $('#infodiv').html(Shotenjin.render("\n\
-     <h1 class=\"nodedetailsh1\">Project <strong>${label}</strong></h1>\n\
-     <h3 class=\"nodedetailsh3\">Contains these terms:</h3>\n\
-     <p class=\"nodedetailsp\">\n\
-     <?js var first; for (var ng in edges['NGram']) { first=ng; break; } ?>\
-         <a href=\"javascript:tinaviz.selectNode('#{ng}')\" class=\"detailtext\">${edges_data['NGram'][first]['label']}</a> \
-     <?js for (var ng in edges['NGram']) { if (ng == first) continue; ?>\
-      <br/><a href=\"javascript:tinaviz.selectNode('#{ng}')\" class=\"detailtext\">${edges_data['NGram'][ng]['label']}</a>\
-     <?js } ?>.\
-     </p>\n", doc));
-
-  }
 
   };
 }
 
 tinaviz = new Tinaviz();
-
+*/
 

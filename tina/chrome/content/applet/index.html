@@ -20,88 +20,87 @@ body {
 
 }
 /* ]]> */</style>
-    <script type="text/javascript">
-        function getNeighbours(node_category, node_id, neighbours_category) {
-             return parent.tinaviz.getNeighbours(node_category, node_id, neighbours_category);
-        }
-    </script>
     </head>
     <body>
         <div id="content">
             <div id="container" class="container">
-            <!--[if !IE]> -->
-                <object id="tinaviz"
-                        classid="java:org.jdesktop.applet.util.JNLPAppletLauncher"
-                        type="application/x-java-applet"
-                        archive="tinaviz.jar,core.jar,itext.jar,pdf.jar,colt.jar,concurrent.jar,applet-launcher.jar"
+             <!--[if !IE]> -->
+                            <object id="tinaviz"
+                                        classid="java:org.jdesktop.applet.util.JNLPAppletLauncher"
+                                        type="application/x-java-applet"
+                                        archive="java/tinaviz.jar,java/core.jar,java/itext.jar,java/pdf.jar,java/colt.jar,java/concurrent.jar,java/applet-launcher.jar"
+                                        width="500" height="500"
+                                        standby="Loading visualization, please wait..."  >
 
-                        standby="Loading visualization..." >
+                              <param name="archive" value="tinaviz.jar,core.jar,itext.jar,pdf.jar,colt.jar,concurrent.jar,applet-launcher.jar" />
+                              <!--<param name="jnlpNumExtensions" value="1">
+                              <param name="jnlpExtension1" value="http://download.java.net/media/jogl/builds/archive/jsr-231-webstart-current/jogl.jnlp">
+-->
+                                <param name="mayscript" value="true" />
+                                <param name="scriptable" value="true" />
 
-                    <param name="archive" value="tinaviz.jar,core.jar,itext.jar,pdf.jar,colt.jar,concurrent.jar,applet-launcher.jar" />
+                                <param name="image" value="loading.gif" />
+                                <param name="boxmessage" value="Loading visualization, please wait..." />
+                                <param name="boxbgcolor" value="#FFFFFF" />
+                                <param name="progressbar" value="true" />
+                                <!--<param name="noddraw.check" value="true">-->
 
-                    <param name="mayscript" value="true" />
-                    <param name="scriptable" value="true" />
+                                <param name="subapplet.classname" value="tinaviz.Main" />
+                                <param name="subapplet.displayname" valuefg-buttonset-multi ="tinaviz.Main" />
 
-                    <param name="image" value="loading.gif" />
-                    <param name="boxmessage" value="Loading visualization..." />
-                    <param name="boxbgcolor" value="#FFFFFF" />
-                    <param name="progressbar" value="true" />
-
-                    <param name="subapplet.classname" value="tinaviz.Main" />
-                    <param name="subapplet.displayname" value="TinaViz" />
+                                <param name="engine" value="software" />
+                                <param name="js_context" value="parent." />
+                                <param name="jogl.silent.noddraw.check" value="true" />
+                                <param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true"/>
                     
-                    <param name="engine" value="software" />
-                    <param name="js_context" value="parent." />
-                                
-                    <param name="jogl.silent.noddraw.check" value="true" />
-                    <param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true"/>
-                    <!--<param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true -Dsun.java2d.opengl=True"/>-->
+                              <!--<![endif]-->
 
+                              <object id="tinaviz"
+                                          classid="clsid:CAFEEFAC-0016-0000-FFFF-ABCDEFFEDCBA"
+                                  width="500" height="500"
+                                  standby="Loading visualization software..."  >
 
-            <!--<![endif]-->
+                                <param name="code"
+                                   value="org.jdesktop.applet.util.JNLPAppletLauncher" />
+                                <param name="archive" value="tinaviz.jar,core.jar,itext.jar,pdf.jar,colt.jar,concurrent.jar,applet-launcher.jar" /><!--
+                                <param name="jnlpNumExtensions" value="1">
+                                <param name="jnlpExtension1" value="http://download.java.net/media/jogl/builds/archive/jsr-231-webstart-current/jogl.jnlp">
+-->
+                                <param name="mayscript" value="true" />
+                                <param name="scriptable" value="true" />
 
-                <object id="tinaviz"
-                        classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
-                        codebase="http://java.sun.com/update/1.5.0/jinstall-1_5_0_15-windows-i586.cab"
+                              <param name="image" value="loading.gif" />
+                                <param name="boxmessage" value="Loading visualization, please wait..."  />
+                                <param name="boxbgcolor" value="#FFFFFF" />
+                                <param name="progressbar" value="true" />
+                                <!--<param name="noddraw.check" value="true">-->
+style="padding: 0px"
+                                <param name="subapplet.classname" value="tinaviz.Main" />
+                                <param name="subapplet.displayname" value="tinaviz.Main" />
 
-                        standby="Loading visualization..."  >
-
-                    <param name="code" value="org.jdesktop.applet.util.JNLPAppletLauncher" />
-                    <param name="archive" value="tinaviz.jar,core.jar,itext.jar,pdf.jar,colt.jar,concurrent.jar,applet-launcher.jar" />
-
-                    <param name="mayscript" value="true" />
-                    <param name="scriptable" value="true" />
-
-                    <param name="image" value="loading.gif" />
-                    <param name="boxmessage" value="Loading visualization..." />
-                    <param name="boxbgcolor" value="#FFFFFF" />
-                    <param name="progressbar" value="true" />
-
-                    <param name="subapplet.classname" value="tinaviz.Main" />
-                    <param name="subapplet.displayname" value="TinaViz" />
+                                <param name="engine" value="software" />
+                                <param name="js_context" value="parent." />
+                                <param name="jogl.silent.noddraw.check" value="true" />
+                                <param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true"/>
                     
-                    <param name="jogl.silent.noddraw.check" value="true" />
-                      <param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true"/>
-                    <!--<param name="java_arguments" value="-Xmx1024m -Dsun.java2d.noddraw=true -Dsun.java2d.opengl=True"/>-->
-                    
-                    <param name="engine" value="software" />
-                    <param name="js_context" value="parent." />
-                    
-                    <p>
-                        <strong>
-                            You need to install "Java" in order to visualize maps.
-                            <br />
-                            <a href="http://www.java.com/getjava" title="Download Java">
-                                Get Java here.
-                            </a>
-                        </strong>
-                    </p>
+                                <p>
+                                    <strong>
+                                        This browser does not have a Java Plug-in.
+                                        <br />
+                                        <a href="http://www.java.com/getjava" title="Download Java Plug-in">
+                                            Get the latest Java Plug-in here.
+                                        </a>
+                                    </strong>
+                                </p>
 
-                </object>
+                              </object>
 
-            <!--[if !IE]> -->
-                </object>
-            <!--<![endif]-->
+                              <!--[if !IE]> -->
+                            </object>
+                            <!--<![endif]-->
+                            <!--</div>-->
+                            
+
 
             </div>
         </div>

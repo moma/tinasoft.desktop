@@ -38,13 +38,13 @@ public class Layout {
         float globalRepulsion = 5f;// old= 5
 
 
-        float cooling = (0.05f / PApplet.sqrt(PApplet.sqrt(metrics.nbNodes + 1f)));
+        float cooling = (0.1f / PApplet.sqrt(PApplet.sqrt(metrics.nbNodes + 1f)));
+      float decay = PApplet.exp(-v.layoutIterationCount * cooling);
 
-        float vlimit_max = 100f;
+        float vlimit_max = 100f; // ancienne valeur: 100
 
-        float decay = PApplet.exp(-v.layoutIterationCount * cooling);
-
-        float gravityFactor = 200f; // 200 est bien pour les projets
+  
+        float gravityFactor = 1f; // 200 est bien pour les projets
 
         float graphWidth = metrics.graphWidth;
 
@@ -160,10 +160,6 @@ public class Layout {
 
                 }
 
-                // ATTENTION ATTENTION ATTE ATTENTION ATTENTION ATTENTION
-                // LE DEGREE A L'AIR INVALIDE (CF VISUAL ANALYTICS)
-                // ATTENTION ATTENTION ATTE ATTENTION ATTENTION ATTENTION
-
                 boolean nodeisAloneAndFar = (n2_degree <= 1 && dist > NodeListNormalizer.MAX_RADIUS * 20.0f);
 
                 /*if (n2.label.equals("visual analytics")) {
@@ -221,17 +217,11 @@ public class Layout {
 
                         n2vx = ((n2vx + n2gvx) / tmpdist) * vlimit;
                         n2vy = ((n2vy + n2gvy) / tmpdist) * vlimit;
+                    } else {
+                        n2vx = (n2vx + n2gvx);
+                        n2vy = (n2vy + n2gvy) ;
                     }
 
-                    // limit the gravity force
-                    /*
-                    vlimit = PApplet.min(vlimit_max, gdistance);
-                    if (PApplet.abs(n2gvx) > vlimit | PApplet.abs(n2gvy) > vlimit) {
-                    n2gvx = (gdx / gdistance) * vlimit;
-                    n2gvy = (gdy / gdistance) * vlimit;
-                    }
-                     *
-                     */
 
                     // apply the forces
                     n2x += n2vx * decay;
