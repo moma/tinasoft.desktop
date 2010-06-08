@@ -524,7 +524,7 @@ public class Graph implements Cloneable {
         for (Node n : storedNodes.values()) {
             n.selected = false;
         }
-        return commitProperties();
+        return 0;// commitProperties();
     }
 
     public void highlightNodeById(String str) {

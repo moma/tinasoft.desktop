@@ -5,6 +5,7 @@
 package eu.tinasoft.services.data.transformation.filters;
 
 import cern.colt.map.OpenIntObjectHashMap;
+import eu.tinasoft.services.computing.MathFunctions;
 import eu.tinasoft.services.data.model.Metrics;
 import eu.tinasoft.services.data.model.NodeList;
 import eu.tinasoft.services.data.model.Node;
@@ -30,26 +31,29 @@ public class EdgeWeightRange extends NodeFilter {
         OpenIntObjectHashMap newWeights = new OpenIntObjectHashMap();
         newWeights.ensureCapacity(n.weights.size());
 
-        for (int k : n.weights.keys().elements()) {
+        int[] elems = n.weights.keys().elements();
+
+        for (int k : elems) {
 
             Float w = (Float) n.weights.get(k);
-
 
             if (w == null) {
                 //System.out.println("weight null for <"+n+","+k+">");
                 continue;
             }
 
+            //System.out.println("w: "+w);
             if (min <= w && w <= max) {
                 newWeights.put(k,w);
-                //System.out.println("ADDED EDGE "+w+" MIN: "+min);
+               // System.out.println("ADDED EDGE "+w+" MIN: "+min+" MAX: "+max);
                 // .. and do not remove from weights
             } else {
                 // .. and do not add to neighbours
                 //System.out.println("REMOVED EDGE "+w+" MIN: "+min);
-                n.weights.removeKey(n.id);
+                //n.weights.removeKey(k);
             }
         }
+
         n.weights = newWeights;
         return n;
     }
@@ -72,8 +76,8 @@ public class EdgeWeightRange extends NodeFilter {
 
         Metrics metrics = input.getMetrics();
         float f = metrics.maxEdgeWeight - metrics.minEdgeWeight;
-        //System.out.println("f:" + f);
-        //System.out.println("minEdgeWeight:"+input.minEdgeWeight+" maxEdgeWeight:"+input.maxEdgeWeight);
+        System.out.println("f:" + f);
+        System.out.println("minEdgeWeight:"+metrics.minEdgeWeight+" maxEdgeWeight:"+metrics.maxEdgeWeight);
 
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)
@@ -81,7 +85,6 @@ public class EdgeWeightRange extends NodeFilter {
                 : (o instanceof Double)
                 ? new Float((Double) o)
                 : (Float) o;
-        //min = min * f + input.minEdgeWeight;
 
         o = view.properties.get(root + KEY_MAX);
         max = (o instanceof Integer)
@@ -89,11 +92,13 @@ public class EdgeWeightRange extends NodeFilter {
                 : (o instanceof Double)
                 ? new Float((Double) o)
                 : (Float) o;
-        //max = max * f + input.minEdgeWeight;
+        
+        min = MathFunctions.map(min, 0.0f,1.0f, metrics.minEdgeWeight, metrics.maxEdgeWeight);
+        max = MathFunctions.map(max, 0.0f,1.0f, metrics.minEdgeWeight, metrics.maxEdgeWeight);
 
-        //System.out.println("min:"+min+" max:"+max);
+        System.out.println("min:"+min+" max:"+max);
 
-        //System.out.println("threshold weight got "+input.size()+" nodes in entry");
+        System.out.println("threshold weight got "+input.size()+" nodes in entry");
         for (Node n : input.nodes) {
             node(session, view, n);
         }

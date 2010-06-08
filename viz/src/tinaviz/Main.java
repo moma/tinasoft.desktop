@@ -1288,9 +1288,10 @@ public class Main extends PApplet implements MouseWheelListener {
 
 
         // if we have a double click, we unselect nodes in all views, graphs..
-        //if (mouseSide == MouseButton.DOUBLELEFT) {
-        //unselect();
-        //} else {
+        if (mouseSide == MouseButton.DOUBLELEFT) {
+             unselect();
+        }
+        //    else {
         for (int i : unselectedIDs) {
             getSession().unselectNode(i);
         }
