@@ -69,6 +69,7 @@ public class Category extends NodeFilter {
         output.computeMetrics();
         output.normalize();
 
+        System.out.println("resume: "+output);
         oldCategory = category;
         return output;
     }

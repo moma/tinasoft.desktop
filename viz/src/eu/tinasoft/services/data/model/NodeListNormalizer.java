@@ -70,12 +70,20 @@ public class NodeListNormalizer {
 
         for (Node n : nodes) {
             // MIN
-            if (n.position.x < minX) minX = n.position.x;
-            if (n.position.y < minX) minY = n.position.y;
+            if (n.position.x < minX) {
+                minX = n.position.x;
+            }
+            if (n.position.y < minX) {
+                minY = n.position.y;
+            }
 
             // MAX
-            if (n.position.x > maxX) maxX = n.position.x;
-            if (n.position.y > maxX) maxY = n.position.y;
+            if (n.position.x > maxX) {
+                maxX = n.position.x;
+            }
+            if (n.position.y > maxX) {
+                maxY = n.position.y;
+            }
         }
 
         return new PVector(((maxX - minX) / 2.0f) + minX, ((maxY - minY) / 2.0f) + minY);
@@ -105,7 +113,7 @@ public class NodeListNormalizer {
         }
 
         Metrics metrics = new Metrics();
-        
+
         // prepare the variable computation
         metrics.minX = Float.POSITIVE_INFINITY;
         metrics.minY = Float.POSITIVE_INFINITY;
@@ -122,32 +130,61 @@ public class NodeListNormalizer {
         float size = (float) metrics.nbNodes;
 
         for (Node n : nodes) {
-            if (n.position.x < metrics.minX) metrics.minX = n.position.x;
-            if (n.position.y < metrics.minY) metrics.minY = n.position.y;
-            if (n.position.x > metrics.maxX) metrics.maxX = n.position.x;
-            if (n.position.y > metrics.maxY) metrics.maxY = n.position.y;
-            if (n.weight < metrics.minNodeWeight) metrics.minNodeWeight = n.weight;
-            if (n.weight > metrics.maxNodeWeight) metrics.maxNodeWeight = n.weight;
-            if (n.radius < metrics.minNodeRadius) metrics.minNodeRadius = n.radius;
-            if (n.radius > metrics.maxNodeRadius) metrics.maxNodeRadius = n.radius;
+            if (n.position.x < metrics.minX) {
+                metrics.minX = n.position.x;
+            }
+            if (n.position.y < metrics.minY) {
+                metrics.minY = n.position.y;
+            }
+            if (n.position.x > metrics.maxX) {
+                metrics.maxX = n.position.x;
+            }
+            if (n.position.y > metrics.maxY) {
+                metrics.maxY = n.position.y;
+            }
+            if (n.weight < metrics.minNodeWeight) {
+                metrics.minNodeWeight = n.weight;
+            }
+            if (n.weight > metrics.maxNodeWeight) {
+                metrics.maxNodeWeight = n.weight;
+            }
+            if (n.radius < metrics.minNodeRadius) {
+                metrics.minNodeRadius = n.radius;
+            }
+            if (n.radius > metrics.maxNodeRadius) {
+                metrics.maxNodeRadius = n.radius;
+            }
             metrics.averageNodeRadius += n.radius;
             metrics.averageNodeWeight += n.weight;
 
             for (int k : n.weights.keys().elements()) {
                 float w = (Float) n.weights.get(k);
-                if (w < metrics.minEdgeWeight) metrics.minEdgeWeight = w;
-                if (w > metrics.maxEdgeWeight) metrics.maxEdgeWeight = w;
+
+            //System.out.println("( "+metrics.minEdgeWeight+" < "+w+" < " +metrics.maxEdgeWeight+")");
+                if (w < metrics.minEdgeWeight) {
+                    metrics.minEdgeWeight = w;
+                }
+                if (w > metrics.maxEdgeWeight) {
+                    //System.out.println("saved");
+                    metrics.maxEdgeWeight = w;
+                }
+                //System.out.print(""+w+" ,");
                 metrics.averageEdgeWeight += w;
                 metrics.nbEdges++;
             }
+            //System.out.println(";");
             // SUM
             metrics.baryCenter.x += n.position.x;
             metrics.baryCenter.y += n.position.y;
         }
 
+        if (metrics.nbEdges == 0) {
+            metrics.minEdgeWeight = 0;
+            metrics.maxEdgeWeight = 0;
+        }
         metrics.averageNodeWeight /= size;
         metrics.averageNodeRadius /= size;
-        metrics.averageEdgeWeight /= metrics.nbEdges;
+        metrics.averageEdgeWeight /= (metrics.nbEdges > 0) ? metrics.nbEdges : 0.0f;
 
         metrics.baryCenter.div(size);
 
@@ -163,13 +200,14 @@ public class NodeListNormalizer {
         return metrics;
     }
 
-
     public static List<Node> normalize(List<Node> nodes) {
         return normalize(nodes, computeMetrics(nodes));
     }
+
     public static List<Node> normalize(List<Node> nodes, Metrics metrics) {
         return normalize(nodes, metrics, null, null);
     }
+
     public static List<Node> normalize(List<Node> nodes, String attr, Object value) {
         return normalize(nodes, computeMetrics(nodes), attr, value);
     }
@@ -179,7 +217,7 @@ public class NodeListNormalizer {
 
         int i = 0;
         for (Node n : nodes) {
-            
+
             if (attr != null) {
                 if (!n.attributes.containsKey(attr)) {
                     continue;
@@ -219,11 +257,12 @@ public class NodeListNormalizer {
                 float w = (Float) n.weights.get(k);
                 /*
                 w = (metrics.minEdgeWeight == metrics.maxEdgeWeight)
-                        ? ( metrics.minEdgeWeight == 0 ? NORMALIZED_MIN_EDGE_WEIGHT : metrics.minEdgeWeight )
-                        : ((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (PApplet.max(
-                        PApplet.abs(metrics.minEdgeWeight), PApplet.abs(metrics.maxEdgeWeight))));*/
+                ? ( metrics.minEdgeWeight == 0 ? NORMALIZED_MIN_EDGE_WEIGHT : metrics.minEdgeWeight )
+                : ((NORMALIZED_MAX_EDGE_WEIGHT * PApplet.abs(w)) / (PApplet.max(
+                PApplet.abs(metrics.minEdgeWeight), PApplet.abs(metrics.maxEdgeWeight))));*/
+                float oldw = w;
                 w = MathFunctions.map(w, metrics.minEdgeWeight, metrics.maxEdgeWeight, NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);
-                //System.out.println("EDGE NORMLAZ = "+w+" = PApplet.map("+w+","+metrics.minEdgeWeight+","+metrics.maxEdgeWeight+","+NORMALIZED_MIN_EDGE_WEIGHT+","+NORMALIZED_MAX_EDGE_WEIGHT+")");
+                //System.out.println("EDGE NORMLAZ = "+w+" = PApplet.map("+oldw+","+metrics.minEdgeWeight+","+metrics.maxEdgeWeight+","+NORMALIZED_MIN_EDGE_WEIGHT+","+NORMALIZED_MAX_EDGE_WEIGHT+")");
                 n.weights.put(k, w);
                 n.weightsDistribution.put(k, PApplet.map(i, 0, metrics.nbEdges, 0.01f, 1.0f));
             }

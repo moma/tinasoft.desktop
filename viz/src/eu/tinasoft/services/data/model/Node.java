@@ -34,6 +34,7 @@ public class Node implements Comparable {
     public float boxWidth = 1.0f;
     public float boxHeight = 1.0f;
     public PVector position = new PVector();
+
     public boolean     s = false; // switch
     public int degree = 0;
     public OpenIntObjectHashMap weights = new OpenIntObjectHashMap();
@@ -53,8 +54,8 @@ public class Node implements Comparable {
     public float b = -1f;
     public boolean fixed = false;
     public boolean visibleToScreen = false;
-    public float screenX = 0.0f;
-    public float screenY = 0.0f;
+    public PVector screenPosition = new PVector();
+
     public Map<String, Object> attributes = new HashMap<String, Object>();
     public Node original = null;
     public PImage image = null;
@@ -141,19 +142,15 @@ public class Node implements Comparable {
         this.uuid = "" + node.uuid;
         this.label = "" + node.label;
         this.shortLabel = "" + node.shortLabel;
-        this.radius = 0f + node.radius;
+        this.radius = new Float(node.radius);
         this.position = node.position;
-        this.r = 0f + node.r;
-        this.g = 0f + node.g;
-        this.b = 0f + node.b;
-
-        screenX = 0f + node.screenX;
-        screenY = 0f + node.screenY;
+        this.r = new Float(node.r);
+        this.g = new Float(node.g);
+        this.b = new Float(node.b);
 
         this.fixed = (node.fixed);
         this.shape = node.shape;
         this.visibleToScreen = (node.visibleToScreen);
-
 
         this.s = (node.s); // switch
         this.degree = 0 + node.degree;
@@ -224,7 +221,7 @@ public class Node implements Comparable {
             for (Entry<String, Object> entry : getAttributes().entrySet()) {
                 try {
                     //System.out.println(" writing " + ((String) entry.getKey()) + " => " + entry.getValue());
-                    writer.key((String) entry.getKey()).value(valueEncoder(entry.getValue()));
+                    writer.key(entry.getKey()).value(valueEncoder(entry.getValue()));
                 } catch (UnsupportedEncodingException ex) {
                     Logger.getLogger(Node.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -246,5 +243,9 @@ public class Node implements Comparable {
     @Override
     public int compareTo(Object o) {
         return label.compareTo(((Node)o).label);
+    }
+
+    public void setWeights(OpenIntObjectHashMap newWeights) {
+        weights = newWeights;
     }
 }

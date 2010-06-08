@@ -12,29 +12,24 @@ import eu.tinasoft.services.session.Session;
  */
 public class MesoView extends View {
 
-
-
     public MesoView(Session aThis) {
         super(aThis);
-        spatializeWhenMoving = true;
-        centeringMode = CenteringMode.SELECTED_GRAPH_BARYCENTER;
-        ZOOM_CEIL = 0.27f;
+
+        ZOOM_CEIL = 0.56f;
         ZOOM_FLOOR = 30.0f;
         RECENTERING_MARGIN = 1.5f;
 
         resetParams();
-       graph.locked.set(false);
+        graph.locked.set(false);
     }
-
 
     @Override
     public String getName() {
         return "meso";
     }
+
     @Override
     public ViewLevel getLevel() {
         return ViewLevel.MESO;
     }
-
-
 }

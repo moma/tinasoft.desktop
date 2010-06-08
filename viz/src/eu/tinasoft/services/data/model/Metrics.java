@@ -68,22 +68,22 @@ public class Metrics {
         @Override
     public String toString() {
         return "minX=" + minX + ", "
-                + "minY=" + minY + ", \n"
-                + "maxX=" + maxX + ", "
-                + "maxY=" + maxY + ", \n"
-                //+ "minNodeRadius=" + minNodeRadius + ", "
-               // + "maxNodeRadius=" + maxNodeRadius + ", \n"
-                + "graphWidth=" + graphWidth + ","
-                + "graphHeight=" + graphHeight + ","
-                + "graphRadius=" + graphRadius + ", \n"
-                + "centerX=" + center.x + ", "
-                + "centerY=" + center.y + ", "
-                + "baryCenterX=" + baryCenter.x + ", "
-                + "baryCenterY=" + baryCenter.y + ", \n"
-                //+ "minEdgeWeight=" + minEdgeWeight + ", "
-                //+ "maxEdgeWeight=" + maxEdgeWeight + ";"
-                //+ "minNodeWeight=" + minNodeWeight + ", "
-                //+ "maxNodeWeight=" + maxNodeWeight
+                //+ "minY=" + minY + ", \n"
+               // + "maxX=" + maxX + ", "
+                //+ "maxY=" + maxY + ", \n"
+                + "minNodeRadius=" + minNodeRadius + ", "
+                + "maxNodeRadius=" + maxNodeRadius + ", \n"
+                //+ "graphWidth=" + graphWidth + ","
+                //+ "graphHeight=" + graphHeight + ","
+                //+ "graphRadius=" + graphRadius + ", \n"
+                //+ "centerX=" + center.x + ", "
+                //+ "centerY=" + center.y + ", "
+                //+ "baryCenterX=" + baryCenter.x + ", "
+                //+ "baryCenterY=" + baryCenter.y + ", \n"
+                + "minEdgeWeight=" + minEdgeWeight + ", "
+                + "maxEdgeWeight=" + maxEdgeWeight + ";"
+                + "minNodeWeight=" + minNodeWeight + ", "
+                + "maxNodeWeight=" + maxNodeWeight
                 + ";\n";
     }
 }
