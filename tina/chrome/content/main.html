@@ -1,78 +1,38 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Tinasoft</title>
+    <title>Tinasoft Desktop</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="description" content="">
-    <meta name="keywords" content="Tinasoft,CREA">
+    <meta name="keywords" content="TinaSoft,TinaViz,CREA">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
-
     <!-- JQUERY -->
-    <script type="text/javascript" src="lib/js/jquery-ui-1.8/jquery-1.4.2.js" language="javascript"></script>
+    <script type="text/javascript" src="js/jquery/jquery-1.4.2.js" language="javascript"></script>
     <!-- JQUERY UI -->
-    <script type="text/javascript" src="lib/js/jquery-ui-1.8/ui/jquery-ui.js" language="javascript"></script>
+    <script type="text/javascript" src="js/jquery-ui/jquery-ui-1.8.min.js" language="javascript"></script>
     <!-- JQUERY UI CSS -->
-    <link type="text/css" rel="stylesheet" href="lib/js/jquery/css/eggplant/jquery-ui-1.7.2.custom.css"/>
+    <link type="text/css" rel="stylesheet" href="css/eggplant/jquery-ui-1.8.1.custom.css"/>
 
-    <!-- JQUERY UI ADD-ONS -->
-    <script type="text/javascript"  src="lib/js/jquery/jquery.rating.pack.js"        language="javascript"></script>
-    <link type="text/css" rel="stylesheet" href="lib/js/jquery/jquery.rating.css"/>
 
     <!-- Homemade Mozilla UTILITIES -->
-    <script type="text/javascript" src="console.js" language="javascript"></script>
-    <script type="text/javascript" src="prefman.js" language="javascript"></script>
-    <script type="text/javascript" src="xmlhttprequester.js" language="javascript"></script>
-    <script type="text/javascript" src="lib/js/tenjin/shotenjin.js" language="javascript"></script>
+    <script type="text/javascript" src="js/console.js" language="javascript"></script>
+    <script type="text/javascript" src="js/prefman.js" language="javascript"></script>
+    <script type="text/javascript" src="js/xmlhttprequester.js" language="javascript"></script>
+    <script type="text/javascript" src="js/tenjin/shotenjin.js" language="javascript"></script>
 
     <!-- TINASOFT APP FUNCTIONS-->
-    <script type="text/javascript" src="visualization.js" language="javascript"></script>
-    <script type="text/javascript" src="main.js" language="javascript"></script>
+    <script type="text/javascript" src="js/visualization.js" language="javascript"></script>
+    <script type="text/javascript" src="js/main.js" language="javascript"></script>
 
     <!--TINASOFT CSS -->
-    <link type="text/css" rel="stylesheet" href="global.css"/>
-    <link type="text/css" rel="stylesheet" href="main.css"/>
+    <link type="text/css" rel="stylesheet" href="css/global.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css"/>
 </head>
+
 <body style="cursor: auto;">
-<script type="text/javascript">
-
-
-    $(function(){
-
-
-         $('#htoolbar input[type=file]').change(function(e){
-          console.log("calling clear()");
-          tinaviz.clear();
-          console.log("loadAbsoluteGraph"+$(this).val());
-          tinaviz.loadAbsoluteGraph( $(this).val() );
-        });
-
-
-        //all hover and click logic for buttons
-        $(".fg-button:not(.ui-state-disabled)")
-        .hover(
-            function(){
-                $(this).addClass("ui-state-hover");
-            },
-            function(){
-                $(this).removeClass("ui-state-hover");
-            }
-        )
-        .mousedown(function(){
-                $(this).parents('.fg-buttonset-single:first').find(".fg-button.ui-state-active").removeClass("ui-state-active");
-                if( $(this).is('.ui-state-active.fg-button-toggleable, .fg-buttonset-multi .ui-state-active') ){ $(this).removeClass("ui-state-active"); }
-                else { $(this).addClass("ui-state-active"); }
-        })
-        .mouseup(function(){
-            if(! $(this).is('.fg-button-toggleable, .fg-buttonset-single .fg-button,  .fg-buttonset-multi .fg-button') ){
-                $(this).removeClass("ui-state-active");
-            }
-        });
-
-    });
-</script>
     <div class="demo">
-        <div class="ui-tabs ui-widget ui-widget-content ui-corner-top" id="tabs">
+        <div class="ui-tabs ui-corner-top" id="tabs">
             <ul>
                 <li><a title="data sets" href="#tabs-0">Data sets</a></li>
                 <li><a title="data mining" href="#tabs-1">Data mining</a></li>
@@ -149,10 +109,10 @@
                             </thead>
                             <tbody class="ui-widget-content"></tbody>
                         </table>
-                    </div>
+                    </div><!-- END SESSION SELECT -->
 
                     <h3><a href="#">n-grams white list</a></h3>
-                    <div>
+                    <div><!-- BEGIN CREATE NEW WHITE LIST -->
                         <label><h4>Create a new white list</h4></label>
                         <input id="exportfile" type="file" class="field" name="exportfile" value='' />
                         <div id="exportCorpora">
@@ -161,12 +121,12 @@
                         <label><h4>or create a new graph using an existing white list</h4></label>
                         <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
                         <div id="processCooc" >
-                        <button class="ui-state-default ui-corner-all">New graph</button>
+                            <button class="ui-state-default ui-corner-all">New graph</button>
                         </div>
-                    </div>
+                    </div><!-- END CREATE NEW WHITE LIST -->
 
                     <h3><a href="#">options</a></h3>
-                    <div>
+                    <div><!-- BEGIN CREATE NEW WHITE LIST -->
                         <label><h4>User defined stopwords file</h4></label>
                         <p class="ui-state-active">
                         This file must have one ngram on each line<br/>Used to prepare the status of a new white list
@@ -177,24 +137,23 @@
                         Preserve previously exported file format<br/>Used to prepare the status of a new whitelist
                         </p>
                         <input id="prewhitelistfile" class="field" type="file" name="prewhitelistfile"/><br/>
-                    </div>
+                    </div><!-- END CREATE NEW WHITE LIST -->
 
-                </div>
+                </div><!-- END ACCORDION -->
                 <div style="clear:both;"></div>
-            </div>
+            </div><!--END FIRST TAB -->
+            
             <div id="tabs-2" class="ui-corner-bottom">
                 <div id="htoolbar" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
 
                        <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                            <a href="#"
-                      onclick="#"
+                            <a href="#" onclick="#"
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                      title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
+                      title="pause"><input id="macro-inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                         </div>
 
-
-                        <button id="toggle-paused" class="fg-button toolbar-left">pause</button>
-                        <button id="toggle-switch" class="fg-button toolbar-left">switch category</button>
+                        <button id="macro-toggle-paused" class="fg-button toolbar-left">pause</button>
+                        <button id="macro-toggle-switch" class="fg-button toolbar-left">switch category</button>
 
                         <!-- TEMPORARY DISABLED - FOR THE ONLINE VERSION -->
                         <!--
@@ -223,30 +182,29 @@
                         </div>
                         -->
 
-                        <div id="sliders_view" class="sliders toolbar-left">
+                        <div class="sliders toolbar-left">
                             <div class="slider">
                                 <span class="sliderLabel noSelect">magnify</span>
-                                <div id="sliderNodeSize"></div>
+                                <div id="macro-sliderNodeSize"></div>
                             </div>
                             
                             <div class="slider smallslider">
                                 <span class="sliderLabel noSelect">cursor size</span>
-                                <div id="sliderSelectionZone"></div>
+                                <div id="macro-sliderSelectionZone"></div>
 
                             </div>
                         </div>
 
-                        <div id="sliders_topology" class="sliders toolbar-left">
+                        <div class="sliders toolbar-left">
                             <div class="slider">
                                 <span class="sliderLabel noSelect">edges filter</span>
-                                <div id="sliderEdgeWeight"></div>
+                                <div id="macro-sliderEdgeWeight"></div>
                             </div>
                             <div class="slider">
                                 <span class="sliderLabel noSelect">nodes filter</span>
-                                <div id="sliderNodeWeight"></div>
+                                <div id="macro-sliderNodeWeight"></div>
                             </div>
                         </div>
-                        <div id="level" class="ui-widget-content toolbar-left ui-corner-all"></div>
                         <!-- end of sliders -->
                         <!--<div class="fg-buttonset ui-helper-clearfix fg-button">-->
                             <!--<a href="#"
@@ -257,39 +215,29 @@
                               <!--<input id="inputgraph" type="file" value="Open">-->
                             <!--</a> -->
                         <!--</div>-->
-                        <button id="toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
-                        <form id="search" action="#" class="toolbar-right">
-                            <input id="search_input" type="text" value="">
-                            <button id="search_button" class="fg-button">search</button>
+                        <button id="macro-toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
+                        <form id="macro-search" action="#" class="toolbar-right">
+                            <input id="macro-search_input" type="text" value="">
+                            <button id="macro-search_button" class="fg-button">search</button>
                         </form>
                         </div> <!-- End of BUTTON SET -->
 
                     </div><!-- End of htoolbar -->
                     
-                <div class="sliders">
-                    <!--<div id="meso_repulsion" class="threshold"></div>-->
-                   <!--<div class="slider">Node weight<div id="mesoSlider_nodeWeight"></div></div>-->
-                   <div class="slider">Edge weight<div id="mesoSlider_edgeWeight"></div></div>
-                   <div class="slider">Node size<div id="mesoSlider_nodeSize"></div></div>
-                   <!--<div class="slider">Edge size<div id="mesoSlider_edgeSize"></div></div>-->
-                </div><!-- end of sliders -->
                 <div id="tabfiller" class="tabfiller"></div>
             </div>
 
             <div id="tabs-3" class="ui-corner-bottom">
-
                 <div id="htoolbar2" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-
                        <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
                             <a href="#"
                       onclick="#"
                       class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                      title="pause"><input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
+                      title="pause"><input id="meso-inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
                         </div>
 
-
-                        <button id="toggle-paused" class="fg-button toolbar-left">pause</button>
-                        <button id="toggle-switch" class="fg-button toolbar-left">switch category</button>
+                        <button id="meso-toggle-paused" class="fg-button toolbar-left">pause</button>
+                        <button id="meso-toggle-switch" class="fg-button toolbar-left">switch category</button>
 
                         <!-- TEMPORARY DISABLED - FOR THE ONLINE VERSION -->
                         <!--
@@ -317,58 +265,38 @@
                                title="pause spatialization"><span class="ui-icon ui-icon-thunder"></span> <span class="noSelect">Run layout</span></a>
                         </div>
                         -->
-
-                        <div id="sliders_view" class="sliders toolbar-left">
+                        <div class="sliders toolbar-left">
                             <div class="slider">
                                 <span class="sliderLabel noSelect">magnify</span>
-                                <div id="sliderNodeSize"></div>
+                                <div id="meso-sliderNodeSize"></div>
                             </div>
                             
                             <div class="slider smallslider">
                                 <span class="sliderLabel noSelect">cursor size</span>
-                                <div id="sliderSelectionZone"></div>
+                                <div id="meso-sliderSelectionZone"></div>
 
                             </div>
                         </div>
-
-                        <div id="sliders_topology" class="sliders toolbar-left">
+                        <div class="sliders toolbar-left">
                             <div class="slider">
                                 <span class="sliderLabel noSelect">edges filter</span>
-                                <div id="sliderEdgeWeight"></div>
+                                <div id="meso-sliderEdgeWeight"></div>
                             </div>
                             <div class="slider">
                                 <span class="sliderLabel noSelect">nodes filter</span>
-                                <div id="sliderNodeWeight"></div>
+                                <div id="meso-sliderNodeWeight"></div>
                             </div>
                         </div>
-                        <div id="level" class="ui-widget-content toolbar-left ui-corner-all"></div>
-                        <!-- end of sliders -->
-                        <!--<div class="fg-buttonset ui-helper-clearfix fg-button">-->
-                            <!--<a href="#"
-                              id="open"
-                              class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                              title="pause">-->
-                              <!--<input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input> -->
-                              <!--<input id="inputgraph" type="file" value="Open">-->
-                            <!--</a> -->
-                        <!--</div>-->
-                        <button id="toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
-                        <form id="search" action="#" class="toolbar-right">
-                            <input id="search_input" type="text" value="">
-                            <button id="search_button" class="fg-button">search</button>
+                        <button id="meso-toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
+                        <form id="meso-search" action="#" class="toolbar-right">
+                            <input id="meso-search_input" type="text" value="">
+                            <button id="meso-search_button" class="fg-button">search</button>
                         </form>
-                        </div> <!-- End of BUTTON SET -->
-
-                    </div><!-- End of htoolbar -->
-                    
-                <div class="sliders">
-                    <!--<div id="meso_repulsion" class="threshold"></div>-->
-                   <!--<div class="slider">Node weight<div id="mesoSlider_nodeWeight"></div></div>-->
-                   <div class="slider">Edge weight<div id="mesoSlider_edgeWeight"></div></div>
-                   <div class="slider">Node size<div id="mesoSlider_nodeSize"></div></div>
-                   <!--<div class="slider">Edge size<div id="mesoSlider_edgeSize"></div></div>-->
-                </div><!-- end of sliders -->
+                    </div> <!-- End of BUTTON SET -->
+                </div><!-- End of htoolbar -->
+                <!--
                 <div id="tabfiller" class="tabfiller"></div>
+                -->
             </div><!-- end of tab 3 (meso) -->
 
             <!--<div id="tabs-4" class="ui-corner-bottom">

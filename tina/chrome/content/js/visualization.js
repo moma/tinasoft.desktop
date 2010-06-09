@@ -375,11 +375,11 @@ function Tinaviz() {
             }*/
 
             // update the buttons
-            $("#sliderEdgeWeight").slider( "option", "values", [
+            $("#"+view+"-sliderEdgeWeight").slider( "option", "values", [
                 this.getProperty(view, "edgeWeight/min"),
                 this.getProperty(view, "edgeWeight/max")*100
             ]);
-            $("#sliderNodeWeight").slider( "option", "values", [
+            $("#"+view+"-sliderNodeWeight").slider( "option", "values", [
                 this.getProperty(view, "nodeWeight/min"),
                 this.getProperty(view, "nodeWeight/max")*100
             ]);
@@ -571,6 +571,11 @@ function Tinaviz() {
         }
 
 
+        this.clear= function() {
+            if (applet == null) return;
+            applet.clear();
+        }
+        
         /*
         * Manually unselects all nodes
         */
@@ -585,7 +590,7 @@ function Tinaviz() {
                 //this.autoCentering();
             //}
             this.touch("current");
-            //applet.clear("meso");
+           
         }
 
 
@@ -632,6 +637,12 @@ function Tinaviz() {
             catch (e) {
                 return;
             }
+        }
+        /*
+         *  Try to log an normal msg with firebug otherwise returns
+         */
+        this.logDebug= function(msg) {
+            return this.logNormal(msg);
         }
 
 

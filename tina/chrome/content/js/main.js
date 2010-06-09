@@ -853,7 +853,7 @@ $(document).ready(function() {
     displayListCorpora( "corpora_table" );
 
     $(window).bind('resize', function() {
-        if (tinaviz.enabled()) {
+        if (tinaviz.isEnabled()) {
             resizeApplet();
         }
     });
@@ -917,8 +917,17 @@ $(document).ready(function() {
 
     // binds the click event to tinaviz.searchNodes()
 
-    $("#search").submit(function() {
-      var txt = $("#search_input").val();
+    $("#macro-search").submit(function() {
+      var txt = $("#macro-search_input").val();
+      if (txt=="") {
+            tinaviz.unselect();
+      } else {
+            tinaviz.searchNodes(txt, "containsIgnoreCase");
+      }
+      return false;
+     });
+      $("#meso-search").submit(function() {
+      var txt = $("#meso-search_input").val();
       if (txt=="") {
             tinaviz.unselect();
       } else {
@@ -936,20 +945,34 @@ $(document).ready(function() {
       }
     });
     */
-    $("#search_button").button({
+    $("#macro-search_button").button({
         text: false,
         icons: {
             primary: 'ui-icon-search'
         }
     }).click( function(eventObject) {
-          var txt = $("#search_input").val();
+          var txt = $("#macro-search_input").val();
           if (txt=="") {
                 tinaviz.unselect();
           } else {
                 tinaviz.searchNodes(txt, "containsIgnoreCase");
           }
     });
-
+    
+    $("#meso-search_button").button({
+        text: false,
+        icons: {
+            primary: 'ui-icon-search'
+        }
+    }).click( function(eventObject) {
+          var txt = $("#meso-search_input").val();
+          if (txt=="") {
+                tinaviz.unselect();
+          } else {
+                tinaviz.searchNodes(txt, "containsIgnoreCase");
+          }
+    });
+    
     // SLIDERS INIT
     $.extend($.ui.slider.defaults, {
         //range: "min",
@@ -961,7 +984,7 @@ $(document).ready(function() {
     });
 
     // MACRO SLIDERS
-    $("#sliderEdgeWeight").slider({
+    $("#macro-sliderEdgeWeight #meso-sliderEdgeWeight").slider({
         range: true,
         values: [0, 100],
         animate: true,
@@ -973,7 +996,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#sliderNodeWeight").slider({
+    $("#macro-sliderNodeWeight #meso-sliderNodeWeight").slider({
         range: true,
         values: [0, 100],
         animate: true,
@@ -996,7 +1019,7 @@ $(document).ready(function() {
         }}
     );
 */
-    $("#sliderSelectionZone").slider({
+    $("#macro-sliderSelectionZone #meso-sliderSelectionZone").slider({
         value: 1.0,
         max: 300.0, // max disk radius, in pixel
         animate: true,
@@ -1006,42 +1029,57 @@ $(document).ready(function() {
         }
     });
 
-    $("#toggle-showLabels").click(function(event) {
+    $("#macro-toggle-showLabels #meso-toggle-showLabels").click(function(event) {
         tinaviz.toggleLabels();
     });
 
-    $("#toggle-showNodes").click(function(event) {
+    $("#macro-toggle-showNodes #meso-toggle-showNodes").click(function(event) {
         tinaviz.toggleNodes();
     });
 
-    $("#toggle-showEdges").click(function(event) {
+    $("#macro-toggle-showEdges #meso-toggle-showEdges").click(function(event) {
         tinaviz.toggleEdges();
     });
 
-    $("#toggle-paused").button({
+    $("#macro-toggle-paused #meso-toggle-paused").button({
         icons: {primary:'ui-icon-pause'},
         text: true,
         label: "pause",
     })
     .click(function(event) {
         tinaviz.togglePause();
-        if( $("#toggle-paused").button('option','icons')['primary'] == 'ui-icon-pause'  ) {
-            $("#toggle-paused").button('option','icons',{'primary':'ui-icon-play'});
-            $("#toggle-paused").button('option','label',"play");
+        if( $("#macro-toggle-paused").button('option','icons')['primary'] == 'ui-icon-pause'  ) {
+            $("#macro-toggle-paused").button('option','icons',{'primary':'ui-icon-play'});
+            $("#macro-toggle-paused").button('option','label',"play");
         }
         else {
-            $("#toggle-paused").button('option','icons',{'primary':'ui-icon-pause'});
-            $("#toggle-paused").button('option','label',"pause");
+            $("#macro-toggle-paused").button('option','icons',{'primary':'ui-icon-pause'});
+            $("#macro-toggle-paused").button('option','label',"pause");
         }
     });
-
-    $("#toggle-unselect").button({
+    $("#meso-toggle-paused").button({
+        icons: {primary:'ui-icon-pause'},
+        text: true,
+        label: "pause",
+    })
+    .click(function(event) {
+        tinaviz.togglePause();
+        if( $("#meso-toggle-paused").button('option','icons')['primary'] == 'ui-icon-pause'  ) {
+            $("#meso-toggle-paused").button('option','icons',{'primary':'ui-icon-play'});
+            $("#meso-toggle-paused").button('option','label',"play");
+        }
+        else {
+            $("#meso-toggle-paused").button('option','icons',{'primary':'ui-icon-pause'});
+            $("#meso-toggle-paused").button('option','label',"pause");
+        }
+    });
+    $("#macro-toggle-unselect #meso-toggle-unselect").button({
         icons: {primary:'ui-icon-close'},
     }).click(function(event) {
         tinaviz.unselect();
     });
 
-    $("#toggle-autoCentering").button({
+    $("#macro-toggle-autoCentering #meso-toggle-autoCentering").button({
         text: true,
         icons: {
             primary: 'ui-icon-home'
@@ -1051,7 +1089,7 @@ $(document).ready(function() {
         tinaviz.autoCentering();
     });
 
-    $("#toggle-switch").button({
+    $("#macro-toggle-switch #meso-toggle-switch").button({
         text: true,
         icons: {
             primary: 'ui-icon-arrows'

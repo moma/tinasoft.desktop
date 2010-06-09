@@ -75,38 +75,50 @@ label {
     overflow:auto;
 }
 
+/* each sliders positioned relatively to their parent */
 .slider {
-    position: relative;
-    float:left;
-    width:180px;
-    height:12px;
-    margin: 15px;
+    float: left;
+    width: 100px;
+    padding: 0px 20px 0px 0px;
+    margin-top: -5px;
 }
 
-.sliders {
-   position: absolute;
-   left: 550px;
-   top: 46px;
-   color: #ffffee;
+.smallslider {
+    width: 80px;
 }
+
+.sliderLabel {
+    font-size: 11px;
+}
+
+.toolbar-left {
+    float: left;
+}
+
+.toolbar-right {
+    float: right;
+}
+
+#toggle-unselect {
+    font-size:10pt;
+    height:0;
+    left:25px;
+    position:absolute;
+    top:0;
+    width:0;
+}
+
+.waitMessage {
+    font-size: 20px;
+}
+
 
 .tabfiller {
    height:500px;
 }
 
 .detailtext {
-   /* color: #000000;*/
-   font-size: 13px;
+    color: #000000;
 }
-/*
-.htoolbar {
-    position:absolute;
-    position:absolute;
-    bottom:80px;
-    left:40px;
-}
-*/
-
-
 
 
