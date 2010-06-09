@@ -31,6 +31,7 @@ public class NodeList {
     private Comparator comp = new SelectedComparator();
     private Metrics metrics = new Metrics();
 
+
     public NodeList(NodeList nodeList) {
         reset();
         //System.out.println("copying nodes from another node list, but clearing state..");

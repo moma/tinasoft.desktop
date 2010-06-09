@@ -19,13 +19,6 @@ xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozilla/xulrunner/releases/1.9.1.
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
-pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
-pyxpcomextdownfile="pythonext-2.6.0.20090330-$platform.xpi"
-
-platformdownpath="http://dl.dropbox.com/u/122451/static/tina/alpha/platforms"
-platformdownfile="$platform.zip"
-
-
 if [ -e $outfile ]
   then
     rm $outfile
@@ -55,48 +48,6 @@ if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
     rm -Rf .tmp
 fi
 
-if [ -e ".packaging/$arch/$xulrunner/xulrunner/python" ]
-  then
-    echo " - pyxpcomext found"
-  else
-    echo " - pyxpcomext not found, downloading.."
-    wget $pyxpcomextdownpath/$pyxpcomextdownfile
-    echo " - installing pyxpcom inside $xulrunner download cache.."
-    mkdir .tmp
-    mv $pyxpcomextdownfile .tmp/
-    cd .tmp
-    unzip $pyxpcomextdownfile
-    rm  $pyxpcomextdownfile
-    cd ..
-    mv .tmp/python .packaging/$arch/$xulrunner/xulrunner/
-    mv .tmp/pylib .packaging/$arch/$xulrunner/xulrunner/
-    mv .tmp/components/* .packaging/$arch/$xulrunner/xulrunner/components/
-    echo " - cleaning temporary download files.."
-    rm -Rf .tmp
-fi
-
-if [ -e ".packaging/$arch/$xulrunner/platform" ]
-  then
-    echo " - platform-specific libraries found"
-  else
-    echo " - platform-specific libraries not found, downloading.."
-    wget $platformdownpath/$platformdownfile
-    unzip $platformdownfile
-    mkdir -p .packaging/$arch/$xulrunner/platform
-    mv $platform .packaging/$arch/$xulrunner/platform/
-    rm $platformdownfile
-fi
-
-if [ -e ".packaging/$arch/java" ]
-  then
-    echo " - platform-specific libraries found"
-  else
-    echo " - platform-specific libraries not found, downloading.."
-    wget $javaurl/$javazip
-    unzip $javazip
-    mv java .packaging/$arch
-    rm $javazip
-fi
 
 echo " - moving files around to create the windows build, and cleaning distro files"
 
@@ -115,11 +66,8 @@ fi
 
 
 rm -Rf $outpath/db
-rm -Rf $outpath/extensions/*
 rm -Rf $outpath/log/*
 rm -Rf $outpath/shared/gexf/gexf.template.*
-find $outpath -name *.pyo -delete
-find $outpath -name *.pyc -delete
 find $outpath -name *~ -delete
 
 if [ -e $outpath/user ]
@@ -131,7 +79,6 @@ if [ -e $outpath/index ]
     rm -Rf $outpath/index
 fi
 rm -Rf $outpath/*.yaml
-cp -R .packaging/$arch/$xulrunner/platform $outpath
 rm $outpath/tina
 rm $outpath/tina-stub
 cp install/skeletons/$arch/* $outpath

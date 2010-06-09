@@ -4,6 +4,9 @@
  */
 package eu.tinasoft.services.data.model;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import processing.core.PVector;
 
 /**
@@ -35,6 +38,7 @@ public class Metrics {
     public float averageEdgeWeight;
     public int nbVisibleNodes;
     public int nbVisibleEdges;
+    //public Map<Float,List<> valueMapper;
 
     Metrics() {
         reset();
@@ -63,6 +67,7 @@ public class Metrics {
         averageNodeWeight = 0.0f;
         averageNodeRadius = 0.0f;
         averageEdgeWeight = 0.0f;
+        //valueMapper = new HashMap<Float, Integer>();
     }
 
         @Override

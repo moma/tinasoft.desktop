@@ -141,8 +141,6 @@ public class Session {
         } else if (level.equals("meso")) {
             meso.updateFromString(str);
 
-
-
             return true;
         } else if (level.equals("micro")) {
             return micro.updateFromString(str);
@@ -194,7 +192,6 @@ public class Session {
         meso.unselectNodeById(n.id);
         micro.unselectNodeById(n.id);
     }
-
 
 
     public void selectNode(String s) {

@@ -7,6 +7,7 @@ package eu.tinasoft.services.data.model;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import eu.tinasoft.services.computing.MathFunctions;
 import java.util.List;
+import java.util.Map.Entry;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -170,6 +171,15 @@ public class NodeListNormalizer {
                 }
                 //System.out.print(""+w+" ,");
                 metrics.averageEdgeWeight += w;
+
+                /*
+                if (metrics.valueMapper.containsKey( w )) {
+                    int v = metrics.valueMapper.get( w );
+                    v++;
+                    metrics.valueMapper.put(w, v);
+                } else {
+                    metrics.valueMapper.put(w, 1);
+                }*/
                 metrics.nbEdges++;
             }
             //System.out.println(";");
@@ -214,6 +224,7 @@ public class NodeListNormalizer {
 
     public static List<Node> normalize(List<Node> nodes, Metrics metrics, String attr, Object value) {
         System.out.println("normalizing..");
+
 
         int i = 0;
         for (Node n : nodes) {
@@ -264,6 +275,7 @@ public class NodeListNormalizer {
                 w = MathFunctions.map(w, metrics.minEdgeWeight, metrics.maxEdgeWeight, NORMALIZED_MIN_EDGE_WEIGHT, NORMALIZED_MAX_EDGE_WEIGHT);
                 //System.out.println("EDGE NORMLAZ = "+w+" = PApplet.map("+oldw+","+metrics.minEdgeWeight+","+metrics.maxEdgeWeight+","+NORMALIZED_MIN_EDGE_WEIGHT+","+NORMALIZED_MAX_EDGE_WEIGHT+")");
                 n.weights.put(k, w);
+
                 n.weightsDistribution.put(k, PApplet.map(i, 0, metrics.nbEdges, 0.01f, 1.0f));
             }
 

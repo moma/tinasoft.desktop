@@ -1296,16 +1296,23 @@ public class Main extends PApplet implements MouseWheelListener {
     public void highlightFromId(String str) {
         nodes.highlightNodeById(str);
         getSession().getGraph().highlightNodeById(str);
-
     }
 
     /**
      * Unselect all nodes in all views
      */
     public void unselect() {
+        unselectCurrent();
         getSession().unselectAll();
+    }
+
+        /**
+     * Unselect all nodes in all views
+     */
+    public void unselectCurrent() {
         nodes.unselectAll();
     }
+
 
     /**
      * Get all nodes
