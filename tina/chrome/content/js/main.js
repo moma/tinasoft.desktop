@@ -337,14 +337,14 @@ function displayListCorpora(table) {
     TinaService.listDatasets({
         success: function(list) {
         
-            var body = $( "#" +table+ " tbody" )
+            var body = $( "#" +table+ " tbody" );
             body.empty();
             for ( var i=0, len=list.length; i<len; i++ ){
                 var dtst_trid = table+ "_tr_corpora_" + i;
                 var datasetName = list[i];
                 
-                TinaService.dataset(list[i], {                
-                    success: {
+                TinaService.dataset(datasetName, {                
+                    success: function(dataset) {
                     body.append("<tr id='"+ dtst_trid
                         + "' class='ui-widget-content'>"
                         + "<td>"
@@ -355,8 +355,8 @@ function displayListCorpora(table) {
                     displayListCorpus( dtst_trid, dataset );
                     displayListGraph( dtst_trid, dataset );
                     }, 
-                    error: {
-                        console.log("couldn'terror); 
+                    error: function(e) {
+                        console.log("couldn't error"); 
                     }
                 });
 
