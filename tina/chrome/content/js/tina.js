@@ -139,6 +139,4 @@ function switchFullScreen() {
     setTimeout('window.fullScreen = false;',1);
    }
 }
-function pyshell_launch() {
-    openDialog("python_shell_window", "chrome://pyshell/content/pyshell.xul", "all=no,width=500,height=400,scrollbars=yes,resizable=yes,dialog=no");
-}
+

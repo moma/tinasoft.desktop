@@ -18,7 +18,7 @@ if [ -e viz/dist/tinaviz.jar ]
   then
     cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
 fi
-cp -R ../Tinasoft*/tinasoft tina/pylib/
+#cp -R ../Tinasoft*/tinasoft tina/pylib/
 cp ../Tinasoft*/*.yaml tina/
 #cp ../Tinasoft*/*.yaml install/skeletons/windows/
 #touch tina/.autoreg

@@ -8,12 +8,8 @@ const Ci = Components.interfaces;
 const HELP_URL = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
 const INTRO_URL = "chrome://tina/content/about.xul";
 
-/* Tinasoft XPCOM Service instance */
 
-if ( typeof(TinaService) == "undefined" ) {
-    cls = Cc["Python.Tinasoft"];
-    var TinaService = cls.getService(Ci.ITinasoft);
-}
+var TinaService = new TinaServiceClass("http://localhost:8888");
 
 /* Tinasoft observers handlers */
 
@@ -104,7 +100,7 @@ var tinasoftTaskObserver = {
 };
 
 /* Setting Tinasoft observers */
-
+/*
 var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 // Observers registering
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_finish_status" , false );
@@ -115,6 +111,7 @@ ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_running_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_finish_status" , false );
 ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_running_status" , false );
+*/
 
 /* Duplicate document in data set controler */
 var displayDuplicateDocs = function(data) {
@@ -261,10 +258,7 @@ var submitExportCorpora = function(event) {
 
 /* Indexation workflow control */
 
-var listCorpora = function() {
-    corporaList=TinaService.listCorpora();
-    return( JSON.parse(corporaList) );
-};
+
 
 function displayListGraph(trid, corpora) {
     var tr = $( "#" +trid );
@@ -340,23 +334,41 @@ function selectableCorpusInit( ol, corpora ) {
 }
 
 function displayListCorpora(table) {
-    var body = $( "#" +table+ " tbody" )
-    body.empty();
-    var list = listCorpora();
-    for ( var i=0, len=list.length; i<len; i++ ){
-        var corpo_trid = table+ "_tr_corpora_" + i;
-        var corpora = list[i]
-        body.append("<tr id='"+ corpo_trid
-            + "' class='ui-widget-content'>"
-            + "<td>"
-            + corpora.label
-            + "</td>"
-        +"</tr>");
-        //console.log(body.html());
-        displayListCorpus( corpo_trid, corpora );
-        displayListGraph( corpo_trid, corpora );
+    TinaService.listDatasets({
+        success: function(list) {
+        
+            var body = $( "#" +table+ " tbody" )
+            body.empty();
+            for ( var i=0, len=list.length; i<len; i++ ){
+                var dtst_trid = table+ "_tr_corpora_" + i;
+                var datasetName = list[i];
+                
+                TinaService.dataset(list[i], {                
+                    success: {
+                    body.append("<tr id='"+ dtst_trid
+                        + "' class='ui-widget-content'>"
+                        + "<td>"
+                        + dataset.label
+                        + "</td>"
+                        +"</tr>");
+                //console.log(body.html());
+                    displayListCorpus( dtst_trid, dataset );
+                    displayListGraph( dtst_trid, dataset );
+                    }, 
+                    error: {
+                        console.log("couldn'terror); 
+                    }
+                });
 
-    }
+
+            }
+        },
+        
+        
+        error: function(error) {
+            console.log(error);
+        }
+    });
 }
 
 /* Storage getters */
