@@ -17,7 +17,7 @@ public class MesoView extends View {
 
         ZOOM_CEIL = 0.56f;
         ZOOM_FLOOR = 30.0f;
-        RECENTERING_MARGIN = 1.5f;
+        RECENTERING_MARGIN = 1.8f;
 
         resetParams();
         graph.locked.set(false);

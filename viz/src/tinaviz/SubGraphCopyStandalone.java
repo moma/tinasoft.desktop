@@ -37,7 +37,9 @@ public class SubGraphCopyStandalone extends NodeFilter {
     private String defaultCategory = "NO_CATEGORY";
     private String oldCategory = defaultCategory;
 
+
     public OpenIntObjectHashMap selection = new OpenIntObjectHashMap();
+    NodeList cache = new NodeList();
     public boolean selectionChanged = false;
 
     @Override
@@ -48,7 +50,6 @@ public class SubGraphCopyStandalone extends NodeFilter {
         }
 
         boolean debugMeso = true;
-        HashMap<Integer, Node> oldSelection = new HashMap<Integer, Node>();
 
         if (debugMeso)System.out.println("debugging subgraph copier");
 
@@ -137,8 +138,6 @@ public class SubGraphCopyStandalone extends NodeFilter {
 
             }
         }
-
-
   
         if (selectionChanged) {
 
@@ -192,6 +191,7 @@ public class SubGraphCopyStandalone extends NodeFilter {
             if (debugMeso) System.out.println("MESO nothing changed, still old category");
             output = input;
         }
+
 
         return output;
     }

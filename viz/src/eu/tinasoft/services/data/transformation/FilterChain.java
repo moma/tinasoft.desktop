@@ -22,6 +22,7 @@ import eu.tinasoft.services.data.transformation.filters.Output;
 import eu.tinasoft.services.data.transformation.filters.WeightSize;
 import tinaviz.NodeWeightRangeHack;
 import eu.tinasoft.services.visualization.views.View;
+import tinaviz.EdgeWeightRangeHack;
 
 /**
  *
@@ -110,6 +111,8 @@ public class FilterChain {
             f = new NodeWeightRange();
         } else if (filterName.equals("NodeWeightRangeHack")) {
             f = new NodeWeightRangeHack();
+        } else if (filterName.equals("EdgeWeightRangeHack")) {
+            f = new EdgeWeightRangeHack();
         } else if (filterName.equals("Output")) {
             f = new Output();
         } else {
