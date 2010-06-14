@@ -4,9 +4,6 @@
  */
 package eu.tinasoft.services.data.model;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import processing.core.PVector;
 
 /**

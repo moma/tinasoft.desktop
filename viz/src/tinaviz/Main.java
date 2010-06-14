@@ -878,7 +878,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         // in all cases, we call the callback function
         if (mouseSide != MouseButtonAction.NONE) {
-            System.out.println("calling callback(" + mouseSide + ")");
+            //System.out.println("calling callback(" + mouseSide + ")");
             nodeSelected_JS_CALLBACK(getView().getName(), mouseSide);
         }
 
@@ -940,14 +940,14 @@ public class Main extends PApplet implements MouseWheelListener {
                 v.translation.add(lastMousePosition);
             } else {
                 if (v.getLevel() == ViewLevel.MESO) {
-                    System.out.println("GOING BACK TO MACRO VIEW");
+                    //System.out.println("GOING BACK TO MACRO VIEW");
                     setView("macro");
                 }
             }
         }
 
 
-        System.out.println("Zoom: " + v.sceneScale);
+        //System.out.println("Zoom: " + v.sceneScale);
         if (e.getWheelRotation() < 0) {
 
 
@@ -1139,7 +1139,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * Recenter the view
      */
     public void autoCentering() {
-        System.out.println("activating auto-centering");
+        //System.out.println("activating auto-centering");
         autocenter = true;
         session.getBrowser().buttonStateCallback("autoCentering", autocenter);
         redrawIfNeeded();
@@ -1258,7 +1258,7 @@ public class Main extends PApplet implements MouseWheelListener {
      * @return
      */
     public Object getProperty(String key) {
-        System.out.println("getProperty(" + key + ")");
+        //System.out.println("getProperty(" + key + ")");
 
         Object o = "";
         try {
@@ -1269,7 +1269,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
         }
         if (!key.equals("selection/radius")) {
-            System.out.println(o + " = getProperty(" + key + ")");
+            //System.out.println(o + " = getProperty(" + key + ")");
         }
 
         return o;
@@ -1278,17 +1278,34 @@ public class Main extends PApplet implements MouseWheelListener {
     /**
      * select a node from it's ID in all views
      * @param str
+     * @param cb
      */
-    public void selectFromId(String str) {
-        System.out.println("BEFORE selectFromId(" + str + ")...");
+    public void selectFromId(String str, boolean cb) {
+        // System.out.println("selectFromId("+str+", "+cb+");");
         Session s = getSession();
         s.selectNode(str);
         nodes.selectNode(str);
-        System.out.println("DURING selectFromId(" + str + "), called s.selectNode(..) and nodes.selectNode(..)");
-        nodeSelected_JS_CALLBACK(s.getView().getName(), MouseButtonAction.LEFT);
-        System.out.println("AFTER selectFromId(" + str + ") called from javascript, calling nodeSelected_JS_CALLBACK(" + s.getView().getName() + ",MouseButton.LEFT)");
+        //System.out.println("DURING selectFromId(" + str + "), called s.selectNode(..) and nodes.selectNode(..)");
+        if (cb) {
+            //System.out.println("calling the callback");
+            nodeSelected_JS_CALLBACK(s.getView().getName(), MouseButtonAction.LEFT);
+        }
+        //System.out.println("AFTER selectFromId(" + str + ") called from javascript, calling nodeSelected_JS_CALLBACK(" + s.getView().getName() + ",MouseButton.LEFT)");
     }
 
+
+
+
+    /**
+     * select a node from it's ID in all views
+     * @param str
+     * @param cb
+     */
+    /*
+    public void selectFromId(String str) {
+        selectFromId(str, true);
+    }
+*/
     /**
      * select a node from it's ID in all views
      * @param str
@@ -1336,7 +1353,7 @@ public class Main extends PApplet implements MouseWheelListener {
         } catch (ViewNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("view: " + view + " category: " + category + " --- resulting array size: " + results.size());
+        //System.out.println("view: " + view + " category: " + category + " --- resulting array size: " + results.size());
         if (results.size() == 0) {
             return def;
         }
@@ -1368,7 +1385,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return def;
         }
-        System.out.println(writer.toString() + "= getNodes(String view, String category)");
+        //System.out.println(writer.toString() + "= getNodes(String view, String category)");
         return writer.toString();
     }
 
@@ -1384,7 +1401,7 @@ public class Main extends PApplet implements MouseWheelListener {
         List<Node> results = nodes.getNodesByLabel(label, mode);
         String def = "[]";
 
-        System.out.println("label: " + label + " size: " + results.size());
+        //System.out.println("label: " + label + " size: " + results.size());
         if (results.size() == 0) {
             Console.error(" no results");
             return def;
@@ -1419,7 +1436,7 @@ public class Main extends PApplet implements MouseWheelListener {
             Console.error(ex.getMessage());
             return def;
         }
-        System.out.println(writer.toString() + "= MAIN.getNodesByLabel(" + label + "," + mode + ")");
+        //System.out.println(writer.toString() + "= MAIN.getNodesByLabel(" + label + "," + mode + ")");
         return writer.toString();
     }
 
@@ -1472,7 +1489,7 @@ public class Main extends PApplet implements MouseWheelListener {
         return true;
     }
 
-    private String getSelectNodesJSON(String view) {
+    public String getSelectedNodesJSON(String view) {
         // System.out.println("getSelectedNodesAsJSON(" + view + ")");
         if (view.equalsIgnoreCase("current")) {
             return nodes.getSelectedNodesAsJSON();
@@ -1485,9 +1502,11 @@ public class Main extends PApplet implements MouseWheelListener {
         }
     }
 
+
     private void nodeSelected_JS_CALLBACK(String view, MouseButtonAction mouseSide) {
+        System.out.println("CALLING CALLBACK 'selected'");
         getSession().getBrowser().callAndForget("selected", "'" + view + "','"
-                + getSelectNodesJSON(view) + "','" + (mouseSide == MouseButtonAction.DOUBLELEFT ? "doubleLeft"
+                + getSelectedNodesJSON(view) + "','" + (mouseSide == MouseButtonAction.DOUBLELEFT ? "doubleLeft"
                 : mouseSide == MouseButtonAction.LEFT ? "left"
                 : mouseSide == MouseButtonAction.RIGHT ? "right"
                 : "none") + "'");
@@ -1495,6 +1514,7 @@ public class Main extends PApplet implements MouseWheelListener {
 
     private void viewChanged_JS_CALLBACK(String view) {
         //System.out.println("calling getSession().getBrowser().async(\"switchedTo\", \"'" + view + "'\");");
+        System.out.println("CALLING CALLBACK 'switchedTo'");
         getSession().getBrowser().callAndForget("switchedTo", "'" + view + "'");
         dispatchCallbackStates();
     }

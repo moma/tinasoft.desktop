@@ -211,7 +211,7 @@ public class Graph implements Cloneable {
             if (uuid.contains("::")) {
                 cat = uuid.split("::")[0];
                 uuid = uuid.split("::")[1];
-                System.out.println("got category "+cat+" via ID!");
+                System.out.println("got category " + cat + " via ID!");
             }
 
             int id = uuid.hashCode();
@@ -276,7 +276,7 @@ public class Graph implements Cloneable {
                                             node.category = nodeValue;
                                             //System.out.println("could read category: "+node.category);
                                         } else {
-                                            System.out.println("couldn't read category "+nodeValue);
+                                            System.out.println("couldn't read category " + nodeValue);
                                         }
                                     }
 
@@ -357,10 +357,10 @@ public class Graph implements Cloneable {
                 storedNodes.put(id, node);
             }
 
-                if (!normalizeMyNodes.containsKey(node.category)) {
-                    normalizeMyNodes.put(node.category, new ArrayList<Node>());
-                }
-                 normalizeMyNodes.get(node.category).add(node);
+            if (!normalizeMyNodes.containsKey(node.category)) {
+                normalizeMyNodes.put(node.category, new ArrayList<Node>());
+            }
+            normalizeMyNodes.get(node.category).add(node);
 
         }
 
@@ -407,22 +407,22 @@ public class Graph implements Cloneable {
 
         Console.log("normalizing graph..");
 
-        for (Entry<String,List<Node>> e : normalizeMyNodes.entrySet()) {
+        for (Entry<String, List<Node>> e : normalizeMyNodes.entrySet()) {
             //System.out.println("computing metrics for "+e.getKey());
-              Metrics metrics = NodeListNormalizer.computeMetrics(e.getValue());
-              // System.out.println("normalizing "+e.getKey());
-              NodeListNormalizer.normalize(e.getValue(), metrics, "category", e.getKey());
-              NodeListNormalizer.normalizePositions(e.getValue(), metrics, "category", e.getKey());
-              
-              /*
-              int i = 0;
-              for (Node n : e.getValue()) {
-                  n.position.x()
-                  //n.position.set((float)Math.random()*100.0f,(float)Math.random()*100.0f,0);
-              }*/
+            Metrics metrics = NodeListNormalizer.computeMetrics(e.getValue());
+            // System.out.println("normalizing "+e.getKey());
+            NodeListNormalizer.normalize(e.getValue(), metrics, "category", e.getKey());
+            NodeListNormalizer.normalizePositions(e.getValue(), metrics, "category", e.getKey());
+
+            /*
+            int i = 0;
+            for (Node n : e.getValue()) {
+            n.position.x()
+            //n.position.set((float)Math.random()*100.0f,(float)Math.random()*100.0f,0);
+            }*/
         }
 
- 
+
         locked.set(false);
         commitProperties();
         return true;
@@ -490,9 +490,8 @@ public class Graph implements Cloneable {
         commitProperties();
     }
 
-
     public synchronized int commitProperties() {
-               //System.out.println("incrementing graph revision to "+(revision.get()+1));
+        //System.out.println("incrementing graph revision to "+(revision.get()+1));
         return revision.incrementAndGet();
 
 
@@ -562,16 +561,16 @@ public class Graph implements Cloneable {
             }
 
         } catch (JSONException jSONException) {
-            Console.error("cannot create json: " +jSONException.getMessage());
+            Console.error("cannot create json: " + jSONException.getMessage());
             return "{}";
         }
         try {
             writer.endObject();
         } catch (JSONException ex) {
-            Console.error("cannot create json: "+ex.getMessage());
+            Console.error("cannot create json: " + ex.getMessage());
             return "{}";
         }
-        if (true) System.out.println("GRAPH.getNeighbourhoodAsJSON: " + writer.toString());
+        //if (true) System.out.println("GRAPH.getNeighbourhoodAsJSON: " + writer.toString());
         return writer.toString();
     }
 
@@ -586,7 +585,7 @@ public class Graph implements Cloneable {
         }
 
         try {
-            for (Entry<Integer,Node> e : storedNodes.entrySet()) {
+            for (Entry<Integer, Node> e : storedNodes.entrySet()) {
                 Node node = e.getValue();
 
                 if (node.selected) {
@@ -610,8 +609,7 @@ public class Graph implements Cloneable {
             Console.error(ex.getMessage());
             return "{}";
         }
-       System.out.println("GRAPH.getSelectedNodesAsJSON():"+ writer.toString() );
+        //System.out.println("GRAPH.getSelectedNodesAsJSON():"+ writer.toString() );
         return writer.toString();
     }
-
 }

@@ -270,22 +270,28 @@ function displayListGraph(trid, corpora) {
         + "</ol></td>"
     );
     var ol = $( "#" + olid  ).empty();
-    var graphList = JSON.parse( TinaService.walkGraphPath(corpora['id']) );
-    for ( var i=0; i < graphList.length; i++ ) {
-        var button = $("<button class='ui-state-default ui-corner-all' value='"
-            + graphList[i]
-            + "'>"
-            + graphList[i]
-            + "</button><br/>"
-        ).click(function(event) {
-            tinaviz.clear();
-            console.log( "opening " + $(this).attr('value') );
-            $("#tabs").data('disabled.tabs', []);
-            switchTab( "macro" );
-            tinaviz.loadRelativeGraph("macro",$(this).attr('value'));
-        });
-        ol.append(button);
-    }
+    
+    TinaService.getGraphList(corpora['id'],{
+    
+        success: function(graphList) { 
+            for ( var i=0; i < graphList.length; i++ ) {
+                var button = $("<button class='ui-state-default ui-corner-all' value='"
+                    + graphList[i]
+                    + "'>"
+                    + graphList[i]
+                    + "</button><br/>"
+                ).click(function(event) {
+                    tinaviz.clear();
+                    console.log( "opening " + $(this).attr('value') );
+                    $("#tabs").data('disabled.tabs', []);
+                    switchTab( "macro" );
+                    tinaviz.loadRelativeGraph("macro",$(this).attr('value'));
+                });
+                ol.append(button);
+            }
+        }
+        
+    });
 }
 
 function displayListCorpus(trid, corpora) {
@@ -334,7 +340,7 @@ function selectableCorpusInit( ol, corpora ) {
 }
 
 function displayListCorpora(table) {
-    TinaService.listDatasets({
+    TinaService.getDatasetList({
         success: function(list) {
         
             var body = $( "#" +table+ " tbody" );
@@ -343,7 +349,7 @@ function displayListCorpora(table) {
                 var dtst_trid = table+ "_tr_corpora_" + i;
                 var datasetName = list[i];
                 
-                TinaService.dataset(datasetName, {                
+                TinaService.getDataset(datasetName, {                
                     success: function(dataset) {
                     body.append("<tr id='"+ dtst_trid
                         + "' class='ui-widget-content'>"
@@ -370,21 +376,6 @@ function displayListCorpora(table) {
         }
     });
 }
-
-/* Storage getters */
-var getCorpus = function(corpusid) {
-    return( JSON.parse( TinaService.getCorpus(corpusid) ) );
-};
-var getDocument = function(documentid) {
-    // console.log("doc id="+documentid);
-    return( JSON.parse( TinaService.getDocument(documentid) ) );
-};
-var getCorpora = function(corporaid) {
-    return( JSON.parse( TinaService.getCorpora(corporaid) ) );
-};
-var getNGram = function(ngramid) {
-    return( JSON.parse( TinaService.getNGram(ngramid) ) );
-};
 
 
  /* useful for fullscreen mode */

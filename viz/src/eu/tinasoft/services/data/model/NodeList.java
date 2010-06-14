@@ -66,6 +66,7 @@ public class NodeList {
     /** getNodesByLabel
      * @param label : String
      * @param mode : String (equalsIgnoreCase,equals,startsWith,endsWith,contains)
+     * @return List<Node>
      */
     public List<Node> getNodesByLabel(String label, String mode) {
 
@@ -218,7 +219,7 @@ public class NodeList {
             Console.error(ex.getMessage());
             return "{}";
         }
-        System.out.println("NodeList.getNeighbourhoodAsJSON() = "+writer.toString() );
+        //System.out.println("NodeList.getNeighbourhoodAsJSON() = "+writer.toString() );
         return writer.toString();
     }
 
@@ -255,7 +256,7 @@ public class NodeList {
             Console.error(ex.getMessage());
             return "{}";
         }
-        System.out.println( writer.toString() + "= NodeList.getSelectedNodesAsJSON()");
+        //System.out.println( writer.toString() + "= NodeList.getSelectedNodesAsJSON()");
         return writer.toString();
     }
 

@@ -44,8 +44,8 @@ public class EdgeWeightRange extends NodeFilter {
 
         Metrics metrics = input.getMetrics();
         float f = metrics.maxEdgeWeight - metrics.minEdgeWeight;
-        System.out.println("f:" + f);
-        System.out.println("minEdgeWeight:" + metrics.minEdgeWeight + " maxEdgeWeight:" + metrics.maxEdgeWeight);
+        //System.out.println("f:" + f);
+        //System.out.println("minEdgeWeight:" + metrics.minEdgeWeight + " maxEdgeWeight:" + metrics.maxEdgeWeight);
 
         Object o = view.properties.get(root + KEY_MIN);
         min = (o instanceof Integer)

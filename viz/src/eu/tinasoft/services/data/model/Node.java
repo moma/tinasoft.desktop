@@ -236,7 +236,7 @@ public class Node implements Comparable {
             Console.error(ex.getMessage());
             return "{}";
         }
-        System.out.println("json: " + writer.toString());
+        //System.out.println("json: " + writer.toString());
         return writer.toString();
     }
 

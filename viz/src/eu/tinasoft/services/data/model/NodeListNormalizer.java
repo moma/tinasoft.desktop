@@ -223,8 +223,7 @@ public class NodeListNormalizer {
     }
 
     public static List<Node> normalize(List<Node> nodes, Metrics metrics, String attr, Object value) {
-        System.out.println("normalizing..");
-
+        //System.out.println("normalizing..");
 
         int i = 0;
         for (Node n : nodes) {
