@@ -74,7 +74,7 @@ public class EdgeWeightRangeHack extends NodeFilter {
         min = MathFunctions.map(min, 0.0f, 1.0f, metrics.minEdgeWeight, metrics.maxEdgeWeight);
         max = MathFunctions.map(max, 0.0f, 1.0f, metrics.minEdgeWeight, metrics.maxEdgeWeight);
 
-        //System.out.println("min2:" + min + " max2:" + max);
+        System.out.println("min2:" + min + " max2:" + max);
 
         //System.out.println("threshold weight got " + input.size() + " nodes in entry");
         for (Node n : input.nodes) {
@@ -84,14 +84,20 @@ public class EdgeWeightRangeHack extends NodeFilter {
             for (int k : elems) {
                 Float w = (Float) n.weights.get(k);
                 if (w == null) {
+                    System.out.println(" not kept because null");
                     continue;
                 }
 
+                System.out.print(min+" <= "+w+" <= "+max);
                 if (n.selected) {
-                       newWeights.put(k, w);
+                    newWeights.put(k, w);
+                    System.out.println(" kept!");
                 }
                 else if (n.category.equals(category) && min <= w && w <= max) {
                     newWeights.put(k, w);
+                    System.out.println(" kept!");
+                } else {
+                    System.out.println(" not kept..");
                 }
             }
             Node newNode = n.getProxyClone();

@@ -50,6 +50,7 @@ public class NodeWeightRange extends NodeFilter {
                 ? new Float((Double) o)
                 : (Float) o;
 
+
         o = view.properties.get(root + KEY_MAX);
         max = (o instanceof Integer)
                 ? new Float((Integer) o)

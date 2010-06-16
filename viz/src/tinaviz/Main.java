@@ -552,8 +552,9 @@ public class Main extends PApplet implements MouseWheelListener {
                 bezierDetail((int) modulator);
 
                 float mn = PApplet.min(n1.radius, n2.radius);
-                float minRad = mn == 0 ? Output.RADIUS_MIN : mn * 0.2f;
-                float maxRad = mn == 0 ? Output.RADIUS_MIN : mn * 0.5f;
+                mn = metrics.minNodeRadius;
+                float minRad = mn == 0 ? Output.RADIUS_MIN : mn * 0.3f;
+                float maxRad = mn == 0 ? Output.RADIUS_MIN : mn * 0.8f;
                 float screenWeight =
                         (metrics.minEdgeWeight == metrics.maxEdgeWeight)
                         ? maxRad
@@ -563,7 +564,9 @@ public class Main extends PApplet implements MouseWheelListener {
                         minRad,
                         maxRad);
 
-                strokeWeight(screenWeight * v.sceneScale);
+                float finalWeight = screenWeight * v.sceneScale;
+                if (finalWeight < 1.f) finalWeight = 1.f;
+                strokeWeight(finalWeight);
                 drawCurve(n1.position.x, n1.position.y, n2.position.x, n2.position.y);
             } // FOR NODE B
         }   // FOR NODE A
@@ -1056,6 +1059,9 @@ public class Main extends PApplet implements MouseWheelListener {
         } else if (key == 'e') {
             v.showLinks = !v.showLinks;
             session.getBrowser().buttonStateCallback("showEdges", v.showLinks);
+        } else if (key == 'i') {
+            // TODO
+
         } else if (key == 't') {
             v.showLabels = !v.showLabels;
             session.getBrowser().buttonStateCallback("showLabels", v.showLabels);
