@@ -10,7 +10,7 @@ function TinaServiceClass(url) {
     },
     
     // Export an extraction session
-   runExportCorpora: function(periods, corporaId, exportPath, whitelistPath, userfiltersPath) {
+    runExportCorpora: function(periods, corporaId, exportPath, whitelistPath, userfiltersPath) {
     
     },
     
@@ -160,37 +160,12 @@ function TinaServiceClass(url) {
         this._POST("document", { dataset: _dataset, id: _id }, {error:"couldn't get document"}, cb);
     },
 
-
-
-    parametrize: function(params) {
-        var out="";
-        var i=0;
-        for (key in params) {
-            var val = params[key];
-            var s = "";
-            // todo: type checking
-            if (val === Array) {
-                console.log("parsing array..");
-                for (var x = 0; x < val.length; x++ ) {
-                    if (x==0) {
-                        s=s+key+"="+x;
-                    } else {
-                        s=s+"&"+key+"="+x;
-                    }
-                }
-                // for each sub val, we concatenate
-            } else {
-                s = s+key+"="+val;
-            }
-            if (i++ ==0) {
-                out = out + "?";
-            } else {
-                out = out + "&";
-            }
-            out = out + s;
-        }
-        return out;
-    },
+    /**
+     * do an HTTP GET request to SERVER_URL + path + params
+      SERVER_URL is a constant,
+      path is a parameter,
+      params is serialized to URL encoded arguments
+     */ 
     _GET: function(path, params, def, _cb) {
     
         // setup default values, if defined
@@ -202,7 +177,8 @@ function TinaServiceClass(url) {
         // call the jquery ajax, passing the params and the callbacks
         $.ajax({
                 // jquery to url
-                url: SERVER_URL+"/"+path+""+this.parametrize(params),
+                url: SERVER_URL+"/"+path,
+                data: params,
                 type: "GET",
                 dataType: "json",
                 beforeSend: function() {
