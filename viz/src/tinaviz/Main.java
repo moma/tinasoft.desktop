@@ -190,7 +190,7 @@ public class Main extends PApplet implements MouseWheelListener {
         lastMousePosition = new PVector(width / 2.0f, height / 2.0f, 0);
 
         brandingImage = loadImage("tina_icon.png");
-
+        System.out.println("going to call session.getBrowser().init();");
         session.getBrowser().init();
         Console.log("Visualization started..");
     }

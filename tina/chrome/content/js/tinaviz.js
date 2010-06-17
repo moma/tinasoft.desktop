@@ -12,7 +12,7 @@ function Tinaviz() {
     //return {
         this.init= function() {
             if (wrapper != null || applet != null) return;
-            wrapper = $('#tinaviz')[0];
+            wrapper = $('#vizframe').contents().find('#tinaviz')[0];
             if (wrapper == null) return;
             applet = wrapper.getSubApplet();
             if (applet == null) return;
@@ -68,9 +68,10 @@ function Tinaviz() {
             //$( "#tabs" ).enable();
             $( "#tabs" ).tabs( "option", "disabled", false );
         
-            $("#waitMessage").hide();
             this.infodiv.display_current_category();
             this.infodiv.display_current_view();
+            
+            this.logDebug("tinasoft desktop started!");
         }
 
         /************************
@@ -385,7 +386,7 @@ function Tinaviz() {
             ]);
             this.infodiv.display_current_category();
             this.infodiv.display_current_view();
-            switchTab(level);
+            switchTab(view);
         }
         /************************
          *
@@ -393,6 +394,18 @@ function Tinaviz() {
          *
          ************************/
 
+        // Public methods
+        this.loadFromURI= function(uri) {
+            if (applet == null) return false;
+            return applet.getSession().updateFromURI(view,uri);
+        }
+        
+        // pass a GEXF string!
+        this.loadFromString= function(view,gexf) {
+            if (applet == null) return false;
+            return applet.getSession().updateFromString(view,gexf);
+        }
+    
         // TODO: use a cross-browser compatible way of getting the current URL
         this.readGraphJava= function(view,graphURL) {
             // window.location.href
@@ -400,7 +413,6 @@ function Tinaviz() {
             var sPath = document.location.href;
             var gexfURL = sPath.substring(0, sPath.lastIndexOf('/') + 1) + graphURL;
             applet.getSession().updateFromURI(view,gexfURL);
-            $('#waitMessage').hide();
         }
 
         this.readGraphAJAX= function(view,graphURL) {
@@ -409,69 +421,60 @@ function Tinaviz() {
                 url: graphURL,
                 type: "GET",
                 dataType: "text",
-                beforeSend: function() { $('#waitMessage').show(); },
-                error: function() { $('#waitMessage').show(); },
+                beforeSend: function() { },
+                error: function() { },
                 success: function(gexf) {
                    applet.getSession().updateFromString(view,gexf);
-                   $('#waitMessage').hide();
                }
             });
         }
 
-        this.loadRelativeGraph= function(view,filename) {
-        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-        var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
-        var gexfPath;// = path + filename;
-        if (path.search(/\\/) != -1) { gexfPath = path + "\\"+filename }
-        else { gexfPath = path + "/"+filename  }
-
-        this.logDebug("going to load "+filename);
-        var file =
-            Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        this.logDebug("initWithPath: "+gexfPath);
-        file.initWithPath(gexfPath);
-        
-
-        
-        var destDirPath;
-        var destDir = Components.classes["@mozilla.org/file/local;1"]
-        .createInstance(Components.interfaces.nsILocalFile);
-        if (path.search(/\\/) != -1) {   destDirPath = path + "\\chrome\\content\\applet\\"; }
-        else {   destDirPath = path + "/chrome/content/applet/"; }
-        
-       
-        var finaFile =
-             Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        finaFile.initWithPath(destDirPath+"current.gexf");
-        if (finaFile.exists()) finaFile.remove(false);
-        
-        destDir.initWithPath(destDirPath);
-        //console.log("file.copyTo("+destDir+",\"current.gexf\");");
-        file.copyTo(destDir,"current.gexf");
-        
-        this.logDebug("destDirPath + current.gexf: "+destDirPath+"current.gexf");
-
-        finaFile =
-             Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        finaFile.initWithPath(destDirPath+"current.gexf");
-        
-        var uri =
-              Components.classes["@mozilla.org/network/protocol;1?name=file"]
-                .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                    .getURLSpecFromFile(finaFile);
-                    
-        this.logDebug("loading absolute graph: "+uri);
-        result = this.openGraph(view,uri);
-    }
     
-        this.openGraph = function(view,relativePath) {
-            if (applet == null) return;
-            applet.getSession().updateFromURI(view,path);
+        this.loadRelativeGraphFromFile = function(view,filename) {
+            this.loadFromString(view, this.readLines(filename));
+        }
+        
+        // using string technique
+        this.loadAbsoluteGraph= function(view,filename) {
+
+            var gexfPath;
+
+            this.logDebug("going to load "+filename);
+            var file =
+                Components.classes["@mozilla.org/file/local;1"]
+                    .createInstance(Components.interfaces.nsILocalFile);
+            this.logDebug("initWithPath: "+filename);
+            file.initWithPath(filename);
+
+            var fstream =
+                Components.classes["@mozilla.org/network/file-input-stream;1"]
+                    .createInstance(Components.interfaces.nsIFileInputStream);
+            var cstream =
+                Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+                    .createInstance(Components.interfaces.nsIConverterInputStream);
+
+            fstream.init(file, -1, 0, 0);
+            cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
+
+            var str = {};
+            cstream.readString(-1, str); // read the whole file and put it in str.value
+            cstream.close(); // this closes fstream
+            this.logDebug("calling this.loadFromString(..):"+str.value);
+            result = this.loadFromString(view,str.value);
         }
 
+        this.loadAbsoluteGraphFromURI= function(filename) {
+            var gexfFile =
+                Components.classes["@mozilla.org/file/local;1"]
+                    .createInstance(Components.interfaces.nsILocalFile);
+            gexfFile.initWithPath(filename);
+            var uri =
+                Components.classes["@mozilla.org/network/protocol;1?name=file"]
+                    .createInstance(Components.interfaces.nsIFileProtocolHandler)
+                        .getURLSpecFromFile(gexfFile);
+            this.logDebug("loading absolute graph: "+uri);
+            result = this.loadFromURI(uri);
+        }
         /***********************************
          *
          * Manual actions controler system

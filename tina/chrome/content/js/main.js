@@ -8,7 +8,6 @@ const Ci = Components.interfaces;
 const HELP_URL = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
 const INTRO_URL = "chrome://tina/content/about.xul";
 
-
 var TinaService = new TinaServiceClass("http://localhost:8888");
 
 /* Tinasoft observers handlers */
@@ -55,7 +54,7 @@ var tinasoftTaskObserver = {
                 tinaviz.clear();
                 console.log( "opening " + data );
                 switchTab( "macro" );
-                tinaviz.loadRelativeGraph("macro", JSON.parse(data));
+                tinaviz.readGraphJava("macro", JSON.parse(data));
             }
             button.html("New graph");
             button.toggleClass("ui-state-disabled", 1);
@@ -285,7 +284,7 @@ function displayListGraph(trid, corpora) {
                     console.log( "opening " + $(this).attr('value') );
                     $("#tabs").data('disabled.tabs', []);
                     switchTab( "macro" );
-                    tinaviz.loadRelativeGraph("macro",$(this).attr('value'));
+                    tinaviz.readGraphJava("macro",$(this).attr('value'));
                 });
                 ol.append(button);
             }
@@ -365,6 +364,7 @@ function displayListCorpora(table) {
                         console.log("couldn't error"); 
                     }
                 });
+
 
 
             }
@@ -842,14 +842,7 @@ $(document).ready(function() {
     });*/
 
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
-    $.extend($.ui.slider.defaults, {
-            //range: "min",
-            min: 0,
-            max: 100,
-            value: 100.0,
-            animate: true,
-            orientation: "horizontal",
-    });
+
 
     /* Fetch data into table */
     displayListCorpora( "graph_table" );
@@ -888,12 +881,13 @@ $(document).ready(function() {
     tinaviz.infodiv = infodiv;
 
     // TODO : handler to open a graph file
-    /*$('#htoolbar input[type=file]').change(function(e){
+    $('#htoolbar input[type=file]').change(function(e){
         tinaviz.clear();
-        tinaviz.loadAbsoluteGraph( $(this).val() );
-    });*/
+        tinaviz.readGraphJava( $(this).val() );
+    });
 
     // all hover and c$( ".selector" ).slider( "option", "values", [1,5,9] );lick logic for buttons
+    
     $(".fg-button:not(.ui-state-disabled)")
     .hover(
         function(){
@@ -921,7 +915,7 @@ $(document).ready(function() {
     // binds the click event to tinaviz.searchNodes()
 
     $("#macro-search").submit(function() {
-      var txt = $("#macro-search_input").val();
+      var txt = $("#macro-search-input").val();
       if (txt=="") {
             tinaviz.unselect();
       } else {
@@ -930,7 +924,7 @@ $(document).ready(function() {
       return false;
      });
       $("#meso-search").submit(function() {
-      var txt = $("#meso-search_input").val();
+      var txt = $("#meso-search-input").val();
       if (txt=="") {
             tinaviz.unselect();
       } else {
@@ -940,7 +934,7 @@ $(document).ready(function() {
     });
     /*
     $("#search").keypress(function() {
-      var txt = $("#search_input").val();
+      var txt = $("#search-input").val();
       if (txt=="") {
         tinaviz.unselect();
       } else {
@@ -948,13 +942,13 @@ $(document).ready(function() {
       }
     });
     */
-    $("#macro-search_button").button({
+    $("#macro-search-button").button({
         text: false,
         icons: {
             primary: 'ui-icon-search'
         }
     }).click( function(eventObject) {
-          var txt = $("#macro-search_input").val();
+          var txt = $("#macro-search-input").val();
           if (txt=="") {
                 tinaviz.unselect();
           } else {
@@ -962,13 +956,13 @@ $(document).ready(function() {
           }
     });
     
-    $("#meso-search_button").button({
+    $("#meso-search-button").button({
         text: false,
         icons: {
             primary: 'ui-icon-search'
         }
     }).click( function(eventObject) {
-          var txt = $("#meso-search_input").val();
+          var txt = $("#meso-search-input").val();
           if (txt=="") {
                 tinaviz.unselect();
           } else {
@@ -1010,8 +1004,8 @@ $(document).ready(function() {
             tinaviz.touch();
         }
     });
-    /*
-    $("#sliderNodeSize").slider({
+    
+    $("#macro-sliderNodeSize  #meso-sliderNodeSize").slider({
         value: 50.0,
         max: 100.0,// precision/size
         animate: true,
@@ -1021,7 +1015,7 @@ $(document).ready(function() {
             tinaviz.touch();
         }}
     );
-*/
+
     $("#macro-sliderSelectionZone #meso-sliderSelectionZone").slider({
         value: 1.0,
         max: 300.0, // max disk radius, in pixel
@@ -1114,7 +1108,7 @@ $(document).ready(function() {
     appletFile.initWithPath(appletPath);
     var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
     var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no" frameborder="0" src="'+appletURL+'"></iframe>';
-    window.setTimeout("$('#container').html('"+iframehtml+"');", 1000);
+    window.setTimeout("$('#container').html('"+iframehtml+"');", 3000);
 
     $("#tabs-1-accordion").accordion({
         autoHeight: false,

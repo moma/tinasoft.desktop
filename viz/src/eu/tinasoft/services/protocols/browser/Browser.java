@@ -29,7 +29,7 @@ public class Browser {
     }
 
     public Object call(String fnc, Object[] args) {
-        //System.out.println("calling "+fnc);
+        // System.out.println("window: "+window+" will call "+fnc);
         return (window!=null)?window.call(fnc, args):null;
     }
 
@@ -43,6 +43,8 @@ public class Browser {
 
     public Object callAndForget(String func, String args) {
         Object[] message = {jsContextPrefix + apiPrefix + func + "( " + args + ")", 0};
+         //System.out.println("going to call setTimeout("+message[0]+");");
+
         return setTimeout(message);
     }
 
@@ -51,6 +53,7 @@ public class Browser {
     }
 
     public void init() {
+        // System.out.println("going to call callAndForget(\"init\",\"\");");
         callAndForget("init","");
     }
 }
