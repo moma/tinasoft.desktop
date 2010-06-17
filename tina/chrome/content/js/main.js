@@ -153,10 +153,9 @@ var submitImportfile = function(event) {
         console.log( "missing the path field" );
         return false;
     }
-    TinaService.runImportFile(
+    TinaService.postFile(
+    corpora.val(),
         path.val(),
-        config.val(),
-        corpora.val(),
         false,
         filetype.val(),
         overwrite

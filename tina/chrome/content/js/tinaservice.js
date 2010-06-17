@@ -38,15 +38,7 @@ function TinaServiceClass(url) {
     var SERVER_URL = url; // don't forget the "/" at the end
     return {
 
-    runImportFile: function (path, configFile, corporaId, index, filetypeFormat, overwrite) {
-        console.log("calling dataset("+_dataset+","+cb+")");
-        this._POST("file",
-            { file: _path }, 
-            {error:"couldn't get dataset"},
-            cb      
-        );
-    },
-    
+
     // Export an extraction session
     runExportCorpora: function(periods, corporaId, exportPath, whitelistPath, userfiltersPath) {
     
@@ -202,11 +194,17 @@ function TinaServiceClass(url) {
     postFile
     curl http://localhost:8888/file -d dataset="test_data_set" -d path="tests/data/pubmed_tina_test.csv"
     */
+
+    //runImportFile: function (path, configFile, corporaId, index, filetypeFormat, overwrite) {
+    //$index$format$overwrite
     postFile: function(_dataset, _path, cb) {
         console.log("calling postFile("+_dataset+","+_path+")");
         this._POST("file",
            { dataset: _dataset,
-             path: _path 
+             path: _path,
+             index: 'False', // should be indexed?
+             format: 'tinacsv',
+             overwrite: 'False',
            }, 
            {error:"couldn't post file"},
            cb
@@ -321,7 +319,7 @@ function TinaServiceClass(url) {
         // setup default values, if defined
         var cb = {};
         for (key in def) { cb[key] = def[key]; }
-        if ("error" in def) { cb.error = function(e) { console.log(val+": "+e); }; }
+        if ("error" in def) { cb.error = function(e) { console.log("error: "+e); }; }
         for (key in _cb) { cb[key] = _cb[key]; }
         
         // call the jquery ajax, passing the params and the callbacks
