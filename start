@@ -25,9 +25,11 @@ fi
 #    cp -R ../TinasoftPytextminer/ .
 #fi
 
-echo "starting tinasoft http server..."
-python TinasoftPytextminer/httpserver.py &
+
 echo "starting tinasoft desktop..."
 #echo $LD_LIBRARY_PATH
 cd tina
-./tina
+./tina &
+echo "starting tinasoft http server..."
+cd ..
+python TinasoftPytextminer/httpserver.py
