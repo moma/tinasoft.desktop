@@ -25,7 +25,7 @@
     <script type="text/javascript" src="js/tinaviz.js" language="javascript"></script>
     <script type="text/javascript" src="js/tinaservice.js" language="javascript"></script>
     <script type="text/javascript" src="js/main.js" language="javascript"></script>
-    
+
     <script type="text/javascript" src="js/firebug-lite.js"></script>
 
     <!--TINASOFT CSS -->
@@ -47,33 +47,32 @@
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-0" class="ui-corner-bottom">
                 <div id="importForm" class="ui-corner-all formleft">
-                    <h3><a href="#">import a file</a></h3>
+                    <h3><a href="#">choose a file to import</a></h3>
                     <div>
                         <label><h4>source file</h4><label>
-                        <input id="csvfile" type="file" class="field" name="csvfile" value='' />
+                        <input id="importfilepath" type="file" class="field" name="import file path" value='' />
                         <div style="clear:both;"></div>
                         <label><h4>file type</h4><label>
-                        <select id="filetype" class="field" name="filetype">
-                            <option selected value='tina'>tinasoft csv</option>
+                        <select id="importfiletype" class="field" name="filetype">
+                            <option selected value='tinacsv'>tinasoft csv</option>
                             <!--<option value ='medline'>pubmed medline abstracts</option>-->
                         </select>
-                        <input id="configfile" class="field" type="hidden" name="configfile" value="import.yaml"/>
+                        <!--<input id="importconfigfile" class="field" type="hidden" name="configfile" value="config.yaml"/>-->
                     </div>
-                    <h3><a href="#">choose a name</a></h3>
+                    <h3><a href="#">choose a data set name</a></h3>
                     <div>
-                        <label><h4>data set name (unique identifier)</h4><label>
                         <p class="ui-state-active">
-                        choosing an existing name will update the data set
+                        choosing an existing name will update the existing data set
                         </p>
-                        <input id="corpora" type="text" name="corpora" size="24"/>
-                        <div id="importFile">
-                            <button class="ui-state-default ui-corner-all">Launch</button>
-                        </div>
+                        <input id="importdatasetid" type="text" name="dataset id" size="24"/>
+
+                            <button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
+
                     </div>
                     <h3><a href="#">options</a></h3>
                     <div>
-                        <label><h4>config file (default='import.yaml')</h4><label>
-                        <input id="configfile" class="field" type="file" name="configfile" value="import.yaml"></input>
+                        <input id="importoverwrite" type="checkbox" name="overwrite" value="">overwrite existing document</input><BR/>
+                        <input id="importextract" type="checkbox" name="overwrite" value="">only process fields extraction</input>
                     </div>
 
                 </div>
@@ -145,7 +144,7 @@
                 </div><!-- END ACCORDION -->
                 <div style="clear:both;"></div>
             </div><!--END FIRST TAB -->
-            
+
             <div id="tabs-2" class="ui-corner-bottom">
                 <div id="htoolbar" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
 
@@ -190,7 +189,7 @@
                                 <span class="sliderLabel noSelect">magnify</span>
                                 <div id="macro-sliderNodeSize"></div>
                             </div>
-                            
+
                             <div class="slider smallslider">
                                 <span class="sliderLabel noSelect">cursor size</span>
                                 <div id="macro-sliderSelectionZone"></div>
@@ -226,7 +225,7 @@
 
 
                     </div><!-- End of htoolbar -->
-                    
+
                 <!--
                 <div id="tabfiller" class="tabfiller">
                 </div>
@@ -276,7 +275,7 @@
                                 <span class="sliderLabel noSelect">magnify</span>
                                 <div id="meso-sliderNodeSize"></div>
                             </div>
-                            
+
                             <div class="slider smallslider">
                                 <span class="sliderLabel noSelect">cursor size</span>
                                 <div id="meso-sliderSelectionZone"></div>

@@ -15,7 +15,7 @@
         windowtype="TinaSoft:About" onload="startup()"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script src="about.js"/>
+  <script src="js/about.js"/>
 
   <stringbundle id="strings" src="chrome://tina/locale/about.properties"/>
 

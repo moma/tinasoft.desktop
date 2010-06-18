@@ -2,9 +2,6 @@
  * Version: GNU GPL 3
  * ***** END LICENSE BLOCK ***** */
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-
 const HELP_URL = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
 const INTRO_URL = "chrome://tina/content/about.xul";
 
@@ -128,21 +125,9 @@ var displayDuplicateDocs = function(data) {
 /* Importing data set action controler */
 
 var submitImportfile = function(event) {
-    var corpora = $("#corpora");
-    var path = $("#csvfile");
-    var config  = $("#configfile");
-    var filetype = $("#filetype");
-    var overwrite = $("#overwrite:checked");
-    if (overwrite.val() !== undefined) {
-        overwrite = true;
-    }
-    else {
-        overwrite = false;
-    }
-    // DEBUG VALUE
-    //path.val("pubmed_tina_test.csv");
-    //config.val("import.yaml");
-    //exportpath.val("test-export.csv");
+    var corpora = $("#importdatasetid");
+    var path = $("#importfilepath");
+    var filetype = $("#importfiletype");
     if ( corpora.val() == '' ) {
         corpora.addClass('ui-state-error');
         console.log( "missing the corpora field" );
@@ -153,14 +138,35 @@ var submitImportfile = function(event) {
         console.log( "missing the path field" );
         return false;
     }
-    TinaService.postFile(
-    corpora.val(),
-        path.val(),
-        false,
-        filetype.val(),
-        overwrite
-    );
-    return true;
+    var overwrite = $("#importoverwrite:checked");
+    if (overwrite.val() !== undefined) {
+        overwrite = true;
+    }
+    else {
+        overwrite = false;
+    }
+    var extract = $("#importextract:checked");
+    if (extract.val() !== undefined) {
+        console.log("extract file");
+        TinaService.getFile(
+            corpora.val(),
+            path.val(),
+            false,
+            filetype.val(),
+            overwrite
+        );
+        return true;
+    }
+    else {
+        TinaService.postFile(
+            corpora.val(),
+            path.val(),
+            false,
+            filetype.val(),
+            overwrite
+        );
+        return true;
+    }
 
 };
 
@@ -268,10 +274,10 @@ function displayListGraph(trid, corpora) {
         + "</ol></td>"
     );
     var ol = $( "#" + olid  ).empty();
-    
+
     TinaService.getGraphList(corpora['id'],{
-    
-        success: function(graphList) { 
+
+        success: function(graphList) {
             for ( var i=0; i < graphList.length; i++ ) {
                 var button = $("<button class='ui-state-default ui-corner-all' value='"
                     + graphList[i]
@@ -288,7 +294,7 @@ function displayListGraph(trid, corpora) {
                 ol.append(button);
             }
         }
-        
+
     });
 }
 
@@ -340,14 +346,14 @@ function selectableCorpusInit( ol, corpora ) {
 function displayListCorpora(table) {
     TinaService.getDatasetList({
         success: function(list) {
-        
+
             var body = $( "#" +table+ " tbody" );
             body.empty();
             for ( var i=0, len=list.length; i<len; i++ ){
                 var dtst_trid = table+ "_tr_corpora_" + i;
                 var datasetName = list[i];
-                
-                TinaService.getDataset(datasetName, {                
+
+                TinaService.getDataset(datasetName, {
                     success: function(dataset) {
                     body.append("<tr id='"+ dtst_trid
                         + "' class='ui-widget-content'>"
@@ -358,9 +364,9 @@ function displayListCorpora(table) {
                 //console.log(body.html());
                     displayListCorpus( dtst_trid, dataset );
                     displayListGraph( dtst_trid, dataset );
-                    }, 
+                    },
                     error: function(e) {
-                        console.log("couldn't error"); 
+                        console.log("couldn't error");
                     }
                 });
 
@@ -368,8 +374,8 @@ function displayListCorpora(table) {
 
             }
         },
-        
-        
+
+
         error: function(error) {
             console.log(error);
         }
@@ -779,7 +785,7 @@ function resizeApplet() {
     $('#infodiv').css("height",""+(h-50)+"px");
     $('#infodiv').css("width",""+(300)+"px");
     tinaviz.size(w - 350,h);
-    
+
    //$("#infodiv").css( 'height', getScreenHeight() - $("#hd").height() - $("#ft").height() - 60);
 }
 
@@ -852,7 +858,7 @@ $(document).ready(function() {
             resizeApplet();
         }
     });
-    
+
 
     //No text selection on elements with a class of 'noSelect'
     /*
@@ -886,7 +892,7 @@ $(document).ready(function() {
     });
 
     // all hover and c$( ".selector" ).slider( "option", "values", [1,5,9] );lick logic for buttons
-    
+
     $(".fg-button:not(.ui-state-disabled)")
     .hover(
         function(){
@@ -954,7 +960,7 @@ $(document).ready(function() {
                 tinaviz.searchNodes(txt, "containsIgnoreCase");
           }
     });
-    
+
     $("#meso-search-button").button({
         text: false,
         icons: {
@@ -968,7 +974,7 @@ $(document).ready(function() {
                 tinaviz.searchNodes(txt, "containsIgnoreCase");
           }
     });
-    
+
     // SLIDERS INIT
     $.extend($.ui.slider.defaults, {
         //range: "min",
@@ -1003,7 +1009,7 @@ $(document).ready(function() {
             tinaviz.touch();
         }
     });
-    
+
     $("#macro-sliderNodeSize  #meso-sliderNodeSize").slider({
         value: 50.0,
         max: 100.0,// precision/size
@@ -1097,7 +1103,7 @@ $(document).ready(function() {
    $('#waitMessage').effect('pulsate', {}, 'fast');
 
     // magic trick for applet loading rights
-    
+
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
     var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
     var appletPath;
