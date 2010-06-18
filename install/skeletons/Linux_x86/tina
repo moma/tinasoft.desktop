@@ -9,20 +9,13 @@ if [ -e "plugins/libnpjp2.so" ]
   then
     echo "found java plugin!"
   else
-    ln -s "`pwd`/java/lib/i386/libnpjp2.so" "plugins/libnpjp2.so"
+    ln -s "`pwd`/java/lib/amd64/libnpjp2.so" "plugins/libnpjp2.so"
 fi
 
-# java need to be executable
-chmod +x /java/bin/*
-
-export LD_LIBRARY_PATH="`pwd`/platform/Linux_x86-gcc3/lib"
 export NLTK_DATA="`pwd`/shared/nltk_data"
 #export JAVA_HOME=`pwd`/java
 export PATH="`pwd`/java"
 #echo $JAVA_HOME
-#echo $PATH
-echo "Starting Tinasoft.."
-echo "(if you are upgrading from a previous release, please remove ~/.tina folder)"
+echo $PATH
 ./tina-stub
-#xulrunner-stub application.ini
-#xulrunner/xulrunner application.ini
+#xulrunner application.ini
