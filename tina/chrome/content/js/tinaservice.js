@@ -30,57 +30,36 @@ function readLines(filename) {
         cstream.close(); // this closes fstream
         return str.value;
 }
-    
+
 
 function TinaServiceClass(url) {
-    var STATUS_ERROR = 0;
-    var STATUS_RUNNING = 1;
+    var STATUS_ERROR = 666;
+    var STATUS_RUNNING = 0;
+    var STATUS_OK = 1;
     var SERVER_URL = url; // don't forget the "/" at the end
     return {
 
-
-    // Export an extraction session
-    runExportCorpora: function(periods, corporaId, exportPath, whitelistPath, userfiltersPath) {
-    
-    },
-    
-    // import a whitelist and writes cooc matrix
-    runProcessCoocGraph: function(whitelistPath, corporaId, periods, userfiltersPath, threshold) {
-        // a convertir en sous appels
-    },
-
-    // export a cooc matrix to text file
-    runExportCoocMatrix: function() {
-        // TODO
-    
-    },
-
-    // export a gexf graph
-    runExportGraph: function(corporaId, periods, threshold, whitelistPath) {
-        // TODO
-    
-    },
 
     /*
     url="http://localhost:8888/graph?$dataset&filetype=gexf"
     */
     getGraph: function(dataset, cb) {
         console.log("calling getGraph("+_dataset+", "+cb+")");
-          
+
         this._GET("file",
-           { 
-            path: _path, 
-            dataset: _dataset, 
+           {
+            path: _path,
+            dataset: _dataset,
             index: _index,
             format:  _format,
             overwrite:  _overwrite
-           }, 
+           },
            {error:"couldn't get file"},
            cb
         );
-        
-    },  
-     
+
+    },
+
     getGraphList: function(cb) {
         console.log("calling getGraphList("+cb+")");
         this.getDatasetList({
@@ -98,40 +77,40 @@ function TinaServiceClass(url) {
                 cb.success( graphs );
             }
         });
-    },  
-     
-    
+    },
+
+
     /*
     url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
     */
     getFile: function(_path, _dataset, _index, _format, _overwrite, cb) {
         //console.log("calling file("+_dataset+","+_file+")");
         //var data = this.loadFromString(view, this.readLines(_file));
-        
+
         this._GET("file",
-           { 
-            path: _path, 
-            dataset: _dataset, 
+           {
+            path: _path,
+            dataset: _dataset,
             index: _index,
             format:  _format,
             overwrite:  _overwrite
-           }, 
+           },
            {error:"couldn't get file"},
            cb
         );
     },
-    
+
     /*
     url="http://localhost:8888/cooccurrences?$periods$whitelist"
     */
     getCooccurrences: function(_periods, _whitelist, cb) {
         console.log("calling getCooccurrences("+_periods+","+_whitelist+","+cb+")");
-        
+
         this._GET("cooccurrences",
             // inpost params
-            { periods: _periods, 
-              whitelist: _whitelist 
-            }, 
+            { periods: _periods,
+              whitelist: _whitelist
+            },
             {error:"couldn't get cooccurrences"},
             cb
         );
@@ -144,14 +123,14 @@ function TinaServiceClass(url) {
         console.log("calling getWhitelist("+_dataset+","+_periods+","+_whitelistlabel+","+cb+")");
         this._GET("whitelist",
             { dataset: _dataset,
-              periods: _periods, 
-              whitelistlabel: _whitelistlabel 
+              periods: _periods,
+              whitelistlabel: _whitelistlabel
             },
-            {error:"couldn't get whitelist"}, 
+            {error:"couldn't get whitelist"},
             cb
         );
     },
-    
+
     /*
       Access methods to objects stored in the database
     */
@@ -165,21 +144,21 @@ function TinaServiceClass(url) {
     },
     getDocument: function(_dataset, _id, cb) {
         console.log("calling getDocument("+_dataset+", "+_id+", "+cb+")");
-        this._GET("document", 
+        this._GET("document",
          { dataset: _dataset, id: _id },
-         {error:"couldn't get document"}, 
+         {error:"couldn't get document"},
          cb
         );
     },
     getDataset: function(_dataset, cb) {
         console.log("calling getDataset("+_dataset+","+cb+")");
         this._GET("dataset",
-            { dataset: _dataset }, 
+            { dataset: _dataset },
             {error:"couldn't get dataset"},
-            cb      
+            cb
         );
     },
-    
+
     /*
     Special method to list existing datasets
     */
@@ -187,9 +166,9 @@ function TinaServiceClass(url) {
         console.log("calling getDatasetList("+cb+")");
         this.getDataset('', cb);
     },
-    
+
     /* POST */
-    
+
     /*
     postFile
     curl http://localhost:8888/file -d dataset="test_data_set" -d path="tests/data/pubmed_tina_test.csv"
@@ -197,17 +176,20 @@ function TinaServiceClass(url) {
 
     //runImportFile: function (path, configFile, corporaId, index, filetypeFormat, overwrite) {
     //$index$format$overwrite
-    postFile: function(_dataset, _path, cb) {
-        console.log("calling postFile("+_dataset+","+_path+")");
+    postFile: function(_dataset, _path, _format, _overwrite, cb) {
+        console.log("calling postFile("+_dataset+","+_path+",False,"+_format+","+_overwrite+")");
         this._POST("file",
-           { dataset: _dataset,
-             path: _path,
-             index: 'False', // should be indexed?
-             format: 'tinacsv',
-             overwrite: 'False',
-           }, 
-           {error:"couldn't post file"},
-           cb
+            {
+                dataset: _dataset,
+                path: _path,
+                index: 'False', // should be indexed?
+                format: _format,
+                overwrite: _overwrite,
+            },
+            {
+                error: "couldn't post file"
+            },
+            cb
         );
     },
 
@@ -218,27 +200,27 @@ function TinaServiceClass(url) {
     postWhitelist: function(_path, _whitelistlabel, cb) {
         console.log("calling postWhitelist("+_path+","+_whitelistlabel+","+cb+")");
         this._POST("whitelist",
-            { 
+            {
               path: _path,
-              whitelistlabel: _whitelistlabel 
+              whitelistlabel: _whitelistlabel
             },
-            {error:"couldn't post whitelist"}, 
+            {error:"couldn't post whitelist"},
             cb
        );
     },
-    
+
     /*
     curl http://localhost:8888/cooccurrences -d dataset="test_data_set" -d whitelist="tests/data/pubmed_whitelist.csv" -d periods="1"
     */
     postCooccurrences: function(_dataset, _periods, _whitelist, cb) {
         console.log("calling postCooccurrences("+_dataset+","+_periods+","+_whitelist+","+cb+")");
-        
+
         this._POST("cooccurrences",
             // inpost params
-            { dataset: _dataset, 
-              periods: _periods, 
-              whitelist: _whitelist 
-            }, 
+            { dataset: _dataset,
+              periods: _periods,
+              whitelist: _whitelist
+            },
             {error:"couldn't post cooccurrences"},
             cb
         );
@@ -249,20 +231,20 @@ function TinaServiceClass(url) {
    */
     postGraph: function(_dataset, _periods, cb) {
         console.log("calling postGraph("+_dataset+", "+cb+")");
-        this._POST("graph", 
+        this._POST("graph",
             { dataset: _dataset,
-              periods: _periods }, 
+              periods: _periods },
             {error:"couldn't post graph"},
             cb
         );
-    },  
-    
+    },
+
     postDataset: function(_obj, cb) {
         console.log("calling dataset("+_obj+","+cb+")");
         this._POST("dataset",
-            { dataset: _obj }, 
+            { dataset: _obj },
             {error:"couldn't get dataset"},
-            cb      
+            cb
         );
     },
 
@@ -284,15 +266,15 @@ function TinaServiceClass(url) {
      * SERVER_URL is a constant,
      * path is a parameter,
      * params is serialized to URL encoded arguments
-     */ 
-    _GET: function(path, params, def, _cb) {
-    
+     */
+    _GET: function(path, params, defaultcb, _cb) {
+
         // setup default values, if defined
         var cb = {};
-        for (key in def) { cb[key] = def[key]; }
-        if ("error" in def) { cb.error = function(e) { console.log(val+": "+e); }; }
+        for (key in defaultcb) { cb[key] = defaultcb[key]; }
+        if ("error" in defaultcb) { cb.error = function(e) { alert(val+": "+e); }; }
         for (key in _cb) { cb[key] = _cb[key]; }
-        
+
         // call the jquery ajax, passing the params and the callbacks
         $.ajax({
                 // jquery to url
@@ -300,28 +282,27 @@ function TinaServiceClass(url) {
                 data: params,
                 type: "GET",
                 dataType: "json",
-                beforeSend: function() {
-                     console.log("calling "+this.url);
-                },
+                beforeSend: cb.beforeSend,
                 error: cb.error,
                 success: cb.success,
+                complete: cb.complete
          });
-    
+
     },
-    
+
     /**
      * do an HTTP POST request to SERVER_URL + path
      * SERVER_URL is a constant,
      * path is a parameter,
-     */ 
-    _POST: function(path, params, def, _cb) {
-    
+     */
+    _POST: function(path, params, defaultcb, _cb) {
+
         // setup default values, if defined
         var cb = {};
-        for (key in def) { cb[key] = def[key]; }
-        if ("error" in def) { cb.error = function(e) { console.log("error: "+e); }; }
+        for (key in defaultcb) { cb[key] = defaultcb[key]; }
+        if ("error" in defaultcb) { cb.error = function(e) { alert("error: "+e); }; }
         for (key in _cb) { cb[key] = _cb[key]; }
-        
+
         // call the jquery ajax, passing the params and the callbacks
         $.ajax({
                 // jquery to url
@@ -329,15 +310,15 @@ function TinaServiceClass(url) {
                 type: "POST",
                 dataType: "json",
                 data: params,
-                beforeSend: function() {
-                     console.log("calling "+this.url);
-                },
+                beforeSend: cb.beforeSend,
                 error: cb.error,
                 success: cb.success,
+                complete: cb.complete
          });
-    
+
     },
-    
+
     };
-    
+
 }
+var TinaService = new TinaServiceClass("http://localhost:8888");

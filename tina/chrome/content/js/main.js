@@ -2,124 +2,12 @@
  * Version: GNU GPL 3
  * ***** END LICENSE BLOCK ***** */
 
-const HELP_URL = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
+const HELP_URL = "http://tina.csregistry.org/";
 const INTRO_URL = "chrome://tina/content/about.xul";
 
-var TinaService = new TinaServiceClass("http://localhost:8888");
-
-/* Tinasoft observers handlers */
-
-var tinasoftTaskObserver = {
-    observe : function ( subject , topic , data ) {
-        //console.log(topic + "\nDATA = " + data);
-        //data = JSON.parse(data);
-        // traitements en fonction du topic...
-        if(topic == "tinasoft_runImportFile_finish_status"){
-            if (data == TinaService.STATUS_ERROR) {
-                $('#importFile button').toggleClass("ui-state-error", 1);
-                $('#importFile button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors or log directory" );
-                return;
-            }
-            // data contains json encoded list of duplicate documents found
-            displayDuplicateDocs( JSON.parse(data) );
-            $('#importFile button').toggleClass("ui-state-disabled", 1);
-            $('#importFile button').html( "Launch" );
-            displayListCorpora( "graph_table" );
-            displayListCorpora( "corpora_table" );
-            $( "#corpora_table" ).toggleClass("ui-state-highlight", 1);
-        }
-
-        if (topic == "tinasoft_runImportFile_running_status") {
-            if (data == TinaService.STATUS_RUNNING) {
-                $('#importFile button').toggleClass("ui-state-disabled", 1);
-                $('#importFile button').html( "please wait during init" );
-            }
-            else {
-                $('#importFile button').html( "imported "+data+" lines" );
-            }
-        }
-
-        if(topic == "tinasoft_runProcessCoocGraph_finish_status"){
-            var button = $('#processCooc button');
-            if (data == TinaService.STATUS_ERROR) {
-                button.toggleClass("ui-state-error", 1);
-                button.html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors or log directory" );
-                return;
-            }
-            else {
-                button.html( "Loading macro view" );
-                tinaviz.clear();
-                console.log( "opening " + data );
-                switchTab( "macro" );
-                tinaviz.readGraphJava("macro", JSON.parse(data));
-            }
-            button.html("New graph");
-            button.toggleClass("ui-state-disabled", 1);
-            displayListCorpora( "graph_table" );
-            displayListCorpora( "corpora_table" );
-            //$( "#graph_table" ).toggleClass("ui-state-highlight", 1);
-        }
-
-        if (topic == "tinasoft_runProcessCoocGraph_running_status") {
-            if (data == TinaService.STATUS_RUNNING) {
-                $('#processCooc button').toggleClass("ui-state-disabled", 1);
-                $('#processCooc button').html( "starting" );
-            }
-            $('#processCooc button').html( data );
-        }
-        /*
-        if(topic == "tinasoft_runExportGraph_finish_status"){
-            displayListCorpora( "graph_table" );
-            $( "#graph_table" ).toggleClass("ui-state-highlight", 1);
-        }
-
-        if (topic == "tinasoft_runExportGraph_running_status") {
-        }*/
-
-        if(topic == "tinasoft_runExportCorpora_finish_status"){
-            if (data == TinaService.STATUS_ERROR) {
-                $('#exportCorpora button').toggleClass("ui-state-error", 1);
-                $('#exportCorpora button').html( "sorry an error happened, please see 'Tools'>'Error Console'>Errors" );
-                return;
-            }
-            $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
-            $('#exportCorpora button').html( "Launch" );
-        }
-        if (topic == "tinasoft_runExportCorpora_running_status") {
-            if (data == TinaService.STATUS_RUNNING) {
-                $('#exportCorpora button').toggleClass("ui-state-disabled", 1);
-                $('#exportCorpora button').html( "starting" );
-            }
-            $('#exportCorpora button').html( data+" % done" );
-        }
-    }
-};
-
-/* Setting Tinasoft observers */
-/*
-var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-// Observers registering
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_running_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportCorpora_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportCorpora_running_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_running_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_running_status" , false );
-*/
-
-/* Duplicate document in data set controler */
-var displayDuplicateDocs = function(data) {
-    var div = $( "#duplicate_docs" ).empty().show();
-    div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
-    for ( var i=0; i < data.length; i++ ) {
-        div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
-    }
-};
 
 /**************************
- * Tinasoft FORM ACTIONS
+ * Tinaserver FORM ACTIONS
 ***************************/
 
 /* Importing data set action controler */
@@ -139,33 +27,37 @@ var submitImportfile = function(event) {
         return false;
     }
     var overwrite = $("#importoverwrite:checked");
+    //alert(overwrite.val());
     if (overwrite.val() !== undefined) {
-        overwrite = true;
+        overwrite = 'True';
     }
     else {
-        overwrite = false;
+        overwrite = 'False';
     }
     var extract = $("#importextract:checked");
+    var callback = false;
+    //alert(extract.val());
     if (extract.val() !== undefined) {
-        console.log("extract file");
+        console.log("request extract file");
         TinaService.getFile(
             corpora.val(),
             path.val(),
-            false,
             filetype.val(),
-            overwrite
+            overwrite,
+            TinaServiceCallback.extractFile
         );
-        return true;
+        //return true;
     }
     else {
+        console.log("request import file");
         TinaService.postFile(
             corpora.val(),
             path.val(),
-            false,
             filetype.val(),
-            overwrite
+            overwrite,
+            TinaServiceCallback.importFile
         );
-        return true;
+        //return true;
     }
 
 };
@@ -260,9 +152,15 @@ var submitExportCorpora = function(event) {
     }
 };
 
-/* Indexation workflow control */
 
-
+/* Duplicate documents found after data set import */
+var displayDuplicateDocs = function(data) {
+    var div = $( "#duplicate_docs" ).empty().show();
+    div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
+    for ( var i=0; i < data.length; i++ ) {
+        div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
+    }
+};
 
 function displayListGraph(trid, corpora) {
     var tr = $( "#" +trid );
@@ -792,6 +690,7 @@ function resizeApplet() {
 
 // wait for the DOM to be loaded
 $(document).ready(function() {
+    $('#waitMessage').effect('pulsate', {}, 'fast');
     //$("#tabs").tabs( { disabled: [2,3] } );;
     $("#tabs").tabs();
     $('#hide').hide();
@@ -833,7 +732,7 @@ $(document).ready(function() {
             max = $(this).width();
     });
     $("label").width(max);
-    $('#importFile button').click(function(event) {
+    $('#importFile').click(function(event) {
         submitImportfile(event);
     });
     $('#exportCorpora button').click(function(event) {
@@ -1099,8 +998,6 @@ $(document).ready(function() {
     }).click(function(event) {
         tinaviz.toggleCategory("current");
     });
-
-   $('#waitMessage').effect('pulsate', {}, 'fast');
 
     // magic trick for applet loading rights
 

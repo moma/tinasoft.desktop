@@ -16,14 +16,14 @@
 
 
     <!-- Homemade Mozilla UTILITIES -->
-    <script type="text/javascript" src="js/console.js" language="javascript"></script>
+    <!-- <script type="text/javascript" src="js/console.js" language="javascript"></script>-->
     <script type="text/javascript" src="js/prefman.js" language="javascript"></script>
-    <script type="text/javascript" src="js/xmlhttprequester.js" language="javascript"></script>
     <script type="text/javascript" src="js/tenjin/shotenjin.js" language="javascript"></script>
 
     <!-- TINASOFT APP FUNCTIONS-->
     <script type="text/javascript" src="js/tinaviz.js" language="javascript"></script>
     <script type="text/javascript" src="js/tinaservice.js" language="javascript"></script>
+    <script type="text/javascript" src="js/tinaservicecallbacks.js" language="javascript"></script>
     <script type="text/javascript" src="js/main.js" language="javascript"></script>
 
     <script type="text/javascript" src="js/firebug-lite.js"></script>
@@ -46,35 +46,36 @@
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-0" class="ui-corner-bottom">
-                <div id="importForm" class="ui-corner-all formleft">
-                    <h3><a href="#">choose a file to import</a></h3>
-                    <div>
-                        <label><h4>source file</h4><label>
-                        <input id="importfilepath" type="file" class="field" name="import file path" value='' />
-                        <div style="clear:both;"></div>
-                        <label><h4>file type</h4><label>
-                        <select id="importfiletype" class="field" name="filetype">
-                            <option selected value='tinacsv'>tinasoft csv</option>
-                            <!--<option value ='medline'>pubmed medline abstracts</option>-->
-                        </select>
-                        <!--<input id="importconfigfile" class="field" type="hidden" name="configfile" value="config.yaml"/>-->
+                <div class="ui-corner-all formleft">
+                    <div id="importForm">
+                        <h3><a href="#">choose a file to import</a></h3>
+                        <div>
+                            <label><h4>source file</h4><label>
+                            <input id="importfilepath" type="file" class="field" name="import file path" value='' />
+                            <div style="clear:both;"></div>
+                            <label><h4>file type</h4><label>
+                            <select id="importfiletype" class="field" name="filetype">
+                                <option selected value='tinacsv'>tinasoft csv</option>
+                                <!--<option value ='medline'>pubmed medline abstracts</option>-->
+                            </select>
+                            <!--<input id="importconfigfile" class="field" type="hidden" name="configfile" value="config.yaml"/>-->
+                        </div>
+                        <h3><a href="#">choose a data set name</a></h3>
+                        <div>
+                            <p class="ui-state-active">
+                            choosing an existing name will update the existing data set
+                            </p>
+                            <input id="importdatasetid" type="text" name="dataset id" size="24"/>
+                        </div>
+                        <h3><a href="#">options</a></h3>
+                        <div>
+                            <input id="importoverwrite" type="checkbox" name="overwrite" value="">overwrite existing document</input><BR/>
+                            <input id="importextract" type="checkbox" name="overwrite" value="">only process fields extraction</input>
+                        </div>
                     </div>
-                    <h3><a href="#">choose a data set name</a></h3>
                     <div>
-                        <p class="ui-state-active">
-                        choosing an existing name will update the existing data set
-                        </p>
-                        <input id="importdatasetid" type="text" name="dataset id" size="24"/>
-
-                            <button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
-
+                        <button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
                     </div>
-                    <h3><a href="#">options</a></h3>
-                    <div>
-                        <input id="importoverwrite" type="checkbox" name="overwrite" value="">overwrite existing document</input><BR/>
-                        <input id="importextract" type="checkbox" name="overwrite" value="">only process fields extraction</input>
-                    </div>
-
                 </div>
                 <div id="data_sets" class="ui-corner-all formleft">
                     <table id="corpora_table" class="corpora_table">
@@ -117,14 +118,14 @@
                     <div><!-- BEGIN CREATE NEW WHITE LIST -->
                         <label><h4>Create a new white list</h4></label>
                         <input id="exportfile" type="file" class="field" name="exportfile" value='' />
-                        <div id="exportCorpora">
-                            <button class="ui-state-default ui-corner-all" >New white list</button>
-                        </div>
+                        <!-- <div id="exportCorpora"> -->
+                            <button id="exportCorpora" class="ui-state-default ui-corner-all" >New white list</button>
+                        <!-- </div> -->
                         <label><h4>or create a new graph using an existing white list</h4></label>
                         <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
-                        <div id="processCooc" >
-                            <button class="ui-state-default ui-corner-all">New graph</button>
-                        </div>
+                        <!-- <div id="processCooc" > -->
+                            <button id="processCooc" class="ui-state-default ui-corner-all">New graph</button>
+                        <!-- </div> -->
                     </div><!-- END CREATE NEW WHITE LIST -->
 
                     <h3><a href="#">options</a></h3>

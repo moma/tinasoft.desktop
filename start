@@ -31,5 +31,5 @@ echo "starting tinasoft desktop..."
 cd tina
 ./tina &
 echo "starting tinasoft http server..."
-cd ..
-python TinasoftPytextminer/httpserver.py
+cd ../TinasoftPytextminer
+python httpserver.py
