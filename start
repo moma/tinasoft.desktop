@@ -1,34 +1,5 @@
 #!/bin/bash
 
-echo "looking for java..."
-if [ -e tina/java ]
-  then
-    echo "found java, good.."
-  else
-    wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86_64.tar.gz
-    tar xf java-x86_64.tar.gz
-    mv java tina/java
-    if [ -e tina/java ];
-      then
-        rm java-x86_64.tar.gz
-      else
-        echo "couldn't extract java, please do it manually"
-    fi
-fi
-
-if [ -e tina/plugins ]
-  then
-    echo "found plugins directory, good.."
-  else
-    mkdir tina/plugins
-fi
-if [ -e "tina/plugins/libnpjp2.so" ]
-  then
-    echo "found java plugin, good.."
-  else
-    ln -s "`pwd`/java/lib/amd64/libnpjp2.so" "tina/plugins/libnpjp2.so"
-fi
-
 
 cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
 cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/

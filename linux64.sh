@@ -7,6 +7,7 @@ echo ""
 
 rm tina/log/*.txt
 
+
 #cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
 applet="viz/dist/tinaviz.jar"    # /   (root directory)
 if [ -e "$applet" ]
