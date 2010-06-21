@@ -18,6 +18,8 @@
     <!-- Homemade Mozilla UTILITIES -->
     <!-- <script type="text/javascript" src="js/console.js" language="javascript"></script>-->
     <script type="text/javascript" src="js/prefman.js" language="javascript"></script>
+
+    <!-- TENJIN library for gexf generation -->
     <script type="text/javascript" src="js/tenjin/shotenjin.js" language="javascript"></script>
 
     <!-- TINASOFT APP FUNCTIONS-->
@@ -34,7 +36,7 @@
 </head>
 
 <body style="cursor: auto;">
-    <div class="demo">
+    <div>
         <div class="ui-tabs ui-corner-top" id="tabs">
             <ul>
                 <li><a title="data sets" href="#tabs-0">Data sets</a></li>
@@ -69,8 +71,8 @@
                         </div>
                         <h3><a href="#">options</a></h3>
                         <div>
-                            <input id="importoverwrite" type="checkbox" name="overwrite" value="">overwrite existing document</input><BR/>
-                            <input id="importextract" type="checkbox" name="overwrite" value="">only process fields extraction</input>
+                            <input id="importoverwrite" type="checkbox" name="overwrite" value="">overwrite existing documents</input><BR/>
+                            <input id="importextract" type="checkbox" name="overwrite" value="">only extract documents and export a whitelist</input>
                         </div>
                     </div>
                     <div>
@@ -100,9 +102,9 @@
             <!-- NGRAM WHITELIST AND GRAPH TAB-->
             <div id="tabs-1" class="ui-corner-bottom">
                 <div id="tabs-1-accordion" class="ui-corner-all formleft">
-                    <h3><a href="#">data set and periods</a></h3>
-                    <div class="session_select">
-                        <table id="graph_table" class="corpora_table">
+                    <h3><a href="#">choose a data set and periods</a></h3>
+                    <div id="graph_table" class="session_select">
+                        <!--<table id="graph_table" class="corpora_table">
                             <thead class="ui-widget-header">
                                 <tr>
                                     <th>data sets</th>
@@ -111,17 +113,17 @@
                                 </tr>
                             </thead>
                             <tbody class="ui-widget-content"></tbody>
-                        </table>
+                        </table>-->
                     </div><!-- END SESSION SELECT -->
 
-                    <h3><a href="#">n-grams white list</a></h3>
+                    <h3><a href="#">import/export n-grams white lists</a></h3>
                     <div><!-- BEGIN CREATE NEW WHITE LIST -->
-                        <label><h4>Create a new white list</h4></label>
-                        <input id="exportfile" type="file" class="field" name="exportfile" value='' />
+                        <label><h4>1 - Create a new white list</h4></label>
+                        <input id="whitelistlabel" type="text" class="field" name="white list label" value='' />
                         <!-- <div id="exportCorpora"> -->
-                            <button id="exportCorpora" class="ui-state-default ui-corner-all" >New white list</button>
+                            <button id="exportWhitelist" class="ui-state-default ui-corner-all" >New white list</button>
                         <!-- </div> -->
-                        <label><h4>or create a new graph using an existing white list</h4></label>
+                        <label><h4>2 - Or create a new graph using an existing white list</h4></label>
                         <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
                         <!-- <div id="processCooc" > -->
                             <button id="processCooc" class="ui-state-default ui-corner-all">New graph</button>
@@ -134,12 +136,14 @@
                         <p class="ui-state-active">
                         This file must have one ngram on each line<br/>Used to prepare the status of a new white list
                         </p>
-                        <input id="userstopwordsfile" class="field" type="file" name="userstopwordsfile"/><br/>
+                        <input id="userstopwordsfile" class="field" type="file" name="user stopwords file" value=""/><br/>
                         <label><h4>Extra n-grams white list file</h4></label>
                         <p class="ui-state-active">
                         Preserve previously exported file format<br/>Used to prepare the status of a new whitelist
                         </p>
-                        <input id="prewhitelistfile" class="field" type="file" name="prewhitelistfile"/><br/>
+                        <input id="complementwhitelistfile" class="field" type="file" name="complementary whitelist file" value=""/><br/>
+                        <label><h4>Minimum n-grams occurrences filter</h4></label>
+                        <input id="minoccs" class="field" type="text" name="minimum n-grams occurrences" value="1"/><br/>
                     </div><!-- END CREATE NEW WHITE LIST -->
 
                 </div><!-- END ACCORDION -->

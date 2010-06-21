@@ -6,11 +6,14 @@ const HELP_URL = "http://tina.csregistry.org/";
 const INTRO_URL = "chrome://tina/content/about.xul";
 
 
-/**************************
- * Tinaserver FORM ACTIONS
-***************************/
+/*******************************************************************************
+ * Function submitting request to Tinaserver
+ * see tinaservice.js and tinaservicecallbacks.js
+*******************************************************************************/
 
-/* Importing data set action controler */
+/*
+ * Requests to import/extract a data set source file
+ */
 
 var submitImportfile = function(event) {
     var corpora = $("#importdatasetid");
@@ -38,10 +41,9 @@ var submitImportfile = function(event) {
     var callback = false;
     //alert(extract.val());
     if (extract.val() !== undefined) {
-        console.log("request extract file");
         TinaService.getFile(
-            corpora.val(),
             path.val(),
+            corpora.val(),
             filetype.val(),
             overwrite,
             TinaServiceCallback.extractFile
@@ -49,7 +51,6 @@ var submitImportfile = function(event) {
         //return true;
     }
     else {
-        console.log("request import file");
         TinaService.postFile(
             corpora.val(),
             path.val(),
@@ -62,7 +63,10 @@ var submitImportfile = function(event) {
 
 };
 
-/* Writing cooccurrences and generate a graph action controler */
+/*
+ * Requests to process cooccurrences
+ * then to generate a graph
+ */
 
 var submitprocessCoocGraph = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
@@ -123,35 +127,39 @@ var submitExportGraph = function(event) {
 };
 * /
 
-/* Writing a data set's export csv action controler */
+/* Requests to export a data set's whitelist csv */
 
-var submitExportCorpora = function(event) {
+var submitExportWhitelist = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-    var whitelistpath = $("#prewhitelistfile");
-    var userstopwordspath = $("#userstopwordsfile");
-    var exportpath = $("#exportfile");
-    if ( exportpath.val() == '' ) {
-        exportpath.addClass('ui-state-error');
-        console.log( "missing the export path field" );
+    var complementwhitelistfile = $("#complementwhitelistfile");
+    var userstopwordsfile = $("#userstopwordsfile");
+    var whitelistlabel = $("#whitelistlabel");
+    var minoccs = $("#minoccs");
+    if ( whitelistlabel.val() == '' ) {
+        whitelistlabel.addClass('ui-state-error');
+        alert( "please choose a white list label" );
         return false;
     }
+
     for (corpora in corporaAndPeriods) {
-            /*in wstring periods,
-            in wstring corpora_id,
-            in wstring exportPath,
-            in wstring whitelistPath,
-            in wstring userfiltersPath*/
-        TinaService.runExportCorpora(
-            corporaAndPeriods[corpora],
+        console.log( corporaAndPeriods[corpora]);
+
+        TinaService.getWhitelist(
             corpora,
-            exportpath.val(),
-            whitelistpath.val(),
-            userstopwordspath.val()
+            corporaAndPeriods[corpora],
+            whitelistlabel.val(),
+            complementwhitelistfile.val(),
+            userstopwordsfile.val(),
+            parseInt(minoccs.val())
         );
         return true;
     }
 };
 
+
+/******************************************************************************
+ * Functions displaying dynamic content
+ *****************************************************************************/
 
 /* Duplicate documents found after data set import */
 var displayDuplicateDocs = function(data) {
@@ -162,7 +170,12 @@ var displayDuplicateDocs = function(data) {
     }
 };
 
+/*
+ * displays the list of existing graphs
+ * for a given <TR> and a dataset id
+ */
 function displayListGraph(trid, corpora) {
+    //console.log("displayListGraph : row = " + trid + " , dataset = "+ corpora);
     var tr = $( "#" +trid );
     // corpus list cell
     var olid = 'graph_list_' + trid
@@ -173,29 +186,34 @@ function displayListGraph(trid, corpora) {
     );
     var ol = $( "#" + olid  ).empty();
 
-    TinaService.getGraphList(corpora['id'],{
-
-        success: function(graphList) {
-            for ( var i=0; i < graphList.length; i++ ) {
-                var button = $("<button class='ui-state-default ui-corner-all' value='"
-                    + graphList[i]
-                    + "'>"
-                    + graphList[i]
-                    + "</button><br/>"
-                ).click(function(event) {
-                    tinaviz.clear();
-                    console.log( "opening " + $(this).attr('value') );
-                    $("#tabs").data('disabled.tabs', []);
-                    switchTab( "macro" );
-                    tinaviz.readGraphJava("macro",$(this).attr('value'));
-                });
-                ol.append(button);
+    TinaService.getGraph(
+        corpora.id,
+        {
+            success: function(graphList) {
+                for ( var i=0; i < graphList.length; i++ ) {
+                    var button = $("<button class='ui-state-default ui-corner-all' value='"
+                        + graphList[i]
+                        + "'>"
+                        + graphList[i]
+                        + "</button><br/>"
+                    ).click(function(event) {
+                        tinaviz.clear();
+                        //console.log( "opening " + $(this).attr('value') );
+                        $("#tabs").data('disabled.tabs', []);
+                        switchTab( "macro" );
+                        tinaviz.readGraphJava("macro",$(this).attr('value'));
+                    });
+                    ol.append(button);
+                }
             }
         }
-
-    });
+    );
 }
 
+/*
+ * Displays the list of corpus (selectable buttons)
+ * for a given corpora and a <TR>
+ */
 function displayListCorpus(trid, corpora) {
     var tr = $( "#" +trid );
     // corpus list cell
@@ -216,6 +234,9 @@ function displayListCorpus(trid, corpora) {
     selectableCorpusInit( ol, corpora );
 }
 
+/*
+ * Resets any li from any 'selectable' class div
+ */
 function selectableReset() {
     /* Resets any li from any 'selectable' class div */
     $("li",".selectable").each(function(){
@@ -224,6 +245,9 @@ function selectableReset() {
     });
 }
 
+/*
+ * Create selectable buttons on a list of corpus
+ */
 function selectableCorpusInit( ol, corpora ) {
     ol.selectable({
         stop: function(){
@@ -241,41 +265,34 @@ function selectableCorpusInit( ol, corpora ) {
     });
 }
 
+/*
+ * Gets the list of datasets
+ * and populates a table
+ * with corpus and graphs
+ */
 function displayListCorpora(table) {
     TinaService.getDatasetList({
         success: function(list) {
+            var tbody = $( "#" +table+ " tbody" );
+            tbody.empty();
+            for ( var i=0; i<list.length; i++ ) {
 
-            var body = $( "#" +table+ " tbody" );
-            body.empty();
-            for ( var i=0, len=list.length; i<len; i++ ){
                 var dtst_trid = table+ "_tr_corpora_" + i;
                 var datasetName = list[i];
 
                 TinaService.getDataset(datasetName, {
                     success: function(dataset) {
-                    body.append("<tr id='"+ dtst_trid
-                        + "' class='ui-widget-content'>"
-                        + "<td>"
-                        + dataset.label
-                        + "</td>"
-                        +"</tr>");
-                //console.log(body.html());
-                    displayListCorpus( dtst_trid, dataset );
-                    displayListGraph( dtst_trid, dataset );
-                    },
-                    error: function(e) {
-                        console.log("couldn't error");
+                        var tr = $("<tr></tr>")
+                            .attr("id", dtst_trid)
+                            .addClass("ui-widget-content")
+                            .append( $("<td></td>").html(dataset.label) )
+                        ;
+                        tbody.append(tr);
+                        displayListCorpus( dtst_trid, dataset );
+                        displayListGraph( dtst_trid, dataset );
                     }
                 });
-
-
-
             }
-        },
-
-
-        error: function(error) {
-            console.log(error);
         }
     });
 }
@@ -735,10 +752,10 @@ $(document).ready(function() {
     $('#importFile').click(function(event) {
         submitImportfile(event);
     });
-    $('#exportCorpora button').click(function(event) {
-        submitExportCorpora(event)
+    $('#exportWhitelist').click(function(event) {
+        submitExportWhitelist(event)
     });
-    $('#processCooc button').click(function(event) {
+    $('#processCooc').click(function(event) {
         submitprocessCoocGraph(event)
     });
     /*$('#exportGraph button').click(function(event) {
@@ -747,10 +764,6 @@ $(document).ready(function() {
 
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
 
-
-    /* Fetch data into table */
-    displayListCorpora( "graph_table" );
-    displayListCorpora( "corpora_table" );
 
     $(window).bind('resize', function() {
         if (tinaviz.isEnabled()) {
@@ -1020,4 +1033,7 @@ $(document).ready(function() {
         autoHeight: false,
         clearStyle: true,
     });
+    /* Fetch data into table */
+    displayListCorpora( "corpora_table" );
+    $("#corpora_table").clone(true).appendTo("#graph_table");
 });
