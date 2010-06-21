@@ -62,7 +62,12 @@ class Server (Processus):
         #else:
         #    cmd = 'httpserver.py'
         cmd = ['python', 'httpserver.py']
-        self.spawn("server", cmd, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0)
+        env = {
+        # 'NLTK_DATA' : os.path.abspath("shared/nltk_data")
+        }
+        print env
+
+        self.spawn("server", cmd, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
         
         self.client.stop()
 
@@ -79,7 +84,12 @@ class Client (Processus):
         #else:
         #    cmd = ['xulrunner', 'application.ini']
         cmd = ['xulrunner', 'application.ini']  
-        self.spawn("client", cmd, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=True, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0)
+        env = { 
+                'JAVA_HOME' : os.path.abspath("java"),
+        }
+        print env
+       
+        self.spawn("client", cmd, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=True, cwd=None, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
         
         self.server.stop()
 
