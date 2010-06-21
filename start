@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "looking for java..."
 if [ -e tina/java ]
   then
     echo "found java!"
@@ -14,11 +15,30 @@ if [ -e tina/java ]
     fi
 fi
 
+<<<<<<< HEAD
 #cp -R ../Tinasoft*/tinasoft tina/pylib/
 #cp ../tinaweb/html/js/* tina/chrome/content/tinaviz
 cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
 cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
 #cp ../Tinasoft*/*.yaml install/skeletons/windows/
 #touch tina/.autoreg
+=======
+if [ -e viz/dist/tinaviz.jar ]
+  then
+    cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
+fi
+
+#if [ ! -f TinasoftPytextminer ]
+#  then
+#    cp -R ../TinasoftPytextminer/ .
+#fi
+
+
+echo "starting tinasoft desktop..."
+#echo $LD_LIBRARY_PATH
+>>>>>>> f90853c736daa5baf4ec876f78e6d6361af47f50
 cd tina
-./tina
+./tina &
+echo "starting tinasoft http server..."
+cd ../TinasoftPytextminer
+python httpserver.py

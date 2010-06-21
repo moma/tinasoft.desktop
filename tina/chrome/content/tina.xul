@@ -92,10 +92,10 @@
     <iframe id="tabDisplay" flex="1" src="chrome://tina/content/home.xul"/>
 
     <statusbar>
-        <statusbarpanel label="Status bar"/>
+        <!--<statusbarpanel label=""/>-->
         <!--<progressmeter mode="undetermined" />-->
         <!--<progressmeter mode="determined" value="82"/>-->
-        <spacer flex="1"/>
+        <!--<spacer flex="1"/>-->
     </statusbar>
     <keyset>
         <key id="close_key" modifiers="alt" key="q" oncommand="window.close();"/>

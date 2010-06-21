@@ -40,8 +40,8 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
-const INTRO_URL         = "chrome://tina/content/about.xul";
+const HELP_URL  = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
+const INTRO_URL = "chrome://tina/content/about.xul";
 
 document.location = "chrome://tina/content/main.html";
 

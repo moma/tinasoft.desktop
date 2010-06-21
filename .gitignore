@@ -1,3 +1,4 @@
+TinasoftPytextminer
 .*
 *.pyc
 *.pyo
@@ -23,18 +24,10 @@ viz/build/*
 viz/nbproject/private/*
 viz/*.swp
 viz/*~
-tina/config.yaml
-tina/import.yaml
 tina/tmp/*
 tina/*fet*
 tina/chrome/content/applet/tinaviz.jar
 tina/chrome/content/applet/current.gexf
 tina/graph.pdf
-tina/shared/gexf/gexf.template.cache
-tina/log/*
-tina/db/*
-tina/index/*
-tina/user/*
 tina/plugins/*
-tina/pylib/tinasoft/*
 tina/java/*
