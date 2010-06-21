@@ -63,7 +63,7 @@ class Server (Processus):
         #    cmd = 'httpserver.py'
         cmd = ['python', 'httpserver.py']
         env = {
-        # 'NLTK_DATA' : os.path.abspath("shared/nltk_data")
+          'NLTK_DATA' : os.path.abspath("shared/nltk_data")
         }
         print env
 
