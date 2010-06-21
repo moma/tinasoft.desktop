@@ -1035,5 +1035,5 @@ $(document).ready(function() {
     });
     /* Fetch data into table */
     displayListCorpora( "corpora_table" );
-    $("#corpora_table").clone(true).appendTo("#graph_table");
+    $("#corpora_table").clone().appendTo("#graph_table_div").attr("id", "graph_table");
 });

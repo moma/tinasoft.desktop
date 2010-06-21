@@ -17,7 +17,7 @@ var TinaServiceCallback = {
             $('#importFile').html( "Launch" );
             /* Fetch data into table */
             displayListCorpora( "corpora_table" );
-            $("#corpora_table").clone(true).appendTo("#graph_table");
+            $("#corpora_table").clone().appendTo("#graph_table");
         },
         beforeSend: function() {
             $('#importFile').removeClass("ui-state-error", 1);
