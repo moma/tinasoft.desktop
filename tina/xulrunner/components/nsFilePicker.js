@@ -278,9 +278,9 @@ function (compMgr, fileSpec, location, type)
 
     compMgr.registerFactoryLocation(FILEPICKER_CID,
                                     "FilePicker JS Component",
-//@line 284 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/filepicker/src/nsFilePicker.js.in"
+//@line 284 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/filepicker/src/nsFilePicker.js.in"
                                     "",
-//@line 286 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/filepicker/src/nsFilePicker.js.in"
+//@line 286 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/filepicker/src/nsFilePicker.js.in"
                                     fileSpec,
                                     location,
                                     type);

@@ -65,10 +65,10 @@ const RESTORE_SUCCESS_NSIOBSERVER_TOPIC = "bookmarks-restore-success";
 const RESTORE_FAILED_NSIOBSERVER_TOPIC = "bookmarks-restore-failed";
 const RESTORE_NSIOBSERVER_DATA = "json";
 
-//@line 73 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/places/src/utils.js"
+//@line 73 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/places/src/utils.js"
 // On other platforms, the transferable system converts "\r\n" to "\n".
 const NEWLINE = "\r\n";
-//@line 76 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/places/src/utils.js"
+//@line 76 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/places/src/utils.js"
 
 function QI_node(aNode, aIID) {
   var result = null;

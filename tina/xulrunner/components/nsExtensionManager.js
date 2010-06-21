@@ -1,6 +1,6 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
-//@line 44 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 44 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
 */
 
 //
@@ -152,7 +152,7 @@ var gManifestNeedsFlush   = false;
 var gIDTest = /^(\{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}|[a-z0-9-\._]*\@[a-z0-9-\._]+)$/i;
 
 // shared code for suppressing bad cert dialogs
-//@line 41 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/shared/src/badCertHandler.js"
+//@line 41 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/shared/src/badCertHandler.js"
 
 /**
  * Only allow built-in certs for HTTPS connections.  See bug 340198.
@@ -229,7 +229,7 @@ BadCertHandler.prototype = {
     return this;
   }
 };
-//@line 196 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 196 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
 
 /**
  * Creates a Version Checker object.
@@ -1397,7 +1397,7 @@ DirectoryInstallLocation.prototype = {
   QueryInterface: XPCOMUtils.generateQI([Ci.nsIInstallLocation])
 };
 
-//@line 1509 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 1509 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
 
 /**
  * An object which handles the installation of an Extension.
@@ -2386,7 +2386,7 @@ function ExtensionManager() {
     InstallLocations.put(systemLocation);
   }
 
-//@line 2512 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 2512 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
 
   // Register Additional Install Locations
   var categoryManager = Cc["@mozilla.org/categorymanager;1"].
@@ -2741,7 +2741,7 @@ ExtensionManager.prototype = {
   _installGlobalItem: function EM__installGlobalItem(file) {
     if (!file || !file.exists())
       throw new Error("Unable to find the file specified on the command line!");
-//@line 2872 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 2872 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
     var installManifestFile = extractRDFFileToTempDir(file, FILE_INSTALL_MANIFEST, true);
     if (!installManifestFile.exists())
       throw new Error("The package is missing an install manifest!");
@@ -5560,13 +5560,13 @@ ExtensionManager.prototype = {
       // count to 0 to prevent this dialog from being displayed again.
       this._downloadCount = 0;
       var result;
-//@line 5691 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 5691 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
       result = this._confirmCancelDownloads(this._downloadCount,
                                             "quitCancelDownloadsAlertTitle",
                                             "quitCancelDownloadsAlertMsgMultiple",
                                             "quitCancelDownloadsAlertMsg",
                                             "dontQuitButtonWin");
-//@line 5703 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 5703 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
       if (subject instanceof Ci.nsISupportsPRBool)
         subject.data = result;
     }
@@ -6091,7 +6091,7 @@ ExtensionItemUpdater.prototype = {
   _listener           : null,
 
   /* ExtensionItemUpdater
-//@line 6253 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 6253 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
   */
   checkForUpdates: function ExtensionItemUpdater_checkForUpdates(aItems,
                                                                  aItemCount,
@@ -6474,7 +6474,7 @@ RDFItemUpdater.prototype = {
 
   onDatasourceLoaded: function RDFItemUpdater_onDatasourceLoaded(aDatasource, aLocalItem) {
     /*
-//@line 6676 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
+//@line 6676 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsExtensionManager.js.in"
     */
     if (!aDatasource.GetAllResources().hasMoreElements()) {
       LOG("RDFItemUpdater:onDatasourceLoaded: Datasource empty.\r\n" +

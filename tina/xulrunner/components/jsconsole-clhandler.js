@@ -1,4 +1,4 @@
-//@line 41 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/console/jsconsole-clhandler.js"
+//@line 41 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/console/jsconsole-clhandler.js"
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");

@@ -1,4 +1,4 @@
-//@line 37 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/urlformatter/src/nsURLFormatter.js"
+//@line 37 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/urlformatter/src/nsURLFormatter.js"
 /**
  * @class nsURLFormatterService
  *

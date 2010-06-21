@@ -50,7 +50,7 @@
 #uncomment for debugging
 #set -x
 
-moz_libdir=/usr/local/lib/xulrunner-1.9.1.7pre
+moz_libdir=/usr/local/lib/xulrunner-1.9.1.7
 
 # Use run-mozilla.sh in the current dir if it exists
 # If not, then start resolving symlinks until we find run-mozilla.sh

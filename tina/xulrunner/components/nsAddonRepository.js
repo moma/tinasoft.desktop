@@ -1,6 +1,6 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
-//@line 38 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/extensions/src/nsAddonRepository.js"
+//@line 38 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/extensions/src/nsAddonRepository.js"
 */
 
 const Cc = Components.classes;

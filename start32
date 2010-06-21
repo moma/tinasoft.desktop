@@ -1,8 +1,23 @@
 #!/bin/bash
+if [ -e tina/java ]
+  then
+    echo "found java!"
+  else
+    wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86.tar.gz
+    tar xf java-x86.tar.gz
+    mv java tina/java
+    if [ -e tina/java ];
+      then
+        rm java-x86.tar.gz
+      else
+        echo "couldn't extract java, please do it manually"
+    fi
+fi
+
 #cp -R ../Tinasoft*/tinasoft tina/pylib/
 #cp ../tinaweb/html/js/* tina/chrome/content/tinaviz
-#cp ../tinaviz/js/tinaviz.* tina/chrome/content/js/tinaviz/
-cp ../tinaviz/*/tinaviz.* tina/chrome/content/js/tinaviz/
+cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
+cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
 #cp ../Tinasoft*/*.yaml install/skeletons/windows/
 #touch tina/.autoreg
 cd tina

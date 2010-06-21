@@ -48,7 +48,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 
-//@line 36 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/url-classifier/content/moz/lang.js"
+//@line 36 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/url-classifier/content/moz/lang.js"
 
 
 /**
@@ -128,7 +128,7 @@ Function.prototype.inherits = function(parentCtor) {
   this.superClass_ = parentCtor.prototype;
   this.prototype = new tempCtor();
 }
-//@line 36 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/url-classifier/content/moz/observer.js"
+//@line 36 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/url-classifier/content/moz/observer.js"
 
 
 // A couple of classes to simplify creating observers. 
@@ -228,7 +228,7 @@ G_ObserverServiceObserver.prototype.observe_ = function(subject, topic, data) {
     this.unregister();
 }
 
-//@line 36 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/url-classifier/content/moz/alarm.js"
+//@line 36 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/url-classifier/content/moz/alarm.js"
 
 
 // An Alarm fires a callback after a certain amount of time, or at
@@ -374,7 +374,7 @@ G_ConditionalAlarm.prototype.notify = function(timer) {
     this.cancel();
   }
 }
-//@line 54 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/components/places/src/nsLivemarkService.js"
+//@line 54 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/components/places/src/nsLivemarkService.js"
 
 const LS_CLASSID = Components.ID("{dca61eb5-c7cd-4df1-b0fb-d0722baba251}");
 const LS_CLASSNAME = "Livemark Service";

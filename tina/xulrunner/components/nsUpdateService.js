@@ -1,6 +1,6 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
-//@line 44 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 44 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
 */
 
 const Cc = Components.classes;
@@ -38,7 +38,7 @@ const URI_UPDATE_NS             = "http://www.mozilla.org/2005/app-update";
 
 const KEY_APPDIR          = "XCurProcD";
 const KEY_GRED            = "GreD";
-//@line 85 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 85 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
 
 const DIR_UPDATES         = "updates";
 const FILE_UPDATE_STATUS  = "update.status";
@@ -90,7 +90,7 @@ var gCanUpdate  = null;
 var gLogEnabled = { };
 
 // shared code for suppressing bad cert dialogs
-//@line 41 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/shared/src/badCertHandler.js"
+//@line 41 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/shared/src/badCertHandler.js"
 
 /**
  * Only allow built-in certs for HTTPS connections.  See bug 340198.
@@ -167,7 +167,7 @@ BadCertHandler.prototype = {
     return this;
   }
 };
-//@line 137 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 137 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
 
 /**
  * Logs a string to the error console.
@@ -277,7 +277,7 @@ function getDirInternal(key, pathArray, shouldCreate, update) {
   var fileLocator = Cc["@mozilla.org/file/directory_service;1"].
                     getService(Ci.nsIProperties);
   var dir = fileLocator.get(key, Ci.nsIFile);
-//@line 254 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 254 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
   for (var i = 0; i < pathArray.length; ++i) {
     dir.append(pathArray[i]);
     if (shouldCreate && !dir.exists())
@@ -384,7 +384,7 @@ function getUpdatesDir(key) {
     updateDir = fileLocator.get(key, Ci.nsIFile);
   else {
     updateDir = fileLocator.get(KEY_APPDIR, Ci.nsIFile);
-//@line 366 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 366 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
   }
   updateDir.append(DIR_UPDATES);
   updateDir.append("0");
@@ -429,7 +429,7 @@ function writeStatusFile(dir, state) {
 }
 
 /**
-//@line 424 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 424 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
  */
 function writeVersionFile(dir, version) {
   var versionFile = dir.clone();
@@ -1081,7 +1081,7 @@ function UpdateService() {
     gOSVersion = encodeURIComponent(osVersion);
   }
 
-//@line 1084 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 1084 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
 
   // Start the update timer only after a profile has been selected so that the
   // appropriate values for the update check are read from the user's profile.
@@ -1198,7 +1198,7 @@ UpdateService.prototype = {
       status = null;
 
     var updRootKey = null;
-//@line 1222 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 1222 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
 
     if (status == STATE_DOWNLOADING) {
       LOG("UpdateService", "_postUpdateProcessing - patch found in " +
@@ -1230,12 +1230,12 @@ UpdateService.prototype = {
         um.activeUpdate = update;
 
         prompter.showUpdateInstalled();
-//@line 1257 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 1257 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
         // Perform platform-specific post-update processing.
         if (POST_UPDATE_CONTRACTID in Cc) {
           Cc[POST_UPDATE_CONTRACTID].createInstance(Ci.nsIRunnable).run();
         }
-//@line 1262 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 1262 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
         // Done with this update. Clean it up.
         cleanupActiveUpdate(updRootKey);
       }
@@ -1412,7 +1412,7 @@ UpdateService.prototype = {
     }
 
     /**
-//@line 1450 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 1450 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
      */
 
     // Encode version since it could be a non-ascii string (bug 359093)
@@ -1426,7 +1426,7 @@ UpdateService.prototype = {
     }
 
     /**
-//@line 1479 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 1479 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
      */
     if (update.type == "major") {
       LOG("Checker", "_selectAndInstallUpdate - prompting because it is a " +
@@ -1505,7 +1505,7 @@ UpdateService.prototype = {
 
     if (currentAddons.length > 0) {
       /**
-//@line 1575 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 1575 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
        */
       this._incompatAddonsCount = currentAddons.length;
       LOG("UpdateService", "_checkAddonCompatibility - checking for " +
@@ -1606,7 +1606,7 @@ UpdateService.prototype = {
         upDirFile.create(Ci.nsILocalFile.NORMAL_FILE_TYPE, PERMS_FILE);
         upDirFile.remove(false);
       }
-//@line 1751 "/home/jbilcke/Checkouts/git/TINA/tinasoft-desktop/src/toolkit/mozapps/update/src/nsUpdateService.js.in"
+//@line 1751 "/home/jbilcke/Checkouts/wget/mozilla-1.9.1/toolkit/mozapps/update/src/nsUpdateService.js.in"
     }
     catch (e) {
        LOG("UpdateService", "canUpdate - unable to update. Exception: " + e);
@@ -2998,6 +2998,20 @@ UpdatePrompt.prototype = {
       }
     };
 
+    // bug 534090 - show the UI for update available notifications when the
+    // the system has been idle for at least IDLE_TIME without displaying an
+    // alert notification.
+    if (page == "updatesavailable") {
+      var idleService = Cc["@mozilla.org/widget/idleservice;1"].
+                        getService(Ci.nsIIdleService);
+
+      const IDLE_TIME = getPref("getIntPref", PREF_APP_UPDATE_IDLETIME, 60);
+      if (idleService.idleTime / 1000 >= IDLE_TIME) {
+        this._showUI(parent, uri, features, name, page, update);
+        return;
+      }
+    }
+
     try {
       var notifier = Cc["@mozilla.org/alerts-service;1"].
                      getService(Ci.nsIAlertsService);
@@ -3012,6 +3026,12 @@ UpdatePrompt.prototype = {
     observer.service = Cc["@mozilla.org/observer-service;1"].
                        getService(Ci.nsIObserverService);
     observer.service.addObserver(observer, "quit-application", false);
+
+    // bug 534090 - show the UI when idle for update available notifications.
+    if (page == "updatesavailable") {
+      this._showUIWhenIdle(parent, uri, features, name, page, update);
+      return;
+    }
 
     // Give the user x seconds to react before showing the big UI
     var promptWaitTime = getPref("getIntPref", PREF_APP_UPDATE_PROMPTWAITTIME, 43200);
