@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo "looking for java..."
 if [ -e tina/java ]
   then
@@ -28,18 +29,6 @@ if [ -e "tina/plugins/libnpjp2.so" ]
     ln -s "`pwd`/java/lib/amd64/libnpjp2.so" "tina/plugins/libnpjp2.so"
 fi
 
-
-if [ -e "tina/xulrunner" ]
-  then
-    echo " - xulrunner found"
-  else
-    echo " - xulrunner not found, downloading.."
-    wget $xulrunnerdownpath/$xulrunnerdownfile
-    tar xjf $xulrunnerdownfile
-    rm $xulrunnerdownfile
-    mv xulrunner-1.9.1.7 tina/xulrunner
-    rm -Rf tinatmp
-fi
 
 cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
 cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/

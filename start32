@@ -1,7 +1,9 @@
 #!/bin/bash
+
+echo "looking for java..."
 if [ -e tina/java ]
   then
-    echo "found java!"
+    echo "found java, good.."
   else
     wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86.tar.gz
     tar xf java-x86.tar.gz
@@ -14,11 +16,33 @@ if [ -e tina/java ]
     fi
 fi
 
-#cp -R ../Tinasoft*/tinasoft tina/pylib/
-#cp ../tinaweb/html/js/* tina/chrome/content/tinaviz
+if [ -e tina/plugins ]
+  then
+    echo "found plugins directory, good.."
+  else
+    mkdir tina/plugins
+fi
+if [ -e "tina/plugins/libnpjp2.so" ]
+  then
+    echo "found java plugin, good.."
+  else
+    ln -s "`pwd`/java/lib/i386/libnpjp2.so" "tina/plugins/libnpjp2.so"
+fi
+
+
 cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
 cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
-#cp ../Tinasoft*/*.yaml install/skeletons/windows/
-#touch tina/.autoreg
+
+if [ -e viz/dist/tinaviz.jar ]
+  then
+    cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
+fi
+
+if [ -e ../TinasoftPytextminer/httpserver.py ]
+  then
+    cp ../TinasoftPytextminer/httpserver.py tina/httpserver.py
+fi
+
 cd tina
-./tina
+python start.py
+
