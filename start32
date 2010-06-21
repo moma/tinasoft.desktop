@@ -1,0 +1,9 @@
+#!/bin/bash
+#cp -R ../Tinasoft*/tinasoft tina/pylib/
+#cp ../tinaweb/html/js/* tina/chrome/content/tinaviz
+#cp ../tinaviz/js/tinaviz.* tina/chrome/content/js/tinaviz/
+cp ../tinaviz/*/tinaviz.* tina/chrome/content/js/tinaviz/
+#cp ../Tinasoft*/*.yaml install/skeletons/windows/
+#touch tina/.autoreg
+cd tina
+./tina

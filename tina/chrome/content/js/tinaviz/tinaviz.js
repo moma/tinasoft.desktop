@@ -1,3 +1,4 @@
+ 
 
 
 function Tinaviz() {
@@ -6,73 +7,27 @@ function Tinaviz() {
     var applet = null;
     var cbsAwait = {};
     var cbsRun = {};
+    var callbackReady = function() {};
     this.isReady = 0;
     this.infodiv = null;
+
+    // create the applet here
 
     //return {
         this.init= function() {
             if (wrapper != null || applet != null) return;
-            wrapper = $('#vizframe').contents().find('#tinaviz')[0];
+            wrapper = $('#tinaviz')[0];
             if (wrapper == null) return;
             applet = wrapper.getSubApplet();
             if (applet == null) return;
             this.auto_resize();
-            this.main();
             this.isReady = 1;
+	    callbackReady(this);
         }
-        /************************
-         * Main method
-         *
-         ************************/
-        this.main = function() {
 
-            this.logDebug("starting tinasoft desktop..");
-
-            this.setView("macro");
-
-            this.dispatchProperty("edgeWeight/min", 0.0);
-            this.dispatchProperty("edgeWeight/max", 1.0);
-            this.dispatchProperty("nodeWeight/min", 0.0);
-            this.dispatchProperty("nodeWeight/max", 1.0);
-            this.dispatchProperty("category/category", "NGram");
-            this.dispatchProperty("output/nodeSizeMin", 5.0);
-            this.dispatchProperty("output/nodeSizeMax", 20.0);
-            this.dispatchProperty("output/nodeSizeRatio", 50.0/100.0);
-
-            this.dispatchProperty("selection/radius", 1.0);
-
-            this.bindFilter("Category", "category", "macro");
-
-            this.bindFilter("NodeWeightRange",  "nodeWeight", "macro");
-            this.bindFilter("EdgeWeightRange", "edgeWeight",  "macro");
-            this.bindFilter("NodeFunction", "radiusByWeight", "macro");
-            this.bindFilter("Output", "output", "macro");
-
-            this.bindFilter("SubGraphCopyStandalone", "category", "meso");
-            this.setProperty("meso", "category/source", "macro");
-            this.setProperty("meso", "category/category", "Document");
-            this.setProperty("meso", "category/mode", "keep");
-            this.bindFilter("NodeWeightRange",  "nodeWeight", "meso");
-            this.bindFilter("EdgeWeightRange", "edgeWeight",  "meso");
-            this.bindFilter("NodeFunction", "radiusByWeight", "meso");
-            this.bindFilter("Output", "output", "meso");
-
-            //this.togglePause();
-
-            // init the node list with ngrams
-            this.updateNodes( "macro", "NGram" );
-            // cache the document list
-            this.getNodes( "macro", "Document" );
-
-            this.logDebug("enabling applet tab..");
-            //$( "#tabs" ).enable();
-            $( "#tabs" ).tabs( "option", "disabled", false );
-        
-            this.infodiv.display_current_category();
-            this.infodiv.display_current_view();
-            
-            this.logDebug("tinasoft desktop started!");
-        }
+        this.ready=function(cb) {
+		callbackReady = cb;
+	}
 
         /************************
          * Core applet methods
@@ -134,7 +89,6 @@ function Tinaviz() {
          */
         this.touch= function(view) {
             if (applet == null) return;
-            //this.logNormal("touch("+view+")");
             if (view===undefined) {
                 applet.touch();
             } else {
@@ -142,12 +96,14 @@ function Tinaviz() {
             }
         }
 
+        
         /*
          *  Adds a node to the current selection
+         *  callback is boolean activating this.selected() callback
          */
-        this.selectFromId = function( id ) {
+        this.selectFromId = function(id, callback) {
             if (applet == null) return;
-            return applet.selectFromId(id);
+            return applet.selectFromId(id,callback);
         }
 
         this.resetLayoutCounter= function(view) {
@@ -156,7 +112,7 @@ function Tinaviz() {
             applet.resetLayoutCounter();
         }
 
-        /*
+  /*
          *  Get the current state of the applet
          */
         this.isEnabled = function() {
@@ -174,7 +130,7 @@ function Tinaviz() {
             applet.setEnabled(value);
         }
 
-        
+
         /*
         * Search nodes
         */
@@ -190,7 +146,7 @@ function Tinaviz() {
             if (applet == null) return {};
             var matchlist = this.getNodesByLabel(label, type);
             for (var i = 0; i < matchlist.length; i++ ) {
-                applet.selectFromId( decodeJSON( matchlist[i]['id'] ) );
+                applet.selectFromId( decodeJSON( matchlist[i]['id'] ), true );
                 // todo: auto center!!
                 //applet.
             }
@@ -327,7 +283,6 @@ function Tinaviz() {
          */
         this.leftDoubleClicked = function(view, data) {
             var category = this.getProperty("current", "category/category");
-            this.logNormal( "after double-clic, category = "+category );
             for (var id in data) {
                 this.viewMeso(decodeJSON(id), category);
                 break;
@@ -344,12 +299,13 @@ function Tinaviz() {
          */
         this.selected = function(view, attr, mouse) {
             if (attr == null) return;
+            //this.logNormal("selected");
             // always updates infodiv
             data = $.parseJSON(attr);
             this.infodiv.reset();
-            this.infodiv.update(view, data);
-
-            // left == selected a node
+            var neighbours = this.infodiv.update(view, data);
+   
+            // left == selecteghbourd a node
             if ( mouse == "left" ) {
                 //this.nodeLeftClicked(view,data);
             }
@@ -376,17 +332,16 @@ function Tinaviz() {
             }*/
 
             // update the buttons
-            $("#"+view+"-sliderEdgeWeight").slider( "option", "values", [
+            $("#sliderEdgeWeight").slider( "option", "values", [
                 this.getProperty(view, "edgeWeight/min"),
                 this.getProperty(view, "edgeWeight/max")*100
             ]);
-            $("#"+view+"-sliderNodeWeight").slider( "option", "values", [
+            $("#sliderNodeWeight").slider( "option", "values", [
                 this.getProperty(view, "nodeWeight/min"),
                 this.getProperty(view, "nodeWeight/max")*100
             ]);
             this.infodiv.display_current_category();
             this.infodiv.display_current_view();
-            switchTab(view);
         }
         /************************
          *
@@ -394,18 +349,6 @@ function Tinaviz() {
          *
          ************************/
 
-        // Public methods
-        this.loadFromURI= function(uri) {
-            if (applet == null) return false;
-            return applet.getSession().updateFromURI(view,uri);
-        }
-        
-        // pass a GEXF string!
-        this.loadFromString= function(view,gexf) {
-            if (applet == null) return false;
-            return applet.getSession().updateFromString(view,gexf);
-        }
-    
         // TODO: use a cross-browser compatible way of getting the current URL
         this.readGraphJava= function(view,graphURL) {
             // window.location.href
@@ -413,6 +356,7 @@ function Tinaviz() {
             var sPath = document.location.href;
             var gexfURL = sPath.substring(0, sPath.lastIndexOf('/') + 1) + graphURL;
             applet.getSession().updateFromURI(view,gexfURL);
+            $('#waitMessage').hide();
         }
 
         this.readGraphAJAX= function(view,graphURL) {
@@ -421,60 +365,22 @@ function Tinaviz() {
                 url: graphURL,
                 type: "GET",
                 dataType: "text",
-                beforeSend: function() { },
-                error: function() { },
+                beforeSend: function() { $('#waitMessage').show(); },
+                error: function() { $('#waitMessage').show(); },
                 success: function(gexf) {
                    applet.getSession().updateFromString(view,gexf);
+                   $('#waitMessage').hide();
                }
             });
         }
 
-    
-        this.loadRelativeGraphFromFile = function(view,filename) {
-            this.loadFromString(view, this.readLines(filename));
+        this.openGraph = function(view,relativePath) {
+            if (applet == null) return;
+            applet.getSession().updateFromURI(view,path);
         }
+
+
         
-        // using string technique
-        this.loadAbsoluteGraph= function(view,filename) {
-
-            var gexfPath;
-
-            this.logDebug("going to load "+filename);
-            var file =
-                Components.classes["@mozilla.org/file/local;1"]
-                    .createInstance(Components.interfaces.nsILocalFile);
-            this.logDebug("initWithPath: "+filename);
-            file.initWithPath(filename);
-
-            var fstream =
-                Components.classes["@mozilla.org/network/file-input-stream;1"]
-                    .createInstance(Components.interfaces.nsIFileInputStream);
-            var cstream =
-                Components.classes["@mozilla.org/intl/converter-input-stream;1"]
-                    .createInstance(Components.interfaces.nsIConverterInputStream);
-
-            fstream.init(file, -1, 0, 0);
-            cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
-
-            var str = {};
-            cstream.readString(-1, str); // read the whole file and put it in str.value
-            cstream.close(); // this closes fstream
-            this.logDebug("calling this.loadFromString(..):"+str.value);
-            result = this.loadFromString(view,str.value);
-        }
-
-        this.loadAbsoluteGraphFromURI= function(filename) {
-            var gexfFile =
-                Components.classes["@mozilla.org/file/local;1"]
-                    .createInstance(Components.interfaces.nsILocalFile);
-            gexfFile.initWithPath(filename);
-            var uri =
-                Components.classes["@mozilla.org/network/protocol;1?name=file"]
-                    .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                        .getURLSpecFromFile(gexfFile);
-            this.logDebug("loading absolute graph: "+uri);
-            result = this.loadFromURI(uri);
-        }
         /***********************************
          *
          * Manual actions controler system
@@ -536,26 +442,33 @@ function Tinaviz() {
          */
         this.toggleCategory = function(view) {
             if (applet == null) return;
+            if (this.getView()=="macro") {
+                if (this.infodiv.neighbours !== undefined) {
+                    // adds neighbours (from opposite categ) to the selection
+                    if (this.infodiv.neighbours.length > 1) {
+                        for(var i=0; i<this.infodiv.neighbours.length; i++) {
+                            //this.logNormal(neighbours[i].id);
+			    if (i==this.infodiv.neighbours.length) {
+                            	this.selectFromId(this.infodiv.neighbours[i].id, true);
+			    } else {
+				 this.selectFromId(this.infodiv.neighbours[i].id, false);
+		            }
+                        }
+                       
+                    } 
+                    else if (this.infodiv.neighbours.length == 1) {
+                        this.selectFromId(this.infodiv.neighbours[0].id, true);
+                    } 
+                }
+            }
             // get and set the new category to display
             var next_cat = this.getOppositeCategory( this.getProperty(view, "category/category"));
             this.setProperty(view, "category/category", next_cat);
-            //this.unselect();
-            // resets the layout
-            this.resetLayoutCounter();
+            // touch and centers the view
             this.touch();
             this.autoCentering();
             // updates the node list table
             this.updateNodes(view, next_cat);
-            // adds neighbour nodes (from next_cat) to the selection of the macro view
-            /*for(var id in this.infodiv.selection) {
-                var neighbours = this.getNeighbourhood("macro", id);
-                for (var neighbourId in neighbours) {
-                    if (neighbours[neighbourId].category == next_cat) {
-                        this.logNormal( "selecting a neighbour "+neighbourId );
-                        //this.selectFromId(neighbourId);
-                    }
-                }
-            }*/
         }
 
         /**
@@ -564,7 +477,7 @@ function Tinaviz() {
         this.viewMeso = function(id, category) {
             // selects unique node
             this.unselect();
-            this.selectFromId(id);
+            this.selectFromId(id, true);
             // sets the category of the graph
             this.setProperty("meso", "category/category", category);
             //this.setProperty("macro", "category/category", category);
@@ -573,18 +486,37 @@ function Tinaviz() {
             this.updateNodes("meso", category);
         }
 
-
-        this.clear= function() {
-            if (applet == null) return;
-            applet.clear();
+        this.toggleView= function() {
+            var current_cat = this.getProperty("current","category/category");
+            if (this.getView() == "macro") {
+                // check if selection is empty
+                if (Object.size(this.infodiv.selection) != 0) {
+                    this.setProperty("meso", "category/category", current_cat);
+                    this.setView("meso");
+                    this.updateNodes("meso", current_cat);
+                } else {
+                    alert("please first select some nodes before switching to meso level");
+                }
+            } else if (this.getView() == "meso") {
+                this.setProperty("macro", "category/category", current_cat);
+                this.setView("macro");
+                this.updateNodes("macro", current_cat);
+            }
         }
+        
         
         /*
         * Manually unselects all nodes
         */
         this.unselect= function() {
             if (applet == null) return;
-            applet.unselect();
+            if (this.getView() == "meso") {
+                applet.unselectCurrent();
+            } else {
+                applet.unselect();
+            }
+
+
             this.infodiv.reset();
             //if (this.getView() == "meso") {
                // this.setView("macro");
@@ -592,8 +524,7 @@ function Tinaviz() {
                 
                 //this.autoCentering();
             //}
-            this.touch("current");
-           
+            //this.touch("current"); // don't touch, so we do not redraw the graph
         }
 
 
@@ -618,6 +549,7 @@ function Tinaviz() {
         }
 
 
+
         /*
          *  Try to log an error with firebug otherwise alert it
          */
@@ -640,12 +572,6 @@ function Tinaviz() {
             catch (e) {
                 return;
             }
-        }
-        /*
-         *  Try to log an normal msg with firebug otherwise returns
-         */
-        this.logDebug= function(msg) {
-            return this.logNormal(msg);
         }
 
 
@@ -700,223 +626,4 @@ function Tinaviz() {
         }
     //};
 }
-
-var tinaviz = new Tinaviz();
-
-
-/*
-
-    downloadFile: function(outputFilePath, timeout) {
-        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-        var downloadPath;
-        if (path.search(/\\/) != -1) { downloadPath = path + "\\..\\"+outputFilePath }
-        else { downloadPath = path + "/../"+outputFilePath  }
-
-        var downloadFile =
-            Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-
-        downloadFile.initWithPath(downloadPath);
-        if (downloadFile.exists() && timeout < 0) {
-            window.location.href =
-                Components.classes["@mozilla.org/network/protocol;1?name=file"]
-                   .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                      .getURLSpecFromFile(downloadFile);
-            return true;
-       }
-        if (downloadFile.exists() && timeout > 0) {
-            setTimeout("downloadFile('"+outputFilePath+"', "+(-1)+")", 3000);
-            return true;
-        } else {
-            // $('#debugdiv').append('<br>waiting..</p>');
-            setTimeout("downloadFile('"+outputFilePath+"', "+(timeout -1)+")", 1500);
-            return true;
-        }
-        return false;
-    },
-
-    loadDataGraph: function(view,filename) {
-        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-        var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-        var gexfPath;
-        if (path.search(/\\/) != -1) { gexfPath = path + "\\data\\graph\\"+filename }
-        else { gexfPath = path + "/data/graph/"+filename  }
-
-        var gexfFile =
-            Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        gexfFile.initWithPath(gexfPath);
-        var uri =
-            Components.classes["@mozilla.org/network/protocol;1?name=file"]
-                .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                    .getURLSpecFromFile(gexfFile);
-        this.logDebug("loading data/graph/ graph: "+gexfPath);
-        result = this.loadFromURI(uri);
-    },
-     // using string technique
-    loadRelativeGraphOld: function(view,filename) {
-
-        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-        var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
-        var gexfPath;// = path + filename;
-        if (path.search(/\\/) != -1) { gexfPath = path + "\\"+filename }
-        else { gexfPath = path + "/"+filename  }
-
-        this.logDebug("going to load "+filename);
-        var file =
-            Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        this.logDebug("initWithPath: "+gexfPath);
-        file.initWithPath(gexfPath);
-
-        var fstream =
-            Components.classes["@mozilla.org/network/file-input-stream;1"]
-                .createInstance(Components.interfaces.nsIFileInputStream);
-        var cstream =
-            Components.classes["@mozilla.org/intl/converter-input-stream;1"]
-                .createInstance(Components.interfaces.nsIConverterInputStream);
-
-        fstream.init(file, -1, 0, 0);
-
-        cstream.init(fstream, "UTF-8", 32000000, 0); // 16Mb - you can use another encoding here if you wish
-
-        var str = {};
-        cstream.readString(-1, str); // read the whole file and put it in str.value
-        cstream.close(); // this closes fstream
-        this.logDebug("calling this.loadFromString(..) with a big file!");
-        return this.loadFromString(view,str.value);
-    },
-    
-     // using string technique
-    loadAbsoluteGraph: function(view,filename) {
-
-        var gexfPath;
-
-        this.logDebug("going to load "+filename);
-        var file =
-            Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        this.logDebug("initWithPath: "+filename);
-        file.initWithPath(filename);
-
-        var fstream =
-            Components.classes["@mozilla.org/network/file-input-stream;1"]
-                .createInstance(Components.interfaces.nsIFileInputStream);
-        var cstream =
-            Components.classes["@mozilla.org/intl/converter-input-stream;1"]
-                .createInstance(Components.interfaces.nsIConverterInputStream);
-
-        fstream.init(file, -1, 0, 0);
-        cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
-
-        var str = {};
-        cstream.readString(-1, str); // read the whole file and put it in str.value
-        cstream.close(); // this closes fstream
-        this.logDebug("calling this.loadFromString(..):"+str.value);
-        result = this.loadFromString(view,str.value);
-    },
-
-
-
-    loadRelativeGraph: function(view,filename) {
-        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-        var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
-        var gexfPath;// = path + filename;
-        if (path.search(/\\/) != -1) { gexfPath = path + "\\"+filename }
-        else { gexfPath = path + "/"+filename  }
-
-        this.logDebug("going to load "+filename);
-        var file =
-            Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        this.logDebug("initWithPath: "+gexfPath);
-        file.initWithPath(gexfPath);
-        
-        
-
-        
-        var destDirPath;
-        var destDir = Components.classes["@mozilla.org/file/local;1"]
-        .createInstance(Components.interfaces.nsILocalFile);
-        if (path.search(/\\/) != -1) {   destDirPath = path + "\\chrome\\content\\applet\\"; }
-        else {   destDirPath = path + "/chrome/content/applet/"; }
-        
-       
-        var finaFile =
-             Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        finaFile.initWithPath(destDirPath+"current.gexf");
-        if (finaFile.exists()) finaFile.remove(false);
-        
-        destDir.initWithPath(destDirPath);
-        //console.log("file.copyTo("+destDir+",\"current.gexf\");");
-        file.copyTo(destDir,"current.gexf");
-        
-        this.logDebug("destDirPath + current.gexf: "+destDirPath+"current.gexf");
-
-        finaFile =
-             Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        finaFile.initWithPath(destDirPath+"current.gexf");
-        
-        var uri =
-              Components.classes["@mozilla.org/network/protocol;1?name=file"]
-                .createInstance(Components.interfaces.nsIFileProtocolHandler)
-                    .getURLSpecFromFile(finaFile);
-                    
-        this.logDebug("loading absolute graph: "+uri);
-        result = this.loadFromURI(view,uri);
-    },
-
-    readGraph: function(view,graphURL) {
-        if (applet == null) return;
-        $.ajax({
-            url: graphURL,
-            type: "GET",
-            dataType: "text",
-            success: function(gexf) {
-               applet.getSession().updateFromString(view,gexf);
-           }
-        });
-    },
- 
-
-    takePDFPicture: function () {
-        var outputFilePath = "graph.pdf";
-        var result;
-        try {
-            result = viz.takePDFPicture(outputFilePath);
-        } catch (e) {
-            this.logError(e);
-            return;
-        }
-        this.logDebug('Saving to '+outputFilePath+'</p>');
-        setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
-    },
-
-    takePicture: function() {
-        var outputFilePath = "graph.png";
-        var result;
-        try {
-            result = viz.takePicture(outputFilePath);
-        } catch (e) {
-             console.log(e);
-             return;
-        }
-        this.logDebug('Saving to '+outputFilePath+'</p>');
-        setTimeout("downloadFile('"+outputFilePath+"', 60)",2000);
-    },
-    
-*/
-
-
-/*
-
-
-  };
-}
-
-tinaviz = new Tinaviz();
-*/
 

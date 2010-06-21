@@ -14,14 +14,11 @@ if [ -e tina/java ]
     fi
 fi
 
-if [ -e viz/dist/tinaviz.jar ]
-  then
-    cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
-fi
 #cp -R ../Tinasoft*/tinasoft tina/pylib/
-cp ../Tinasoft*/*.yaml tina/
+#cp ../tinaweb/html/js/* tina/chrome/content/tinaviz
+#cp ../tinaviz/js/tinaviz.* tina/chrome/content/js/tinaviz/
+cp ../tinaviz/*/tinaviz.* tina/chrome/content/js/tinaviz/
 #cp ../Tinasoft*/*.yaml install/skeletons/windows/
 #touch tina/.autoreg
-echo $LD_LIBRARY_PATH
 cd tina
 ./tina
