@@ -6,6 +6,8 @@ TinasoftPytextminer
 install/libs
 install/libs/pyxpcomext/*
 install/libs/xulrunner/*
+tina/index/*
+tina/log/*
 src/*
 *.swp
 *.swo
