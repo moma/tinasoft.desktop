@@ -645,7 +645,7 @@ function InfoDiv(divid) {
     } // end of return
 };
 
-function getWidth() {
+function getScreenWidth() {
     var x = 0;
     if (self.innerHeight) {
             x = self.innerWidth;
@@ -659,7 +659,7 @@ function getWidth() {
     return x;
 }
 
-function getHeight() {
+function getScreenHeight() {
     var y = 0;
     if (self.innerHeight) {
         y = self.innerHeight;
@@ -673,16 +673,6 @@ function getHeight() {
     return y;
 }
 
-/* TODO replace by CSS query */
-function getAppletWidth() {
-    return getWidth() - 57;
-}
-
-/* TODO replace by CSS query */
-function getAppletHeight() {
-    return getHeight() - 142;
-}
-
 function switchTab(level) {
     var tabs = { "macro" : 2,
                  "meso"  : 3,
@@ -693,16 +683,16 @@ function switchTab(level) {
 
 
 function resizeApplet() {
-    var w = getAppletWidth();
-    var h = getAppletHeight();
+    var w = getScreenWidth() - 57;
+    var h = getScreenHeight() - 142;
 
     $('.tabfiller').css("height",""+(h+15)+"px");
 
     $('#whitebox').css("height",""+(h)+"px");
     $('#whitebox').css("width",""+(w)+"px");
 
-    $('#vizframe').css("height",""+(h)+"px");
-    $('#vizframe').css("width",""+(w-350)+"px");
+    //$('#vizframe').css("height",""+(h)+"px");
+    //$('#vizframe').css("width",""+(w-350)+"px");
     $('#hide').show();
     $('#infodiv').css("height",""+(h-50)+"px");
     $('#infodiv').css("width",""+(300)+"px");
