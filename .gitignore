@@ -23,9 +23,7 @@ tinasoft-*.*
 *.tar.bz*
 tina/tmp/*
 tina/*fet*
-tina/chrome/content/applet/tinaviz.jar
-tina/chrome/content/applet/current.gexf
-tina/httpserver.py
+tina/chrome/content/applet/
 tina/graph.pdf
 tina/plugins/*
 tina/java/*
