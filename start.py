@@ -59,11 +59,11 @@ class Processus (Thread):
 class Server (Processus):
 
     def run(self):
-        cmd = ['python', join(PYTEXTMINER_DIR,'httpserver.py')]
+        cmd = ['python', 'httpserver.py']
         env = {
-          'NLTK_DATA' : os.path.abspath("shared/nltk_data")
+          'NLTK_DATA' : os.path.abspath(join(PYTEXTMINER_DIR,"shared","nltk_data"))
         }
-        self.spawn("server", cmd, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, cwd=None, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
+        self.spawn("server", cmd, cwd=PYTEXTMINER_DIR, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
 
         self.client.stop()
 

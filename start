@@ -10,17 +10,10 @@
 #   cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
 #fi
 
-
-# we want to add tinaviz as direct dependency
-if [ -e ../tinaweb/html/js/tinaviz/ ]
-   then
-   cp -Rf ../tinaweb/html/js/tinaviz tina/chrome/content/js/tinaviz/
-fi
-
 # we also want to reuse some GUI components (JS and CSS)
 # (tinaviz will be an undirect dependency)
 echo "copying latest version of tinaweb (js and css)"
-if [ -e ../tinaweb/html/js ]
+if [ -e ../tinaweb/html ]
    then
    cp -Rf ../tinaweb/html tina/chrome/content/tinaweb/
 fi
@@ -29,13 +22,7 @@ fi
 echo "copying latest version of Tinasoft Pytextminer"
 if [ ! -e TinasoftPytextminer ]
    then
-   mkdir TinasoftPytextminer
-fi
-
-if [ -e ../TinasoftPytextminer/tinasoft ]
-  then
-    cp -R ../TinasoftPytextminer/tinasoft TinasoftPytextminer/tinasoft
-    cp ../TinasoftPytextminer/httpserver.py TinasoftPytextminer/
+   cp -Rf ../TinasoftPytextminer .
 fi
 
 python start.py
