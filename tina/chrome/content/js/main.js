@@ -79,27 +79,25 @@ var submitprocessCoocGraph = function(event) {
         console.log( "missing the white list path field" );
         return false;
     }
-    // DEBUG VALUE
-    var opts = {
-        'DocumentGraph': {
-            'edgethreshold': [0.0, 2.0],
-            'nodethreshold': [1, 'inf']
-        },
-        'NGramGraph': {
-            'edgethreshold': [0.0, 1.0],
-            'nodethreshold': [2, 'inf']
-        }
-    };
-    for (corpora in corporaAndPeriods) {
-        TinaService.runProcessCoocGraph(
-            whitelistpath.val(),
+    TinaServiceCallback.success = function(){
+        TinaService.postGraph(
             corpora,
             corporaAndPeriods[corpora],
-            userfilterspath.val(),
-            JSON.stringify( opts )
+            whitelistpath.val(),
+            TinaServiceCallback.exportGraph
         );
+    };
+    for (corpora in corporaAndPeriods) {
+        TinaService.postCooccurrences(
+            corpora,
+            corporaAndPeriods[corpora],
+            whitelistpath.val(),
+            userfilterspath.val(),
+            TinaServiceCallback.postCooccurrences
+        );
+        break;
     }
-    return true;
+    //return true;
 };
 
 

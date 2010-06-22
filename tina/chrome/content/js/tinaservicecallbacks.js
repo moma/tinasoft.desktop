@@ -51,7 +51,6 @@ var TinaServiceCallback = {
     processCooc: {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the whitelist extracted
-            alert(data);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             $('#processCooc').addClass("ui-state-error", 1);
@@ -59,8 +58,8 @@ var TinaServiceCallback = {
         },
         complete: function(XMLHttpRequest, textStatus) {
             alert("send here exportGraph");
-            //$('#processCooc').removeClass("ui-state-disabled", 1);
-            //$('#processCooc').html( "Launch" );
+            $('#processCooc').removeClass("ui-state-disabled", 1);
+            $('#processCooc').html( "Launch" );
         },
         beforeSend: function() {
             $('#processCooc').removeClass("ui-state-error", 1);
