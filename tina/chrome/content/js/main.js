@@ -5,9 +5,6 @@
 const HELP_URL = "http://tina.csregistry.org/";
 const INTRO_URL = "chrome://tina/content/about.xul";
 
-
-<<<<<<< HEAD
-=======
 /*******************************************************************************
  * Function submitting request to Tinaserver
  * see tinaservice.js and tinaservicecallbacks.js
@@ -713,11 +710,89 @@ function resizeApplet() {
 
    //$("#infodiv").css( 'height', getScreenHeight() - $("#hd").height() - $("#ft").height() - 60);
 }
->>>>>>> 1c6b854e455c416781aecc5a79a578a9c00c062d
 
+var tinaviz = {};
 
 // wait for the DOM to be loaded
 $(document).ready(function() {
+
+    tinaviz = new Tinaviz({
+        tag: $("#vizdiv"),
+        path: "js/tinaviz/",
+        context: "",
+        engine: "software",
+        width: 0,
+        height: 0
+    });
+
+    tinaviz.ready(function(){
+    
+        var infodiv =  InfoDiv('infodiv');
+        tinaviz.infodiv = infodiv;
+        
+        
+        // auto-adjusting infodiv height
+        $(infodiv.id).css('height', tinaviz.height - 40);
+
+        $(infodiv.id).accordion({
+            fillSpace: true,
+        });
+
+        infodiv.reset();
+
+        var w = getScreenWidth() - 390;
+        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
+        tinaviz.size(w, h);
+
+        tinaviz.setView("macro");
+
+        var session = tinaviz.session();
+        var macro = tinaviz.view("macro");
+        var meso = tinaviz.view("meso");
+
+	    session.set("edgeWeight/min", 0.0);
+	    session.set("edgeWeight/max", 1.0);
+	    session.set("nodeWeight/min", 0.0);
+        session.set("nodeWeight/max", 1.0);
+	    session.set("category/category", "NGram");
+	    session.set("output/nodeSizeMin", 5.0);
+	    session.set("output/nodeSizeMax", 20.0);
+	    session.set("output/nodeSizeRatio", 50.0/100.0);
+	    session.set("selection/radius", 1.0);
+
+	    macro.filter("Category", "category");
+	    macro.filter("NodeWeightRange", "nodeWeight");
+	    macro.filter("EdgeWeightRange", "edgeWeight");
+	    macro.filter("NodeFunction", "radiusByWeight");
+	    macro.filter("Output", "output");
+
+	    meso.filter("SubGraphCopyStandalone", "category");
+	    meso.set("category/source", "macro");
+	    meso.set("category/category", "Document");
+	    meso.set("category/mode", "keep");
+
+	    meso.filter("NodeWeightRangeHack", "nodeWeight");
+	    meso.filter("EdgeWeightRangeHack", "edgeWeight");
+	    meso.filter("NodeFunction", "radiusByWeight");
+	    meso.filter("Output", "output");
+
+	    //tinaviz.readGraphJava("macro", "FET60bipartite_graph_cooccurrences_.gexf");
+	    tinaviz.readGraphJava("macro", "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf");
+
+        // init the node list with ngrams
+	    tinaviz.updateNodes( "macro", "NGram" );
+
+        // cache the document list
+	    tinaviz.getNodes( "macro", "Document" );
+
+        $("#waitMessage").hide();
+        
+	    infodiv.display_current_category();
+	    infodiv.display_current_view();
+    });
+
+
+
     $('#waitMessage').effect('pulsate', {}, 'fast');
     //$("#tabs").tabs( { disabled: [2,3] } );;
     $("#tabs").tabs();
