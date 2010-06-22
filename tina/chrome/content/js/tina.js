@@ -27,8 +27,8 @@ function openWindowForType(type, uri, features) {
 
 function buildHelpMenu()
 {
-  var updates = Cc["@mozilla.org/updates/update-service;1"].
-                getService(Ci.nsIApplicationUpdateService);
+  //var updates = Cc["@mozilla.org/updates/update-service;1"].
+  //              getService(Ci.nsIApplicationUpdateService);
   var um = Cc["@mozilla.org/updates/update-manager;1"].
            getService(Ci.nsIUpdateManager);
 

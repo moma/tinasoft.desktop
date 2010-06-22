@@ -252,14 +252,15 @@ function TinaServiceClass(url) {
     /*
     curl http://localhost:8888/cooccurrences -d dataset="test_data_set" -d whitelist="tests/data/pubmed_whitelist.csv" -d periods="1"
     */
-    postCooccurrences: function(_dataset, _periods, _whitelist, cb) {
+    postCooccurrences: function(_dataset, _periods, _whitelist, _userstopwords, cb) {
         //console.log("calling postCooccurrences("+_dataset+","+_periods+","+_whitelist+","+cb+")");
 
         this._POST("cooccurrences",
             // inpost params
             { dataset: _dataset,
               periods: _periods,
-              whitelist: _whitelist
+              whitelist: _whitelist,
+              userstopwords: _userstopwords,
             },
             {error:"couldn't postCooccurrences"},
             cb
