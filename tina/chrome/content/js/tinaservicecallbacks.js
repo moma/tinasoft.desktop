@@ -16,8 +16,8 @@ var TinaServiceCallback = {
             $('#importFile').removeClass("ui-state-disabled", 1);
             $('#importFile').html( "Launch" );
             /* Fetch data into table */
-            displayListCorpora( "corpora_table" );
-            $("#corpora_table").clone().appendTo("#graph_table");
+            displayDataTable( "data_table" );
+            //$("#corpora_table").clone().appendTo("#graph_table");
         },
         beforeSend: function() {
             $('#importFile').removeClass("ui-state-error", 1);
@@ -85,6 +85,7 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {
             $('#processCooc').removeClass("ui-state-disabled", 1);
             $('#processCooc').html( "Produce a graph" );
+            displayDataTable( "data_table" );
         },
         beforeSend: function() {
             $('#processCooc').removeClass("ui-state-error", 1);

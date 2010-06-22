@@ -53,8 +53,7 @@ function TinaServiceClass(url) {
             {
                 error: "couldn't getGraph"
             },
-            cb,
-            false
+            cb
         );
 
     },
@@ -161,8 +160,7 @@ function TinaServiceClass(url) {
             {
                 error: "couldn't getDataset"
             },
-            cb,
-            false
+            cb
         );
     },
     /*
@@ -185,7 +183,12 @@ function TinaServiceClass(url) {
         // setup default values, if defined
         var cb = {};
         for (key in defaultcb) { cb[key] = defaultcb[key]; }
-        if ("error" in defaultcb) { cb.error = function(e) { alert("(default error cb): "+e); }; }
+        if ("error" in defaultcb) {
+            cb.error = function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("default error cb: "+defaultcb["error"]);
+                console.log(XMLHttpRequest, textStatus, errorThrown);
+            };
+        }
         for (key in _cb) { cb[key] = _cb[key]; }
 
         // call the jquery ajax, passing the params and the callbacks
@@ -199,7 +202,7 @@ function TinaServiceClass(url) {
                 error: cb.error,
                 success: cb.success,
                 complete: cb.complete,
-                async : _async
+                //async : _async
          });
     },
 
@@ -308,7 +311,12 @@ function TinaServiceClass(url) {
         // setup default values, if defined
         var cb = {};
         for (key in defaultcb) { cb[key] = defaultcb[key]; }
-        if ("error" in defaultcb) { cb.error = function(e) { alert("(default error cb): "+e); }; }
+        if ("error" in defaultcb) {
+            cb.error = function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("default error cb: "+defaultcb["error"]);
+                console.log(XMLHttpRequest, textStatus, errorThrown);
+            };
+        }
         for (key in _cb) { cb[key] = _cb[key]; }
 
         // call the jquery ajax, passing the params and the callbacks
@@ -318,42 +326,6 @@ function TinaServiceClass(url) {
                 type: "POST",
                 dataType: "json",
                 data: params,
-                beforeSend: cb.beforeSend,
-                error: cb.error,
-                success: cb.success,
-                complete: cb.complete
-         });
-
-    },
-
-
-    /************************************************************************
-     * LOAD USER FILES
-     ************************************************************************/
-
-
-    /**
-     * do an HTTP POST request to SERVER_URL + path
-     * SERVER_URL is a constant,
-     * path is a parameter,
-     */
-    _LOAD: function(filepath, defaultcb, _cb) {
-
-        // setup default values, if defined
-        var cb = {};
-        for (key in defaultcb) { cb[key] = defaultcb[key]; }
-        if ("error" in defaultcb) { cb.error = function(e) { alert(" (default error cb): "+e); }; }
-        for (key in _cb) { cb[key] = _cb[key]; }
-
-        var parts = filepath.split("user/");
-
-        // call the jquery ajax, passing the params and the callbacks
-        $.ajax({
-                // jquery to url
-                url: SERVER_URL+"/user/"+parts[1],
-                type: "GET",
-                //dataType: "json",
-                //data: params,
                 beforeSend: cb.beforeSend,
                 error: cb.error,
                 success: cb.success,

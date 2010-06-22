@@ -37,6 +37,18 @@
 
 <body style="cursor: auto;">
     <div>
+        <div id="data_table" class="ui-widget ui-widget-header ui-corner-all">
+                    <table id="corpora_table">
+                            <thead>
+                                <tr>
+                                    <th>data sets</th>
+                                    <th>periods</th>
+                                    <th>available graphs</th>
+                                </tr>
+                            </thead>
+                            <!--<tbody class="ui-widget-content"></tbody>-->
+                    </table>
+        </div>
         <div class="ui-tabs ui-corner-top" id="tabs">
             <ul>
                 <li><a title="data sets" href="#tabs-0">Data sets</a></li>
@@ -79,7 +91,7 @@
                         <button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
                     </div>
                 </div>
-                <div id="data_sets" class="ui-corner-all formleft">
+                <!--<div id="data_sets" class="ui-corner-all formleft data_table">
                     <table id="corpora_table" class="corpora_table">
                             <thead class="ui-widget-header">
                                 <tr>
@@ -90,7 +102,7 @@
                             </thead>
                             <tbody class="ui-widget-content"></tbody>
                     </table>
-                </div>
+                </div>-->
                 <div style="clear:both;"></div>
                 <div id="duplicate_docs" class="ui-corner-all formleft">
                     <h3><a href="#"></a></h3>
@@ -103,7 +115,7 @@
             <div id="tabs-1" class="ui-corner-bottom">
                 <div id="tabs-1-accordion" class="ui-corner-all formleft">
                     <h3><a href="#">choose a data set and periods</a></h3>
-                    <div id="graph_table_div" class="session_select">
+                    <div id="graph_table_div" class="session_select data_table">
                         <!--<table id="graph_table" class="corpora_table">
                             <thead class="ui-widget-header">
                                 <tr>
@@ -313,41 +325,39 @@
                 Micro Level (Not Implemented)
             </div>-->
             <div id="tabs-5" class="ui-corner-bottom">
-                <div id="intro" class="ui-corner-all formleft">
-<h1>About TINAsoft</h1>
-<h3>Welcome to the 1.0alpha6 version of TINASoft.</h3>
+                <div id="intro" class="ui-widgent-content">
+                    <h1>About TINAsoft</h1>
+                    <h3>Welcome to the 1.0alpha6 version of TINASoft.</h3>
 
-<p>This software is dedicated to the mapping of electronic corpora. It is developed by the <a href="http://sciencemapping.com">MOMA team</a> (<a href="http://www.crea.polytechnique.fr/">CREA-CNRS</a>/<a href="http://iscpif.fr">Institut des Systèmes Complexes de Paris Ile-de-France</a>) within the European Project TINA (CA/STREP – CP-FP-INFSO n°245412) and supported by the <a href="http://cordis.europa.eu/nest/home.html">New and Emerging Science and Technology programme</a> of the seventh <a href="http://cordis.europa.eu/fp6/dc/index.cfm">Framework  Programme</a> of the <a href="http://ec.europa.eu/index_en.htm">European Commission</a>.</p>
+                    <p>This software is dedicated to the mapping of electronic corpora. It is developed by the <a href="http://sciencemapping.com">MOMA team</a> (<a href="http://www.crea.polytechnique.fr/">CREA-CNRS</a>/<a href="http://iscpif.fr">Institut des Systèmes Complexes de Paris Ile-de-France</a>) within the European Project TINA (CA/STREP – CP-FP-INFSO n°245412) and supported by the <a href="http://cordis.europa.eu/nest/home.html">New and Emerging Science and Technology programme</a> of the seventh <a href="http://cordis.europa.eu/fp6/dc/index.cfm">Framework  Programme</a> of the <a href="http://ec.europa.eu/index_en.htm">European Commission</a>.</p>
 
-<p>This software has been developped by the <a href="http://sciencemapping.com">MOMA Team</a>, CNRS/Ecole Polytechnique. The MOMA Team focuses on the developpement of methods and tools for the mapping of large electronic corpora and social media.</p>
+                    <p>This software has been developped by the <a href="http://sciencemapping.com">MOMA Team</a>, CNRS/Ecole Polytechnique. The MOMA Team focuses on the developpement of methods and tools for the mapping of large electronic corpora and social media.</p>
 
-<h3>Documentation</h3>
+                    <h3>Documentation</h3>
 
-<ul>
-<li><a href="http://tinasoft.eu/">Online wiki</a></li>
-</ul>
+                    <ul>
+                    <li><a href="http://tinasoft.eu/">Online wiki</a></li>
+                    </ul>
 
-<h3>Conception, design and development</h3>
+                    <h3>Conception, design and development</h3>
 
-<ul>
-<li>Julian Bilcke, CNRS</li>
-<li>David Chavalarias, CNRS</li>
-<li>Jean-Philippe Cointet, INRA/SenS</li>
-<li>Elias Showk, CNRS</li>
-</ul>
+                    <ul>
+                    <li>Julian Bilcke, CNRS</li>
+                    <li>David Chavalarias, CNRS</li>
+                    <li>Jean-Philippe Cointet, INRA/SenS</li>
+                    <li>Elias Showk, CNRS</li>
+                    </ul>
 
-<h3>Contact and information</h3>
-<ul>
-<li>David Chavalarias (david dot chavalarias at polytechnique dot edu)</li>
-<li><a href="http://tinasoft.eu/">Homepage</a></li>
-</ul>
-
-
+                    <h3>Contact and information</h3>
+                    <ul>
+                    <li>David Chavalarias (david dot chavalarias at polytechnique dot edu)</li>
+                    <li><a href="http://tinasoft.eu/">Homepage</a></li>
+                    </ul>
                 </div>
                 <div style="clear:both;"></div>
             </div>
         </div><!--tabs-->
-      </div><!-- demo -->
+      </div><!-- main -->
 
        <!--<div id="whitebox" class="ui-widget ui-widget-content ui-corner-bottom formleft whitebox">-->
       <div id="whitebox" class="invisiblebox">

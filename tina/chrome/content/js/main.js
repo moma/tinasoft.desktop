@@ -174,8 +174,9 @@ var displayDuplicateDocs = function(data) {
  * displays the list of existing graphs
  * for a given <TR> and a dataset id
  */
-function displayListGraph(trid, corpora) {
+function displayGraphColumn(corpora) {
     //console.log("displayListGraph : row = " + trid + " , dataset = "+ corpora);
+    var trid = corpora['id'] + "_tr";
     var tr = $( "#" +trid );
     // corpus list cell
     var olid = 'graph_list_' + trid
@@ -198,7 +199,6 @@ function displayListGraph(trid, corpora) {
                         + "</button><br/>"
                     ).click(function(event) {
                         tinaviz.clear();
-                        //console.log( "opening " + $(this).attr('value') );
                         $("#tabs").data('disabled.tabs', []);
                         switchTab( "macro" );
                         tinaviz.readGraphJava("macro",$(this).attr('value'));
@@ -214,7 +214,8 @@ function displayListGraph(trid, corpora) {
  * Displays the list of corpus (selectable buttons)
  * for a given corpora and a <TR>
  */
-function displayListCorpus(trid, corpora) {
+function displayPeriodColumn(corpora) {
+    var trid = corpora['id'] + "_tr";
     var tr = $( "#" +trid );
     // corpus list cell
     var olid = 'selectable_corpus_' + trid
@@ -265,35 +266,44 @@ function selectableCorpusInit( ol, corpora ) {
     });
 }
 
+function displayDatasetRow(list) {
+    var tbody = $("#data_table > table > tbody");
+    for ( var i=0; i<list.length; i++ ) {
+        // populates each row
+        var dataset_id = list[i];
+        var trid = dataset_id + "_tr";
+        var tr = $("<tr id='"+dataset_id+"_tr'></tr>")
+            //.addClass("ui-widget-content")
+            .append( $("<td></td>").html(dataset_id) )
+        ;
+        tbody.append(tr);
+        TinaService.getDataset(dataset_id, {
+            success: function(dataset) {
+                //tr.append( $("<td></td>").html(dataset.label) );
+                displayPeriodColumn( dataset );
+                displayGraphColumn( dataset );
+            }
+        });
+    }
+}
+
 /*
  * Gets the list of datasets
  * and populates a table
  * with corpus and graphs
  */
-function displayListCorpora(table) {
+function displayDataTable(parent_div) {
+    // populates each row
+    //var datasetName = "";
+    //var trid = "";
+    var tbody = $( "<tbody></tbody>" );
+    //tbody.addClass("ui-widget-content");
+    $("#"+parent_div+" > table").append(tbody);
     TinaService.getDatasetList({
         success: function(list) {
-            var tbody = $( "#" +table+ " tbody" );
-            tbody.empty();
-            for ( var i=0; i<list.length; i++ ) {
-
-                var dtst_trid = table+ "_tr_corpora_" + i;
-                var datasetName = list[i];
-
-                TinaService.getDataset(datasetName, {
-                    success: function(dataset) {
-                        var tr = $("<tr></tr>")
-                            .attr("id", dtst_trid)
-                            .addClass("ui-widget-content")
-                            .append( $("<td></td>").html(dataset.label) )
-                        ;
-                        tbody.append(tr);
-                        displayListCorpus( dtst_trid, dataset );
-                        displayListGraph( dtst_trid, dataset );
-                    }
-                });
-            }
+            displayDatasetRow(list);
         }
+        //Cache.setValue("last_data_table", table);
     });
 }
 
@@ -1034,6 +1044,6 @@ $(document).ready(function() {
         clearStyle: true,
     });
     /* Fetch data into table */
-    displayListCorpora( "corpora_table" );
-    $("#corpora_table").clone().appendTo("#graph_table_div").attr("id", "graph_table");
+    var data_table = displayDataTable("data_table");
+    //$("#corpora_table").clone().appendTo("#graph_table_div").attr("id", "graph_table");
 });
