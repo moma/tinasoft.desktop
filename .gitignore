@@ -13,6 +13,14 @@ src/*
 *.swp
 *.swo
 *~
+user
+user/*
+db
+db/*
+index
+index/*
+log
+log/*
 dist
 dist/*
 build/*
