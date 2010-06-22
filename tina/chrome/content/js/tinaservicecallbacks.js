@@ -1,6 +1,6 @@
 
 /* Tinasoft Server callback */
-
+var SERVER_URL= "http://localhost:8888";
 var TinaServiceCallback = {
     importFile : {
         success: function(data, textStatus, XMLHttpRequest) {
@@ -15,20 +15,24 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {
             $('#importFile').removeClass("ui-state-disabled", 1);
             $('#importFile').html( "Launch" );
-            displayListCorpora( "graph_table" );
-            displayListCorpora( "corpora_table" );
+            /* Fetch data into table */
+            displayDataTable( "data_table" );
+            //$("#corpora_table").clone().appendTo("#graph_table");
         },
         beforeSend: function() {
             $('#importFile').removeClass("ui-state-error", 1);
             $('#importFile').addClass("ui-state-disabled", 1);
-            $('#importFile').html( "please wait during importation" );
+            $('#importFile').html( "please wait during import" );
             // add progress state notification
         }
     },
     extractFile : {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the whitelist extracted
-            alert(data);
+            var parts = data.split("user/");
+            var url = SERVER_URL + "/user/" + parts[1];
+            window.location.assign( url );
+            //document.load( SERVER_URL + "/user/" + parts[1] );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             $('#importFile').addClass("ui-state-error", 1);
@@ -81,6 +85,7 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {
             $('#processCooc').removeClass("ui-state-disabled", 1);
             $('#processCooc').html( "Produce a graph" );
+            displayDataTable( "data_table" );
         },
         beforeSend: function() {
             $('#processCooc').removeClass("ui-state-error", 1);
@@ -110,7 +115,6 @@ var TinaServiceCallback = {
         }
     }
 };
-
 /* Setting Tinasoft observers */
 /*
 var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);

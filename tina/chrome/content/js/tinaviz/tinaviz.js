@@ -1,34 +1,130 @@
  
 
 
-function Tinaviz() {
+function Tinaviz(args) {
 
+    var opts = {
+        width: 0,
+        height: 0
+    };
+    for (x in args) { opts[x] = args[x] };
+    
+    // PRIVATE MEMBERS
     var wrapper = null;
     var applet = null;
     var cbsAwait = {};
     var cbsRun = {};
-    var callbackReady = function() {};
+
+    var callbackReady = function () {};
+  
+    // PUBLIC MEMBERS
     this.isReady = 0;
     this.infodiv = null;
 
-    // create the applet here
-
-    //return {
-        this.init= function() {
-            if (wrapper != null || applet != null) return;
-            wrapper = $('#tinaviz')[0];
-            if (wrapper == null) return;
+    this.height = opts.height;
+    this.width = opts.width;
+    this.tag = opts.tag;
+    this.path = opts.path;
+    this.engine = opts.engine;
+    this.context = opts.context;
+    
+    this.init= function() {
+        wrapper = $("#tinaviz")[0]; // we need to get the html tag immediately
+        if (wrapper == null) {
+            alert("Error: couldn't get the applet!");
+            return;
+        }
+        if (typeof wrapper.getSubApplet == 'function') {
             applet = wrapper.getSubApplet();
-            if (applet == null) return;
-            this.auto_resize();
-            this.isReady = 1;
-	    callbackReady(this);
+        } else {
+            applet = wrapper;
         }
 
-        this.ready=function(cb) {
-		callbackReady = cb;
-	}
+        if (applet == null) {
+            alert("Error: couldn't get the applet!");
+            return;
+        }
+        this.applet = applet;
+        callbackReady(this);
+        this.isReady = 1;
+     }
 
+     this.ready=function(cb) {
+		callbackReady = cb;
+	 }
+
+     this.getHTML = function() {
+            var path = this.path;
+            var context = this.context;
+            var engine = this.engine;
+            return '<!--[if !IE]> --> \
+                            <object id="tinaviz" \
+                                        classid="java:org.jdesktop.applet.util.JNLPAppletLauncher" \
+                                        type="application/x-java-applet" \
+                                        archive="'+path+'tinaviz.jar,'+path+'core.jar,'+path+'itext.jar,'+path+'pdf.jar,'+path+'colt.jar,'+path+'concurrent.jar,'+path+'applet-launcher.jar" \
+                                        width="10" height="10" \
+                                        standby="Loading Processing software..." > \
+ \
+                              <param name="archive" value="'+path+'tinaviz.jar,'+path+'core.jar,'+path+'itext.jar,'+path+'pdf.jar,'+path+'colt.jar,'+path+'concurrent.jar,'+path+'applet-launcher.jar" /> \
+                              <param name="mayscript" value="true" /> \
+                              <param name="scriptable" value="true" /> \
+ \
+                              <param name="image" value="css/branding/appletLoading.gif" /> \
+                                <param name="boxmessage" value="Loading TinaViz..." /> \
+                              <param name="boxbgcolor" value="#FFFFFF" /> \
+                              <param name="progressbar" value="true" /> \
+                              <!--<param name="noddraw.check" value="true">--> \
+ \
+                              <param name="subapplet.classname" value="tinaviz.Main" /> \
+                              <param name="subapplet.displayname" valuefg-buttonset-multi ="tinaviz.Main" /> \
+ \
+                                <param name="engine" value="'+engine+'" /> \
+                                <param name="js_context" value="'+context+'" /> \
+ \
+                              <!--<![endif]--> \
+ \
+                              <object id="tinaviz" \
+                                          classid="clsid:CAFEEFAC-0016-0000-FFFF-ABCDEFFEDCBA" \
+                                  width="10" height="10" \
+                                  standby="Loading Processing software..."  > \
+ \
+                                <param name="code" \
+                                   value="org.jdesktop.applet.util.JNLPAppletLauncher" /> \
+                                <param name="archive" value="'+path+'tinaviz.jar,'+path+'core.jar,'+path+'itext.jar,'+path+'pdf.jar,'+path+'colt.jar,'+path+'concurrent.jar,'+path+'applet-launcher.jar" />\
+                                <param name="mayscript" value="true" /> \
+                                <param name="scriptable" value="true" /> \
+ \
+                              <param name="image" value="css/branding/appletLoading.gif" /> \
+                                <param name="boxmessage" value="Loading TinaViz..." /> \
+                                <param name="boxbgcolor" value="#FFFFFF" /> \
+                                <param name="progressbar" value="true" /> \
+                                <!--<param name="noddraw.check" value="true">--> \
+ \
+                                <param name="subapplet.classname" value="tinaviz.Main" /> \
+                                <param name="subapplet.displayname" value="tinaviz.Main" /> \
+ \
+                                <param name="engine" value="'+engine+'" /> \
+                                <param name="js_context" value="'+context+'" />\
+                                \
+\
+                                <p>\
+                                    <strong>\
+                                        This browser does not have a Java Plug-in.\
+                                        <br />\
+                                        <a href="http://www.java.com/getjava" title="Download Java Plug-in">\
+                                            Get the latest Java Plug-in here.\
+                                        </a>\
+                                    </strong>\
+                                </p>\
+\
+                              </object>\
+\
+                              <!--[if !IE]> -->\
+                            </object>\
+                            <!--<![endif]-->';
+        
+        }
+        
         /************************
          * Core applet methods
          *
@@ -48,23 +144,23 @@ function Tinaviz() {
          */
         this.dispatchProperty= function(key,value) {
             if (applet == null) return;
-            return applet.setProperty("all",key,value);
+            return applet.set("all",key,value);
         }
 
         /*
          * Core method communicating with the applet
          */
-        this.setProperty= function(view,key,value) {
+        this.set= function(view,key,value) {
             if (applet == null) return;
-            return applet.setProperty(view,key,value);
+            return applet.set(view,key,value);
         }
 
         /*
          * Core method communicating with the applet
          */
-        this.getProperty= function(view,key) {
+        this.get= function(view,key) {
             if (applet == null) return;
-            return applet.getProperty(view,key);
+            return applet.get(view,key);
         }
 
         /*
@@ -274,7 +370,7 @@ function Tinaviz() {
             // copies the category from view to meso
             //if (view == "meso") {
                 //this.toggleCategory(view);
-                //this.setProperty("meso", "category/category", this.getProperty(view, "category/category"));
+                //this.set("meso", "category/category", this.get(view, "category/category"));
             //}
         }
 
@@ -282,7 +378,7 @@ function Tinaviz() {
          *  Callback of double left clics
          */
         this.leftDoubleClicked = function(view, data) {
-            var category = this.getProperty("current", "category/category");
+            var category = this.get("current", "category/category");
             for (var id in data) {
                 this.viewMeso(decodeJSON(id), category);
                 break;
@@ -333,12 +429,12 @@ function Tinaviz() {
 
             // update the buttons
             $("#sliderEdgeWeight").slider( "option", "values", [
-                this.getProperty(view, "edgeWeight/min"),
-                this.getProperty(view, "edgeWeight/max")*100
+                this.get(view, "edgeWeight/min"),
+                this.get(view, "edgeWeight/max")*100
             ]);
             $("#sliderNodeWeight").slider( "option", "values", [
-                this.getProperty(view, "nodeWeight/min"),
-                this.getProperty(view, "nodeWeight/max")*100
+                this.get(view, "nodeWeight/min"),
+                this.get(view, "nodeWeight/max")*100
             ]);
             this.infodiv.display_current_category();
             this.infodiv.display_current_view();
@@ -462,8 +558,8 @@ function Tinaviz() {
                 }
             }
             // get and set the new category to display
-            var next_cat = this.getOppositeCategory( this.getProperty(view, "category/category"));
-            this.setProperty(view, "category/category", next_cat);
+            var next_cat = this.getOppositeCategory( this.get(view, "category/category"));
+            this.set(view, "category/category", next_cat);
             // touch and centers the view
             this.touch();
             this.autoCentering();
@@ -479,32 +575,39 @@ function Tinaviz() {
             this.unselect();
             this.selectFromId(id, true);
             // sets the category of the graph
-            this.setProperty("meso", "category/category", category);
-            //this.setProperty("macro", "category/category", category);
+            this.set("meso", "category/category", category);
+            //this.set("macro", "category/category", category);
             this.setView("meso");
             this.touch("meso");
             this.updateNodes("meso", category);
         }
 
         this.toggleView= function() {
-            var current_cat = this.getProperty("current","category/category");
+            var current_cat = this.get("current","category/category");
             if (this.getView() == "macro") {
                 // check if selection is empty
                 if (Object.size(this.infodiv.selection) != 0) {
-                    this.setProperty("meso", "category/category", current_cat);
+                    this.set("meso", "category/category", current_cat);
                     this.setView("meso");
                     this.updateNodes("meso", current_cat);
                 } else {
                     alert("please first select some nodes before switching to meso level");
                 }
             } else if (this.getView() == "meso") {
-                this.setProperty("macro", "category/category", current_cat);
+                this.set("macro", "category/category", current_cat);
                 this.setView("macro");
                 this.updateNodes("macro", current_cat);
             }
         }
         
+        this.session=function() {
+            return applet.session();
+        }
         
+        
+        this.view=function(v) {
+            return applet.view(v);
+        }
         /*
         * Manually unselects all nodes
         */
@@ -584,16 +687,13 @@ function Tinaviz() {
         /*
          * Dynamic div width
          */
-        this.getWidth= function() {
-            return $("#vizdiv").width();
-        }
+         this.size= function(width, height) {
+            $('#tinaviz').css("height",""+(height)+"px");
+            $('#tinaviz').css("width",""+(width)+"px");
+            wrapper.height = height;
+            wrapper.width = width;
+         }
 
-        /*
-         * Dynamic div height
-         */
-        this.getHeight= function() {
-            return getScreenHeight() - $("#hd").height() - $("#ft").height() - 50;
-        }
         /*
          * Callback changing utton states
          */
@@ -625,5 +725,9 @@ function Tinaviz() {
             $('#tinaviz').css('height',height);
         }
     //};
+    
+        
+ 
+    this.tag.html( this.getHTML() );
 }
 

@@ -1,19 +1,20 @@
 #!/bin/bash
 
-
-cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
-cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
-
-if [ -e viz/dist/tinaviz.jar ]
-  then
-    cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
+if [ -e ../tinaviz/js/tinaviz.js ]
+   then
+   cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
 fi
 
-if [ -e ../TinasoftPytextminer/httpserver.py ]
-  then
-    cp ../TinasoftPytextminer/httpserver.py tina/httpserver.py
+if [ -e ../tinaviz/dist/tinaviz.jar ]
+   then
+   cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
 fi
 
-cd tina
+
+#if [ -e ../TinasoftPytextminer/httpserver.py ]
+#  then
+#    cp ../TinasoftPytextminer/httpserver.py tina/httpserver.py
+#fi
+
 python start.py
 
