@@ -726,7 +726,7 @@ $(document).ready(function() {
 
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
-        path: "js/tinaviz/",
+        path: "tinaweb/js/tinaviz/",
         context: "",
         engine: "software",
         width: 0,
