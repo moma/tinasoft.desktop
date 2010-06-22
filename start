@@ -1,13 +1,18 @@
 #!/bin/bash
 
-if [ -e ../tinaviz/js/tinaviz.js ]
-   then
-   cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
-fi
+#if [ -e ../tinaviz/js/tinaviz.js ]
+#   then
+#   cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
+#fi
 
-if [ -e ../tinaviz/dist/tinaviz.jar ]
+#if [ -e ../tinaviz/dist/tinaviz.jar ]
+#   then
+#   cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
+#fi
+
+if [ -e ../tinaweb/html/js/tinaviz/ ]
    then
-   cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
+   cp -Rf ../tinaweb/html/js/tinaviz tina/chrome/content/js/tinaviz/
 fi
 
 
