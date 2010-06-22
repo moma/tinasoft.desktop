@@ -6,6 +6,9 @@ TinasoftPytextminer
 install/libs
 install/libs/pyxpcomext/*
 install/libs/xulrunner/*
+tina/index/*
+tina/log/*
+tina/xulrunner/*
 src/*
 *.swp
 *.swo
@@ -18,16 +21,11 @@ tinasoft-*.*
 *.tar.gz
 *.zip
 *.tar.bz*
-viz/.*
-viz/dist/*
-viz/build/*
-viz/nbproject/private/*
-viz/*.swp
-viz/*~
 tina/tmp/*
 tina/*fet*
 tina/chrome/content/applet/tinaviz.jar
 tina/chrome/content/applet/current.gexf
+tina/httpserver.py
 tina/graph.pdf
 tina/plugins/*
 tina/java/*

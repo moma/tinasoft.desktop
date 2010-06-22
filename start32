@@ -5,12 +5,12 @@ if [ -e tina/java ]
   then
     echo "found java, good.."
   else
-    wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86_64.tar.gz
-    tar xf java-x86_64.tar.gz
+    wget http://dl.dropbox.com/u/122451/static/tina/java/java-x86.tar.gz
+    tar xf java-x86.tar.gz
     mv java tina/java
     if [ -e tina/java ];
       then
-        rm java-x86_64.tar.gz
+        rm java-x86.tar.gz
       else
         echo "couldn't extract java, please do it manually"
     fi
@@ -26,7 +26,7 @@ if [ -e "tina/plugins/libnpjp2.so" ]
   then
     echo "found java plugin, good.."
   else
-    ln -s "`pwd`/java/lib/amd64/libnpjp2.so" "tina/plugins/libnpjp2.so"
+    ln -s "`pwd`/java/lib/i386/libnpjp2.so" "tina/plugins/libnpjp2.so"
 fi
 
 
