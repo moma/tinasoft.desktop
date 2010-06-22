@@ -706,6 +706,24 @@ var tinaviz = {};
 // wait for the DOM to be loaded
 $(document).ready(function() {
 
+
+
+    /*
+    
+    MAGIC TRICK FOR CHROME AND JAVA (MAYBE NOT NEEDED ANYMORE)
+    
+    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
+    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
+    var appletPath;
+    if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
+    else { appletPath = path + "/content/applet/index.html" }
+    var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    appletFile.initWithPath(appletPath);
+    var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
+    var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no" frameborder="0" src="'+appletURL+'"></iframe>';
+    window.setTimeout("$('#container').html('"+iframehtml+"');", 3000);
+    */
+
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
         path: "js/tinaviz/",
@@ -719,7 +737,6 @@ $(document).ready(function() {
     
         var infodiv =  InfoDiv('infodiv');
         tinaviz.infodiv = infodiv;
-        
         
         // auto-adjusting infodiv height
         $(infodiv.id).css('height', tinaviz.height - 40);
@@ -781,8 +798,6 @@ $(document).ready(function() {
 	    infodiv.display_current_view();
     });
 
-
-
     $('#waitMessage').effect('pulsate', {}, 'fast');
     //$("#tabs").tabs( { disabled: [2,3] } );;
     $("#tabs").tabs();
@@ -840,38 +855,12 @@ $(document).ready(function() {
 
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
 
-
     $(window).bind('resize', function() {
         if (tinaviz.isEnabled()) {
             resizeApplet();
         }
     });
 
-
-    //No text selection on elements with a class of 'noSelect'
-    /*
-    $('.noSelect').disableTextSelect();
-    $('.noSelect').hover(function() {
-        $(this).css('cursor','default');
-    }, function() {
-        $(this).css('cursor','auto');
-    });*/
-
-
-    var infodiv = new InfoDiv("#infodiv");
-
-    // auto-adjusting infodiv height
-    var new_size = tinaviz.getHeight() - 40;
-    $(infodiv.id).css( 'height', new_size);
-
-    $(infodiv.id).accordion({
-        fillSpace: true,
-    });
-
-    // cleans infodiv
-    infodiv.reset();
-    // passing infodiv to tinaviz is REQUIRED
-    tinaviz.infodiv = infodiv;
 
     // TODO : handler to open a graph file
     $('#htoolbar input[type=file]').change(function(e){
@@ -1019,6 +1008,7 @@ $(document).ready(function() {
         }
     });
 
+    /*
     $("#macro-toggle-showLabels #meso-toggle-showLabels").click(function(event) {
         tinaviz.toggleLabels();
     });
@@ -1030,6 +1020,7 @@ $(document).ready(function() {
     $("#macro-toggle-showEdges #meso-toggle-showEdges").click(function(event) {
         tinaviz.toggleEdges();
     });
+    */
 
     $("#macro-toggle-paused #meso-toggle-paused").button({
         icons: {primary:'ui-icon-pause'},
@@ -1090,16 +1081,6 @@ $(document).ready(function() {
 
     // magic trick for applet loading rights
 
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var appletPath;
-    if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
-    else { appletPath = path + "/content/applet/index.html" }
-    var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    appletFile.initWithPath(appletPath);
-    var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
-    var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no" frameborder="0" src="'+appletURL+'"></iframe>';
-    window.setTimeout("$('#container').html('"+iframehtml+"');", 3000);
 
     $("#tabs-1-accordion").accordion({
         autoHeight: false,
