@@ -81,7 +81,7 @@ var submitprocessCoocGraph = function(event) {
             corpora,
             corporaAndPeriods[corpora],
             whitelistpath.val(),
-            TinaServiceCallback.exportGraph
+            TinaServiceCallback.postGraph
         );
     };
     for (corpora in corporaAndPeriods) {
@@ -147,7 +147,8 @@ var submitExportWhitelist = function(event) {
             whitelistlabel.val(),
             complementwhitelistfile.val(),
             userstopwordsfile.val(),
-            parseInt(minoccs.val())
+            parseInt(minoccs.val()),
+            TinaServiceCallback.getWhitelist
         );
         return true;
     }
@@ -709,9 +710,9 @@ $(document).ready(function() {
 
 
     /*
-    
+
     MAGIC TRICK FOR CHROME AND JAVA (MAYBE NOT NEEDED ANYMORE)
-    
+
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
     var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
     var appletPath;
@@ -734,10 +735,10 @@ $(document).ready(function() {
     });
 
     tinaviz.ready(function(){
-    
+
         var infodiv =  InfoDiv('infodiv');
         tinaviz.infodiv = infodiv;
-        
+
         // auto-adjusting infodiv height
         $(infodiv.id).css('height', tinaviz.height - 40);
 
@@ -757,45 +758,45 @@ $(document).ready(function() {
         var macro = tinaviz.view("macro");
         var meso = tinaviz.view("meso");
 
-	    session.set("edgeWeight/min", 0.0);
-	    session.set("edgeWeight/max", 1.0);
-	    session.set("nodeWeight/min", 0.0);
+        session.set("edgeWeight/min", 0.0);
+        session.set("edgeWeight/max", 1.0);
+        session.set("nodeWeight/min", 0.0);
         session.set("nodeWeight/max", 1.0);
-	    session.set("category/category", "NGram");
-	    session.set("output/nodeSizeMin", 5.0);
-	    session.set("output/nodeSizeMax", 20.0);
-	    session.set("output/nodeSizeRatio", 50.0/100.0);
-	    session.set("selection/radius", 1.0);
+        session.set("category/category", "NGram");
+        session.set("output/nodeSizeMin", 5.0);
+        session.set("output/nodeSizeMax", 20.0);
+        session.set("output/nodeSizeRatio", 50.0/100.0);
+        session.set("selection/radius", 1.0);
 
-	    macro.filter("Category", "category");
-	    macro.filter("NodeWeightRange", "nodeWeight");
-	    macro.filter("EdgeWeightRange", "edgeWeight");
-	    macro.filter("NodeFunction", "radiusByWeight");
-	    macro.filter("Output", "output");
+        macro.filter("Category", "category");
+        macro.filter("NodeWeightRange", "nodeWeight");
+        macro.filter("EdgeWeightRange", "edgeWeight");
+        macro.filter("NodeFunction", "radiusByWeight");
+        macro.filter("Output", "output");
 
-	    meso.filter("SubGraphCopyStandalone", "category");
-	    meso.set("category/source", "macro");
-	    meso.set("category/category", "Document");
-	    meso.set("category/mode", "keep");
+        meso.filter("SubGraphCopyStandalone", "category");
+        meso.set("category/source", "macro");
+        meso.set("category/category", "Document");
+        meso.set("category/mode", "keep");
 
-	    meso.filter("NodeWeightRangeHack", "nodeWeight");
-	    meso.filter("EdgeWeightRangeHack", "edgeWeight");
-	    meso.filter("NodeFunction", "radiusByWeight");
-	    meso.filter("Output", "output");
+        meso.filter("NodeWeightRangeHack", "nodeWeight");
+        meso.filter("EdgeWeightRangeHack", "edgeWeight");
+        meso.filter("NodeFunction", "radiusByWeight");
+        meso.filter("Output", "output");
 
-	    //tinaviz.readGraphJava("macro", "FET60bipartite_graph_cooccurrences_.gexf");
-	    tinaviz.readGraphJava("macro", "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf");
+        //tinaviz.readGraphJava("macro", "FET60bipartite_graph_cooccurrences_.gexf");
+        tinaviz.readGraphJava("macro", "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf");
 
         // init the node list with ngrams
-	    tinaviz.updateNodes( "macro", "NGram" );
+        tinaviz.updateNodes( "macro", "NGram" );
 
         // cache the document list
-	    tinaviz.getNodes( "macro", "Document" );
+        tinaviz.getNodes( "macro", "Document" );
 
         $("#waitMessage").hide();
-        
-	    infodiv.display_current_category();
-	    infodiv.display_current_view();
+
+        infodiv.display_current_category();
+        infodiv.display_current_view();
     });
 
     $('#waitMessage').effect('pulsate', {}, 'fast');

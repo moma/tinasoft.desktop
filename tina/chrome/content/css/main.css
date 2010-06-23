@@ -1,8 +1,8 @@
 /* GLOBAL PARAMETER FOR THE SIZE */
 body {font-size:12px;}
 
-.corpora_table ol { list-style-type: none; margin: 0; padding: 0; }
-.corpora_table li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
+#data_table ol { list-style-type: none; margin: 0; padding: 0; }
+#data_table li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
 /*#corpora_table .ui-selected { border: 1px solid #7e7783; background: #5f5964; font-weight: bold; color: #ffffff; outline: none; }
 */
 
