@@ -95,7 +95,6 @@ function TinaServiceClass(url) {
     */
     getCooccurrences: function(_periods, _whitelist, cb) {
         this._GET("cooccurrences",
-            // inpost params
             {
                 periods: _periods,
                 whitelist: _whitelist
@@ -112,7 +111,7 @@ function TinaServiceClass(url) {
     */
     getWhitelist: function(_dataset, _periods, _whitelistlabel, _complementarywhitelist, _userstopwords, _minoccs, cb) {
         //console.log("calling getWhitelist("+_dataset+","+_periods+","+_whitelistlabel+","+cb+")");
-        console.log(_periods);
+        //console.log(_periods);
         this._GET("whitelist",
             {
                 dataset: _dataset,

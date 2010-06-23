@@ -48,7 +48,7 @@ var TinaServiceCallback = {
             // add progress state notification
         }
     },
-    processCooc: {
+    postCooc: {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the whitelist extracted
         },
@@ -68,7 +68,7 @@ var TinaServiceCallback = {
             // add progress state notification
         }
     },
-    exportGraph: {
+    postGraph: {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the graph exported
             alert(data);
@@ -93,7 +93,7 @@ var TinaServiceCallback = {
             // add progress state notification
         }
     },
-    exportWhitelist: {
+    getWhitelist: {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the graph exported
             alert(data);

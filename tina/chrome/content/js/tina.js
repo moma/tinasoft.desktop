@@ -27,14 +27,14 @@ function openWindowForType(type, uri, features) {
 
 function buildHelpMenu()
 {
-  //var updates = Cc["@mozilla.org/updates/update-service;1"].
-  //              getService(Ci.nsIApplicationUpdateService);
+  /*var updates = Cc["@mozilla.org/updates/update-service;1"].
+                getService(Ci.nsIApplicationUpdateService);
   var um = Cc["@mozilla.org/updates/update-manager;1"].
            getService(Ci.nsIUpdateManager);
-
+    */
   // Disable the UI if the update enabled pref has been locked by the
   // administrator or if we cannot update for some other reason
-  var checkForUpdates = document.getElementById("menu-update");
+  /*var checkForUpdates = document.getElementById("menu-update");
   var canUpdate = updates.canUpdate;
   checkForUpdates.setAttribute("disabled", !canUpdate);
   if (!canUpdate)
@@ -42,10 +42,10 @@ function buildHelpMenu()
 
   var strings = document.getElementById("strings");
   var activeUpdate = um.activeUpdate;
-
+    */
   // If there's an active update, substitute its name into the label
   // we show for this item, otherwise display a generic label.
-  function getStringWithUpdateName(key) {
+  /*function getStringWithUpdateName(key) {
     if (activeUpdate && activeUpdate.name)
       return strings.getFormattedString(key, [activeUpdate.name]);
     return strings.getString(key + "Fallback");
@@ -73,6 +73,7 @@ function buildHelpMenu()
     checkForUpdates.setAttribute("loading", "true");
   else
     checkForUpdates.removeAttribute("loading");
+    */
 }
 
 
