@@ -691,8 +691,10 @@ function resizeApplet() {
     $('#whitebox').css("height",""+(h)+"px");
     $('#whitebox').css("width",""+(w)+"px");
 
-    //$('#vizframe').css("height",""+(h)+"px");
-    //$('#vizframe').css("width",""+(w-350)+"px");
+    // the iframe
+    $('#vizframe').css("height",""+(h)+"px");
+    $('#vizframe').css("width",""+(w-300)+"px");
+
     $('#hide').show();
     $('#infodiv').css("height",""+(h-50)+"px");
     $('#infodiv').css("width",""+(300)+"px");
@@ -709,25 +711,25 @@ $(document).ready(function() {
 
 
     /*
-    
-    MAGIC TRICK FOR CHROME AND JAVA (MAYBE NOT NEEDED ANYMORE)
+    MAGIC TRICK FOR MAKE THE APPLET WORK WITH firefox chrome / file:// protocols
+    */
     
     var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
     var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
     var appletPath;
-    if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet\\index.html" }
-    else { appletPath = path + "/content/applet/index.html" }
+    if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet_iframe.html" }
+    else { appletPath = path + "/content/applet_iframe.html" }
     var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
     appletFile.initWithPath(appletPath);
     var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
     var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no" frameborder="0" src="'+appletURL+'"></iframe>';
     window.setTimeout("$('#container').html('"+iframehtml+"');", 3000);
-    */
+    
 
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
         path: "tinaweb/js/tinaviz/",
-        context: "",
+        context: "parent.",
         engine: "software",
         width: 0,
         height: 0
@@ -823,6 +825,7 @@ $(document).ready(function() {
         } else {
             // hide the frame; magic!
             tinaviz.setEnabled(false);
+
             $('#vizframe').css("height","0px");
             $('#vizframe').css("width","0px");
 
