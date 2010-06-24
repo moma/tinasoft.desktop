@@ -45,19 +45,23 @@
     <link type="text/css" rel="stylesheet" href="css/main.css"/>
 </head>
 
-<body style="cursor: auto;">
+<body style="cursor: auto; overflow: auto;">
     <div>
-        <div id="data_table" class="ui-widget ui-widget-header ui-corner-all">
-                    <table id="corpora_table">
-                            <thead>
-                                <tr>
-                                    <th>data sets</th>
-                                    <th>periods</th>
-                                    <th>available graphs</th>
-                                </tr>
-                            </thead>
-                            <!--<tbody class="ui-widget-content"></tbody>-->
-                    </table>
+        <div id="working_session" class="ui-widget ui-corner-all">
+            <button id="toggle_working_session"></button>
+            <div id="data_table" class="ui-widget-content ui-corner-all">
+                <table id="corpora_table">
+                    <thead>
+                        <tr>
+                            <th>data sets</th>
+                            <th>periods</th>
+                            <th>available graphs</th>
+                            <th>available white lists</th>
+                        </tr>
+                    </thead>
+                    <!--<tbody class="ui-widget-content"></tbody>-->
+                </table>
+            </div>
         </div>
         <div class="ui-tabs ui-corner-top" id="tabs">
             <ul>

@@ -206,7 +206,18 @@ function TinaServiceClass(url) {
          });
     },
 
-
+    getWalkUserPath: function(_dataset, _filetype, cb) {
+        this._GET("dataset",
+            {
+                dataset: _dataset,
+                filetype: _filetype
+            },
+            {
+                error: "couldn't getWalkUserPath"
+            },
+            cb
+        );
+    },
     /************************************************************************
      * POST
      ************************************************************************/

@@ -1101,4 +1101,13 @@ $(document).ready(function() {
     });
     /* Fetch data into table */
     var data_table = displayDataTable("data_table");
+
+    $("#toggle_working_session").button({
+        icons: {primary:'ui-icon-carat-2-e-w'},
+        text: true,
+        label: "work session manager"
+    })
+    .click(function(event) {
+        $("#data_table").toggle("fold");
+    });
 });
