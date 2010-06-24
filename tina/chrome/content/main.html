@@ -45,7 +45,7 @@
     <link type="text/css" rel="stylesheet" href="css/main.css"/>
 </head>
 
-<body style="cursor: auto; overflow: auto;">
+<body>
     <div>
         <div id="working_session" class="ui-widget ui-corner-all">
             <button id="toggle_working_session"></button>
@@ -105,19 +105,6 @@
                         <button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
                     </div>
                 </div>
-                <!--<div id="data_sets" class="ui-corner-all formleft data_table">
-                    <table id="corpora_table" class="corpora_table">
-                            <thead class="ui-widget-header">
-                                <tr>
-                                    <th>data sets</th>
-                                    <th>periods</th>
-                                    <th>available graphs</th>
-                                </tr>
-                            </thead>
-                            <tbody class="ui-widget-content"></tbody>
-                    </table>
-                </div>-->
-                <!--<div style="clear:both;"></div>-->
                 <div id="duplicate_docs" class="ui-corner-all formleft">
                     <h3><a href="#"></a></h3>
                     <div>
@@ -128,28 +115,15 @@
             <!-- NGRAM WHITELIST AND GRAPH TAB-->
             <div id="tabs-1" class="ui-corner-bottom">
                 <div id="tabs-1-accordion" class="ui-corner-all formleft">
-                    <h3><a href="#">choose a data set and periods</a></h3>
-                    <div id="graph_table_div" class="session_select data_table">
-                        <!--<table id="graph_table" class="corpora_table">
-                            <thead class="ui-widget-header">
-                                <tr>
-                                    <th>data sets</th>
-                                    <th>periods</th>
-                                    <th>available graphs</th>
-                                </tr>
-                            </thead>
-                            <tbody class="ui-widget-content"></tbody>
-                        </table>-->
-                    </div><!-- END SESSION SELECT -->
-
-                    <h3><a href="#">import/export n-grams white lists</a></h3>
+                    <h3><a href="#">create white lists and graphs</a></h3>
                     <div><!-- BEGIN CREATE NEW WHITE LIST -->
-                        <label><h4>1 - Create a new white list</h4></label>
+                        <h4>1 - Choose a data set and periods</h4>
+                        <label><h4>2 - Create a new white list</h4></label>
                         <input id="whitelistlabel" type="text" class="field" name="white list label" value='' />
                         <!-- <div id="exportCorpora"> -->
                             <button id="exportWhitelist" class="ui-state-default ui-corner-all" >New white list</button>
                         <!-- </div> -->
-                        <label><h4>2 - Or create a new graph using an existing white list</h4></label>
+                        <label><h4>3 - Or create a new graph using an existing white list</h4></label>
                         <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
                         <!-- <div id="processCooc" > -->
                             <button id="processCooc" class="ui-state-default ui-corner-all">New graph</button>

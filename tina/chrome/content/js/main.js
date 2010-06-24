@@ -76,7 +76,7 @@ var submitprocessCoocGraph = function(event) {
         console.log( "missing the white list path field" );
         return false;
     }
-    TinaServiceCallback.success = function(){
+    TinaServiceCallback.postCooc.success = function(){
         TinaService.postGraph(
             corpora,
             corporaAndPeriods[corpora],
@@ -90,7 +90,7 @@ var submitprocessCoocGraph = function(event) {
             corporaAndPeriods[corpora],
             whitelistpath.val(),
             userfilterspath.val(),
-            TinaServiceCallback.postCooccurrences
+            TinaServiceCallback.postCooc
         );
         break;
     }
@@ -139,7 +139,7 @@ var submitExportWhitelist = function(event) {
     }
 
     for (corpora in corporaAndPeriods) {
-        console.log( corporaAndPeriods[corpora]);
+        //console.log( corporaAndPeriods[corpora]);
 
         TinaService.getWhitelist(
             corpora,
@@ -204,6 +204,38 @@ function displayGraphColumn(corpora) {
                         $("#tabs").data('disabled.tabs', []);
                         switchTab( "macro" );
                         tinaviz.readGraphJava("macro",$(this).attr('value'));
+                    });
+                    ol.append(button);
+                }
+            }
+        }
+    );
+}
+
+function displayWhitelistColumn(corpora) {
+    var trid = corpora['id'] + "_tr";
+    var tr = $( "#" +trid );
+    // corpus list cell
+    var olid = 'whitelist_' + trid
+    tr.append("<td>"
+        + "<ol id='"
+        + olid + "' >"
+        + "</ol></td>"
+    );
+    var ol = $( "#" + olid  ).empty();
+    TinaService.getWalkUserPath(
+        corpora.id,
+        "whitelist",
+        {
+            success: function(list) {
+                for ( var i=0; i < list.length; i++ ) {
+                    var button = $("<button class='ui-state-default ui-corner-all' value='"
+                        + list[i]
+                        + "'>"
+                        + list[i]
+                        + "</button><br/>"
+                    ).click(function(event) {
+                        // TODO sets the working session, and get whitelist information from DB
                     });
                     ol.append(button);
                 }
@@ -284,6 +316,7 @@ function displayDatasetRow(list) {
                 //tr.append( $("<td></td>").html(dataset.label) );
                 displayPeriodColumn( dataset );
                 displayGraphColumn( dataset );
+                displayWhitelistColumn( dataset );
             }
         });
     }
@@ -811,7 +844,7 @@ $(document).ready(function() {
     $("#tabs").tabs();
     $('#hide').hide();
     /* restores cache vars */
-    var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
+    var corporaAndPeriods = Cache.setValue( "last_selected_periods", {} );
 
     $("#tabs").bind('tabsselect', function(event, ui) {
 
@@ -1109,5 +1142,6 @@ $(document).ready(function() {
     })
     .click(function(event) {
         $("#data_table").toggle("fold");
+        // TODO : display current selection in the button label
     });
 });

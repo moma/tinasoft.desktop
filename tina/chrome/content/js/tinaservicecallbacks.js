@@ -32,7 +32,6 @@ var TinaServiceCallback = {
             var parts = data.split("user/");
             var url = SERVER_URL + "/user/" + parts[1];
             window.location.assign( url );
-            //document.load( SERVER_URL + "/user/" + parts[1] );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             $('#importFile').addClass("ui-state-error", 1);
@@ -57,7 +56,6 @@ var TinaServiceCallback = {
             $('#processCooc').html( "error, please report the log file to bugtracker" );
         },
         complete: function(XMLHttpRequest, textStatus) {
-            alert("send here exportGraph");
             $('#processCooc').removeClass("ui-state-disabled", 1);
             $('#processCooc').html( "Launch" );
         },
@@ -71,7 +69,6 @@ var TinaServiceCallback = {
     postGraph: {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the graph exported
-            alert(data);
             $('#processCooc').html( "Loading macro view" );
             tinaviz.clear();
             switchTab( "macro" );
@@ -95,21 +92,22 @@ var TinaServiceCallback = {
     },
     getWhitelist: {
         success: function(data, textStatus, XMLHttpRequest) {
-            // data contains a path to the graph exported
-            alert(data);
+            var parts = data.split("user/");
+            var url = SERVER_URL + "/user/" + parts[1];
+            window.location.assign( url );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            $('#exportCorpora').addClass("ui-state-error", 1);
-            $('#exportCorpora').html( "error, please report the logs to bugtracker" );
+            $('#exportWhitelist').addClass("ui-state-error", 1);
+            $('#exportWhitelist').html( "error, please report the logs to bugtracker" );
         },
         complete: function(XMLHttpRequest, textStatus) {
-            $('#exportCorpora').removeClass("ui-state-disabled", 1);
-            $('#exportCorpora').html( "Export a whitelist" );
+            $('#exportWhitelist').removeClass("ui-state-disabled", 1);
+            $('#exportWhitelist').html( "Export a whitelist" );
         },
         beforeSend: function() {
-            $('#exportCorpora').removeClass("ui-state-error", 1);
-            $('#exportCorpora').addClass("ui-state-disabled", 1);
-            $('#exportCorpora').html( "please wait during whitelist exportation" );
+            $('#exportWhitelist').removeClass("ui-state-error", 1);
+            $('#exportWhitelist').addClass("ui-state-disabled", 1);
+            $('#exportWhitelist').html( "please wait during whitelist exportation" );
             // add progress state notification
         }
     }

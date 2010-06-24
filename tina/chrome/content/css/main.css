@@ -1,5 +1,9 @@
 /* GLOBAL PARAMETER FOR THE SIZE */
-body {font-size:12px;}
+body {
+    font-size: 12px;
+    overflow: auto;
+    cursor: auto;
+}
 
 #data_table ol { list-style-type: none; margin: 0; padding: 0; }
 #data_table li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
