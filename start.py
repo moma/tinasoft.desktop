@@ -5,6 +5,7 @@ import sys
 import subprocess
 from threading import Thread, Event
 import platform
+import time
 
 TINASOFT_DIR="tina"
 PYTEXTMINER_DIR="TinasoftPytextminer"
@@ -46,7 +47,7 @@ class Processus (Thread):
 
     def stop(self):
         if not self.proc:
-            print "cannot stop process, because it is already stopped"
+            print "cannot stop process %d, already stopped"%self.pid
             return
         if not self.proc.poll():
             try:
@@ -99,8 +100,10 @@ server.client = client
 client.server = server
 
 try:
-    print "\nstarting tinasoft, please wait..\n-----------------------------------------------------------------\n"
+    print "\nstarting tinasoft server, please wait..\n-----------------------------------------------------------------\n"
     server.start()
+    time.sleep(3)
+    print "\nstarting tinasoft desktop, please wait..\n-----------------------------------------------------------------\n"
     client.start()
 except KeyboardInterrupt:
     print "stopping"
