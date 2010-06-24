@@ -161,10 +161,14 @@ var submitExportWhitelist = function(event) {
 
 /* Duplicate documents found after data set import */
 var displayDuplicateDocs = function(data) {
-    var div = $( "#duplicate_docs" ).empty().show();
-    div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
-    for ( var i=0; i < data.length; i++ ) {
-        div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
+    if (data.length == 0)
+        $( "#duplicate_docs" ).empty().hide();
+    else {
+        var div = $( "#duplicate_docs" ).empty().show();
+        div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
+        for ( var i=0; i < data.length; i++ ) {
+            div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
+        }
     }
 };
 

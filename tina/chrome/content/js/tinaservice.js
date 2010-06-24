@@ -176,6 +176,7 @@ function TinaServiceClass(url) {
      * params is serialized to URL encoded arguments
      */
     _GET: function(path, params, defaultcb, _cb, _async) {
+        _async = true;
         if (_async === undefined) {
             _async = true;
         }

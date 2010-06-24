@@ -6,7 +6,7 @@ var TinaServiceCallback = {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains json encoded list of duplicate documents found
             displayDuplicateDocs( data );
-            $( "#corpora_table" ).toggleClass("ui-state-highlight", 1);
+            $( "#data_table" ).toggleClass("ui-state-highlight", 1);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             $('#importFile').addClass("ui-state-error", 1);
