@@ -13,15 +13,17 @@
 # we also want to reuse some GUI components (JS and CSS)
 # (tinaviz will be an undirect dependency)
 echo "copying latest version of tinaweb (js and css)"
-if [ -e ../tinaweb/ ]
+if [ -e ../tinaweb/html ]
    then
-   cp -Rf ../tinaweb/ tina/chrome/content/
+   rm -rf tina/chrome/content/tinaweb
+   cp -Rf ../tinaweb/html tina/chrome/content/tinaweb
 fi
 
 #
 echo "copying latest version of Tinasoft Pytextminer"
 if [ ! -e TinasoftPytextminer ]
    then
+   rm -rf TinasoftPytextminer/
    cp -Rf ../TinasoftPytextminer .
 fi
 
