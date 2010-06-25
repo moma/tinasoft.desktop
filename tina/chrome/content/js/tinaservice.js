@@ -73,30 +73,17 @@ function TinaServiceClass(url) {
 
     },
 
-    /*getGraphList: function(datasetlist, cb) {
-        var graphs = {};
-        for (var dataset in datasetlist) {
-            this.getGraph((dataset, {
-                success: function(graph) {
-                    graphs[dataset] = graph;
-                }
-            });
-        }
-        console.log(graphs);
-        return graphs;
-    },*/
-
-
     /*
     url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
     */
-    getFile: function(_path, _dataset, _format, _overwrite, cb) {
+    getFile: function(_path, _dataset, _format, _overwrite, _minoccs, cb) {
         this._GET("file",
             {
                 path: _path,
                 dataset: _dataset,
                 format:  _format,
-                overwrite:  _overwrite
+                overwrite:  _overwrite,
+                minoccs: _minoccs
             },
             {
                 error:"couldn't getFile"

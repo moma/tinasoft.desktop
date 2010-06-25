@@ -13,6 +13,11 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
+function IsNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
 /*
  * utility modifying the Object prototype
  * to get its lenght

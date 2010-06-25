@@ -19,7 +19,6 @@ var TinaServiceCallback = {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains json encoded list of duplicate documents found
             displayDuplicateDocs( data );
-            $( "#data_table" ).toggleClass("ui-state-highlight", 1);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             $('#importFile').addClass("ui-state-error", 1);
@@ -30,9 +29,10 @@ var TinaServiceCallback = {
             $('#importFile').html( "Launch" );
             /* Fetch data into table */
             displayDataTable( "data_table" );
-            //$("#corpora_table").clone().appendTo("#graph_table");
         },
         beforeSend: function() {
+            $("#importfilepath").removeClass("ui-state-error", 1);
+            $("#importdatasetid").removeClass("ui-state-error", 1);
             $('#importFile').removeClass("ui-state-error", 1);
             $('#importFile').addClass("ui-state-disabled", 1);
             $('#importFile').html( "please wait during import" );
@@ -44,6 +44,7 @@ var TinaServiceCallback = {
             // data contains a path to the whitelist extracted
             var parts = data.split("user/");
             var url = SERVER_URL + "/user/" + parts[1];
+            alert(url);
             window.location.assign( url );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -55,6 +56,8 @@ var TinaServiceCallback = {
             $('#importFile').html( "Launch" );
         },
         beforeSend: function() {
+            $("#extractminoccs").removeClass("ui-state-error", 1);
+            $('#importFile').removeClass("ui-state-error", 1);
             $('#importFile').addClass("ui-state-disabled", 1);
             $('#importFile').html( "please wait during extraction" );
             // add progress state notification
@@ -73,6 +76,7 @@ var TinaServiceCallback = {
             $('#processCooc').html( "Launch" );
         },
         beforeSend: function() {
+            $("#whitelistfile").removeClass("ui-state-error", 1);
             $('#processCooc').removeClass("ui-state-error", 1);
             $('#processCooc').addClass("ui-state-disabled", 1);
             $('#processCooc').html( "please wait during cooccurrences processing" );
@@ -116,8 +120,11 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {
             $('#exportWhitelist').removeClass("ui-state-disabled", 1);
             $('#exportWhitelist').html( "Export a whitelist" );
+            displayDataTable( "data_table" );
         },
         beforeSend: function() {
+            $("#whitelistlabel").removeClass("ui-state-error");
+            $("#extractminoccs").removeClass("ui-state-error");
             $('#exportWhitelist').removeClass("ui-state-error", 1);
             $('#exportWhitelist').addClass("ui-state-disabled", 1);
             $('#exportWhitelist').html( "please wait during whitelist exportation" );

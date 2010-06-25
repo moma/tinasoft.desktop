@@ -71,10 +71,10 @@
                 <table id="corpora_table">
                     <thead>
                         <tr>
-                            <th>data sets<button id="toggle_import_form"></button></th>
+                            <th>data sets <button id="toggle_import_form"></button></th>
                             <th>periods</th>
-                            <th>available graphs<button id="toggle_processcooc_form"></button></th>
-                            <th>available white lists<button id="toggle_whitelist_form"></button></th>
+                            <th>graphs <button id="toggle_processcooc_form"></button></th>
+                            <th>white lists <button id="toggle_whitelist_form"></button></th>
                         </tr>
                     </thead>
                     <!--<tbody class="ui-widget-content"></tbody>-->
@@ -84,16 +84,22 @@
                 <table id="import_table" class="ui-widget-content ui-corner-all">
                     <thead>
                         <tr>
-                            <th>source file<input id="importfilepath" type="file" name="import file path" value='' />
+                            <th>source file <input id="importfilepath" type="file" name="import file path" value='' />
                             </th>
-                            <th>file type<select id="importfiletype" name="filetype">
+                            <th>file type <select id="importfiletype" name="filetype">
                                     <option selected value='tinacsv'>tinasoft csv</option>
                                     <!--<option value ='medline'>pubmed medline abstracts</option>-->
                                 </select>
                             </th>
-                            <th>name<input id="importdatasetid" type="text" name="dataset id" size="12"/>
+                            <th>name <input id="importdatasetid" type="text" name="dataset id" size="12"/>
                             </th>
-                            <th><button id="importFile" class="ui-state-default ui-corner-all">Launch</button></th>
+                             <th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>
+                             </th>
+                            <th><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
+                            </th>
+                            <th class="ui-state-highlight">only extract documents and export a whitelist <input id="importextract" type="checkbox" name="overwrite" value=""/>
+                            <br/>minimum occurrences for extraction <input id="extractminoccs" type="text" size="4" name="minimum n-grams occurrences" value="1" />
+                            </th>
                         </tr>
                     </thead>
                 </table>
@@ -104,11 +110,11 @@
                 <table id="whitelist_table" class="ui-widget-content ui-corner-all">
                     <thead>
                         <tr>
-                            <th>whitelist label<input id="whitelistlabel" type="text" name="white list label" value='' />
+                            <th>whitelist label <input id="whitelistlabel" type="text" name="white list label" value='' />
                             </th>
-                            <th>minimum occurrences<input id="minoccs" type="text" size="4" name="minimum n-grams occurrences" value="1"/>
+                            <th>minimum occurrences <input id="exportminoccs" type="text" size="4" name="minimum n-grams occurrences" value="1"/>
                             </th>
-                            <th>extra stopwords file<input id="userstopwordsfile_whitelist" type="file" name="user stopwords file" value=""/>
+                            <th>extra stopwords file <input id="userstopwordsfile_whitelist" type="file" name="user stopwords file" value=""/>
                             </th>
                             <th><button id="exportWhitelist" class="ui-state-default ui-corner-all">Launch</button></th>
                         </tr>
@@ -119,7 +125,7 @@
                 <table id="processcooc_table" class="ui-widget-content ui-corner-all">
                     <thead>
                         <tr>
-                            <th>extra stopwords file<input id="userstopwordsfile_graph" type="file" name="user stopwords file" value=""/>
+                            <th>extra stopwords file <input id="userstopwordsfile_graph" type="file" name="user stopwords file" value=""/>
                             </th>
                             <th><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
                         </tr>
@@ -129,8 +135,7 @@
 
         </div>
         </div><!-- main -->
-       <!--<div id="whitebox" class="ui-widget ui-widget-content ui-corner-bottom formleft whitebox">-->
-        <div id="whitebox" class="invisiblebox">
+        <div id="whitebox" class="invisiblebox ui-widget ui-corner-all">
             <div id="waitMessage"><h3>please wait while loading...</h3></div>
             <div id="vizdiv"></div>
             <div id="hide">
