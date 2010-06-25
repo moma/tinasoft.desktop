@@ -1,15 +1,14 @@
 /* GLOBAL PARAMETER FOR THE SIZE */
 body {
-    font-size: 12px;
+    font-size: .7em;
     overflow: auto;
     cursor: auto;
 }
 
 #data_table ol { list-style-type: none; margin: 0; padding: 0; }
 #data_table li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
-/*#corpora_table .ui-selected { border: 1px solid #7e7783; background: #5f5964; font-weight: bold; color: #ffffff; outline: none; }
-*/
 
+/* TODO REMOVE*/
 .formleft {
     float:left;
     margin-right: 20px;
@@ -22,26 +21,21 @@ body {
     color: #ADD8E6;
 }
 
-.import-form {
-    width: 410px;
-}
-.export-form {
-}
-
-label, input[type="text"]{
+/* TODO REMOVE*/
+/*#tabs label, input[type="text"]{
     float:left;
     display:block;
-}
-
-label {
+}*/
+/* TODO REMOVE*/
+/*#tabs label {
     margin-right: 5px;
-}
-
-.field {
+}*/
+/* TODO REMOVE*/
+/*#tabs .field {
     width:100%;
     overflow:auto;
     margin:5px 0px;
-}
+}*/
 
 .vizframe {
     float:left;

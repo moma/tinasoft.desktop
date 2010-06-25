@@ -2,9 +2,9 @@
 <html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Tinasoft Desktop</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="description" content="">
-    <meta name="keywords" content="TinaSoft,TinaViz,CREA">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="description" content="scientometrics datamining graphviz"/>
+    <meta name="keywords" content="TinaSoft,TinaViz,CREA"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
     <!-- JQUERY -->
@@ -49,6 +49,7 @@
     <div>
         <div id="working_session" class="ui-widget ui-corner-all">
             <button id="toggle_working_session"></button>
+            <button id="toggle_about"></button>
             <div id="data_table" class="ui-widget-content ui-corner-all">
                 <table id="corpora_table">
                     <thead>
@@ -60,6 +61,48 @@
                         </tr>
                     </thead>
                     <!--<tbody class="ui-widget-content"></tbody>-->
+                </table>
+            </div>
+            <div id="import_form">
+                <table id="import_table" class="ui-widget-content ui-corner-all">
+                    <thead>
+                        <tr>
+                            <th>source file<input id="importfilepath" type="file" name="import file path" value='' />
+                            </th>
+                            <th>file type<select id="importfiletype" name="filetype">
+                                    <option selected value='tinacsv'>tinasoft csv</option>
+                                    <!--<option value ='medline'>pubmed medline abstracts</option>-->
+                                </select>
+                            </th>
+                            <th>name<input id="importdatasetid" type="text" name="dataset id" size="12"/>
+                            </th>
+                            <th><button id="importFile" class="ui-state-default ui-corner-all">Launch</button></th>
+                        </tr>
+                    </thead>
+                </table>
+                <div id="duplicate_docs" class="ui-widget ui-widget-content ui-corner-all">
+                </div>
+            </div>
+            <div id="cooc_form">
+                <table id="cooc_table" class="ui-widget-content ui-corner-all">
+                    <thead>
+                        <tr>
+                            <th>choose an extra stopwords file<input id="userstopwordsfile" type="file" name="user stopwords file" value=""/>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div id="whitelist_form">
+                <table id="whitelist_table" class="ui-widget-content ui-corner-all">
+                    <thead>
+                        <tr>
+                            <th>whitelist label<input id="whitelistlabel" type="text" name="white list label" value='' />
+                            </th>
+                            <th>minimum occurrences<input id="minoccs" type="text" size="4" name="minimum n-grams occurrences" value="1"/>
+                            </th>
+                        </tr>
+                    </thead>
                 </table>
             </div>
         </div>
@@ -74,7 +117,7 @@
             </ul>
             <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
             <div id="tabs-0" class="ui-corner-bottom">
-                <div class="ui-corner-all formleft">
+                <!--<div class="ui-corner-all formleft">
                     <div id="importForm">
                         <h3><a href="#">choose a file to import</a></h3>
                         <div>
@@ -84,9 +127,7 @@
                             <label><h4>file type</h4><label>
                             <select id="importfiletype" class="field" name="filetype">
                                 <option selected value='tinacsv'>tinasoft csv</option>
-                                <!--<option value ='medline'>pubmed medline abstracts</option>-->
                             </select>
-                            <!--<input id="importconfigfile" class="field" type="hidden" name="configfile" value="config.yaml"/>-->
                         </div>
                         <h3><a href="#">choose a data set name</a></h3>
                         <div>
@@ -104,34 +145,28 @@
                     <div>
                         <button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
                     </div>
-                </div>
-                <div id="duplicate_docs" class="ui-corner-all formleft">
-                    <h3><a href="#"></a></h3>
-                    <div>
-                    </div>
-                </div>
+                </div>-->
                 <div style="clear:both;"></div>
             </div>
             <!-- NGRAM WHITELIST AND GRAPH TAB-->
             <div id="tabs-1" class="ui-corner-bottom">
+<!--
                 <div id="tabs-1-accordion" class="ui-corner-all formleft">
                     <h3><a href="#">create white lists and graphs</a></h3>
-                    <div><!-- BEGIN CREATE NEW WHITE LIST -->
+                    <div>
                         <h4>1 - Choose a data set and periods</h4>
                         <label><h4>2 - Create a new white list</h4></label>
                         <input id="whitelistlabel" type="text" class="field" name="white list label" value='' />
-                        <!-- <div id="exportCorpora"> -->
+
                             <button id="exportWhitelist" class="ui-state-default ui-corner-all" >New white list</button>
-                        <!-- </div> -->
+
                         <label><h4>3 - Or create a new graph using an existing white list</h4></label>
                         <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
-                        <!-- <div id="processCooc" > -->
                             <button id="processCooc" class="ui-state-default ui-corner-all">New graph</button>
-                        <!-- </div> -->
-                    </div><!-- END CREATE NEW WHITE LIST -->
+                    </div>
 
                     <h3><a href="#">options</a></h3>
-                    <div><!-- BEGIN CREATE NEW WHITE LIST -->
+                    <div>
                         <label><h4>User defined stopwords file</h4></label>
                         <p class="ui-state-active">
                         This file must have one ngram on each line<br/>Used to prepare the status of a new white list
@@ -144,10 +179,11 @@
                         <input id="complementwhitelistfile" class="field" type="file" name="complementary whitelist file" value=""/><br/>
                         <label><h4>Minimum n-grams occurrences filter</h4></label>
                         <input id="minoccs" class="field" type="text" name="minimum n-grams occurrences" value="1"/><br/>
-                    </div><!-- END CREATE NEW WHITE LIST -->
+                    </div>
 
-                </div><!-- END ACCORDION -->
-                <div style="clear:both;"></div>
+                </div>
+
+                <div style="clear:both;"></div>-->
             </div><!--END FIRST TAB -->
 
             <div id="tabs-2" class="ui-corner-bottom">
@@ -313,7 +349,7 @@
                 Micro Level (Not Implemented)
             </div>-->
             <div id="tabs-5" class="ui-corner-bottom">
-                <div id="intro" class="ui-widgent-content">
+                <div class="ui-widgent-content">
                     <h1>About TINAsoft</h1>
                     <h3>Welcome to the 1.0alpha6 version of TINASoft.</h3>
 
@@ -342,7 +378,6 @@
                     <li><a href="http://tinasoft.eu/">Homepage</a></li>
                     </ul>
                 </div>
-                <div style="clear:both;"></div>
             </div>
         </div><!--tabs-->
       </div><!-- main -->
@@ -356,5 +391,35 @@
                 </div><!-- / INFODIV -->
               </div>
        </div> <!-- / WHITEBOX -->
+        <div id="about_tinasoft" class="ui-widget ui-widgent-content ui-corner-all" title="about tinasoft">
+            <h1>About TINAsoft</h1>
+            <h3>Welcome to the 1.0alpha6 version of TINASoft</h3>
+
+            <p>This software is dedicated to the mapping of electronic corpora. It is developed by the <a href="http://sciencemapping.com">MOMA team</a> (<a href="http://www.crea.polytechnique.fr/">CREA-CNRS</a>/<a href="http://iscpif.fr">Institut des Systèmes Complexes de Paris Ile-de-France</a>) within the European Project TINA (CA/STREP – CP-FP-INFSO n°245412) and supported by the <a href="http://cordis.europa.eu/nest/home.html">New and Emerging Science and Technology programme</a> of the seventh <a href="http://cordis.europa.eu/fp6/dc/index.cfm">Framework  Programme</a> of the <a href="http://ec.europa.eu/index_en.htm">European Commission</a>.</p>
+
+            <p>This software has been developped by the <a href="http://sciencemapping.com">MOMA Team</a>, CNRS/Ecole Polytechnique. The MOMA Team focuses on the developpement of methods and tools for the mapping of large electronic corpora and social media.</p>
+
+            <h3>Documentation</h3>
+
+            <ul>
+                <li><a href="http://tinasoft.eu/">Online wiki</a></li>
+            </ul>
+
+            <h3>Conception and development</h3>
+
+            <ul>
+                <li>Julian Bilcke, CNRS</li>
+                <li>David Chavalarias, CNRS</li>
+                <li>Jean-Philippe Cointet, INRA/SenS</li>
+                <li>Elias Showk, CNRS</li>
+            </ul>
+
+            <h3>Contact and information</h3>
+            <ul>
+                <li>David Chavalarias (david dot chavalarias at polytechnique dot edu)</li>
+                <li><a href="http://tinasoft.eu/">Homepage</a></li>
+            </ul>
+
+        </div>
 </body>
 </html>

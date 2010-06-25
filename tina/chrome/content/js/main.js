@@ -1128,10 +1128,8 @@ $(document).ready(function() {
         autoHeight: false,
         clearStyle: true,
     });
-    $("#importForm").accordion({
-        autoHeight: false,
-        clearStyle: true,
-    });
+    // hide by default all submit forms
+    //$("#import_form").hide();
     /* Fetch data into table */
     var data_table = displayDataTable("data_table");
 
@@ -1143,5 +1141,15 @@ $(document).ready(function() {
     .click(function(event) {
         $("#data_table").toggle("fold");
         // TODO : display current selection in the button label
+    });
+
+    $("#about_tinasoft").hide();
+    $("#toggle_about").button({
+        icons: {primary:'ui-icon-info'},
+        text: true,
+        label: "about tinasoft"
+    })
+    .click(function(event) {
+        $("#about_tinasoft").dialog({modal: true});
     });
 });
