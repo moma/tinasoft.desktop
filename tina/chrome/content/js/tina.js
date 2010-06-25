@@ -1,28 +1,44 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * GNU GPL 3
- * ***** END LICENSE BLOCK *****
+/*
+//      This program is free software; you can redistribute it and/or modify
+//      it under the terms of the GNU General Public License as published by
+//      the Free Software Foundation; either version 2 of the License, or
+//      (at your option) any later version.
+//
+//      This program is distributed in the hope that it will be useful,
+//      but WITHOUT ANY WARRANTY; without even the implied warranty of
+//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//      GNU General Public License for more details.
+//
+//      You should have received a copy of the GNU General Public License
+//      along with this program; if not, write to the Free Software
+//      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+//      MA 02110-1301, USA.
+*/
+
+/*
  * tina.js controller
- * here are the main functions */
+ * here are the main functions
+ */
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-const HELP_URL          = "http://tina.csregistry.org/tiki-index.php?page=HomePage&bl=y";
-const INTRO_URL         = "chrome://tina/content/about.xul";
+const HELP_URL  = "http://tina.csregistry.org/";
+const INTRO_URL = "chrome://tina/content/about.xul";
 
 // If a window with the type exists just focus it otherwise open a new window
 function openWindowForType(type, uri, features) {
-  var topWindow = Cc['@mozilla.org/appshell/window-mediator;1'].
-                  getService(Ci.nsIWindowMediator).
-                  getMostRecentWindow(type);
+    var topWindow = Cc['@mozilla.org/appshell/window-mediator;1'].
+        getService(Ci.nsIWindowMediator).
+        getMostRecentWindow(type);
 
-  if (topWindow)
-    topWindow.focus();
-  else if (features)
-    window.open(uri, "_blank", features);
-  else
-    window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
-    //window.open(uri, "_blank", "chrome,extrachrome,resizable,scrollbars,status,toolbar");
+    if (topWindow)
+        topWindow.focus();
+    else if (features)
+        window.open(uri, "_blank", features);
+    else
+        window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
+        //window.open(uri, "_blank", "chrome,extrachrome,resizable,scrollbars,status,toolbar");
 }
 
 function buildHelpMenu()
@@ -78,24 +94,24 @@ function buildHelpMenu()
 
 
 function openAddons() {
-  openWindowForType("Extension:Manager",
+    openWindowForType("Extension:Manager",
                     "chrome://mozapps/content/extensions/extensions.xul");
 }
 function openAboutPlugins() {
-   openWindowForType("about:plugins","about:plugins");
+    openWindowForType("about:plugins","about:plugins");
 }
 // DEBUGGING
 //openAboutPlugins();
 
 function openErrorConsole() {
-  openWindowForType("global:console", "chrome://global/content/console.xul");
+    openWindowForType("global:console", "chrome://global/content/console.xul");
 }
 
 // DEBUGGING
 //openErrorConsole();
 
 function openConfig() {
-  openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
+    openWindowForType("Preferences:ConfigManager", "chrome://global/content/config.xul");
 
 }
 /*function openDOMInspector() {
@@ -108,18 +124,18 @@ function openConfig() {
  */
 function openUpdates()
 {
-  var um = Cc["@mozilla.org/updates/update-manager;1"].
-           getService(Ci.nsIUpdateManager);
-  var prompter = Cc["@mozilla.org/updates/update-prompt;1"].
-                 createInstance(Ci.nsIUpdatePrompt);
+    var um = Cc["@mozilla.org/updates/update-manager;1"].
+    getService(Ci.nsIUpdateManager);
+    var prompter = Cc["@mozilla.org/updates/update-prompt;1"].
+        createInstance(Ci.nsIUpdatePrompt);
 
-  // If there's an update ready to be applied, show the "Update Downloaded"
-  // UI instead and let the user know they have to restart the browser for
-  // the changes to be applied.
-  if (um.activeUpdate && um.activeUpdate.state == "pending")
-    prompter.showUpdateDownloaded(um.activeUpdate);
-  else
-    prompter.checkForUpdates();
+    // If there's an update ready to be applied, show the "Update Downloaded"
+    // UI instead and let the user know they have to restart the browser for
+    // the changes to be applied.
+    if (um.activeUpdate && um.activeUpdate.state == "pending")
+        prompter.showUpdateDownloaded(um.activeUpdate);
+    else
+        prompter.checkForUpdates();
 }
 
 function openAbout() {
@@ -132,12 +148,11 @@ function openHelp() {
 var fullScreen = false;
 
 function switchFullScreen() {
-   if (!fullScreen) {
-    fullScreen = true;
-    setTimeout('window.fullScreen = true;',1);
-   } else {
-    fullScreen = false;
-    setTimeout('window.fullScreen = false;',1);
-   }
+    if (!fullScreen) {
+        fullScreen = true;
+        setTimeout('window.fullScreen = true;',1);
+    } else {
+        fullScreen = false;
+        setTimeout('window.fullScreen = false;',1);
+    }
 }
-

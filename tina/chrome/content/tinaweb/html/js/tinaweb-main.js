@@ -31,6 +31,7 @@ function getScreenHeight() {
 }
 
 
+
 var tinaviz = {};
     
 $(document).ready(function(){
@@ -48,28 +49,29 @@ $(document).ready(function(){
     
         var infodiv =  InfoDiv('infodiv');
         tinaviz.infodiv = infodiv;
-        
-        
-        // auto-adjusting infodiv height
-        $(infodiv.id).css('height', tinaviz.height - 40);
 
-        $(infodiv.id).accordion({
+        /***************** SET SIZES *****************/
+        var infoDivWidth = 390;
+     
+        var w = getScreenWidth() - infoDivWidth - 30;
+        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
+        
+        $("#infodiv").css('height', ""+(h - 12)+"px");
+        $("#infodiv").css('width', ""+(infoDivWidth)+"px");
+        
+        $(".accord_entry").css('height', ""+(h - 70)+"px");
+        /*********************************************/
+        
+        
+        $("#infodiv").accordion({
             fillSpace: true,
+            autoHeight: false,
+            clearStyle: true, // keep it to true for tinaweb
+            animated: 'easyslide',
         });
 
-        // cleans infodiv
         infodiv.reset();
 
-        var w = getScreenWidth() - 390;
-        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
-        tinaviz.size(w, h);
-
-        //$("#infodiv").width(360);
-        //$("#infodiv").height(h);
-        
-        tinaviz.logNormal( "height:" + $("#infodiv").css( 'height' ) );
-        tinaviz.logNormal( "width:" + $("#infodiv").css( 'width' ) );
-        
         tinaviz.setView("macro");
 
         var session = tinaviz.session();
@@ -102,18 +104,24 @@ $(document).ready(function(){
 	    meso.filter("NodeFunction", "radiusByWeight");
 	    meso.filter("Output", "output");
 
-	    tinaviz.readGraphJava("macro", "FET60bipartite_graph_cooccurrences_.gexf");
+	    tinaviz.readGraphAJAX("macro", "FET60bipartite_graph_cooccurrences_.gexf");
+	    //tinaviz.readGraphJava("macro", "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf");
 
+        // todo: should be asynchronous
         // init the node list with ngrams
 	    tinaviz.updateNodes( "macro", "NGram" );
 
         // cache the document list
 	    tinaviz.getNodes( "macro", "Document" );
-
-        $("#waitMessage").hide();
+       
         
 	    infodiv.display_current_category();
 	    infodiv.display_current_view();
+	  
+	    
+	    // magic trick to make the visualization appear only at the end
+        $("#appletInfo").hide();
+	    tinaviz.size(w, h);
     });
 
     //No text selection on elements with a class of 'noSelect'
@@ -233,11 +241,12 @@ $(document).ready(function(){
         values: [0, 100],
         animate: true,
         slide: function(event, ui) {
-            tinaviz.set("current", "edgeWeight/min", ui.values[0] / 100.0);
-            tinaviz.set("current", "edgeWeight/max", ui.values[1] / 100.0);
-            tinaviz.resetLayoutCounter();
-            tinaviz.touch();
-            if (tinaviz.getView()=="meso") tinaviz.autoCentering();
+            var view = tinaviz.view();
+            view.set("edgeWeight/min", ui.values[0] / 100.0);
+            view.set("edgeWeight/max", ui.values[1] / 100.0);
+            view.resetLayoutCounter();
+            view.commitProperties();
+            if (tinaviz.getViewName()=="meso") tinaviz.autoCentering();
         }
     });
 
@@ -246,11 +255,12 @@ $(document).ready(function(){
         values: [0, 100],
         animate: true,
         slide: function(event, ui) {
-            tinaviz.set("current", "nodeWeight/min", ui.values[0] / 100.0);
-            tinaviz.set("current", "nodeWeight/max", ui.values[1] / 100.0);
-            tinaviz.resetLayoutCounter();
-            tinaviz.touch();
-            if (tinaviz.getView()=="meso") tinaviz.autoCentering();
+            var view = tinaviz.view();
+            view.set("nodeWeight/min", ui.values[0] / 100.0);
+            view.set("nodeWeight/max", ui.values[1] / 100.0);
+            view.resetLayoutCounter();
+            view.commitProperties();
+            if (tinaviz.getViewName()=="meso") tinaviz.autoCentering();
         }
     });
 
@@ -259,9 +269,9 @@ $(document).ready(function(){
         max: 100.0,// precision/size
         animate: true,
         slide: function(event, ui) {
-            tinaviz.set("current", "output/nodeSizeRatio", ui.value / 100.0);
-            //tinaviz.resetLayoutCounter();
-            tinaviz.touch();
+            var view = tinaviz.view();
+            view.set("output/nodeSizeRatio", ui.value / 100.0);
+            view.commitProperties();
         }}
     );
 
@@ -270,8 +280,9 @@ $(document).ready(function(){
         max: 300.0, // max disk radius, in pixel
         animate: true,
         slide: function(event, ui) {
-            tinaviz.set("current", "selection/radius", ui.value);
-            tinaviz.touch();
+            var view = tinaviz.view();
+            view.set("selection/radius", ui.value);
+            view.commitProperties();
         }
     });
 
@@ -332,12 +343,24 @@ $(document).ready(function(){
         tinaviz.toggleCategory("current");
     });
 
-   $('#waitMessage').effect('pulsate', {}, 'fast');
+   $('#appletInfo').effect('pulsate', {}, 'fast');
 
     $(window).bind('resize', function() {
-        if (tinaviz.isEnabled()) {
-            $("#infodiv").css( 'height', getScreenHeight() - $("#hd").height() - $("#ft").height() - 60);
-            tinaviz.size(getScreenWidth() - 450, getScreenHeight() - $("#hd").height() - $("#ft").height() - 60);
-        }
+        if (!tinaviz.isEnabled()) return; 
+
+        /***************** SET SIZES *****************/
+        var infoDivWidth = 390;
+     
+        var w = getScreenWidth() - infoDivWidth - 30;
+        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
+        
+        $("#infodiv").css('height', ""+(h - 12)+"px");
+        $("#infodiv").css('width', ""+(infoDivWidth)+"px");
+        
+        $(".accord_entry").css('height', ""+(h - 70)+"px");
+        /*********************************************/
+       
+        tinaviz.size(w, h);
+        
     });
 });

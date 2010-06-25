@@ -21,87 +21,56 @@
     <script src="chrome://global/content/contentAreaUtils.js"/>
     <script src="js/tina.js"/>
     <stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>
-
     <menubar>
-    <!--<menu id="sessionMenu" label="&session.menu.label;" accesskey="&session.menu.accesskey;">
-      <menupopup>
-        <menuitem id="menu-session-new" oncommand="sessionNew()" class="menuitem-iconic"
-                  label="&session.menu.new.label;" accesskey="&session.menu.new.accesskey;"/>
-        <menuitem id="menu-session-open" oncommand="sessionOpen()" class="menuitem-iconic"
-                  label="&session.menu.open.label;" accesskey="&session.menu.open.accesskey;"/>
-        <menuitem id="menu-session-close" oncommand="sessionClose()" class="menuitem-iconic"
-                  label="&session.menu.close.label;" accesskey="&session.menu.close.accesskey;"/>
 
-        <menuseperator/>
-        <menuitem id="menu-session-export" oncommand="sessionExport()" class="menuitem-iconic"
-                  label="&session.menu.export.label;" accesskey="&session.menu.export.accesskey;"/>
-        <menuseparator/>
-        <menuitem id="menu-session-exit" oncommand="exit()" class="menuitem-iconic"
-                  label="&session.menu.exit.label;" accesskey="&session.menu.exit.accesskey;"/>
-      </menupopup>
-    </menu>
+        <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
+            <menupopup>
+                <!--<menuitem id="menu-addons" oncommand="openAddons()" class="menuitem-iconic"
+                          label="&addons.label;" accesskey="&addons.accesskey;"/>-->
+                <menuitem id="menu-console" oncommand="openErrorConsole();" class="menuitem-iconic"
+                          label="&console.label;" accesskey="&console.accesskey;" key="console_key"/>
+                <menuitem id="menu-config" oncommand="openConfig();" class="menuitem-iconic"
+                          label="&config.label;" accesskey="&config.accesskey;"/>
+                <menuitem oncommand="openAboutPlugins();" class="menuitem-iconic"
+                          label="&plugins.label;"/>
 
-    <menu id="corpusMenu" label="&corpus.menu.label;" accesskey="&corpus.menu.accesskey;">
-    </menu>
-    <menu id="indexationMenu" label="&indexation.menu.label;" accesskey="&indexation.menu.accesskey;">
-    </menu>
-    <menu id="proximityMenu" label="&proximity.menu.label;" accesskey="&proximity.menu.accesskey;">
-    </menu>
-    <menu id="clusteringMenu" label="&clustering.menu.label;" accesskey="&clustering.menu.accesskey;">
-    </menu>
-    <menu id="filteringMenu" label="&filtering.menu.label;" accesskey="&filtering.menu.accesskey;">
-    </menu>
-    <menu id="visualizationMenu" label="&visualization.menu.label;" accesskey="&visualization.menu.accesskey;">
-    </menu>-->
+                <menuseparator/>
 
-    <menu id="toolsMenu" label="&toolsMenu.label;" accesskey="&toolsMenu.accesskey;">
-      <menupopup>
-        <menuitem id="menu-addons" oncommand="openAddons()" class="menuitem-iconic"
-                  label="&addons.label;" accesskey="&addons.accesskey;"/>
-        <menuitem id="menu-console" oncommand="openErrorConsole()" class="menuitem-iconic"
-                  label="&console.label;" accesskey="&console.accesskey;"/>
-        <menuitem id="menu-config" oncommand="openConfig()" class="menuitem-iconic"
-                  label="&config.label;" accesskey="&config.accesskey;"/>
-        <menuseparator/>
-        <menuitem id="menu-reload" oncommand="window.location.reload();" class="menuitem-iconic"
-                  label="&reload.label;" accesskey="&reload.accesskey;" key="reload_key"/>
-        <menuitem label="Close" accesskey="c" key="close_key" oncommand="window.close();"/>
-        <!--<menuitem id="pyshell_menuitem"
-                  label="pyshell"
-                  accesskey="p"
-                  class="menuitem-iconic"
-                  oncommand="pyshell_launch();"/>-->
-      </menupopup>
-    </menu>
+                <menuitem id="menu-reload" oncommand="window.location.reload();" class="menuitem-iconic"
+                          label="&reload.label;" accesskey="&reload.accesskey;" key="reload_key"/>
+                <menuitem label="Close" accesskey="c" key="close_key" oncommand="window.close();"/>
+                <menuitem id="fullScreen" oncommand="switchFullScreen();"
+                          label="fullscreen" accesskey="f" key="fullscreen_key"/>
+            </menupopup>
+        </menu>
 
-    <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
-      <menupopup onpopupshowing="buildHelpMenu();">
-        <!--<menuitem id="menu-help" oncommand="openHelp()" class="menuitem-iconic"
-                  label="&help.label;" accesskey="&help.accesskey;"/>-->
-        <menuitem id="menu-updates" oncommand="openUpdates()" class="menuitem-iconic"
-                  label="&updates.label;" accesskey="&updates.accesskey;"/>
-        <menuitem id="aboutName" oncommand="openAbout()"
-                  label="&about.label;" accesskey="&about.accesskey;"/>
-        <menuitem id="fullScreen" oncommand="switchFullScreen()"
-                  label="fullscreen" accesskey="f" key="fullscreen_key"/>
-      </menupopup>
-    </menu>
+        <!--<menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
+          <menupopup onpopupshowing="buildHelpMenu();">
+            <menuitem id="menu-help" oncommand="openHelp()" class="menuitem-iconic"
+                      label="&help.label;" accesskey="&help.accesskey;"/>
+            <menuitem id="menu-updates" oncommand="openUpdates()" class="menuitem-iconic"
+                      label="&updates.label;" accesskey="&updates.accesskey;"/>
+            <menuitem id="aboutName" oncommand="openAbout()"
+                      label="&about.label;" accesskey="&about.accesskey;"/>
+          </menupopup>
+        </menu>-->
 
     </menubar>
-
     <iframe id="tabDisplay" flex="1" src="chrome://tina/content/home.xul"/>
 
     <statusbar>
-        <!--<statusbarpanel label=""/>-->
+        <statusbarpanel label=""/>
         <!--<progressmeter mode="undetermined" />-->
         <!--<progressmeter mode="determined" value="82"/>-->
-        <!--<spacer flex="1"/>-->
+        <spacer flex="1"/>
     </statusbar>
     <keyset>
         <key id="close_key" modifiers="alt" key="q" oncommand="window.close();"/>
         <key id="fullscreen_key"  keycode="VK_F11" oncommand="switchFullScreen()"/>
         <key id="reload_key" keycode="VK_F5" oncommand="window.location.reload();"/>
-        <!--<key id="reload_key"  modifiers="alt" key="q" keycode="VK_F5" oncommand="window.location.reload();"/>-->
+        <key id="console_key" modifiers="control" key="j" oncommand="openErrorConsole();"/>
     </keyset>
+
+
 
 </window>

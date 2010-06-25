@@ -747,6 +747,7 @@ var tinaviz = {};
 $(document).ready(function() {
 
 
+    $('#waitMessage').effect('pulsate', {}, 'fast');
 
     /*
     MAGIC TRICK FOR CHROME AND JAVA (MAYBE NOT NEEDED ANYMORE)
@@ -840,13 +841,18 @@ $(document).ready(function() {
     });
 
     $('#waitMessage').effect('pulsate', {}, 'fast');
-    //$("#tabs").tabs( { disabled: [2,3] } );;
-    $("#tabs").tabs();
+    //$("#tabs").tabs();
     $('#hide').hide();
-    /* restores cache vars */
+    /* resets cache vars */
     var corporaAndPeriods = Cache.setValue( "last_selected_periods", {} );
 
-    $("#tabs").bind('tabsselect', function(event, ui) {
+    if (!tinaviz.isEnabled()) {
+        //resizeApplet();
+        tinaviz.setEnabled(true);
+        tinaviz.setView("macro");
+    }
+
+    /*$("#tabs").bind('tabsselect', function(event, ui) {
 
         // MAGIC TRICK FOR THE JAVA IFRAME
         if (ui.index == 2) {
@@ -875,13 +881,15 @@ $(document).ready(function() {
             $('#infodiv').css("width","0px");
             $('#hide').hide();
         }
-    });
-    var max = 0;
+    });*/
+
+
+    /*var max = 0;
     $("label").each(function(){
         if ($(this).width() > max)
             max = $(this).width();
     });
-    $("label").width(max);
+    $("label").width(max);*/
     $('#importFile').click(function(event) {
         submitImportfile(event);
     });
@@ -903,7 +911,7 @@ $(document).ready(function() {
         }
     });
 
-
+    /*
     // TODO : handler to open a graph file
     $('#htoolbar input[type=file]').change(function(e){
         tinaviz.clear();
@@ -966,7 +974,7 @@ $(document).ready(function() {
       }
     });
     */
-    $("#macro-search-button").button({
+    /*$("#macro-search-button").button({
         text: false,
         icons: {
             primary: 'ui-icon-search'
@@ -1048,7 +1056,7 @@ $(document).ready(function() {
             tinaviz.setProperty("current", "selection/radius", ui.value);
             tinaviz.touch();
         }
-    });
+    });*/
 
     /*
     $("#macro-toggle-showLabels #meso-toggle-showLabels").click(function(event) {
@@ -1063,7 +1071,7 @@ $(document).ready(function() {
         tinaviz.toggleEdges();
     });
     */
-
+    /*
     $("#macro-toggle-paused #meso-toggle-paused").button({
         icons: {primary:'ui-icon-pause'},
         text: true,
@@ -1119,17 +1127,18 @@ $(document).ready(function() {
         },
     }).click(function(event) {
         tinaviz.toggleCategory("current");
-    });
+    });*/
 
     // magic trick for applet loading rights
 
 
-    $("#tabs-1-accordion").accordion({
-        autoHeight: false,
-        clearStyle: true,
-    });
     // hide by default all submit forms
     //$("#import_form").hide();
+    //$("#whitelist_form").hide();
+    //$("#graph_form").hide();
+    //$("#cooc_form").hide();
+
+
     /* Fetch data into table */
     var data_table = displayDataTable("data_table");
 
@@ -1140,7 +1149,7 @@ $(document).ready(function() {
     })
     .click(function(event) {
         $("#data_table").toggle("fold");
-        // TODO : display current selection in the button label
+        // TODO : display current state of the session in the button label
     });
 
     $("#about_tinasoft").hide();

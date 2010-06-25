@@ -16,23 +16,7 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml"
 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <script src="chrome://global/content/globalOverlay.js"/>
     <script src="chrome://global/content/contentAreaUtils.js"/>
-    <script src="js/home.js"/>
-    <!--<stringbundle id="strings" src="chrome://tina/locale/tina.properties"/>-->
-    <!--<description>&home.introduction;</description>
-    <hbox align="center">
-        <helplink href="http://tina.csregistry.org/tiki-index.php?page=tinaExtract&amp;bl=n"/>
-        <spacer flex="1"/>
-        <vbox align="center">
-            <button id="dataButton" class="main-button" label="Data sets" oncommand="goToDatas()"/>
-        </vbox>
-        <spacer flex="1"/>
-        <vbox align="center">
-            <button id="sessionButton" class="main-button" label="Work sessions" oncommand="goToSessions()"/>
-        </vbox>
-        <spacer flex="1"/>
-        <vbox align="center">
-            <button id="vizButton" class="main-button" label="Visualization" oncommand="goToVisualization()"/>
-        </vbox>
-        <spacer flex="1"/>
-     </hbox>-->
+    <script>
+        document.location = "chrome://tina/content/main.html";
+    </script>
 </page>
