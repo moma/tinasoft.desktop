@@ -1,4 +1,30 @@
-cp -R viz/dist/tinaviz.jar tina/chrome/content/applet/
-#cp -R viz/dist/lib/*.jar tina/chrome/content/applet/
-cd tina
-./tina
+#!/bin/bash
+
+#if [ -e ../tinaviz/js/tinaviz.js ]
+#   then
+#   cp ../tinaviz/js/tinaviz.js tina/chrome/content/js/tinaviz/
+#fi
+
+#if [ -e ../tinaviz/dist/tinaviz.jar ]
+#   then
+#   cp ../tinaviz/dist/tinaviz.jar tina/chrome/content/js/tinaviz/
+#fi
+
+# we also want to reuse some GUI components (JS and CSS)
+# (tinaviz will be an undirect dependency)
+echo "copying latest version of tinaweb (js and css)"
+if [ -e ../tinaweb/html ]
+   then
+   rm -rf tina/chrome/content/tinaweb
+   cp -Rf ../tinaweb/html tina/chrome/content/tinaweb
+fi
+
+#
+echo "copying latest version of Tinasoft Pytextminer"
+if [ ! -e TinasoftPytextminer ]
+   then
+   rm -rf TinasoftPytextminer/
+   cp -Rf ../TinasoftPytextminer .
+fi
+
+python start.py

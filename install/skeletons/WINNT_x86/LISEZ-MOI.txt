@@ -1,0 +1,1 @@
+Pour lancer tinasoft, double-cliquez sur le fichier "tina.bat".

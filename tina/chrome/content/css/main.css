@@ -1,0 +1,121 @@
+/* GLOBAL PARAMETER FOR THE SIZE */
+body {
+    font-size: .7em;
+    overflow: auto;
+    cursor: auto;
+}
+
+#data_table ol { list-style-type: none; margin: 0; padding: 0; }
+#data_table li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
+
+/* TODO REMOVE*/
+.formleft {
+    float:left;
+    margin-right: 20px;
+    min-height: 300px;
+    padding:1em 1em;
+    background:#D0D0D0;
+}
+
+.ui-widget-content a {
+    color: #ADD8E6;
+}
+
+/* TODO REMOVE*/
+/*#tabs label, input[type="text"]{
+    float:left;
+    display:block;
+}*/
+/* TODO REMOVE*/
+/*#tabs label {
+    margin-right: 5px;
+}*/
+/* TODO REMOVE*/
+/*#tabs .field {
+    width:100%;
+    overflow:auto;
+    margin:5px 0px;
+}*/
+
+.vizframe {
+    float:left;
+    width:0px;
+    height:0px;
+    border:0px;
+}
+/*
+.whitebox {
+    width: 0px;
+    height: 0px;
+    background: #ffffff;
+}
+.invisiblebox {
+   position: absolute;
+   left: 30px;
+   top: 120px;
+}
+.infodiv {
+
+    float:right;
+    /*
+    top:130px;
+    right: 0px;*/
+    width: 0px;
+    height: 0px;
+    overflow:auto;
+    /*z-index:2;*/
+    /*background: #ffffff;*/
+}
+
+.nodeinfo {
+    height:100%;
+    overflow:auto;
+}
+
+/* each sliders positioned relatively to their parent */
+.slider {
+    float: left;
+    width: 100px;
+    padding: 0px 20px 0px 0px;
+    margin-top: -5px;
+}
+
+.smallslider {
+    width: 80px;
+}
+
+.sliderLabel {
+    font-size: 11px;
+}
+
+.toolbar-left {
+    float: left;
+}
+
+.toolbar-right {
+    float: right;
+}
+
+#toggle-unselect {
+    font-size:10pt;
+    height:0;
+    left:25px;
+    position:absolute;
+    top:0;
+    width:0;
+}
+
+.waitMessage {
+    font-size: 20px;
+}
+
+
+.tabfiller {
+   height:500px;
+}
+
+.detailtext {
+    color: #000000;
+}
+*/
+

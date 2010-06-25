@@ -1,6 +1,0 @@
-<!ENTITY corpus.import.description         "This task will allow you to import external corpus inside your session.">
-<!ENTITY corpus.import.file                "File import">
-<!ENTITY corpus.import.file.label          "Select your corpus.csv file:">
-<!ENTITY corpus.import.file.title          "Select your corpus.csv file">
-<!ENTITY corpus.import.success             "Corpus successfully imported!">
-<!ENTITY corpus.save.label                 "Save settings…">

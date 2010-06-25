@@ -1,44 +1,5 @@
 <!ENTITY window.style                     "width: 50em; height: 40em">
 
-<!ENTITY session.tab.label                "Session">
-<!ENTITY session.menu.accesskey           "S">
-<!ENTITY session.menu.label               "Session">
-<!ENTITY session.menu.new.label           "Create new">
-<!ENTITY session.menu.new.accesskey       "C">
-<!ENTITY session.menu.open.label          "Open session">
-<!ENTITY session.menu.open.accesskey      "O">
-<!ENTITY session.menu.close.label         "Close session">
-<!ENTITY session.menu.close.accesskey     "C">
-<!ENTITY session.menu.export.label        "Export session">
-<!ENTITY session.menu.export.accesskey    "E">
-<!ENTITY session.menu.exit.label          "Quit">
-<!ENTITY session.menu.exit.accesskey      "Q">
-
-<!ENTITY corpus.tab.label                 "Corpus">
-<!ENTITY corpus.menu.accesskey             "C">
-<!ENTITY corpus.menu.label                "Select corpus">
-
-<!ENTITY indexation.tab.label             "Indexation">
-<!ENTITY indexation.menu.accesskey        "I">
-<!ENTITY indexation.menu.label            "Indexation">
-
-<!ENTITY proximity.tab.label              "Proximity">
-<!ENTITY proximity.menu.accesskey         "P">
-<!ENTITY proximity.menu.label             "Proximity">
-
-<!ENTITY clustering.tab.label             "Clustering">
-<!ENTITY clustering.menu.accesskey        "C">
-<!ENTITY clustering.menu.label            "Clusters">
-
-<!ENTITY filtering.tab.label              "Filtering">
-<!ENTITY filtering.menu.accesskey         "F">
-<!ENTITY filtering.menu.label             "Filter">
-
-<!ENTITY visualization.tab.label          "Visualization">
-<!ENTITY visualization.menu.accesskey     "V">
-<!ENTITY visualization.menu.label         "Visualize network">
-
-
 <!ENTITY toolsMenu.label                 "Tools">
 <!ENTITY toolsMenu.accesskey             "T">
 
@@ -48,8 +9,9 @@
 <!ENTITY console.accesskey               "E">
 <!ENTITY config.label                    "Advanced Configuration">
 <!ENTITY config.accesskey                "C">
-<!ENTITY inspector.label                 "DOM Inspector">
-<!ENTITY inspector.accesskey             "I">
+<!ENTITY reload.label                  "Reload window">
+<!ENTITY reload.accesskey             "r">
+<!ENTITY plugins.label "Plug ins">
 
 
 <!ENTITY helpMenu.label                  "Help">
@@ -57,6 +19,7 @@
 
 <!ENTITY help.label                      "Help Center">
 <!ENTITY help.accesskey                  "H">
+
 <!ENTITY updates.label                   "Software Update…">
 <!ENTITY updates.accesskey               "U">
 <!ENTITY about.label                     "About &brandShortName;">
