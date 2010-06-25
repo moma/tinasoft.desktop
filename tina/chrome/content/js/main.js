@@ -170,15 +170,13 @@ var submitExportWhitelist = function(event) {
     }
 
     for (corpora in corporaAndPeriods) {
-        //console.log( corporaAndPeriods[corpora]);
-
         TinaService.getWhitelist(
             corpora,
             corporaAndPeriods[corpora],
             whitelistlabel.val(),
             complementwhitelistfile.val(),
             userstopwordsfile.val(),
-            parseInt(minoccs.val()),
+            minoccs,
             TinaServiceCallback.getWhitelist
         );
         return true;
