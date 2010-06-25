@@ -340,10 +340,7 @@ function displayDatasetRow(list) {
  */
 function displayDataTable(parent_div) {
     // populates each row
-    //var datasetName = "";
-    //var trid = "";
     var tbody = $( "<tbody></tbody>" );
-    //tbody.addClass("ui-widget-content");
     $("#"+parent_div+" > table").append(tbody);
     TinaService.getDatasetList({
         success: function(list) {

@@ -23,6 +23,7 @@
 %brandDTD;
 <!ENTITY % windowDTD SYSTEM "chrome://tina/locale/tina.dtd" >
 %windowDTD;
+]>
 
 <window windowtype="TinaSoft:Main"
         style="&window.style;" title="&brandShortName;"
