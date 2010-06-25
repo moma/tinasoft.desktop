@@ -34,7 +34,7 @@
     <script type="text/javascript" src="js/utils.js" language="javascript"></script>
 
     <!-- WE USE TINAWEB INFO PANEL -->
-    <script type="text/javascript" src="tinaweb/tinaweb-info.js" language="javascript"></script>
+    <script type="text/javascript" src="tinaweb/js/tinaweb-info.js" language="javascript"></script>
 
     <!-- TINAVIZ -->
     <script type="text/javascript" src="tinaweb/js/tinaviz/tinaviz.js" language="javascript"></script>
@@ -71,10 +71,10 @@
                 <table id="corpora_table">
                     <thead>
                         <tr>
-                            <th>data sets</th>
+                            <th>data sets<button id="toggle_import_form"></button></th>
                             <th>periods</th>
-                            <th>available graphs</th>
-                            <th>available white lists</th>
+                            <th>available graphs<button id="toggle_processcooc_form"></button></th>
+                            <th>available white lists<button id="toggle_whitelist_form"></button></th>
                         </tr>
                     </thead>
                     <!--<tbody class="ui-widget-content"></tbody>-->
@@ -100,16 +100,6 @@
                 <div id="duplicate_docs" class="ui-widget ui-widget-content ui-corner-all">
                 </div>
             </div>
-            <div id="cooc_form">
-                <table id="cooc_table" class="ui-widget-content ui-corner-all">
-                    <thead>
-                        <tr>
-                            <th>choose an extra stopwords file<input id="userstopwordsfile" type="file" name="user stopwords file" value=""/>
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
             <div id="whitelist_form">
                 <table id="whitelist_table" class="ui-widget-content ui-corner-all">
                     <thead>
@@ -118,10 +108,25 @@
                             </th>
                             <th>minimum occurrences<input id="minoccs" type="text" size="4" name="minimum n-grams occurrences" value="1"/>
                             </th>
+                            <th>extra stopwords file<input id="userstopwordsfile_whitelist" type="file" name="user stopwords file" value=""/>
+                            </th>
+                            <th><button id="exportWhitelist" class="ui-state-default ui-corner-all">Launch</button></th>
                         </tr>
                     </thead>
                 </table>
             </div>
+            <div id="processcooc_form">
+                <table id="processcooc_table" class="ui-widget-content ui-corner-all">
+                    <thead>
+                        <tr>
+                            <th>extra stopwords file<input id="userstopwordsfile_graph" type="file" name="user stopwords file" value=""/>
+                            </th>
+                            <th><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
         </div>
         </div><!-- main -->
        <!--<div id="whitebox" class="ui-widget ui-widget-content ui-corner-bottom formleft whitebox">-->
@@ -129,12 +134,11 @@
             <div id="waitMessage"><h3>please wait while loading...</h3></div>
             <div id="vizdiv"></div>
             <div id="hide">
-            <div id="infodiv" class="ui-widget ui-widget-content ui-corner-all formleft infodiv detailtext">
-                <h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>
-            </div><!-- / INFODIV -->
+                <div id="infodiv">
+                </div><!-- / INFODIV -->
             </div>
         </div> <!-- / WHITEBOX -->
-        <div id="about_tinasoft" class="ui-widget ui-widgent-content ui-corner-all" title="About TINAsoft">
+        <div id="about_tinasoft" title="About TINAsoft">
             <h3>Welcome to the 1.0alpha version of TINASoft</h3>
             <p>This software is dedicated to the mapping of electronic corpora. It is developed by the <a href="http://sciencemapping.com">MOMA team</a> (<a href="http://www.crea.polytechnique.fr/">CREA-CNRS &amp; Ecole Polytechnique</a>/<a href="http://iscpif.fr">Institut des Systèmes Complexes de Paris Ile-de-France</a>) within the European Project TINA (CA/STREP – CP-FP-INFSO n°245412) and supported by the <a href="http://cordis.europa.eu/nest/home.html">New and Emerging Science and Technology programme</a> of the seventh <a href="http://cordis.europa.eu/fp6/dc/index.cfm">Framework  Programme</a> of the <a href="http://ec.europa.eu/index_en.htm">European Commission</a>.</p>
             <p>The MOMA Team focuses on the development of methods and tools for the mapping of large electronic corpora and social media.</p>
@@ -155,5 +159,5 @@
                 <li><a href="http://tinasoft.eu/">Homepage</a></li>
             </ul>
         </div>
-</body>
+    </body>
 </html>

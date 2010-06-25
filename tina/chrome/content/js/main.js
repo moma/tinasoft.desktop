@@ -81,7 +81,7 @@ var submitImportfile = function(event) {
 var submitprocessCoocGraph = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     var whitelistpath = $("#whitelistfile")
-    var userfilterspath  = $("#userstopwordsfile")
+    var userfilterspath  = $("#userstopwordsfile_graph")
     if ( whitelistpath.val() == '' ) {
         whitelistpath.addClass('ui-state-error');
         console.log( "missing the white list path field" );
@@ -140,7 +140,7 @@ var submitExportGraph = function(event) {
 var submitExportWhitelist = function(event) {
     var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
     var complementwhitelistfile = $("#complementwhitelistfile");
-    var userstopwordsfile = $("#userstopwordsfile");
+    var userstopwordsfile = $("#userstopwordsfile_whitelist");
     var whitelistlabel = $("#whitelistlabel");
     var minoccs = $("#minoccs");
     if ( whitelistlabel.val() == '' ) {
@@ -764,11 +764,30 @@ $(document).ready(function() {
 
 
     // hide by default all submit forms
-    //$("#import_form").hide();
-    //$("#whitelist_form").hide();
-    //$("#graph_form").hide();
-    //$("#cooc_form").hide();
-
+    $("#import_form").hide();
+    $("#toggle_import_form").button({
+        icons: {primary:'ui-icon-plus'},
+        text: false,
+    })
+    .click(function(event) {
+        $("#import_form").toggle("fold");
+    });
+    $("#whitelist_form").hide();
+    $("#toggle_whitelist_form").button({
+        icons: {primary:'ui-icon-plus'},
+        text: false,
+    })
+    .click(function(event) {
+        $("#whitelist_form").toggle("fold");
+    });
+    $("#processcooc_form").hide();
+    $("#toggle_processcooc_form").button({
+        icons: {primary:'ui-icon-plus'},
+        text: false,
+    })
+    .click(function(event) {
+        $("#processcooc_form").toggle("fold");
+    });
 
     /* Fetch data into table */
     var data_table = displayDataTable("data_table");
