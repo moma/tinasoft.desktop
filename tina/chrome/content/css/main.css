@@ -44,9 +44,7 @@ body {
     border:0px;
 }
 /*
-.whitebox {/*
-    margin: 0;
-    padding: 2px;*/
+.whitebox {
     width: 0px;
     height: 0px;
     background: #ffffff;
