@@ -395,19 +395,19 @@ $(document).ready(function() {
 
     $('#waitMessage').effect('pulsate', {}, 'fast');
 
-    var dirService = Components.classes["@mozilla.org/file/directory_service;1"].  
-                   getService(Components.interfaces.nsIProperties); 
+    var dirService = Components.classes["@mozilla.org/file/directory_service;1"].
+                   getService(Components.interfaces.nsIProperties);
     var tinavizDir = dirService.get("AChrom", Components.interfaces.nsIFile);
     tinavizDir.append("content");
     tinavizDir.append("tinaweb");
     tinavizDir.append("js");
-    tinavizDir.append("tinaviz"); // returns an nsIFile object  
-    
-    var ios = Components.classes["@mozilla.org/network/io-service;1"].  
-                    getService(Components.interfaces.nsIIOService);  
-    var URL = ios.newFileURI(tinavizDir);  
+    tinavizDir.append("tinaviz"); // returns an nsIFile object
 
-    alert("url:"+URL.spec);
+    var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                    getService(Components.interfaces.nsIIOService);
+    var URL = ios.newFileURI(tinavizDir);
+
+    //alert("url:"+URL.spec);
 
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),

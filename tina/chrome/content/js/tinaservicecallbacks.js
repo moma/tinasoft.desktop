@@ -42,9 +42,7 @@ var TinaServiceCallback = {
     extractFile : {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the whitelist extracted
-            var parts = data.split("user/");
-            var url = SERVER_URL + "/user/" + parts[1];
-            alert(url);
+            var url = tinaviz.fileURL(data);
             window.location.assign( url );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -65,6 +63,7 @@ var TinaServiceCallback = {
     },
     postCooc: {
         success: function(data, textStatus, XMLHttpRequest) {
+            console.log("postCooc success");
             // data contains a path to the whitelist extracted
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -87,9 +86,10 @@ var TinaServiceCallback = {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the graph exported
             $('#processCooc').html( "Loading macro view" );
-            tinaviz.clear();
-            switchTab( "macro" );
-            tinaviz.readGraphJava("macro", data);
+            //tinaviz.clear();
+            //switchTab( "macro" );
+            var url = tinaviz.fileURL(data);
+            tinaviz.readGraphAJAX("macro", url);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             $('#processCooc').addClass("ui-state-error", 1);
@@ -97,7 +97,7 @@ var TinaServiceCallback = {
         },
         complete: function(XMLHttpRequest, textStatus) {
             $('#processCooc').removeClass("ui-state-disabled", 1);
-            $('#processCooc').html( "Produce a graph" );
+            $('#processCooc').html( "Launch" );
             displayDataTable( "data_table" );
         },
         beforeSend: function() {
@@ -109,8 +109,7 @@ var TinaServiceCallback = {
     },
     getWhitelist: {
         success: function(data, textStatus, XMLHttpRequest) {
-            var parts = data.split("user/");
-            var url = SERVER_URL + "/user/" + parts[1];
+            var url = tinaviz.fileURL(data);
             window.location.assign( url );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
