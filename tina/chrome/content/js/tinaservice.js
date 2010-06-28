@@ -14,37 +14,6 @@
 //      MA 02110-1301, USA.
 
 
-function readLines(filename) {
-
-        var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-        var path = (new DIR_SERVICE()).get("CurProcD", Components.interfaces.nsIFile).path;
-        var filePath;// = path + filename;
-        if (path.search(/\\/) != -1) { filePath = path + "\\"+filename }
-        else { filePath = path + "/"+filename  }
-
-        this.logDebug("going to load "+filename);
-        var file =
-            Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
-        this.logDebug("initWithPath: "+filePath);
-        file.initWithPath(filePath);
-
-        var fstream =
-            Components.classes["@mozilla.org/network/file-inpost-stream;1"]
-                .createInstance(Components.interfaces.nsIFileInpostStream);
-        var cstream =
-            Components.classes["@mozilla.org/intl/converter-inpost-stream;1"]
-                .createInstance(Components.interfaces.nsIConverterInpostStream);
-
-        fstream.init(file, -1, 0, 0);
-
-        cstream.init(fstream, "UTF-8", 16000000, 0); // 16Mb - you can use another encoding here if you wish
-
-        var str = {};
-        cstream.readString(-1, str); // read the whole file and post it in str.value
-        cstream.close(); // this closes fstream
-        return str.value;
-}
 
 jQuery.ajaxSettings.traditional = true;
 

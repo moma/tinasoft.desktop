@@ -13,9 +13,6 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-const HELP_URL = "http://tina.csregistry.org/";
-const INTRO_URL = "chrome://tina/content/about.xul";
-
 /*******************************************************************************
  * Functions submitting requests to Tinaserver
  * see tinaservice.js and tinaservicecallbacks.js
@@ -398,27 +395,24 @@ $(document).ready(function() {
 
     $('#waitMessage').effect('pulsate', {}, 'fast');
 
-    /*
-    MAGIC TRICK FOR CHROME AND JAVA (MAYBE NOT NEEDED ANYMORE)
-    MAGIC TRICK FOR MAKE THE APPLET WORK WITH firefox chrome / file:// protocols
-    */
+    var dirService = Components.classes["@mozilla.org/file/directory_service;1"].  
+                   getService(Components.interfaces.nsIProperties); 
+    var tinavizDir = dirService.get("AChrom", Components.interfaces.nsIFile);
+    tinavizDir.append("content");
+    tinavizDir.append("tinaweb");
+    tinavizDir.append("js");
+    tinavizDir.append("tinaviz"); // returns an nsIFile object  
+    
+    var ios = Components.classes["@mozilla.org/network/io-service;1"].  
+                    getService(Components.interfaces.nsIIOService);  
+    var URL = ios.newFileURI(tinavizDir);  
 
-    var DIR_SERVICE = new Components.Constructor("@mozilla.org/file/directory_service;1", "nsIProperties");
-    var path = (new DIR_SERVICE()).get("AChrom", Components.interfaces.nsIFile).path;
-    var appletPath;
-    if (path.search(/\\/) != -1) { appletPath = path + "\\content\\applet_iframe.html" }
-    else { appletPath = path + "/content/applet_iframe.html" }
-    var appletFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    appletFile.initWithPath(appletPath);
-    var appletURL = Components.classes["@mozilla.org/network/protocol;1?name=file"].createInstance(Components.interfaces.nsIFileProtocolHandler).getURLSpecFromFile(appletFile);
-    var iframehtml = '<iframe id="vizframe" name="vizframe" class="vizframe" allowtransparency="false" scrolling="no" frameborder="0" src="'+appletURL+'"></iframe>';
-    window.setTimeout("$('#container').html('"+iframehtml+"');", 3000);
-
+    alert("url:"+URL.spec);
 
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
-        path: "tinaweb/js/tinaviz/",
-        context: "parent.",
+        path: URL.spec,
+        context: "",
         engine: "software",
         width: 0,
         height: 0
