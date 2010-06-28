@@ -1,3 +1,17 @@
+//      This program is free software; you can redistribute it and/or modify
+//      it under the terms of the GNU General Public License as published by
+//      the Free Software Foundation; either version 2 of the License, or
+//      (at your option) any later version.
+//
+//      This program is distributed in the hope that it will be useful,
+//      but WITHOUT ANY WARRANTY; without even the implied warranty of
+//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//      GNU General Public License for more details.
+//
+//      You should have received a copy of the GNU General Public License
+//      along with this program; if not, write to the Free Software
+//      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+//      MA 02110-1301, USA.
 
  /* useful for fullscreen mode */
 function getScreenWidth() {
@@ -31,8 +45,9 @@ function getScreenHeight() {
 }
 
 
+
 var tinaviz = {};
-    
+
 $(document).ready(function(){
 
     tinaviz = new Tinaviz({
@@ -45,23 +60,31 @@ $(document).ready(function(){
     });
 
     tinaviz.ready(function(){
-    
+
         var infodiv =  InfoDiv('infodiv');
         tinaviz.infodiv = infodiv;
-        
-        
-        // auto-adjusting infodiv height
-        $(infodiv.id).css('height', tinaviz.height - 40);
 
-        $(infodiv.id).accordion({
+        /***************** SET SIZES *****************/
+        var infoDivWidth = 390;
+
+        var w = getScreenWidth() - infoDivWidth - 30;
+        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
+
+        $("#infodiv").css('height', ""+(h - 12)+"px");
+        $("#infodiv").css('width', ""+(infoDivWidth)+"px");
+
+        $(".accord_entry").css('height', ""+(h - 70)+"px");
+        /*********************************************/
+
+
+        $("#infodiv").accordion({
             fillSpace: true,
+            autoHeight: false,
+            clearStyle: true, // keep it to true for tinaweb
+            animated: 'easyslide',
         });
 
         infodiv.reset();
-
-        var w = getScreenWidth() - 390;
-        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
-        tinaviz.size(w, h);
 
         tinaviz.setView("macro");
 
@@ -69,49 +92,54 @@ $(document).ready(function(){
         var macro = tinaviz.view("macro");
         var meso = tinaviz.view("meso");
 
-	    session.set("edgeWeight/min", 0.0);
-	    session.set("edgeWeight/max", 1.0);
-	    session.set("nodeWeight/min", 0.0);
+        session.set("edgeWeight/min", 0.0);
+        session.set("edgeWeight/max", 1.0);
+        session.set("nodeWeight/min", 0.0);
         session.set("nodeWeight/max", 1.0);
-	    session.set("category/category", "NGram");
-	    session.set("output/nodeSizeMin", 5.0);
-	    session.set("output/nodeSizeMax", 20.0);
-	    session.set("output/nodeSizeRatio", 50.0/100.0);
-	    session.set("selection/radius", 1.0);
+        session.set("category/category", "NGram");
+        session.set("output/nodeSizeMin", 5.0);
+        session.set("output/nodeSizeMax", 20.0);
+        session.set("output/nodeSizeRatio", 50.0/100.0);
+        session.set("selection/radius", 1.0);
 
-	    macro.filter("Category", "category");
-	    macro.filter("NodeWeightRange", "nodeWeight");
-	    macro.filter("EdgeWeightRange", "edgeWeight");
-	    macro.filter("NodeFunction", "radiusByWeight");
-	    macro.filter("Output", "output");
+        macro.filter("Category", "category");
+        macro.filter("NodeWeightRange", "nodeWeight");
+        macro.filter("EdgeWeightRange", "edgeWeight");
+        macro.filter("NodeFunction", "radiusByWeight");
+        macro.filter("Output", "output");
 
-	    meso.filter("SubGraphCopyStandalone", "category");
-	    meso.set("category/source", "macro");
-	    meso.set("category/category", "Document");
-	    meso.set("category/mode", "keep");
+        meso.filter("SubGraphCopyStandalone", "category");
+        meso.set("category/source", "macro");
+        meso.set("category/category", "Document");
+        meso.set("category/mode", "keep");
 
-	    meso.filter("NodeWeightRangeHack", "nodeWeight");
-	    meso.filter("EdgeWeightRangeHack", "edgeWeight");
-	    meso.filter("NodeFunction", "radiusByWeight");
-	    meso.filter("Output", "output");
+        meso.filter("NodeWeightRangeHack", "nodeWeight");
+        meso.filter("EdgeWeightRangeHack", "edgeWeight");
+        meso.filter("NodeFunction", "radiusByWeight");
+        meso.filter("Output", "output");
 
-	    //tinaviz.readGraphJava("macro", "FET60bipartite_graph_cooccurrences_.gexf");
-	    tinaviz.readGraphJava("macro", "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf");
+        tinaviz.readGraphAJAX("macro", "FET60bipartite_graph_cooccurrences_.gexf");
+        //tinaviz.readGraphJava("macro", "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf");
 
+        // todo: should be asynchronous
         // init the node list with ngrams
-	    tinaviz.updateNodes( "macro", "NGram" );
+        tinaviz.updateNodes( "macro", "NGram" );
 
         // cache the document list
-	    tinaviz.getNodes( "macro", "Document" );
+        tinaviz.getNodes( "macro", "Document" );
 
-        $("#waitMessage").hide();
-        
-	    infodiv.display_current_category();
-	    infodiv.display_current_view();
+
+        infodiv.display_current_category();
+        infodiv.display_current_view();
+
+
+        // magic trick to make the visualization appear only at the end
+        $("#appletInfo").hide();
+        tinaviz.size(w, h);
     });
 
     //No text selection on elements with a class of 'noSelect'
-    
+
     $(function(){
         $.extend($.fn.disableTextSelect = function() {
             return this.each(function() {
@@ -196,7 +224,7 @@ $(document).ready(function(){
     }).click( function(eventObject) {
         tinaviz.toggleView();
     });
-    
+
     $("#search_button").button({
         text: false,
         icons: {
@@ -227,11 +255,12 @@ $(document).ready(function(){
         values: [0, 100],
         animate: true,
         slide: function(event, ui) {
-            tinaviz.set("current", "edgeWeight/min", ui.values[0] / 100.0);
-            tinaviz.set("current", "edgeWeight/max", ui.values[1] / 100.0);
-            tinaviz.resetLayoutCounter();
-            tinaviz.touch();
-            if (tinaviz.getView()=="meso") tinaviz.autoCentering();
+            var view = tinaviz.view();
+            view.set("edgeWeight/min", ui.values[0] / 100.0);
+            view.set("edgeWeight/max", ui.values[1] / 100.0);
+            view.resetLayoutCounter();
+            view.commitProperties();
+            if (tinaviz.getViewName()=="meso") tinaviz.autoCentering();
         }
     });
 
@@ -240,11 +269,12 @@ $(document).ready(function(){
         values: [0, 100],
         animate: true,
         slide: function(event, ui) {
-            tinaviz.set("current", "nodeWeight/min", ui.values[0] / 100.0);
-            tinaviz.set("current", "nodeWeight/max", ui.values[1] / 100.0);
-            tinaviz.resetLayoutCounter();
-            tinaviz.touch();
-            if (tinaviz.getView()=="meso") tinaviz.autoCentering();
+            var view = tinaviz.view();
+            view.set("nodeWeight/min", ui.values[0] / 100.0);
+            view.set("nodeWeight/max", ui.values[1] / 100.0);
+            view.resetLayoutCounter();
+            view.commitProperties();
+            if (tinaviz.getViewName()=="meso") tinaviz.autoCentering();
         }
     });
 
@@ -253,9 +283,9 @@ $(document).ready(function(){
         max: 100.0,// precision/size
         animate: true,
         slide: function(event, ui) {
-            tinaviz.set("current", "output/nodeSizeRatio", ui.value / 100.0);
-            //tinaviz.resetLayoutCounter();
-            tinaviz.touch();
+            var view = tinaviz.view();
+            view.set("output/nodeSizeRatio", ui.value / 100.0);
+            view.commitProperties();
         }}
     );
 
@@ -264,8 +294,9 @@ $(document).ready(function(){
         max: 300.0, // max disk radius, in pixel
         animate: true,
         slide: function(event, ui) {
-            tinaviz.set("current", "selection/radius", ui.value);
-            tinaviz.touch();
+            var view = tinaviz.view();
+            view.set("selection/radius", ui.value);
+            view.commitProperties();
         }
     });
 
@@ -283,7 +314,7 @@ $(document).ready(function(){
     });
 
     **/
-    
+
     $("#toggle-paused").button({
         icons: {primary:'ui-icon-pause'},
         text: true,
@@ -326,12 +357,24 @@ $(document).ready(function(){
         tinaviz.toggleCategory("current");
     });
 
-   $('#waitMessage').effect('pulsate', {}, 'fast');
+   $('#appletInfo').effect('pulsate', {}, 'fast');
 
     $(window).bind('resize', function() {
-        if (tinaviz.isEnabled()) {
-            $("#infodiv").css( 'height', getScreenHeight() - $("#hd").height() - $("#ft").height() - 60);
-            tinaviz.size(getScreenWidth() - 450, getScreenHeight() - $("#hd").height() - $("#ft").height() - 60);
-        }
+        if (!tinaviz.isEnabled()) return;
+
+        /***************** SET SIZES *****************/
+        var infoDivWidth = 390;
+
+        var w = getScreenWidth() - infoDivWidth - 30;
+        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
+
+        $("#infodiv").css('height', ""+(h - 12)+"px");
+        $("#infodiv").css('width', ""+(infoDivWidth)+"px");
+
+        $(".accord_entry").css('height', ""+(h - 70)+"px");
+        /*********************************************/
+
+        tinaviz.size(w, h);
+
     });
 });

@@ -1,10 +1,26 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
+<!--
+        This program is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation; either version 2 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program; if not, write to the Free Software
+        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+        MA 02110-1301, USA.
+-->
 <head>
     <title>Tinasoft Desktop</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="description" content="">
-    <meta name="keywords" content="TinaSoft,TinaViz,CREA">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="description" content="scientometrics datamining graphviz"/>
+    <meta name="keywords" content="TinaSoft,TinaViz,CREA"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
     <!-- JQUERY -->
@@ -35,6 +51,7 @@
     <script type="text/javascript" src="js/tinaservice.js" language="javascript"></script>
     <script type="text/javascript" src="js/tinaservicecallbacks.js" language="javascript"></script>
 
+    <!-- TINASOFT APP MAIN SCRIPT -->
     <script type="text/javascript" src="js/main.js" language="javascript"></script>
 
     <!-- DEBUG -->
@@ -45,10 +62,11 @@
     <link type="text/css" rel="stylesheet" href="css/main.css"/>
 </head>
 
-<body style="cursor: auto; overflow: auto;">
-    <div>
+<body>
+    <div id="main">
         <div id="working_session" class="ui-widget ui-corner-all">
             <button id="toggle_working_session"></button>
+            <button id="toggle_about"></button>
             <div id="data_table" class="ui-widget-content ui-corner-all">
                 <table id="corpora_table">
                     <thead>
@@ -62,325 +80,80 @@
                     <!--<tbody class="ui-widget-content"></tbody>-->
                 </table>
             </div>
+            <div id="import_form">
+                <table id="import_table" class="ui-widget-content ui-corner-all">
+                    <thead>
+                        <tr>
+                            <th>source file<input id="importfilepath" type="file" name="import file path" value='' />
+                            </th>
+                            <th>file type<select id="importfiletype" name="filetype">
+                                    <option selected value='tinacsv'>tinasoft csv</option>
+                                    <!--<option value ='medline'>pubmed medline abstracts</option>-->
+                                </select>
+                            </th>
+                            <th>name<input id="importdatasetid" type="text" name="dataset id" size="12"/>
+                            </th>
+                            <th><button id="importFile" class="ui-state-default ui-corner-all">Launch</button></th>
+                        </tr>
+                    </thead>
+                </table>
+                <div id="duplicate_docs" class="ui-widget ui-widget-content ui-corner-all">
+                </div>
+            </div>
+            <div id="cooc_form">
+                <table id="cooc_table" class="ui-widget-content ui-corner-all">
+                    <thead>
+                        <tr>
+                            <th>choose an extra stopwords file<input id="userstopwordsfile" type="file" name="user stopwords file" value=""/>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div id="whitelist_form">
+                <table id="whitelist_table" class="ui-widget-content ui-corner-all">
+                    <thead>
+                        <tr>
+                            <th>whitelist label<input id="whitelistlabel" type="text" name="white list label" value='' />
+                            </th>
+                            <th>minimum occurrences<input id="minoccs" type="text" size="4" name="minimum n-grams occurrences" value="1"/>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
-        <div class="ui-tabs ui-corner-top" id="tabs">
-            <ul>
-                <li><a title="data sets" href="#tabs-0">Data sets</a></li>
-                <li><a title="data mining" href="#tabs-1">Data mining</a></li>
-                <li><a title="macro view" href="#tabs-2">Macro view</a></li>
-                <li><a title="meso view" href="#tabs-3">Meso view</a></li>
-                <!--<li><a title="" href="#tabs-4">Micro view</a></li>-->
-                <li><a title="intro" href="#tabs-5">About Tinasoft</a></li>
-            </ul>
-            <!-- IMPORTING TEXT FILE AND EXTRACTIGN NGRAMS TABULATION -->
-            <div id="tabs-0" class="ui-corner-bottom">
-                <div class="ui-corner-all formleft">
-                    <div id="importForm">
-                        <h3><a href="#">choose a file to import</a></h3>
-                        <div>
-                            <label><h4>source file</h4><label>
-                            <input id="importfilepath" type="file" class="field" name="import file path" value='' />
-                            <div style="clear:both;"></div>
-                            <label><h4>file type</h4><label>
-                            <select id="importfiletype" class="field" name="filetype">
-                                <option selected value='tinacsv'>tinasoft csv</option>
-                                <!--<option value ='medline'>pubmed medline abstracts</option>-->
-                            </select>
-                            <!--<input id="importconfigfile" class="field" type="hidden" name="configfile" value="config.yaml"/>-->
-                        </div>
-                        <h3><a href="#">choose a data set name</a></h3>
-                        <div>
-                            <p class="ui-state-active">
-                            choosing an existing name will update the existing data set
-                            </p>
-                            <input id="importdatasetid" type="text" name="dataset id" size="24"/>
-                        </div>
-                        <h3><a href="#">options</a></h3>
-                        <div>
-                            <input id="importoverwrite" type="checkbox" name="overwrite" value="">overwrite existing documents</input><BR/>
-                            <input id="importextract" type="checkbox" name="overwrite" value="">only extract documents and export a whitelist</input>
-                        </div>
-                    </div>
-                    <div>
-                        <button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
-                    </div>
-                </div>
-                <!--<div id="data_sets" class="ui-corner-all formleft data_table">
-                    <table id="corpora_table" class="corpora_table">
-                            <thead class="ui-widget-header">
-                                <tr>
-                                    <th>data sets</th>
-                                    <th>periods</th>
-                                    <th>available graphs</th>
-                                </tr>
-                            </thead>
-                            <tbody class="ui-widget-content"></tbody>
-                    </table>
-                </div>-->
-                <!--<div style="clear:both;"></div>-->
-                <div id="duplicate_docs" class="ui-corner-all formleft">
-                    <h3><a href="#"></a></h3>
-                    <div>
-                    </div>
-                </div>
-                <div style="clear:both;"></div>
-            </div>
-            <!-- NGRAM WHITELIST AND GRAPH TAB-->
-            <div id="tabs-1" class="ui-corner-bottom">
-                <div id="tabs-1-accordion" class="ui-corner-all formleft">
-                    <h3><a href="#">choose a data set and periods</a></h3>
-                    <div id="graph_table_div" class="session_select data_table">
-                        <!--<table id="graph_table" class="corpora_table">
-                            <thead class="ui-widget-header">
-                                <tr>
-                                    <th>data sets</th>
-                                    <th>periods</th>
-                                    <th>available graphs</th>
-                                </tr>
-                            </thead>
-                            <tbody class="ui-widget-content"></tbody>
-                        </table>-->
-                    </div><!-- END SESSION SELECT -->
-
-                    <h3><a href="#">import/export n-grams white lists</a></h3>
-                    <div><!-- BEGIN CREATE NEW WHITE LIST -->
-                        <label><h4>1 - Create a new white list</h4></label>
-                        <input id="whitelistlabel" type="text" class="field" name="white list label" value='' />
-                        <!-- <div id="exportCorpora"> -->
-                            <button id="exportWhitelist" class="ui-state-default ui-corner-all" >New white list</button>
-                        <!-- </div> -->
-                        <label><h4>2 - Or create a new graph using an existing white list</h4></label>
-                        <input id="whitelistfile" type="file" class="field" name="whitelistfile" value='' />
-                        <!-- <div id="processCooc" > -->
-                            <button id="processCooc" class="ui-state-default ui-corner-all">New graph</button>
-                        <!-- </div> -->
-                    </div><!-- END CREATE NEW WHITE LIST -->
-
-                    <h3><a href="#">options</a></h3>
-                    <div><!-- BEGIN CREATE NEW WHITE LIST -->
-                        <label><h4>User defined stopwords file</h4></label>
-                        <p class="ui-state-active">
-                        This file must have one ngram on each line<br/>Used to prepare the status of a new white list
-                        </p>
-                        <input id="userstopwordsfile" class="field" type="file" name="user stopwords file" value=""/><br/>
-                        <label><h4>Extra n-grams white list file</h4></label>
-                        <p class="ui-state-active">
-                        Preserve previously exported file format<br/>Used to prepare the status of a new whitelist
-                        </p>
-                        <input id="complementwhitelistfile" class="field" type="file" name="complementary whitelist file" value=""/><br/>
-                        <label><h4>Minimum n-grams occurrences filter</h4></label>
-                        <input id="minoccs" class="field" type="text" name="minimum n-grams occurrences" value="1"/><br/>
-                    </div><!-- END CREATE NEW WHITE LIST -->
-
-                </div><!-- END ACCORDION -->
-                <div style="clear:both;"></div>
-            </div><!--END FIRST TAB -->
-
-            <div id="tabs-2" class="ui-corner-bottom">
-                <div id="htoolbar" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-
-                       <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                            <a href="#" onclick="#"
-                      class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                      title="pause"><input id="macro-inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
-                        </div>
-
-                        <button id="macro-toggle-paused" class="fg-button toolbar-left">pause</button>
-                        <button id="macro-toggle-switch" class="fg-button toolbar-left">switch category</button>
-
-                        <!-- TEMPORARY DISABLED - FOR THE ONLINE VERSION -->
-                        <!--
-                        <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-
-                                <a id="toggle-showLabels"
-                                   href="#"
-                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
-                                   title="hide/show labels"><span class="ui-icon ui-icon-labels"></span> <span class="noSelect">Labels</span></a>
-                                <a id="toggle-showNodes"
-                                   href="#"
-                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
-                                   title="hide/show nodes"><span class="ui-icon ui-icon-nodes"></span> <span class="noSelect">Nodes</span></a>
-                                <a id="toggle-showEdges"
-                                   href="#"
-                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
-                                   title="hide/show edges"><span class="ui-icon ui-icon-edges"></span> <span class="noSelect">Edges</span></a>
-
-                        </div>
-
-                        <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                            <a id="toggle-paused"
-                               href="#"
-                               class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
-                               title="pause spatialization"><span class="ui-icon ui-icon-thunder"></span> <span class="noSelect">Run layout</span></a>
-                        </div>
-                        -->
-
-                        <div class="sliders toolbar-left">
-                            <div class="slider">
-                                <span class="sliderLabel noSelect">magnify</span>
-                                <div id="macro-sliderNodeSize"></div>
-                            </div>
-
-                            <div class="slider smallslider">
-                                <span class="sliderLabel noSelect">cursor size</span>
-                                <div id="macro-sliderSelectionZone"></div>
-
-                            </div>
-                        </div>
-
-                        <div class="sliders toolbar-left">
-                            <div class="slider">
-                                <span class="sliderLabel noSelect">edges filter</span>
-                                <div id="macro-sliderEdgeWeight"></div>
-                            </div>
-                            <div class="slider">
-                                <span class="sliderLabel noSelect">nodes filter</span>
-                                <div id="macro-sliderNodeWeight"></div>
-                            </div>
-                        </div>
-                        <!-- end of sliders -->
-                        <!--<div class="fg-buttonset ui-helper-clearfix fg-button">-->
-                            <!--<a href="#"
-                              id="open"
-                              class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                              title="pause">-->
-                              <!--<input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input> -->
-                              <!--<input id="inputgraph" type="file" value="Open">-->
-                            <!--</a> -->
-                        <!--</div>-->
-                        <button id="macro-toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
-                        <form id="macro-search" action="#" class="toolbar-right">
-                            <input id="macro-search-input" type="text" value="">
-                            <button id="macro-search-button" class="fg-button">search</button>
-                        </form>
-
-
-                    </div><!-- End of htoolbar -->
-
-                <!--
-                <div id="tabfiller" class="tabfiller">
-                </div>
-                -->
-            </div><!-- END OF TAB 2 -->
-
-            <div id="tabs-3" class="ui-corner-bottom">
-                <div id="htoolbar2" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-                       <div class="fg-buttonset fg-buttonset ui-helper-clearfix">
-                            <a href="#"
-                      onclick="#"
-                      class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                      title="pause"><input id="meso-inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input></a>
-                        </div>
-
-                        <button id="meso-toggle-paused" class="fg-button toolbar-left">pause</button>
-                        <button id="meso-toggle-switch" class="fg-button toolbar-left">switch category</button>
-
-                        <!-- TEMPORARY DISABLED - FOR THE ONLINE VERSION -->
-                        <!--
-                        <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-
-                                <a id="toggle-showLabels"
-                                   href="#"
-                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
-                                   title="hide/show labels"><span class="ui-icon ui-icon-labels"></span> <span class="noSelect">Labels</span></a>
-                                <a id="toggle-showNodes"
-                                   href="#"
-                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
-                                   title="hide/show nodes"><span class="ui-icon ui-icon-nodes"></span> <span class="noSelect">Nodes</span></a>
-                                <a id="toggle-showEdges"
-                                   href="#"
-                                   class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
-                                   title="hide/show edges"><span class="ui-icon ui-icon-edges"></span> <span class="noSelect">Edges</span></a>
-
-                        </div>
-
-                        <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                            <a id="toggle-paused"
-                               href="#"
-                               class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
-                               title="pause spatialization"><span class="ui-icon ui-icon-thunder"></span> <span class="noSelect">Run layout</span></a>
-                        </div>
-                        -->
-                        <div class="sliders toolbar-left">
-                            <div class="slider">
-                                <span class="sliderLabel noSelect">magnify</span>
-                                <div id="meso-sliderNodeSize"></div>
-                            </div>
-
-                            <div class="slider smallslider">
-                                <span class="sliderLabel noSelect">cursor size</span>
-                                <div id="meso-sliderSelectionZone"></div>
-
-                            </div>
-                        </div>
-                        <div class="sliders toolbar-left">
-                            <div class="slider">
-                                <span class="sliderLabel noSelect">edges filter</span>
-                                <div id="meso-sliderEdgeWeight"></div>
-                            </div>
-                            <div class="slider">
-                                <span class="sliderLabel noSelect">nodes filter</span>
-                                <div id="meso-sliderNodeWeight"></div>
-                            </div>
-                        </div>
-                        <button id="meso-toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
-                        <form id="meso-search" action="#" class="toolbar-right">
-                            <input id="meso-search_input" type="text" value="">
-                            <button id="meso-search_button" class="fg-button">search</button>
-                        </form>
-
-                </div><!-- End of htoolbar -->
-                <!--
-                <div id="tabfiller" class="tabfiller"></div>
-                -->
-            </div><!-- end of tab 3 (meso) -->
-
-            <!--<div id="tabs-4" class="ui-corner-bottom">
-                Micro Level (Not Implemented)
-            </div>-->
-            <div id="tabs-5" class="ui-corner-bottom">
-                <div id="intro" class="ui-widgent-content">
-                    <h1>About TINAsoft</h1>
-                    <h3>Welcome to the 1.0alpha6 version of TINASoft.</h3>
-
-                    <p>This software is dedicated to the mapping of electronic corpora. It is developed by the <a href="http://sciencemapping.com">MOMA team</a> (<a href="http://www.crea.polytechnique.fr/">CREA-CNRS</a>/<a href="http://iscpif.fr">Institut des Systèmes Complexes de Paris Ile-de-France</a>) within the European Project TINA (CA/STREP – CP-FP-INFSO n°245412) and supported by the <a href="http://cordis.europa.eu/nest/home.html">New and Emerging Science and Technology programme</a> of the seventh <a href="http://cordis.europa.eu/fp6/dc/index.cfm">Framework  Programme</a> of the <a href="http://ec.europa.eu/index_en.htm">European Commission</a>.</p>
-
-                    <p>This software has been developped by the <a href="http://sciencemapping.com">MOMA Team</a>, CNRS/Ecole Polytechnique. The MOMA Team focuses on the developpement of methods and tools for the mapping of large electronic corpora and social media.</p>
-
-                    <h3>Documentation</h3>
-
-                    <ul>
-                    <li><a href="http://tinasoft.eu/">Online wiki</a></li>
-                    </ul>
-
-                    <h3>Conception, design and development</h3>
-
-                    <ul>
-                    <li>Julian Bilcke, CNRS</li>
-                    <li>David Chavalarias, CNRS</li>
-                    <li>Jean-Philippe Cointet, INRA/SenS</li>
-                    <li>Elias Showk, CNRS</li>
-                    </ul>
-
-                    <h3>Contact and information</h3>
-                    <ul>
-                    <li>David Chavalarias (david dot chavalarias at polytechnique dot edu)</li>
-                    <li><a href="http://tinasoft.eu/">Homepage</a></li>
-                    </ul>
-                </div>
-                <div style="clear:both;"></div>
-            </div>
-        </div><!--tabs-->
-      </div><!-- main -->
-
+        </div><!-- main -->
        <!--<div id="whitebox" class="ui-widget ui-widget-content ui-corner-bottom formleft whitebox">-->
-      <div id="whitebox" class="invisiblebox">
-              <div id="vizdiv"></div>
-              <div id="hide">
-                <div id="infodiv" class="ui-widget ui-widget-content ui-corner-all formleft infodiv detailtext">
-                    <h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>
-                </div><!-- / INFODIV -->
-              </div>
-       </div> <!-- / WHITEBOX -->
+        <div id="whitebox" class="invisiblebox">
+            <div id="waitMessage"><h3>please wait while loading...</h3></div>
+            <div id="vizdiv"></div>
+            <div id="hide">
+            <div id="infodiv" class="ui-widget ui-widget-content ui-corner-all formleft infodiv detailtext">
+                <h2>No element selected. <br/>To begin exploration, try clicking or double-clicking on nodes on the left!</h2>
+            </div><!-- / INFODIV -->
+            </div>
+        </div> <!-- / WHITEBOX -->
+        <div id="about_tinasoft" class="ui-widget ui-widgent-content ui-corner-all" title="About TINAsoft">
+            <h3>Welcome to the 1.0alpha version of TINASoft</h3>
+            <p>This software is dedicated to the mapping of electronic corpora. It is developed by the <a href="http://sciencemapping.com">MOMA team</a> (<a href="http://www.crea.polytechnique.fr/">CREA-CNRS &amp; Ecole Polytechnique</a>/<a href="http://iscpif.fr">Institut des Systèmes Complexes de Paris Ile-de-France</a>) within the European Project TINA (CA/STREP – CP-FP-INFSO n°245412) and supported by the <a href="http://cordis.europa.eu/nest/home.html">New and Emerging Science and Technology programme</a> of the seventh <a href="http://cordis.europa.eu/fp6/dc/index.cfm">Framework  Programme</a> of the <a href="http://ec.europa.eu/index_en.htm">European Commission</a>.</p>
+            <p>The MOMA Team focuses on the development of methods and tools for the mapping of large electronic corpora and social media.</p>
+            <h3>Documentation</h3>
+            <ul>
+                <li><a href="http://tinasoft.eu/">Online wiki</a></li>
+            </ul>
+            <h3>Conception and development</h3>
+            <ul>
+                <li>Julian Bilcke, CNRS, julian dot bilcke at iscpif dot fr</li>
+                <li>David Chavalarias, CNRS, david dot chavalarias at polytechnique dot edu</li>
+                <li>Jean-Philippe Cointet, INRA/SenS</li>
+                <li>Elias Showk, CNRS, elias dot showk at iscpif dot fr</li>
+            </ul>
+            <h3>Contact and information</h3>
+            <ul>
+                <li>David Chavalarias (david dot chavalarias at polytechnique dot edu)</li>
+                <li><a href="http://tinasoft.eu/">Homepage</a></li>
+            </ul>
+        </div>
 </body>
 </html>

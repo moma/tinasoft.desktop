@@ -1,4 +1,17 @@
-
+//      This program is free software; you can redistribute it and/or modify
+//      it under the terms of the GNU General Public License as published by
+//      the Free Software Foundation; either version 2 of the License, or
+//      (at your option) any later version.
+//
+//      This program is distributed in the hope that it will be useful,
+//      but WITHOUT ANY WARRANTY; without even the implied warranty of
+//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//      GNU General Public License for more details.
+//
+//      You should have received a copy of the GNU General Public License
+//      along with this program; if not, write to the Free Software
+//      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+//      MA 02110-1301, USA.
 /* Tinasoft Server callback */
 var SERVER_URL= "http://localhost:8888";
 var TinaServiceCallback = {
@@ -32,7 +45,6 @@ var TinaServiceCallback = {
             var parts = data.split("user/");
             var url = SERVER_URL + "/user/" + parts[1];
             window.location.assign( url );
-            //document.load( SERVER_URL + "/user/" + parts[1] );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             $('#importFile').addClass("ui-state-error", 1);
@@ -57,7 +69,6 @@ var TinaServiceCallback = {
             $('#processCooc').html( "error, please report the log file to bugtracker" );
         },
         complete: function(XMLHttpRequest, textStatus) {
-            alert("send here exportGraph");
             $('#processCooc').removeClass("ui-state-disabled", 1);
             $('#processCooc').html( "Launch" );
         },
@@ -71,7 +82,6 @@ var TinaServiceCallback = {
     postGraph: {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the graph exported
-            alert(data);
             $('#processCooc').html( "Loading macro view" );
             tinaviz.clear();
             switchTab( "macro" );
@@ -95,21 +105,22 @@ var TinaServiceCallback = {
     },
     getWhitelist: {
         success: function(data, textStatus, XMLHttpRequest) {
-            // data contains a path to the graph exported
-            alert(data);
+            var parts = data.split("user/");
+            var url = SERVER_URL + "/user/" + parts[1];
+            window.location.assign( url );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            $('#exportCorpora').addClass("ui-state-error", 1);
-            $('#exportCorpora').html( "error, please report the logs to bugtracker" );
+            $('#exportWhitelist').addClass("ui-state-error", 1);
+            $('#exportWhitelist').html( "error, please report the logs to bugtracker" );
         },
         complete: function(XMLHttpRequest, textStatus) {
-            $('#exportCorpora').removeClass("ui-state-disabled", 1);
-            $('#exportCorpora').html( "Export a whitelist" );
+            $('#exportWhitelist').removeClass("ui-state-disabled", 1);
+            $('#exportWhitelist').html( "Export a whitelist" );
         },
         beforeSend: function() {
-            $('#exportCorpora').removeClass("ui-state-error", 1);
-            $('#exportCorpora').addClass("ui-state-disabled", 1);
-            $('#exportCorpora').html( "please wait during whitelist exportation" );
+            $('#exportWhitelist').removeClass("ui-state-error", 1);
+            $('#exportWhitelist').addClass("ui-state-disabled", 1);
+            $('#exportWhitelist').html( "please wait during whitelist exportation" );
             // add progress state notification
         }
     }

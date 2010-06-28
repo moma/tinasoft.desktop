@@ -68,8 +68,8 @@ body {
     font-size: 12pt;
 }
 
-.tinaviz_node {
-    border: none;
+#accord_entry {
+    overflow: auto;
 }
 
 #node_table {
@@ -106,7 +106,7 @@ body {
     float: right;
 }
 
-.waitMessage {
+.appletInfo {
     font-size: 20px;
 }
 

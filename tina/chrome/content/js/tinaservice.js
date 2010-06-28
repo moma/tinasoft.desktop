@@ -1,3 +1,18 @@
+//      This program is free software; you can redistribute it and/or modify
+//      it under the terms of the GNU General Public License as published by
+//      the Free Software Foundation; either version 2 of the License, or
+//      (at your option) any later version.
+//
+//      This program is distributed in the hope that it will be useful,
+//      but WITHOUT ANY WARRANTY; without even the implied warranty of
+//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//      GNU General Public License for more details.
+//
+//      You should have received a copy of the GNU General Public License
+//      along with this program; if not, write to the Free Software
+//      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+//      MA 02110-1301, USA.
+
 
 function readLines(filename) {
 
@@ -93,11 +108,11 @@ function TinaServiceClass(url) {
     /*
     url="http://localhost:8888/cooccurrences?$periods$whitelist"
     */
-    getCooccurrences: function(_periods, _whitelist, cb) {
+    getCooccurrences: function(_periods, _whitelistpath, cb) {
         this._GET("cooccurrences",
             {
                 periods: _periods,
-                whitelist: _whitelist
+                whitelistpath: _whitelistpath
             },
             {
                 error:"couldn't getCooccurrences"
@@ -117,7 +132,7 @@ function TinaServiceClass(url) {
                 dataset: _dataset,
                 periods: _periods,
                 whitelistlabel: _whitelistlabel,
-                whitelist: _complementarywhitelist,
+                whitelistpath: _complementarywhitelist,
                 userstopwords: _userstopwords,
                 minoccs: _minoccs,
             },
@@ -207,7 +222,7 @@ function TinaServiceClass(url) {
     },
 
     getWalkUserPath: function(_dataset, _filetype, cb) {
-        this._GET("dataset",
+        this._GET("walk_user_path",
             {
                 dataset: _dataset,
                 filetype: _filetype
@@ -255,7 +270,9 @@ function TinaServiceClass(url) {
               path: _path,
               whitelistlabel: _whitelistlabel
             },
-            {error:"couldn't postWhitelist"},
+            {
+                error:"couldn't postWhitelist"
+            },
             cb
        );
     },
@@ -263,17 +280,20 @@ function TinaServiceClass(url) {
     /*
     curl http://localhost:8888/cooccurrences -d dataset="test_data_set" -d whitelist="tests/data/pubmed_whitelist.csv" -d periods="1"
     */
-    postCooccurrences: function(_dataset, _periods, _whitelist, _userstopwords, cb) {
+    postCooccurrences: function(_dataset, _periods, _whitelistpath, _userstopwords, cb) {
         //console.log("calling postCooccurrences("+_dataset+","+_periods+","+_whitelist+","+cb+")");
 
         this._POST("cooccurrences",
             // inpost params
-            { dataset: _dataset,
-              periods: _periods,
-              whitelist: _whitelist,
-              userstopwords: _userstopwords,
+            {
+                dataset: _dataset,
+                periods: _periods,
+                whitelistpath: _whitelistpath,
+                userstopwords: _userstopwords,
             },
-            {error:"couldn't postCooccurrences"},
+            {
+                error:"couldn't postCooccurrences"
+            },
             cb
         );
     },
@@ -281,12 +301,17 @@ function TinaServiceClass(url) {
     /*
     curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
     */
-    postGraph: function(_dataset, _periods, cb) {
+    postGraph: function(_dataset, _periods, _whitelistpath, cb) {
         //console.log("calling postGraph("+_dataset+", "+cb+")");
         this._POST("graph",
-            { dataset: _dataset,
-              periods: _periods },
-            {error:"couldn't post graph"},
+            {
+                dataset: _dataset,
+                periods: _periods,
+                whitelistpath: _whitelistpath,
+            },
+            {
+                error:"couldn't post graph"
+            },
             cb
         );
     },
@@ -294,8 +319,12 @@ function TinaServiceClass(url) {
     postDataset: function(_obj, cb) {
         //console.log("calling dataset("+_obj+","+cb+")");
         this._POST("dataset",
-            { dataset: _obj },
-            {error:"couldn't postDataset"},
+            {
+                dataset: _obj
+            },
+            {
+                error:"couldn't postDataset"
+            },
             cb
         );
     },
