@@ -1,16 +1,21 @@
+USAGE
 
-If you have linux 64 bits, simply go in the project root directory (current dir) and run:
+
+
+DEVELOPER
+
+If you have xulrunner, java VM, python (and TinasoftPytextminer python package) installed, you can simply go into the project root directory (current dir) and run:
 
   ./start
-  
+
    to test the application
-   
- 
-If you need other plateforms, you can run the script:
+
+
+To generate other platform distribution, you can run the script:
 
 
  ./package.sh
- 
+
   To generate binaries for other plateforms in the "dist/" directory,
-  and compressed archives (.tar.gz and .zip) for each plateform 
+  and compressed archives (.tar.gz and .zip) for each plateform
   in the project root directory (the current dir).
