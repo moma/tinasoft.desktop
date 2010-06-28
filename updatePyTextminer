@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#
+echo "copying latest version of Tinasoft Pytextminer"
+if [ ! -e TinasoftPytextminer ]
+   then
+   rm -rf TinasoftPytextminer/
+   cp -Rf ../TinasoftPytextminer .
+fi
+
