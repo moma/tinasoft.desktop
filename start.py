@@ -6,6 +6,9 @@ import subprocess
 from threading import Thread, Event
 import platform
 import time
+from multiprocessing import Process
+
+import httpserver
 
 TINASOFT_DIR="tina"
 PYTEXTMINER_DIR="TinasoftPytextminer"
@@ -57,16 +60,27 @@ class Processus (Thread):
 
 
 
-class Server (Processus):
+class Server():
+    def __init__(self,customdir):
+        self.p = Process(target=httpserver.run,args=(customdir,))
+        self.client = None
+    def start(self):
+        #os.chdir(PYTEXTMINER_DIR)
+        self.p.start()
+        #cmd = ['python', 'httpserver.py']
+        #env = {
+        #  'NLTK_DATA' : os.path.abspath(join(PYTEXTMINER_DIR,"shared","nltk_data"))
+        #}
+        #self.spawn("server", cmd, cwd=PYTEXTMINER_DIR, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
+        #self.client.stop()
 
-    def run(self):
-        cmd = ['python', 'httpserver.py']
-        env = {
-          'NLTK_DATA' : os.path.abspath(join(PYTEXTMINER_DIR,"shared","nltk_data"))
-        }
-        self.spawn("server", cmd, cwd=PYTEXTMINER_DIR, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
+    def stop(self):
+        self.p.terminate()
 
-        self.client.stop()
+    def __del__(self):
+        if self.client is not None:
+            self.client.stop()
+        self.p.terminate()
 
 
 
@@ -89,10 +103,9 @@ class Client (Processus):
 
 
 
-
 ###########################################
 
-server = Server()
+server = Server(os.getcwd())
 client = Client()
 
 # attach the two objects

@@ -226,10 +226,8 @@ function displayGraphColumn(corpora) {
                         + graphList[i]
                         + "</button><br/>"
                     ).click(function(event) {
-                        tinaviz.clear();
-                        $("#tabs").data('disabled.tabs', []);
-                        switchTab( "macro" );
-                        tinaviz.readGraphJava("macro",$(this).attr('value'));
+                        var url = tinaviz.fileURL($(this).attr('value'));
+                        tinaviz.readGraphAJAX("macro", url);
                     });
                     ol.append(button);
                 }
