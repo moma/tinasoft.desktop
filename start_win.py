@@ -6,20 +6,14 @@ import subprocess
 from threading import Thread, Event
 import platform
 import time
-from multiprocessing import Process
-
-import httpserver
+import commands
+#import httpserver
 
 TINASOFT_DIR="tina"
 PYTEXTMINER_DIR="TinasoftPytextminer"
 
 def kill (pid):
-    if platform.system() == 'Linux':
-        os.popen('kill -9 '+str(pid))
-    elif platform.system() == 'Windows':
-        os.popen('TASKKILL /PID '+str(pid)+' /F')
-    else:
-        os.popen('kill -9 '+str(pid))
+    os.popen('TASKKILL /PID '+str(pid)+' /F')
 
 
 class Processus (Thread):
@@ -60,27 +54,14 @@ class Processus (Thread):
 
 
 
-class Server():
-    def __init__(self,customdir):
-        self.p = Process(target=httpserver.run,args=(customdir,))
-        self.client = None
-    def start(self):
-        #os.chdir(PYTEXTMINER_DIR)
-        self.p.start()
-        #cmd = ['python', 'httpserver.py']
-        #env = {
-        #  'NLTK_DATA' : os.path.abspath(join(PYTEXTMINER_DIR,"shared","nltk_data"))
-        #}
-        #self.spawn("server", cmd, cwd=PYTEXTMINER_DIR, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
-        #self.client.stop()
-
-    def stop(self):
-        self.p.terminate()
-
-    def __del__(self):
-        if self.client is not None:
-            self.client.stop()
-        self.p.terminate()
+class Server(Processus):
+    def run(self):
+        cmd = ['httpserver.exe']
+        env = {
+          'NLTK_DATA' : os.path.abspath(join(PYTEXTMINER_DIR,"shared","nltk_data"))
+        }
+        self.spawn("server", cmd, cwd=PYTEXTMINER_DIR, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
+        self.client.stop()
 
 
 
@@ -88,23 +69,11 @@ class Client (Processus):
 
     def run(self):
         """run xulrunner on our application"""
-        if platform.system() == 'Linux':
-            import commands
-            commands.getstatusoutput('xulrunner --app '+ join(TINASOFT_DIR, 'application.ini'))
-        elif platform.system() == 'Windows':
-            import commands
-            commands.getstatusoutput('xulrunner.exe --app '+ join(TINASOFT_DIR, 'application.ini'))
-        else:
-            import commands
-            commands.getstatusoutput('/Library/Frameworks/XUL.framework/xulrunner-bin --app '+ join(TINASOFT_DIR, 'application.ini'))
-
+        commands.getstatusoutput('xulrunner.exe --app '+ join(TINASOFT_DIR, 'application.ini'))
         self.server.stop()
 
-
-
 ###########################################
-
-server = Server(os.getcwd())
+server = Server()
 client = Client()
 
 # attach the two objects
