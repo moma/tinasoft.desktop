@@ -61,23 +61,21 @@ class Processus (Thread):
 
 
 class Server():
+    """Start TinasoftPytextminer.httpserver within a separate python process"""
     def __init__(self,customdir):
         self.p = Process(target=httpserver.run,args=(customdir,))
+        print "server conguration file location = %s"%customdir
         self.client = None
+
     def start(self):
-        #os.chdir(PYTEXTMINER_DIR)
         self.p.start()
-        #cmd = ['python', 'httpserver.py']
-        #env = {
-        #  'NLTK_DATA' : os.path.abspath(join(PYTEXTMINER_DIR,"shared","nltk_data"))
-        #}
-        #self.spawn("server", cmd, cwd=PYTEXTMINER_DIR, bufsize=0, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=False, shell=False, env=env, universal_newlines=False, startupinfo=None, creationflags=0)
-        #self.client.stop()
 
     def stop(self):
+        """safe stop"""
         self.p.terminate()
 
     def __del__(self):
+        """safe object deletion"""
         if self.client is not None:
             self.client.stop()
         self.p.terminate()

@@ -13,6 +13,10 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
+function openFile() {
+
+}
+
 
 function resizeApplet() {
     var w = getScreenWidth() - 57;
@@ -66,7 +70,7 @@ $(document).ready(function() {
     });
 
     tinaviz.ready(function(){
-
+        console.log("tinaviz.ready !");
         var infodiv =  InfoDiv('infodiv');
         tinaviz.infodiv = infodiv;
 

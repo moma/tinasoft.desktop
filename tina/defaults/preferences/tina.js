@@ -5,7 +5,7 @@ pref("toolkit.defaultChromeURI", "chrome://tina/content/tina.xul");
 pref("plugin.expose_full_path",true);
 
 /* hack to stop system-wide java plugin scans */
-//pref("plugin.scan.SunJRE", "1.9"); 
+//pref("plugin.scan.SunJRE", "1.9");
 //pref("plugin.scan.4xPluginFolder", false);
 //pref("plugin.scan.plid.all", false);
 pref("plugin.scan.WindowsMediaPlayer", "19.0");
@@ -15,7 +15,7 @@ pref("plugin.scan.WindowsMediaPlayer", "19.0");
 
 /* magic hack */
 pref("capability.principal.codebase.p0.granted", "UniversalXPConnect");
-pref("capability.principal.codebase.p0.id", "file:///"); 
+pref("capability.principal.codebase.p0.id", "file:///");
 
 /* debugging prefs, see:
  *   https://developer.mozilla.org/en/Debugging_a_XULRunner_Application
@@ -26,3 +26,6 @@ pref("javascript.options.strict", false);
 pref("nglayout.debug.disable_xul_cache", true);
 pref("nglayout.debug.disable_xul_fastload", true);
 pref("tina.desktop.visualization.appletparams.engine", "software");
+
+pref("browser.download.folderList", 0);
+pref("browser.download.useDownloadDir", true);

@@ -58,7 +58,7 @@ function displayGraphColumn(corpora) {
                         + graphList[i]
                         + "</button><br/>"
                     ).click(function(event) {
-                        var url = tinaviz.fileURL($(this).attr('value'));
+                        var url = TinaService.fileURL($(this).attr('value'));
                         tinaviz.readGraphAJAX("macro", url);
                     });
                     ol.append(button);
@@ -91,7 +91,9 @@ function displayWhitelistColumn(corpora) {
                         + list[i]
                         + "</button><br/>"
                     ).click(function(event) {
-                        // TODO sets the working session, and get whitelist information from DB
+                        var url = TinaService.fileURL($(this).attr('value'));
+                        console.log(url);
+                        window.location.assign( url );
                     });
                     ol.append(button);
                 }

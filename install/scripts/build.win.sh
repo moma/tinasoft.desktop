@@ -21,41 +21,33 @@ xulrunnerdownpath="http://releases.mozilla.org/pub/mozilla.org/xulrunner/release
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
-if [ -e $outfile ]
-  then
-    rm $outfile
-fi
+if [ ! -e ".tmp/" ]
+	then
+		echo "creating .tmp/"
+		mkdir .tmp
 
+# removing previous build
+rm -rf $outpath
+mkdir dist
+echo " - copying Tinasoft desktop xulrunner app"
+cp -R tina/ $outpath/
 
-if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
+if [ -e ".tmp/$xulrunnerdownfile" ]
   then
     echo " - xulrunner found"
   else
-    echo " - xulrunner not found, downloading.."
-    mkdir -p .packaging/$arch/$xulrunner
-    if [ -e $xulrunnerdownfile ]
-      then
-        echo " - seems to already be downloading, unpacking.."
-      else
-        wget $xulrunnerdownpath/$xulrunnerdownfile
-    fi
-    mkdir .tmp
-    mv $xulrunnerdownfile .tmp
-    cd .tmp
-    unzip $xulrunnerdownfile
-    rm $xulrunnerdownfile
-    cd ..
-    mv .tmp/xulrunner .packaging/$arch/$xulrunner/
-    echo " - cleaning temporary download files.."
-    rm -Rf .tmp
+	cd .tmp/
+    wget $xulrunnerdownpath/$xulrunnerdownfile
+	cd ..
 fi
+cd .tmp/
+unzip $xulrunnerdownfile
+rm $xulrunnerdownfile
+mv xulrunner/ $outpath/tina/
 
-
-if [ -e ".packaging/$arch/$xulrunner/xulrunner" ]
+if [ -e "../TinasoftPytextminer/dist" ]
   then
-    echo " - tinasoft server found"
-  else
-    echo " - xulrunner not found, downloading.."
+    echo " - tinasoft server EXE found"
     mkdir -p .packaging/$arch/$xulrunner
     if [ -e $xulrunnerdownfile ]
       then
@@ -93,6 +85,7 @@ echo " - copying platform dependent files"
 cp install/skeletons/$arch/* $outpath
 
 cp -R .packaging/$arch/$xulrunner/xulrunner $outpath
+cp $outpath/xulrunner/xulrunner.exe $outpath/
 cp -R tests $outpath/tests
 
 echo " - creating the package archive.."
