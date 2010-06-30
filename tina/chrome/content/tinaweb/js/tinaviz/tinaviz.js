@@ -4,6 +4,9 @@
 function Tinaviz(args) {
 
     var opts = {
+        context: '',
+        engine: 'software',
+        branding: true,
         width: 0,
         height: 0
     };
@@ -16,10 +19,12 @@ function Tinaviz(args) {
     var cbsRun = {};
 
     var callbackReady = function () {};
+    var callbackImported = function(success) {};
+    var callbackViewChanged = function(view) {};
   
     // PUBLIC MEMBERS
     this.isReady = 0;
-    this.infodiv = null;
+    this.infodiv = {};
 
     this.height = opts.height;
     this.width = opts.width;
@@ -27,6 +32,8 @@ function Tinaviz(args) {
     this.path = opts.path;
     this.engine = opts.engine;
     this.context = opts.context;
+    this.branding= opts.branding;
+    
     
     this.init= function() {
         wrapper = $("#tinaviz")[0]; // we need to get the html tag immediately
@@ -34,11 +41,8 @@ function Tinaviz(args) {
             alert("Error: couldn't get the applet!");
             return;
         }
-        if (typeof wrapper.getSubApplet == 'function') {
-            applet = wrapper.getSubApplet();
-        } else {
-            applet = wrapper;
-        }
+
+        applet = wrapper;
 
         if (applet == null) {
             alert("Error: couldn't get the applet!");
@@ -52,6 +56,81 @@ function Tinaviz(args) {
      this.ready=function(cb) {
 		callbackReady = cb;
 	 }
+	 
+     this.open=function(args) {
+    
+        var opts = {
+            success: function(){},
+            error: function(msg){},
+            view: "macro",
+            url: ""
+        };
+        for (x in args) { opts[x] = args[x] };
+        
+        var view = this.view(opts.view);
+
+        
+        $.ajax({
+                url: opts.url,
+                type: "GET",
+                dataType: "text",
+                beforeSend: function() {
+                   callbackImported = function(msg){
+                        if (msg=="success") {
+                            opts.success();
+                        } else {
+                            opts.error(msg);
+                        }
+                    }
+                },
+                error: function() { 
+                    try {
+                        if (opts.url.search("://") != -1) {
+                            view.updateFromURI(opts.url);
+                        } else {
+                            var sPath = document.location.href;view.updateFromURI(sPath.substring(0, sPath.lastIndexOf('/') + 1) + opts.url);
+                        }
+                    } catch (e) {
+                        opts.error(e);
+                    }
+                 },
+                success: function(gexf) {
+                    var f = false;
+                    try {
+                        view.updateFromString(gexf);
+                    } catch (e) {
+                        f = true;
+                    }
+                    if (f) {
+                        try {
+                            if (opts.url.search("://") != -1) {
+                                view.updateFromURI(opts.url);
+                            } else {
+                                var sPath = document.location.href;
+                                view.updateFromURI(sPath.substring(0, sPath.lastIndexOf('/') + 1) + opts.url);
+                            }
+                        } catch (e) {
+                            opts.error(e);
+                        }
+                    }
+
+               }
+         });
+            
+        
+     }
+     this.event=function(args) {
+    
+        var opts = {
+            viewChanged: function(view){},
+            categoryChanged: function(view){}
+        };
+        for (x in args) { opts[x] = args[x] };
+   
+        callbackViewChanged = opts.viewChanged;
+        callbackCategoryChanged = opts.categoryChanged;
+        
+     }
 
      this.getHTML = function() {
             var path = this.path;
@@ -61,7 +140,9 @@ function Tinaviz(args) {
             // archive="'+path+'tinaviz.jar,'+path+'core.jar,'+path+'itext.jar,'+path+'pdf.jar,'+path+'colt.jar,'+path+'concurrent.jar,'+path+'applet-launcher.jar" 
             var archives = path+'tinaviz-all.jar';
             
-            
+            var brand = "true";
+            if (!this.branding) brand = "false";
+
             
             return '<!--[if !IE]> --> \
                             <object id="tinaviz" \
@@ -80,22 +161,17 @@ function Tinaviz(args) {
                               <param name="boxbgcolor" value="#FFFFFF" /> \
                               <param name="progressbar" value="true" /> \
                               <!--<param name="noddraw.check" value="true">--> \
- \
-                              <param name="subapplet.classname" value="tinaviz.Main" /> \
-                              <param name="subapplet.displayname" valuefg-buttonset-multi ="tinaviz.Main" /> \
- \
                                 <param name="engine" value="'+engine+'" /> \
                                 <param name="js_context" value="'+context+'" /> \
- \
+                                <param name="root_prefix" value="'+path+'" /> \
+                                <param name="branding_icon" value="'+brand+'" /> \
                               <!--<![endif]--> \
  \
-                              <object id="tinaviz" \
-                                          classid="clsid:CAFEEFAC-0016-0000-FFFF-ABCDEFFEDCBA" \
-                                  width="10" height="10" \
+                              <object id="tinaviz" classid="clsid:CAFEEFAC-0016-0000-FFFF-ABCDEFFEDCBA" \
+                                  width="1" height="1" \
                                   standby="Loading Processing software..."  > \
  \
-                                <param name="code" \
-                                   value="tinaviz.Main" /> \
+                                <param name="code" value="tinaviz.Main" /> \
                                 <param name="archive" value="'+archives+'" />\
                                 <param name="mayscript" value="true" /> \
                                 <param name="scriptable" value="true" /> \
@@ -105,14 +181,10 @@ function Tinaviz(args) {
                                 <param name="boxbgcolor" value="#FFFFFF" /> \
                                 <param name="progressbar" value="true" /> \
                                 <!--<param name="noddraw.check" value="true">--> \
- \
-                                <param name="subapplet.classname" value="tinaviz.Main" /> \
-                                <param name="subapplet.displayname" value="tinaviz.Main" /> \
- \
                                 <param name="engine" value="'+engine+'" /> \
                                 <param name="js_context" value="'+context+'" />\
-                                \
-\
+                                <param name="root_prefix" value="'+path+'" /> \
+                                <param name="branding_icon" value="'+brand+'" /> \
                                 <p>\
                                     <strong>\
                                         This browser does not have a Java Plug-in.\
@@ -136,14 +208,6 @@ function Tinaviz(args) {
          *
          ************************/
 
-        /*
-         * Core method communicating with the applet
-         */
-        this.bindFilter= function(name, path, view) {
-            if (applet == null) return;
-            if (view == null) return applet.getSession().addFilter(name, path);
-            return applet.getViewName(view).addFilter(name, path);
-        }
 
         /*
          * Core method communicating with the applet
@@ -185,6 +249,14 @@ function Tinaviz(args) {
             return applet.getView().getName();
         }
 
+        /*
+         * Gets the the view level name
+         */
+        this.getViewName = function(view) {
+            if (applet == null) return;
+            return applet.getView().getName();
+        }
+        
         /*
          * Commits the applet's parameters
          * Accept an optional callback to give some reaction to events
@@ -419,32 +491,48 @@ function Tinaviz(args) {
                 this.leftDoubleClicked(view, data);
             }
         }
+        
+        this.constructNewViewObject = function(viewName) {
+            var view = this.view(viewName);
+            
+            var reply = {
+                category: view.get("category/category"),
+                nodes: []
+            };
+            
+            reply.name = viewName;
+            
+            // we construct our new style "view" object
+            
+            for (node in view.getNodesArray()) {
+                var n = { edges: [] };
+                for (w in node.getWeightsArray()) {
+                    n.edges.append({ weight: w });
+                }
+                reply["nodes"].append(n);
+            }
+            
+            reply.get = function(arg) {
+                return view.get(arg);
+            };
+            
+            
+            //console.dir(reply);
+            
+            return reply;
+        }
 
         /**
         * Callback after CHANGING THE VIEW LEVEL
         */
-        this.switchedTo = function(view, selected) {
+        this.switchedTo = function(viewName, selected) {
             if (applet == null) return;
 
-            this.autoCentering();
-            /*if (view=="macro") {
-                $("#toggle-project").button('enable');
-            } else if (view=="meso") {
-                $("#toggle-project").button('disable');
-            }*/
-
-            // update the buttons
-            $("#sliderEdgeWeight").slider( "option", "values", [
-                this.get(view, "edgeWeight/min"),
-                this.get(view, "edgeWeight/max")*100
-            ]);
-            $("#sliderNodeWeight").slider( "option", "values", [
-                this.get(view, "nodeWeight/min"),
-                this.get(view, "nodeWeight/max")*100
-            ]);
-            this.infodiv.display_current_category();
-            this.infodiv.display_current_view();
+            var view = this.constructNewViewObject(viewName);
+            callbackViewChanged(view);
         }
+        
+
         /************************
          *
          * I/O system
@@ -455,13 +543,13 @@ function Tinaviz(args) {
         this.readGraphJava= function(view,url) {
             // window.location.href
             // window.location.pathname
-            if (graph.search("://") != -1) {
+            if (url.search("://") != -1) {
                 applet.getSession().updateFromURI(view,url);
             } else {
                 var sPath = document.location.href;
-                var graphURL = sPath.substring(0, sPath.lastIndexOf('/') + 1) + url;
+                var url = sPath.substring(0, sPath.lastIndexOf('/') + 1) + url;
                 applet.getSession().updateFromURI(view,url);
-            }
+            }P2D
             //$('#waitMessage').hide();
         }
 
@@ -472,20 +560,13 @@ function Tinaviz(args) {
                 url: graphURL,
                 type: "GET",
                 dataType: "text",
-                beforeSend: function() {/* $('#waitMessage').show(); */},
+                beforeSend: function() {},
                 error: function() { this.readGraphJava(view, graphURL); },
                 success: function(gexf) {
-                   applet.getSession().updateFromString(view,gexf);
-                   //$('#waitMessage').hide();
+                    applet.getSession().updateFromString(view,gexf);
                }
             });
         }
-
-        this.openGraph = function(view,relativePath) {
-            if (applet == null) return;
-            applet.getSession().updateFromURI(view,path);
-        }
-
 
         
         /***********************************
@@ -497,8 +578,7 @@ function Tinaviz(args) {
          * hide/show labels
          */
         this.toggleLabels = function() {
-            if (applet == null) return;
-            return applet.getViewName().toggleLabels();
+            return this.view().toggleLabels();
         }
 
         /*
@@ -506,7 +586,7 @@ function Tinaviz(args) {
          */
         this.toggleNodes = function() {
             if (applet == null) return;
-            return applet.getViewName().toggleNodes();
+            return this.view().toggleNodes();
         }
 
         /*
@@ -514,7 +594,7 @@ function Tinaviz(args) {
          */
         this.toggleEdges = function() {
             if (applet == null) return;
-            return applet.getViewName().toggleLinks();
+            return this.view().toggleLinks();
         }
 
         /*
@@ -522,7 +602,7 @@ function Tinaviz(args) {
          */
         this.togglePause = function() {
             if (applet == null) return;
-            return applet.getViewName().togglePause();
+            return this.view().togglePause();
         }
 
         /*
@@ -530,7 +610,7 @@ function Tinaviz(args) {
          */
         this.toggleHD = function() {
             if (applet == null) return;
-            return applet.getViewName().toggleHD();
+            return this.view().toggleHD();
         }
         /*
         * Get the opposite category name (the NOT DISPLAYED one)
@@ -549,23 +629,32 @@ function Tinaviz(args) {
          */
         this.toggleCategory = function(view) {
             if (applet == null) return;
+            
+
             if (this.getViewName()=="macro") {
+                //console.log("infodiv neighbours:" + this.infodiv.neighbours);
+                //console.dir(this.infodiv.neighbours);
                 if (this.infodiv.neighbours !== undefined) {
+                    //console.log("infodiv neighbours:" + this.infodiv.neighbours);
+                    //console.dir(this.infodiv.neighbours);
                     // adds neighbours (from opposite categ) to the selection
                     if (this.infodiv.neighbours.length > 1) {
+                        //console.log("infodiv neighbours:" + this.infodiv.neighbours);
+                        //console.dir(this.infodiv.neighbours);
                         for(var i=0; i<this.infodiv.neighbours.length; i++) {
-                            //this.logNormal(neighbours[i].id);
-			    if (i==this.infodiv.neighbours.length) {
+                            this.logNormal(neighbours[i].id);
+                            if (i==this.infodiv.neighbours.length) {
+                                //alert("selecting neighbour "+this.infodiv.neighbours[i].id);
                             	this.selectFromId(this.infodiv.neighbours[i].id, true);
-			    } else {
-				 this.selectFromId(this.infodiv.neighbours[i].id, false);
-		            }
-                        }
-                       
-                    } 
-                    else if (this.infodiv.neighbours.length == 1) {
+                            } else {
+                                //alert("toggleCategory 3!!");
+                                this.selectFromId(this.infodiv.neighbours[i].id, false);
+                            }
+                        }  
+                    } else if (this.infodiv.neighbours.length == 1) {
+                        //alert("selecting single neighbour "+this.infodiv.neighbours[i].id);
                         this.selectFromId(this.infodiv.neighbours[0].id, true);
-                    } 
+                    }
                 }
             }
             // get and set the new category to display
@@ -618,9 +707,7 @@ function Tinaviz(args) {
         
         
         this.view=function(v) {
-            var view = applet.view(v);
-            if (view==null) alert("warning, view is null!");
-            return view;
+            return applet.view(v);
         }
         
         /*
@@ -721,7 +808,14 @@ function Tinaviz(args) {
                 }
             );
         }
-
+        
+        /*
+         * Callback changing utton states
+         */
+        this.graphImportedCallback = function(msg) {
+            callbackImported(msg);
+        }
+        
         /*
          * PUBLIC METHOD, AUTOMATIC RESIZE THE APPLET
          */
