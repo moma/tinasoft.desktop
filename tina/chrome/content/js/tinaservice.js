@@ -137,7 +137,8 @@ function TinaServiceClass(url) {
     Special method to list existing datasets
     */
     getDatasetList: function(cb) {
-        this.getDataset('', cb);
+        console.log("getting datasets");
+        this.getDataset("", cb);
     },
 
     /*
@@ -198,15 +199,14 @@ function TinaServiceClass(url) {
     * curl http://localhost:8888/file -d dataset="test_data_set" -d path="tests/data/pubmed_tina_test.csv"
     */
 
-    postFile: function(_dataset, _path, _format, _overwrite, cb) {
-        //console.log("calling postFile("+_dataset+","+_path+",False,"+_format+","+_overwrite+")");
+    postFile: function(_path, _dataset, _whitelistpath, _format, _overwrite, cb) {
         this._POST("file",
             {
-                dataset: _dataset,
                 path: _path,
-                index: 'False', // should be indexed?
+                dataset: _dataset,
+                whitelistpath: _whitelistpath,
                 format: _format,
-                overwrite: _overwrite,
+                overwrite: _overwrite
             },
             {
                 error: "couldn't postFile"

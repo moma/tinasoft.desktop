@@ -171,9 +171,11 @@ function displayDatasetRow(list) {
         tbody.append(tr);
         TinaService.getDataset(dataset_id, {
             success: function(dataset) {
-                displayPeriodColumn( dataset );
-                displayGraphColumn( dataset );
-                displayWhitelistColumn( dataset );
+                if(dataset != "") {
+                    displayWhitelistColumn( dataset );
+                    displayPeriodColumn( dataset );
+                    displayGraphColumn( dataset );
+                }
             }
         });
     }
@@ -204,6 +206,7 @@ var initPytextminerUi = function() {
     /* resets cache vars */
     var corporaAndPeriods = Cache.setValue( "last_selected_periods", {} );
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
+
     // hide by default all submit forms
     $("#import_form").hide();
     $("#toggle_import_form").button({
@@ -213,14 +216,16 @@ var initPytextminerUi = function() {
     .click(function(event) {
         $("#import_form").toggle("fold");
     });
-    $("#whitelist_form").hide();
-    $("#toggle_whitelist_form").button({
+
+    $("#index_form").hide();
+    $("#toggle_index_form").button({
         icons: {primary:'ui-icon-plus'},
         text: false,
     })
     .click(function(event) {
-        $("#whitelist_form").toggle("fold");
+        $("#index_form").toggle("fold");
     });
+
     $("#processcooc_form").hide();
     $("#toggle_processcooc_form").button({
         icons: {primary:'ui-icon-plus'},
@@ -229,9 +234,6 @@ var initPytextminerUi = function() {
     .click(function(event) {
         $("#processcooc_form").toggle("fold");
     });
-
-    /* Fetch data into table */
-    displayDataTable("data_table");
 
     $("#toggle_working_session").button({
         icons: {primary:'ui-icon-carat-2-e-w'},
@@ -244,6 +246,7 @@ var initPytextminerUi = function() {
     });
 
     $("#about_tinasoft").hide();
+
     $("#toggle_about").button({
         icons: {primary:'ui-icon-info'},
         text: true,
@@ -252,6 +255,8 @@ var initPytextminerUi = function() {
     .click(function(event) {
         $("#about_tinasoft").dialog({modal: true});
     });
+    /* Fetch data into table */
+    displayDataTable("data_table");
 };
 
 

@@ -36,24 +36,22 @@ $(function() {
             console.log( "missing the path field" );
             return false;
         }
-        var overwrite = $("#importoverwrite:checked");
-        //alert(overwrite.val());
+        /*var overwrite = $("#importoverwrite:checked");
         if (overwrite.val() !== undefined) {
             overwrite = 'True';
         }
         else {
             overwrite = 'False';
-        }
+        }*/
+        overwrite = 'False';
         var minoccs = parseInt($("#extractminoccs").val());
         if( ! IsNumeric(minoccs) ) {
             alert("minimum occurrences parameter must be an integer");
             $("#extractminoccs").addClass("ui-state-error");
             return false;
         }
-        var extract = $("#importextract:checked");
-        var callback = false;
-        //alert(extract.val());
-        if (extract.val() !== undefined) {
+        //var extract = $("#importextract:checked");
+        //if (extract.val() !== undefined) {
             TinaService.getFile(
                 path.val(),
                 corpora.val(),
@@ -63,8 +61,8 @@ $(function() {
                 TinaServiceCallback.extractFile
             );
             //return true;
-        }
-        else {
+        //}
+        /*else {
             TinaService.postFile(
                 corpora.val(),
                 path.val(),
@@ -73,10 +71,41 @@ $(function() {
                 TinaServiceCallback.importFile
             );
             //return true;
-        }
+        }*/
 
     };
+    /*
+     * Requests indexation of a source file
+     */
 
+    var submitIndexFile = function(event) {
+        var corpora = $("#indexdatasetid");
+        var path = $("#indexfilepath");
+        var filetype = $("#indexfiletype");
+        if ( corpora.val() == '' ) {
+            corpora.addClass('ui-state-error');
+            return false;
+        }
+        if ( path.val() == "" ) {
+            path.addClass('ui-state-error');
+            return false;
+        }
+        var whitelistpath = $("#indexwhitelistpath");
+        if ( whitelistpath.val() == '' ) {
+            whitelistpath.addClass('ui-state-error');
+            alert("please select a white list");
+            return false;
+        }
+        var overwrite = 'False';
+        TinaService.postFile(
+            path.val(),
+            corpora.val(),
+            whitelistpath.val(),
+            filetype.val(),
+            overwrite,
+            TinaServiceCallback.postFile
+        );
+    };
     /*
      * Requests to process cooccurrences
      * then to generate a graph
@@ -85,16 +114,11 @@ $(function() {
     var submitprocessCoocGraph = function(event) {
         var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
         if( Object.size(corporaAndPeriods) == 0) {
-            alert("please select one or periods");
+            alert("please select one or more periods");
             return false;
         }
-        var whitelistpath = $("#whitelistfile")
-        var userfilterspath  = $("#userstopwordsfile_graph")
-        if ( whitelistpath.val() == '' ) {
-            whitelistpath.addClass('ui-state-error');
-            console.log( "missing the white list path field" );
-            return false;
-        }
+        var whitelistpath = $("#coocwhitelistpath");
+        var userfilterspath  = $("#userstopwordsfile_graph");
         TinaServiceCallback.postCooc.success = function(){
             TinaService.postGraph(
                 corpora,
@@ -182,9 +206,12 @@ $(function() {
     $('#importFile').click(function(event) {
         submitImportfile(event);
     });
-    $('#exportWhitelist').click(function(event) {
-        submitExportWhitelist(event)
+    $('#indexFile').click(function(event) {
+        submitIndexFile(event);
     });
+    /*$('#exportWhitelist').click(function(event) {
+        submitExportWhitelist(event)
+    });*/
     $('#processCooc').click(function(event) {
         submitprocessCoocGraph(event)
     });

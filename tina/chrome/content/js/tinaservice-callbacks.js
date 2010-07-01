@@ -16,7 +16,7 @@
 var SERVER_URL= "http://localhost:8888";
 //$(document).ready(function() {
     var TinaServiceCallback = {
-        indexFile : {
+        importFile : {
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains json encoded list of duplicate documents found
                 displayDuplicateDocs( data );
@@ -53,12 +53,38 @@ var SERVER_URL= "http://localhost:8888";
             complete: function(XMLHttpRequest, textStatus) {
                 $('#importFile').removeClass("ui-state-disabled", 1);
                 $('#importFile').html( "Launch" );
+                displayDataTable( "data_table" );
             },
             beforeSend: function() {
                 $("#extractminoccs").removeClass("ui-state-error", 1);
                 $('#importFile').removeClass("ui-state-error", 1);
                 $('#importFile').addClass("ui-state-disabled", 1);
                 $('#importFile').html( "please wait during extraction" );
+                // add progress state notification
+            }
+        },
+        postFile : {
+            success: function(data, textStatus, XMLHttpRequest) {
+                // data contains json encoded list of duplicate documents found
+                displayDuplicateDocs( data );
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#indexFile').addClass("ui-state-error", 1);
+                $('#indexFile').html( "error, please report the log file to bugtracker" );
+            },
+            complete: function(XMLHttpRequest, textStatus) {
+                $('#indexFile').removeClass("ui-state-disabled", 1);
+                $('#indexFile').html( "Launch" );
+                /* Fetch data into table */
+                displayDataTable( "data_table" );
+            },
+            beforeSend: function() {
+                $("#indexfilepath").removeClass("ui-state-error", 1);
+                $("#indexdatasetid").removeClass("ui-state-error", 1);
+                $("#indexwhitelistpath").removeClass("ui-state-error", 1);
+                $('#indexFile').removeClass("ui-state-error", 1);
+                $('#indexFile').addClass("ui-state-disabled", 1);
+                $('#indexFile').html( "please wait during indexation" );
                 // add progress state notification
             }
         },
@@ -76,7 +102,7 @@ var SERVER_URL= "http://localhost:8888";
                 $('#processCooc').html( "Launch" );
             },
             beforeSend: function() {
-                $("#whitelistfile").removeClass("ui-state-error", 1);
+                $("#coocwhitelistpath").removeClass("ui-state-error", 1);
                 $('#processCooc').removeClass("ui-state-error", 1);
                 $('#processCooc').addClass("ui-state-disabled", 1);
                 $('#processCooc').html( "please wait during cooccurrences processing" );
