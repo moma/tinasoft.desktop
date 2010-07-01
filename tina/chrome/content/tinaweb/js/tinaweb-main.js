@@ -79,7 +79,8 @@ $(document).ready(function(){
 
         var infodiv =  InfoDiv('infodiv');
         tinaviz.infodiv = infodiv;
-
+        tinaviz.infodiv.reset();
+        
         /***************** SET SIZES *****************/
         var infoDivWidth = 390;
 
@@ -99,8 +100,6 @@ $(document).ready(function(){
             //clearStyle: true, // keep it to true for tinaweb
             animated: 'easyslide',
         });
-
-        tinaviz.infodiv.reset();
         
         var defaultView = "macro";
         
@@ -138,26 +137,29 @@ $(document).ready(function(){
 
         //tinaviz.readGraphJava("macro", "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf");
         $("#appletInfo").html("Loading graph..");
-        
+
+        tinaviz.open({
+            success: function() {
+             // init the node list with ngrams
+             tinaviz.updateNodes( defaultView, "NGram" );
+
+             // cache the document list
+             tinaviz.getNodes(defaultView, "Document" );
+
+             tinaviz.infodiv.display_current_category();
+             tinaviz.infodiv.display_current_view();
+                        
+             $("#appletInfo").hide();
+             tinaviz.size(w, h);
+           },
+           error: function(msg) {
+             $("#appletInfo").html("Error, couldn't load graph: "+msg);
+           }
+        });
+                
         tinaviz.open({
             view: defaultView,
-            url: "FET60bipartite_graph_cooccurrences_.gexf", // "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf"
-            success: function() {
-                // init the node list with ngrams
-                tinaviz.updateNodes( defaultView, "NGram" );
-
-                // cache the document list
-                tinaviz.getNodes(defaultView, "Document" );
-
-                tinaviz.infodiv.display_current_category();
-                tinaviz.infodiv.display_current_view();
-        
-                $("#appletInfo").hide();
-                tinaviz.size(w, h);
-            },
-            error: function(msg) {
-                $("#appletInfo").html("Error, couldn't load graph: "+msg);
-            }
+            url: "FET60bipartite_graph_cooccurrences_.gexf"
         });
         
         tinaviz.event({

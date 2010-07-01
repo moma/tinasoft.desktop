@@ -3,6 +3,13 @@
 
 function Tinaviz(args) {
 
+    var openDefaults = {
+            success: function(){},
+            error: function(msg){},
+            view: "macro",
+            url: ""
+    };
+                            
     var opts = {
         context: '',
         engine: 'software',
@@ -12,11 +19,23 @@ function Tinaviz(args) {
     };
     for (x in args) { opts[x] = args[x] };
     
+    var views = {
+        macro: {
+            DocumentLayoutCounter: 0,
+            NGramLayoutCounter: 0,
+        },
+        meso: {
+            DocumentLayoutCounter: 0,
+            NGramLayoutCounter: 0,
+        }
+    };
+    
     // PRIVATE MEMBERS
     var wrapper = null;
     var applet = null;
     var cbsAwait = {};
     var cbsRun = {};
+    var toBeSelected = new Array();
 
     var callbackReady = function () {};
     var callbackImported = function(success) {};
@@ -25,6 +44,7 @@ function Tinaviz(args) {
     // PUBLIC MEMBERS
     this.isReady = 0;
     this.infodiv = {};
+
 
     this.height = opts.height;
     this.width = opts.width;
@@ -54,51 +74,61 @@ function Tinaviz(args) {
      }
 
      this.ready=function(cb) {
+        // TODO: if not ready, append to the callbacks
+        // if ready, execute asynchronously
+        
 		callbackReady = cb;
 	 }
 	 
      this.open=function(args) {
-    
-        var opts = {
-            success: function(){},
-            error: function(msg){},
-            view: "macro",
-            url: ""
-        };
-        for (x in args) { opts[x] = args[x] };
+        
+        var opts = {};
+        
+        // initialize using default values
+        for (x in openDefaults) { opts[x] = openDefaults[x]; };
+        
+        // overload using parameters values
+        for (x in args) { opts[x] = args[x]; };
+        
+        if (args["url"] === undefined) {
+          for (x in opts) { openDefaults[x] = opts[x]; };
+        
+        }
         
         var view = this.view(opts.view);
 
-        
+        callbackImported = function(msg){
+            if (msg=="success") { opts.success(); } else { opts.error(msg); }
+        };
+                
+        if (args["url"] === undefined) {
+            return;
+        }
+        //alert("loading "+args.url);
         $.ajax({
                 url: opts.url,
                 type: "GET",
                 dataType: "text",
-                beforeSend: function() {
-                   callbackImported = function(msg){
-                        if (msg=="success") {
-                            opts.success();
-                        } else {
-                            opts.error(msg);
-                        }
-                    }
-                },
                 error: function() { 
                     try {
                         if (opts.url.search("://") != -1) {
                             view.updateFromURI(opts.url);
                         } else {
-                            var sPath = document.location.href;view.updateFromURI(sPath.substring(0, sPath.lastIndexOf('/') + 1) + opts.url);
+                            var sPath = document.location.href;
+                            view.updateFromURI(sPath.substring(0, sPath.lastIndexOf('/') + 1) + opts.url);
                         }
                     } catch (e) {
+                        console.error("CATCHED JAVA ERROR "+e);
                         opts.error(e);
                     }
                  },
                 success: function(gexf) {
                     var f = false;
+                    alert("success, calling updateFromString");
                     try {
                         view.updateFromString(gexf);
                     } catch (e) {
+                        console.error("CATCHED JAVA ERROR "+e);
                         f = true;
                     }
                     if (f) {
@@ -110,6 +140,7 @@ function Tinaviz(args) {
                                 view.updateFromURI(sPath.substring(0, sPath.lastIndexOf('/') + 1) + opts.url);
                             }
                         } catch (e) {
+                            console.error("CATCHED JAVA ERROR "+e);
                             opts.error(e);
                         }
                     }
@@ -120,7 +151,6 @@ function Tinaviz(args) {
         
      }
      this.event=function(args) {
-    
         var opts = {
             viewChanged: function(view){},
             categoryChanged: function(view){}
@@ -129,21 +159,18 @@ function Tinaviz(args) {
    
         callbackViewChanged = opts.viewChanged;
         callbackCategoryChanged = opts.categoryChanged;
-        
      }
 
      this.getHTML = function() {
             var path = this.path;
             var context = this.context;
             var engine = this.engine;
-            //var archives = path+'tinaviz.jar,'+path+'core.jar,'+path+'colt.jar,'+path+'concurrent.jar,'+path+'applet-launcher.jar';
-            // archive="'+path+'tinaviz.jar,'+path+'core.jar,'+path+'itext.jar,'+path+'pdf.jar,'+path+'colt.jar,'+path+'concurrent.jar,'+path+'applet-launcher.jar" 
+
             var archives = path+'tinaviz-all.jar';
             
             var brand = "true";
             if (!this.branding) brand = "false";
 
-            
             return '<!--[if !IE]> --> \
                             <object id="tinaviz" \
                                         classid="java:tinaviz.Main" \
@@ -477,7 +504,7 @@ function Tinaviz(args) {
             // always updates infodiv
             data = $.parseJSON(attr);
             this.infodiv.reset();
-            var neighbours = this.infodiv.update(view, data);
+            this.infodiv.update(view, data);
    
             // left == selecteghbourd a node
             if ( mouse == "left" ) {
@@ -496,6 +523,7 @@ function Tinaviz(args) {
             var view = this.view(viewName);
             
             var reply = {
+                layoutCounter: 0,
                 category: view.get("category/category"),
                 nodes: []
             };
@@ -515,9 +543,6 @@ function Tinaviz(args) {
             reply.get = function(arg) {
                 return view.get(arg);
             };
-            
-            
-            //console.dir(reply);
             
             return reply;
         }
@@ -630,35 +655,40 @@ function Tinaviz(args) {
         this.toggleCategory = function(view) {
             if (applet == null) return;
             
+            tinaviz.toBeSelected = new Array();
+                        
+            for (var nodeid in this.selection) {
+                // gets the full neighbourhood for the tag cloud
+                var nb = tinaviz.getNeighbourhood(this.getViewLevel(),nodeid);
 
-            if (this.getViewName()=="macro") {
-                //console.log("infodiv neighbours:" + this.infodiv.neighbours);
-                //console.dir(this.infodiv.neighbours);
-                if (this.infodiv.neighbours !== undefined) {
-                    //console.log("infodiv neighbours:" + this.infodiv.neighbours);
-                    //console.dir(this.infodiv.neighbours);
-                    // adds neighbours (from opposite categ) to the selection
-                    if (this.infodiv.neighbours.length > 1) {
-                        //console.log("infodiv neighbours:" + this.infodiv.neighbours);
-                        //console.dir(this.infodiv.neighbours);
-                        for(var i=0; i<this.infodiv.neighbours.length; i++) {
-                            this.logNormal(neighbours[i].id);
-                            if (i==this.infodiv.neighbours.length) {
-                                //alert("selecting neighbour "+this.infodiv.neighbours[i].id);
-                            	this.selectFromId(this.infodiv.neighbours[i].id, true);
-                            } else {
-                                //alert("toggleCategory 3!!");
-                                this.selectFromId(this.infodiv.neighbours[i].id, false);
-                            }
-                        }  
-                    } else if (this.infodiv.neighbours.length == 1) {
-                        //alert("selecting single neighbour "+this.infodiv.neighbours[i].id);
-                        this.selectFromId(this.infodiv.neighbours[0].id, true);
+                alert("line 664");
+
+                for (var nbid in nb) {
+
+                    if ( tempcloud[nbid] !== undefined ) {
+                        //tempcloud[nbid]['degree']++;
+                    // pushes a node if belongs to the opposite category
+                    } else if (this.selection[nodeid]['category'] != nb[nbid]['category']) {
+                        tinaviz.toBeSelected.push(nbid);
+                        alert("pushing "+nbid+" to tinaviz.toBeSelected, new size is "+tinaviz.toBeSelected.length);
                     }
                 }
             }
-            // get and set the new category to display
             
+            
+            alert("we are in toggle category, number of 'toBeSelected':"+tinaviz.toBeSelected.length);
+            
+            var i = 0;
+            for (var nbid in tinaviz.toBeSelected) {   
+                i = i + 1;                        
+                if (i==toBeSelected.length) {
+                    tinaviz.selectFromId(nbid, true);
+                } else {
+                    tinaviz.selectFromId(nbid, false);
+                }
+            }
+            
+            // get and set the new category to display
             var next_cat = this.getOppositeCategory( this.get(view, "category/category") );
             this.set(view, "category/category", next_cat);
             // touch and centers the view
