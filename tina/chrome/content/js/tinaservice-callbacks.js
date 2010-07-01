@@ -16,7 +16,7 @@
 var SERVER_URL= "http://localhost:8888";
 //$(document).ready(function() {
     var TinaServiceCallback = {
-        importFile : {
+        indexFile : {
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains json encoded list of duplicate documents found
                 displayDuplicateDocs( data );
