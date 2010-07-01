@@ -29,3 +29,5 @@ pref("tina.desktop.visualization.appletparams.engine", "software");
 
 pref("browser.download.folderList", 0);
 pref("browser.download.useDownloadDir", true);
+pref("browser.cache.memory.enable", false);
+pref("browser.cache.disk.enable", false);
