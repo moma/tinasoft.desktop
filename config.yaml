@@ -5,11 +5,13 @@ general:
     # WARNING : this path must be relatvive to the executable directory (where python is executed)
     basedirectory: 'TinasoftPytextminer'
     locale: 'en_US.UTF-8'
-    index: 'index'
     dbenv: 'db'
     log: 'log'
     loglevel: 'debug'
     user: 'user'
+    shared: 'TinasoftPytextminer/shared'
+    stopwords: 'stopwords/en.txt'
+    userstopwords: 'tests/data/user_stopwords.csv'
 # extraction settings
 datasets:
     # tina csv columns declaration
@@ -34,12 +36,10 @@ datasets:
     # extraction params
     ngramMin: 1
     ngramMax: 4
-    stopwords: 'shared/stopwords/en.txt'
-    userstopwords: 'tests/data/user_stopwords.csv'
     training_tagger_size: 1000
     overwrite: 0
 datamining:
-    template: 'shared/gexf/gexf.template'
+    template: 'TinasoftPytextminer/shared/gexf/gexf.template'
     DocumentGraph:
         edgethreshold:
             - 0.0

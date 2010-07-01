@@ -112,7 +112,7 @@ client.server = server
 try:
     print "\nstarting tinasoft server, please wait..\n-----------------------------------------------------------------\n"
     server.start()
-    time.sleep(3)
+    time.sleep(5)
     print "\nstarting tinasoft desktop, please wait..\n-----------------------------------------------------------------\n"
     client.start()
 except KeyboardInterrupt:
