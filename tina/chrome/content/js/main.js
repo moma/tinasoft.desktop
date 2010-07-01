@@ -42,10 +42,8 @@ function resizeApplet() {
 var tinaviz = {};
 // wait for the DOM to be loaded
 $(document).ready(function() {
-    /*
-     * Initialize Tinaweb DIV
-     */
-    $('#waitMessage').effect('pulsate', {}, 'fast');
+
+    $('#appletInfo').effect('pulsate', {}, 'fast');
 
     var dirService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
     var tinavizDir = dirService.get("AChrom", Components.interfaces.nsIFile);
@@ -59,14 +57,18 @@ $(document).ready(function() {
     var URL = ios.newFileURI(tinavizDir);
 
     //alert("url:"+URL.spec);
-
+    
+    var w = getScreenWidth() - 390;
+   var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
+        
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
         path: URL.spec,
         context: "",
         engine: "software",
-        width: 0,
-        height: 0
+        branding: false,
+        width: w,
+        height: h
     });
 
     tinaviz.ready(function(){
@@ -83,9 +85,6 @@ $(document).ready(function() {
 
         infodiv.reset();
 
-        var w = getScreenWidth() - 390;
-        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
-        tinaviz.size(w, h);
 
         tinaviz.setView("macro");
 
@@ -119,20 +118,36 @@ $(document).ready(function() {
         meso.filter("NodeFunction", "radiusByWeight");
         meso.filter("Output", "output");
 
-        //tinaviz.readGraphJava("macro", "FET60bipartite_graph_cooccurrences_.gexf");
-        tinaviz.readGraphJava("macro", "bipartite_graph_bipartite_map_bionet_2004_2007_g.gexf_.gexf");
-
         // init the node list with ngrams
         tinaviz.updateNodes( "macro", "NGram" );
 
         // cache the document list
         tinaviz.getNodes( "macro", "Document" );
 
-        $("#waitMessage").hide();
+        tinaviz.open({
+            
+            success: function() {
+             // init the node list with ngrams
+             tinaviz.updateNodes( defaultView, "NGram" );
 
-        infodiv.display_current_category();
-        infodiv.display_current_view();
+             // cache the document list
+             tinaviz.getNodes(defaultView, "Document" );
+
+             tinaviz.infodiv.display_current_category();
+             tinaviz.infodiv.display_current_view();
+                        
+             $("#appletInfo").hide();
+             tinaviz.size(w, h);
+           },
+           error: function(msg) {
+             $("#appletInfo").html("Error, couldn't load graph: "+msg);
+           }
+        });
+                
+        //infodiv.display_current_category();
+        //infodiv.display_current_view();
     });
+
 
     if (!tinaviz.isEnabled()) {
         //resizeApplet();
