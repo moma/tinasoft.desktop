@@ -25,6 +25,8 @@
 %windowDTD;
 ]>
 
+<!-- tina.xul IS THE toolkit.defaultChromeURI of the application -->
+
 <window windowtype="TinaSoft:Main"
         style="&window.style;" title="&brandShortName;"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"

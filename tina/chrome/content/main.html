@@ -75,10 +75,10 @@
                 <table id="corpora_table">
                     <thead>
                         <tr>
-                            <th>data sets <button id="toggle_import_form"></button></th>
-                            <th>periods</th>
+                            <th>data sets</button></th>
+                            <th>white lists <button id="toggle_import_form"></button></th>
+                            <th>periods <button id="toggle_index_form"></th>
                             <th>graphs <button id="toggle_processcooc_form"></button></th>
-                            <th>white lists <button id="toggle_whitelist_form"></button></th>
                         </tr>
                     </thead>
                     <!--<tbody class="ui-widget-content"></tbody>-->
@@ -90,19 +90,19 @@
                         <tr>
                             <th>source file <input id="importfilepath" type="file" name="import file path" value='' />
                             </th>
-                            <th>file type <select id="importfiletype" name="filetype">
+                            <th>file type <select id="importfiletype" name="import filetype">
                                     <option selected value='tinacsv'>tinasoft csv</option>
                                     <!--<option value ='medline'>pubmed medline abstracts</option>-->
                                 </select>
                             </th>
-                            <th>name <input id="importdatasetid" type="text" name="dataset id" size="12"/>
+                            <th>data set name <input id="importdatasetid" type="text" name="import dataset id" size="12"/>
                             </th>
-                             <th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>
+                            <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
                              </th>
                             <th><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
                             </th>
-                            <th class="ui-state-highlight">only extract documents and export a whitelist <input id="importextract" type="checkbox" name="overwrite" value=""/>
-                            <br/>minimum occurrences for extraction <input id="extractminoccs" type="text" size="4" name="minimum n-grams occurrences" value="1" />
+                            <!--<th class="ui-state-highlight">only extract documents and export a whitelist <input id="importextract" type="checkbox" name="extract_file" value=""/>-->
+                            <th>minimum occurrences for extraction <input id="extractminoccs" type="text" size="4" name="minimum n-grams occurrences" value="1" />
                             </th>
                         </tr>
                     </thead>
@@ -110,7 +110,31 @@
                 <div id="duplicate_docs" class="ui-widget ui-widget-content ui-corner-all">
                 </div>
             </div>
-            <div id="whitelist_form">
+            <div id="index_form">
+                <table id="index_table" class="ui-widget-content ui-corner-all">
+                    <thead>
+                        <tr>
+                            <th>choose a whitelist <input id="indexwhitelistpath" type="file" name="index whitelist path" value='' />
+                            </th>
+                            <th>source file <input id="indexfilepath" type="file" name="index file path" value='' />
+                            </th>
+                            <th>file type <select id="indexfiletype" name="index filetype">
+                                    <option selected value='tinacsv'>tinasoft csv</option>
+                                    <!--<option value ='medline'>pubmed medline abstracts</option>-->
+                                </select>
+                            </th>
+                            <th>data set name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
+                            </th>
+                            <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
+                             </th>
+                            <th><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
+                            </th>
+                            <!--<th class="ui-state-highlight">only extract documents and export a whitelist <input id="importextract" type="checkbox" name="extract_file" value=""/>-->
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <!--<div id="whitelist_form">
                 <table id="whitelist_table" class="ui-widget-content ui-corner-all">
                     <thead>
                         <tr>
@@ -124,14 +148,16 @@
                         </tr>
                     </thead>
                 </table>
-            </div>
+            </div>-->
             <div id="processcooc_form">
                 <table id="processcooc_table" class="ui-widget-content ui-corner-all">
                     <thead>
                         <tr>
-                            <th>extra stopwords file <input id="userstopwordsfile_graph" type="file" name="user stopwords file" value=""/>
+                            <th>choose a whitelist <input id="coocwhitelistpath" type="file" name="cooc whitelist path" value='' />
                             </th>
                             <th><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
+                             <th>extra stopwords file <input id="userstopwordsfile_graph" type="file" name="user stopwords file" value=""/>
+                            </th>
                         </tr>
                     </thead>
                 </table>

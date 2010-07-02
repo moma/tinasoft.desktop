@@ -73,6 +73,7 @@ function InfoDiv(divid) {
     id: divid,
     selection : {},
     neighbours : {},
+    oppositeSelection : new Array(),
     label : $( "#node_label" ),
     contents : $( "#node_contents" ),
     cloud : $( "#node_neighbourhood" ),
@@ -89,7 +90,7 @@ function InfoDiv(divid) {
     */
     display_current_category: function() {
         var current_view = tinaviz.getViewName();
-        var current_cat = tinaviz.get("current","category/category");
+        var current_cat = tinaviz.get("category/category");
         if (current_cat !== undefined)
             var opposite = this.categories[tinaviz.getOppositeCategory(current_cat)];
             //$("#title_acc_1").text("current selection of "+ this.categories[current_cat]);
@@ -159,21 +160,20 @@ function InfoDiv(divid) {
         /* builds aggregated tag object */
         if (Object.size( this.selection ) == 0) return;
         var tempcloud = {};
+        var toBe = new Array();
         for (var nodeid in this.selection) {
             // gets the full neighbourhood for the tag cloud
             var nb = tinaviz.getNeighbourhood(viewLevel,nodeid);
 
-            alert("over-writing tinaviz 2be selected");
-            tinaviz.toBeSelected = new Array();
+            
+            //alert("over-writing tinaviz 2be selected");
             for (var nbid in nb) {
 
                 if ( tempcloud[nbid] !== undefined )
                     tempcloud[nbid]['degree']++;
                 // pushes a node if belongs to the opposite category
                 else if (this.selection[nodeid]['category'] != nb[nbid]['category']) {
-                    tinaviz.toBeSelected.push(nbid);
-                    alert("pushing "+nbid+" to tinaviz.toBeSelected, new size is "+tinaviz.toBeSelected.length);
-                     
+                    toBe.push(nbid);
                     tempcloud[nbid] = {
                         'id': nbid,
                         'label' : decodeJSON(nb[nbid]['label']),
@@ -183,10 +183,9 @@ function InfoDiv(divid) {
                     };
                 }
             }
-            
-           alert("final size of tinaviz.toBeSelected is "+tinaviz.toBeSelected.length);
-            
+               
         }
+        this.oppositeSelection = toBe;
         var sorted_tags = this.alphabeticListSort( Object.values( tempcloud ), 'label' );
 
         /* some display sizes const */
@@ -246,7 +245,7 @@ function InfoDiv(divid) {
             return str.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
         }
     
-        var current_cat = tinaviz.get("current", "category/category");
+        var current_cat = tinaviz.get("category/category");
         //tinaviz.logNormal("updateInfo for current category = "+current_cat);
         var labelinnerdiv = $("<div></div>");
         var contentinnerdiv = $("<div></div>");
@@ -293,6 +292,7 @@ function InfoDiv(divid) {
         this.contents.empty().append($("<h4></h4>").html("click on a node to begin exploration"));
         this.cloud.empty();
         this.selection = {};
+        this.oppositeSelection = {};
         this.neighbours = {};
         return;
     },
