@@ -18,9 +18,10 @@
  *****************************************************************************/
 
 /* Duplicate documents found after data set import */
-var displayDuplicateDocs = function(data) {
-    if (data.length == 0)
+function displayDuplicateDocs(data) {
+    if (data.length == 0) {
         $( "#duplicate_docs" ).empty().hide();
+    }
     else {
         var div = $( "#duplicate_docs" ).empty().show();
         div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
@@ -28,7 +29,17 @@ var displayDuplicateDocs = function(data) {
             div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
         }
     }
-};
+}
+
+/*
+ * Return the label part of a file name
+ * File names normalized :
+ * $DATE-$LABEL-$TYPE.$EXT
+ */
+function parseFileLabel(filename) {
+    return filename.split("-")[1];
+}
+
 
 /*
  * displays the list of existing graphs
@@ -52,10 +63,11 @@ function displayGraphColumn(corpora) {
         {
             success: function(graphList) {
                 for ( var i=0; i < graphList.length; i++ ) {
+                    var path_comp = graphList[i].split(/\/|\\/).reverse();
                     var button = $("<button class='ui-state-default ui-corner-all' value='"
                         + graphList[i]
                         + "'>"
-                        + graphList[i]
+                        + parseFileLabel(path_comp[0])
                         + "</button><br/>"
                     ).click(function(event) {
                         var url = TinaService.fileURL($(this).attr('value'));
@@ -85,17 +97,27 @@ function displayWhitelistColumn(corpora) {
         {
             success: function(list) {
                 for ( var i=0; i < list.length; i++ ) {
-                    var button = $("<button class='ui-state-default ui-corner-all' value='"
-                        + list[i]
-                        + "'>"
-                        + list[i]
-                        + "</button><br/>"
-                    ).click(function(event) {
-                        var url = TinaService.fileURL($(this).attr('value'));
-                        console.log(url);
+                    var path_comp = list[i].split(/\/|\\/).reverse();
+                    var label = $("<li>"
+                        + parseFileLabel(path_comp[0])
+                        + "&#09;"
+                        + "</li>"
+                    ).draggable({
+                        helper: "clone",
+                    });
+                    var open_button = $("<div></div>").attr("id",list[i]);
+                    open_button.button({
+                        text: false,
+                        icons: {
+                            primary: 'ui-icon-pencil'
+                        }
+                    }).click( function(eventObject) {
+                        alert("make sure you save this file after editing");
+                        var url = getFileUrl($(this).attr("id"));
                         window.location.assign( url );
                     });
-                    ol.append(button);
+                    label.append(open_button);
+                    ol.append(label);
                 }
             }
         }

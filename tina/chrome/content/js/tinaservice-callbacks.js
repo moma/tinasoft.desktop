@@ -12,6 +12,32 @@
 //      along with this program; if not, write to the Free Software
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
+
+/*
+ *  convert the serverDir to a file:// URI
+ */
+function getFileUrl(serverRelativePath) {
+
+    var arr = serverRelativePath.split(/\/|\\/), i;
+    // service producing URI
+    var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                    getService(Components.interfaces.nsIIOService);
+
+    // directory service
+    var dirService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    var tinavizDir = dirService.get("resource:app", Components.interfaces.nsIFile);
+    var parentDir = tinavizDir.parent;
+    for (i = 0; i < arr.length; ++i) {
+        parentDir.append(arr[i]);
+    }
+    var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                    getService(Components.interfaces.nsIIOService);
+    return ios.newFileURI(parentDir).spec;
+
+}
+
+
+
 /* Tinasoft Server callback */
 var SERVER_URL= "http://localhost:8888";
 //$(document).ready(function() {
@@ -43,6 +69,7 @@ var SERVER_URL= "http://localhost:8888";
         extractFile : {
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains a path to the whitelist extracted
+                alert("make sure you save this file after editing");
                 var url = getFileUrl(data);
                 window.location.assign( url );
             },
@@ -115,7 +142,7 @@ var SERVER_URL= "http://localhost:8888";
                 $('#processCooc').html( "Loading macro view" );
                 //tinaviz.clear();
                 //switchTab( "macro" );
-                var url = TinaService.fileURL(data);
+                var url = getFileUrl(data);
                 tinaviz.readGraphAJAX("macro", url);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -136,7 +163,8 @@ var SERVER_URL= "http://localhost:8888";
         },
         getWhitelist: {
             success: function(data, textStatus, XMLHttpRequest) {
-                var url = TinaService.fileURL(data);
+                alert("make sure you save this file after editing");
+                var url = getFileUrl(data);
                 window.location.assign( url );
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -159,6 +187,7 @@ var SERVER_URL= "http://localhost:8888";
         }
     };
 //});
+
 /* Setting Tinasoft observers */
 /*
 var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);

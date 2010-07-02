@@ -13,27 +13,6 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-function getFileUrl(serverRelativePath) {
-    var arr = serverRelativePath.split(/\/|\\/), i;
-    // service producing URI
-    var ios = Components.classes["@mozilla.org/network/io-service;1"].
-                    getService(Components.interfaces.nsIIOService);
-
-    // directory service
-    var dirService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    var tinavizDir = dirService.get("resource:app", Components.interfaces.nsIFile);
-    var parentDir = tinavizDir.parent;
-    for (i = 0; i < arr.length; ++i) {
-        parentDir.append(arr[i]);
-    }
-    alert(ios.newFileURI(parentDir).spec);
-    var ios = Components.classes["@mozilla.org/network/io-service;1"].
-                    getService(Components.interfaces.nsIIOService);
-    // convert the serverDir to a file:// URI, and append the server path
-    return ios.newFileURI(parentDir).spec;
-
-}
-
 
 function resizeApplet() {
     var w = getScreenWidth() - 57;
@@ -76,7 +55,7 @@ $(document).ready(function() {
     //alert("url:"+URL.spec);
 
     var w = getScreenWidth() - 390;
-   var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
+    var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
 
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
