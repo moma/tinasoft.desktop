@@ -19,11 +19,12 @@
 
 /* Duplicate documents found after data set import */
 function displayDuplicateDocs(data) {
+    var div = $( "#duplicate_docs" )
     if (data.length == 0) {
-        $( "#duplicate_docs" ).empty().hide();
+        div.empty().hide();
     }
     else {
-        var div = $( "#duplicate_docs" ).empty().show();
+        div.empty().show();
         div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
         for ( var i=0; i < data.length; i++ ) {
             div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
@@ -228,7 +229,13 @@ var initPytextminerUi = function() {
     /* resets cache vars */
     var corporaAndPeriods = Cache.setValue( "last_selected_periods", {} );
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
-
+    $("#duplicate_docs_toggle").button({
+        icons: {primary:'ui-icon-lightbulb'},
+        text: true,
+    })
+    .click(function(event) {
+        $("#duplicate_docs").toggle("fold");
+    });
     // hide by default all submit forms
     $("#import_form").hide();
     $("#toggle_import_form").button({

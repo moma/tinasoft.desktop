@@ -88,6 +88,9 @@
                 <table id="import_table" class="ui-widget-content ui-corner-all">
                     <thead>
                         <tr>
+                            <th class="ui-widget-header">Extraction</th>
+                        </tr>
+                        <tr>
                             <th>source file <input id="importfilepath" type="file" name="import file path" value='' />
                             </th>
                             <th>file type <select id="importfiletype" name="import filetype">
@@ -107,12 +110,13 @@
                         </tr>
                     </thead>
                 </table>
-                <div id="duplicate_docs" class="ui-widget ui-widget-content ui-corner-all">
-                </div>
             </div>
             <div id="index_form">
                 <table id="index_table" class="ui-widget-content ui-corner-all">
                     <thead>
+                        <tr>
+                            <th class="ui-widget-header">Indexation</th>
+                        </tr>
                         <tr>
                             <th>choose a whitelist <input id="indexwhitelistpath" type="file" name="index whitelist path" value='' />
                             </th>
@@ -129,10 +133,11 @@
                              </th>
                             <th><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
                             </th>
-                            <!--<th class="ui-state-highlight">only extract documents and export a whitelist <input id="importextract" type="checkbox" name="extract_file" value=""/>-->
+                            <th><div id="duplicate_docs_toggle">duplicates documents</div></th>
                         </tr>
                     </thead>
                 </table>
+                <div id="duplicate_docs" class="ui-widget ui-widget-content ui-corner-all"></div>
             </div>
             <!--<div id="whitelist_form">
                 <table id="whitelist_table" class="ui-widget-content ui-corner-all">
@@ -152,6 +157,9 @@
             <div id="processcooc_form">
                 <table id="processcooc_table" class="ui-widget-content ui-corner-all">
                     <thead>
+                        <tr>
+                            <th class="ui-widget-header">Create a graph</th>
+                        </tr>
                         <tr>
                             <th>choose a whitelist <input id="coocwhitelistpath" type="file" name="cooc whitelist path" value='' />
                             </th>
