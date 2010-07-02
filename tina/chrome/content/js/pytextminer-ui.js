@@ -244,6 +244,7 @@ var initPytextminerUi = function() {
         text: false,
     })
     .click(function(event) {
+        $(".fold_form:visible").hide("fold");
         $("#import_form").toggle("fold");
     });
 
@@ -253,6 +254,7 @@ var initPytextminerUi = function() {
         text: false,
     })
     .click(function(event) {
+        $(".fold_form:visible").hide("fold");
         $("#index_form").toggle("fold");
     });
 
@@ -262,6 +264,7 @@ var initPytextminerUi = function() {
         text: false,
     })
     .click(function(event) {
+        $(".fold_form:visible").hide("fold");
         $("#processcooc_form").toggle("fold");
     });
 
