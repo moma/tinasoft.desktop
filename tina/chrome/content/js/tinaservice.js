@@ -330,7 +330,7 @@ function TinaServiceClass(url) {
          });
 
     },
-    /* transforms a relative path ("./user/etc/") to an http url */
+    /* transforms a relative path ("user/etc/") to an http url */
     fileURL: function(relativePath) {
         var relativeURL = relativePath.split("user/");
         return SERVER_URL+"/user/"+relativeURL[1];

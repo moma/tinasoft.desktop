@@ -43,7 +43,7 @@ var SERVER_URL= "http://localhost:8888";
         extractFile : {
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains a path to the whitelist extracted
-                var url = TinaService.fileURL(data);
+                var url = getFileUrl(data);
                 window.location.assign( url );
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {

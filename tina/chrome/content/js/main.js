@@ -13,7 +13,24 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-function openFile() {
+function getFileUrl(serverRelativePath) {
+    var arr = serverRelativePath.split(/\/|\\/), i;
+    // service producing URI
+    var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                    getService(Components.interfaces.nsIIOService);
+
+    // directory service
+    var dirService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    var tinavizDir = dirService.get("resource:app", Components.interfaces.nsIFile);
+    var parentDir = tinavizDir.parent;
+    for (i = 0; i < arr.length; ++i) {
+        parentDir.append(arr[i]);
+    }
+    alert(ios.newFileURI(parentDir).spec);
+    var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                    getService(Components.interfaces.nsIIOService);
+    // convert the serverDir to a file:// URI, and append the server path
+    return ios.newFileURI(parentDir).spec;
 
 }
 
@@ -57,10 +74,10 @@ $(document).ready(function() {
     var URL = ios.newFileURI(tinavizDir);
 
     //alert("url:"+URL.spec);
-    
+
     var w = getScreenWidth() - 390;
    var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
-        
+
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
         path: URL.spec,
@@ -125,7 +142,7 @@ $(document).ready(function() {
         tinaviz.getNodes( "macro", "Document" );
 
         tinaviz.open({
-            
+
             success: function() {
              // init the node list with ngrams
              tinaviz.updateNodes( defaultView, "NGram" );
@@ -135,7 +152,7 @@ $(document).ready(function() {
 
              tinaviz.infodiv.display_current_category();
              tinaviz.infodiv.display_current_view();
-                        
+
              $("#appletInfo").hide();
              tinaviz.size(w, h);
            },
@@ -143,7 +160,7 @@ $(document).ready(function() {
              $("#appletInfo").html("Error, couldn't load graph: "+msg);
            }
         });
-                
+
         //infodiv.display_current_category();
         //infodiv.display_current_view();
     });
