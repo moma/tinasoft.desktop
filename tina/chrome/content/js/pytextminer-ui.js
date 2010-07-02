@@ -244,7 +244,7 @@ var initPytextminerUi = function() {
         text: false,
     })
     .click(function(event) {
-        $(".fold_form:visible").hide("fold");
+        $(".fold_form:visible:not(#import_form)").hide("fold");
         $("#import_form").toggle("fold");
     });
 
@@ -254,7 +254,7 @@ var initPytextminerUi = function() {
         text: false,
     })
     .click(function(event) {
-        $(".fold_form:visible").hide("fold");
+        $(".fold_form:visible:not(#index_form)").hide("fold");
         $("#index_form").toggle("fold");
     });
 
@@ -264,7 +264,7 @@ var initPytextminerUi = function() {
         text: false,
     })
     .click(function(event) {
-        $(".fold_form:visible").hide("fold");
+        $(".fold_form:visible:not(#processcooc_form)").hide("fold");
         $("#processcooc_form").toggle("fold");
     });
 
@@ -274,6 +274,7 @@ var initPytextminerUi = function() {
         label: "work session manager"
     })
     .click(function(event) {
+        $(".fold_form:visible").hide("fold");
         $("#data_table").toggle("fold");
         // TODO : display current state of the session in the button label
     });
