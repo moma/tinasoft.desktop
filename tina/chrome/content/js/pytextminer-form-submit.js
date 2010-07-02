@@ -36,6 +36,7 @@ $(function() {
             console.log( "missing the path field" );
             return false;
         }
+        var userstopwords = $("#importuserstopwords");
         /*var overwrite = $("#importoverwrite:checked");
         if (overwrite.val() !== undefined) {
             overwrite = 'True';
@@ -58,6 +59,7 @@ $(function() {
                 filetype.val(),
                 overwrite,
                 minoccs,
+                userstopwords.val(),
                 TinaServiceCallback.extractFile
             );
             //return true;
@@ -90,9 +92,9 @@ $(function() {
             path.addClass('ui-state-error');
             return false;
         }
-        var whitelistpath = $("#indexwhitelistpath");
-        if ( whitelistpath.val() == '' ) {
-            whitelistpath.addClass('ui-state-error');
+        var whitelistpath = $("#index_whitelist").data("whitelistpath");
+        if ( whitelistpath == '' ||  whitelistpath === undefined ) {
+            $("#index_whitelist").addClass('ui-state-error');
             alert("please select a white list");
             return false;
         }
@@ -100,7 +102,7 @@ $(function() {
         TinaService.postFile(
             path.val(),
             corpora.val(),
-            whitelistpath.val(),
+            whitelistpath,
             filetype.val(),
             overwrite,
             TinaServiceCallback.postFile
@@ -112,18 +114,23 @@ $(function() {
      */
 
     var submitprocessCoocGraph = function(event) {
+        var whitelistpath = $("#graph_whitelist").data("whitelistpath");
+        if ( whitelistpath == '' ||  whitelistpath === undefined ) {
+            $("#graph_whitelist").addClass('ui-state-error');
+            alert("please select a white list");
+            return false;
+        }
         var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
         if( Object.size(corporaAndPeriods) == 0) {
             alert("please select one or more periods");
             return false;
         }
-        var whitelistpath = $("#coocwhitelistpath");
         var userfilterspath  = $("#userstopwordsfile_graph");
         TinaServiceCallback.postCooc.success = function(){
             TinaService.postGraph(
                 corpora,
                 corporaAndPeriods[corpora],
-                whitelistpath.val(),
+                whitelistpath,
                 TinaServiceCallback.postGraph
             );
         };
@@ -131,7 +138,7 @@ $(function() {
             TinaService.postCooccurrences(
                 corpora,
                 corporaAndPeriods[corpora],
-                whitelistpath.val(),
+                whitelistpath,
                 userfilterspath.val(),
                 TinaServiceCallback.postCooc
             );

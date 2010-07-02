@@ -105,7 +105,8 @@ function displayWhitelistColumn(corpora) {
                         + "</li>"
                     ).draggable({
                         helper: "clone",
-                    });
+                    })
+                    .data("whitelistpath",list[i]);
                     var open_button = $("<div></div>").attr("id",list[i]);
                     open_button.button({
                         text: false,
@@ -286,6 +287,17 @@ var initPytextminerUi = function() {
     });
     /* Fetch data into table */
     displayDataTable("data_table");
+
+    /* Init droppable elements */
+    $(".whitelistdroppable").droppable({
+        activeClass: "ui-state-default",
+        hoverClass: "ui-state-hover",
+        drop: function(event, ui) {
+            $(this).empty();
+            $(this).append(ui.draggable.text());
+            $(this).data("whitelistpath", ui.draggable.data("whitelistpath"));
+        }
+    }).html("<p>drag and drop here a white list</p>");
 };
 
 

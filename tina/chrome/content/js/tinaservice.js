@@ -45,14 +45,15 @@ function TinaServiceClass(url) {
     /*
     url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
     */
-    getFile: function(_path, _dataset, _format, _overwrite, _minoccs, cb) {
+    getFile: function(_path, _dataset, _format, _overwrite, _minoccs, _userstopwords, cb) {
         this._GET("file",
             {
                 path: _path,
                 dataset: _dataset,
                 format:  _format,
                 overwrite:  _overwrite,
-                minoccs: _minoccs
+                minoccs: _minoccs,
+                userstopwords: _userstopwords
             },
             {
                 error:"couldn't getFile"

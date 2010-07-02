@@ -104,8 +104,9 @@
                              </th>
                             <th><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
                             </th>
-                            <!--<th class="ui-state-highlight">only extract documents and export a whitelist <input id="importextract" type="checkbox" name="extract_file" value=""/>-->
                             <th>minimum occurrences for extraction <input id="extractminoccs" type="text" size="4" name="minimum n-grams occurrences" value="1" />
+                            </th>
+                            <th>extra stopwords file <input id="importuserstopwords" type="file" name="user stopwords file" value=""/>
                             </th>
                         </tr>
                     </thead>
@@ -118,7 +119,8 @@
                             <th class="ui-widget-header">Indexation</th>
                         </tr>
                         <tr>
-                            <th>choose a whitelist <input id="indexwhitelistpath" type="file" name="index whitelist path" value='' />
+                            <th id="index_whitelist" class="whitelistdroppable">
+                            <!--<input id="indexwhitelistpath" type="file" name="index whitelist path" value='' />-->
                             </th>
                             <th>source file <input id="indexfilepath" type="file" name="index file path" value='' />
                             </th>
@@ -133,7 +135,7 @@
                              </th>
                             <th><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
                             </th>
-                            <th><div id="duplicate_docs_toggle">duplicates documents</div></th>
+                            <th><div id="duplicate_docs_toggle">duplicated documents</div></th>
                         </tr>
                     </thead>
                 </table>
@@ -161,11 +163,8 @@
                             <th class="ui-widget-header">Create a graph</th>
                         </tr>
                         <tr>
-                            <th>choose a whitelist <input id="coocwhitelistpath" type="file" name="cooc whitelist path" value='' />
-                            </th>
+                            <th id="graph_whitelist" class="whitelistdroppable"></th>
                             <th><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
-                             <th>extra stopwords file <input id="userstopwordsfile_graph" type="file" name="user stopwords file" value=""/>
-                            </th>
                         </tr>
                     </thead>
                 </table>
