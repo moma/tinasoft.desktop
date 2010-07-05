@@ -25,7 +25,7 @@ $(function() {
     var submitImportfile = function(event) {
         var corpora = $("#importdatasetid");
         var path = $("#importfilepath");
-        var filetype = $("#importfiletype");
+
         if ( corpora.val() == '' ) {
             corpora.addClass('ui-state-error');
             console.log( "missing the corpora field" );
@@ -36,15 +36,13 @@ $(function() {
             console.log( "missing the path field" );
             return false;
         }
+
+        var whitelistlabel = $("#importwhitelistlabel");
+
+        var filetype = $("#importfiletype");
         var userstopwords = $("#importuserstopwords");
-        /*var overwrite = $("#importoverwrite:checked");
-        if (overwrite.val() !== undefined) {
-            overwrite = 'True';
-        }
-        else {
-            overwrite = 'False';
-        }*/
         overwrite = 'False';
+
         var minoccs = parseInt($("#extractminoccs").val());
         if( ! IsNumeric(minoccs) ) {
             alert("minimum occurrences parameter must be an integer");
@@ -56,6 +54,7 @@ $(function() {
             TinaService.getFile(
                 path.val(),
                 corpora.val(),
+                whitelistlabel.val(),
                 filetype.val(),
                 overwrite,
                 minoccs,

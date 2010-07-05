@@ -54,3 +54,4 @@ datamining:
         nodethreshold:
             - 1
             - 'inf'
+        alpha: 0.01
