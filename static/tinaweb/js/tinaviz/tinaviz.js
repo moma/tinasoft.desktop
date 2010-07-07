@@ -11,7 +11,7 @@ function Tinaviz(args) {
     };
                             
     var opts = {
-        context: '',
+        context: "",
         engine: 'software',
         branding: true,
         width: 0,
@@ -121,11 +121,19 @@ function Tinaviz(args) {
     this.path = opts.path;
     this.engine = opts.engine;
     this.context = opts.context;
-    this.branding= opts.branding;
+    this.branding = opts.branding;
+
+    
+    // constant
+    this.iframeFileName = "iframe.html";
     
     
     this.init= function() {
-        wrapper = $("#tinaviz")[0]; // we need to get the html tag immediately
+        if (this.xulrunner == true) {
+            wrapper = $('#vizframe').contents().find("#tinaviz")[0];
+        } else {
+            wrapper = $("#tinaviz")[0];
+        }
         if (wrapper == null) {
             alert("Error: couldn't get the applet!");
             return;
@@ -209,7 +217,7 @@ function Tinaviz(args) {
                                 view.updateFromURI(sPath.substring(0, sPath.lastIndexOf('/') + 1) + opts.url);
                             }
                         } catch (e) {
-                        alert("Couldn't import graph: "+e);
+                            alert("Couldn't import graph: "+e);
                             opts.error(e);
                         }
                     }
@@ -226,8 +234,8 @@ function Tinaviz(args) {
         };
         for (x in args) { opts[x] = args[x] };
    
-        callbackViewChanged = opts.viewChanged;
-        callbackCategoryChanged = opts.categoryChanged;
+        this.callbackViewChanged = opts.viewChanged;
+        this.callbackCategoryChanged = opts.categoryChanged;
      }
 
      this.getHTML = function() {
@@ -238,21 +246,21 @@ function Tinaviz(args) {
             var archives = path+'tinaviz-all.jar';
             
             var brand = "true";
-            if (!this.branding) brand = "false";
+            if (this.branding == false) brand = "false";
 
-            return '<!--[if !IE]> --> \
+            var appletTag = '<!--[if !IE]> --> \
                             <object id="tinaviz" \
                                         classid="java:tinaviz.Main" \
                                         type="application/x-java-applet" \
                                         archive="'+archives+'" \
-                                        width="1" height="1" \
+                                        width="10" height="10" \
                                         standby="Loading Tinaviz..." > \
  \
                               <param name="archive" value="'+archives+'" /> \
                               <param name="mayscript" value="true" /> \
                               <param name="scriptable" value="true" /> \
  \
-                              <param name="image" value="css/branding/appletLoading.gif" /> \
+                              <!--<param name="image" value="css/branding/appletLoading.gif" />--> \
                                 <param name="boxmessage" value="Loading TinaViz..." /> \
                               <param name="boxbgcolor" value="#FFFFFF" /> \
                               <param name="progressbar" value="true" /> \
@@ -261,10 +269,12 @@ function Tinaviz(args) {
                                 <param name="js_context" value="'+context+'" /> \
                                 <param name="root_prefix" value="'+path+'" /> \
                                 <param name="branding_icon" value="'+brand+'" /> \
+                                <param name="classloader_cache" value="false" /> \
+                                <!--<param name="separate_jvm" value="true" />--> \
                               <!--<![endif]--> \
  \
                               <object id="tinaviz" classid="clsid:CAFEEFAC-0016-0000-FFFF-ABCDEFFEDCBA" \
-                                  width="1" height="1" \
+                                  width="10" height="10" \
                                   standby="Loading Processing software..."  > \
  \
                                 <param name="code" value="tinaviz.Main" /> \
@@ -272,7 +282,7 @@ function Tinaviz(args) {
                                 <param name="mayscript" value="true" /> \
                                 <param name="scriptable" value="true" /> \
  \
-                              <param name="image" value="css/branding/appletLoading.gif" /> \
+                              <!--<param name="image" value="css/branding/appletLoading.gif" /> --> \
                                 <param name="boxmessage" value="Loading TinaViz..." /> \
                                 <param name="boxbgcolor" value="#FFFFFF" /> \
                                 <param name="progressbar" value="true" /> \
@@ -281,6 +291,8 @@ function Tinaviz(args) {
                                 <param name="js_context" value="'+context+'" />\
                                 <param name="root_prefix" value="'+path+'" /> \
                                 <param name="branding_icon" value="'+brand+'" /> \
+                                <param name="classloader_cache" value="false" /> \
+                                <!--<param name="separate_jvm" value="true" />--> \
                                 <p>\
                                     <strong>\
                                         This browser does not have a Java Plug-in.\
@@ -294,16 +306,16 @@ function Tinaviz(args) {
                               </object>\
 \
                               <!--[if !IE]> -->\
-                            </object>\
-                            <!--<![endif]-->';
-        
+                            </applet>\
+                            <!--<![endif]-->';       
+              return appletTag;
+               
         }
         
         /************************
          * Core applet methods
          *
          ************************/
-
 
         /*
          * Core method communicating with the applet
@@ -414,13 +426,7 @@ function Tinaviz(args) {
         * Search and select nodes
         */
         this.searchNodes= function(label, type) {
-            if (applet == null) return {};
-            var matchlist = this.getNodesByLabel(label, type);
-            for (var i = 0; i < matchlist.length; i++ ) {
-                applet.selectFromId( decodeJSON( matchlist[i]['id'] ), true );
-                // todo: auto center!!
-                //applet.
-            }
+            if (applet!=null) applet.selectNodesByLabel(label, type);
         }
 
         /*
@@ -624,7 +630,7 @@ function Tinaviz(args) {
             if (applet == null) return;
 
             var view = this.constructNewViewObject(viewName);
-            callbackViewChanged(view);
+            this.callbackViewChanged(view);
         }
         
 
@@ -833,8 +839,8 @@ function Tinaviz(args) {
             }
         }
 
-
-        /****************************************
+        
+        /**************************************** this.tag
          *
          * HTML VIZ DIV ADJUSTING/ACTION
          *
@@ -844,6 +850,7 @@ function Tinaviz(args) {
          * Dynamic div width
          */
          this.size= function(width, height) {
+            if (wrapper == null || applet == null) return;
             $('#tinaviz').css("height",""+(height)+"px");
             $('#tinaviz').css("width",""+(width)+"px");
             wrapper.height = height;
@@ -870,27 +877,8 @@ function Tinaviz(args) {
             callbackImported(msg);
         }
         
-        /*
-         * PUBLIC METHOD, AUTOMATIC RESIZE THE APPLET
-         */
-        this.auto_resize = function() {
-           this.size(this.getWidth(), this.getHeight());
-        }
-
-        /*
-         * PRIVATE METHOD, RESIZE THE APPLET
-         */
-        this.size= function(width, height) {
-            if (wrapper == null || applet == null) return;
-            wrapper.width = width;
-            wrapper.height = height;
-            $('#tinaviz').css('width',width);
-            $('#tinaviz').css('height',height);
-        }
-    //};
+   
+        this.tag.html( this.getHTML() );
     
-        
- 
-    this.tag.html( this.getHTML() );
 }
 

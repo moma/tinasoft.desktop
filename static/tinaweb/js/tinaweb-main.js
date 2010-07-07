@@ -44,11 +44,23 @@ function getScreenHeight() {
     return y;
 }
 
+var resize = function() {
+        var infoDivWidth = 390;
+
+        var size = { w: getScreenWidth() - infoDivWidth - 30,
+                      h: getScreenHeight() - $("#hd").height() - $("#ft").height() - 60 };
+
+        $("#infodiv").css('width', ""+(infoDivWidth)+"px");
+
+        $(".accord_entry").css('height', ""+(size.h - 70)+"px");
+        return size;
+};
+
 var tinaviz = {};
 
 $(document).ready(function(){
     
-    $("#title").html("FET Open projects explorer");
+    $("#title").html("<h1>FET Open projects explorer</h1>");
 
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
@@ -58,21 +70,8 @@ $(document).ready(function(){
    $('#appletInfo').effect('pulsate', {}, 'fast');
 
     $(window).bind('resize', function() {
-        if (!tinaviz.isEnabled()) return;
-
-        /***************** SET SIZES *****************/
-        var infoDivWidth = 390;
-
-        var w = getScreenWidth() - infoDivWidth - 30;
-        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
-
-        $("#infodiv").css('height', ""+(h - 12)+"px");
-        $("#infodiv").css('width', ""+(infoDivWidth)+"px");
-
-        $(".accord_entry").css('height', ""+(h - 70)+"px");
-        /*********************************************/
-
-        tinaviz.size(w, h);
+        var size = resize();
+        tinaviz.size(size.w, size.h);
     });
     
     tinaviz.ready(function(){
@@ -81,23 +80,11 @@ $(document).ready(function(){
         tinaviz.infodiv = infodiv;
         tinaviz.infodiv.reset();
         
-        /***************** SET SIZES *****************/
-        var infoDivWidth = 390;
-
-        var w = getScreenWidth() - infoDivWidth - 30;
-        var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
-
-        $("#infodiv").css('height', ""+(h - 12)+"px");
-        $("#infodiv").css('width', ""+(infoDivWidth)+"px");
-
-        $(".accord_entry").css('height', ""+(h - 70)+"px");
-        /*********************************************/
-
+        var size = resize();
+        tinaviz.size(size.w, size.h);
 
         $("#infodiv").accordion({
             fillSpace: true,
-           // autoHeight: false,
-            //clearStyle: true, // keep it to true for tinaweb
             animated: 'easyslide',
         });
         
@@ -150,7 +137,6 @@ $(document).ready(function(){
              tinaviz.infodiv.display_current_view();
                         
              $("#appletInfo").hide();
-             tinaviz.size(w, h);
            },
            error: function(msg) {
              $("#appletInfo").html("Error, couldn't load graph: "+msg);
@@ -179,29 +165,33 @@ $(document).ready(function(){
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
                 
-                var disable = false;
+                var showFilter = false;
+                
                 if (view.name == "meso") {
+                
                     // TODO check selection
                     // if selection has edges with edge of all the same weight, we disable the filter
                     var weight = null;
                     for (node in view.nodes) {
+                        //alert("node:"+node);
                         for (out in node.outputs) {
+                            //alert("node weight:"+out.weight);
                             if (weight == null) {
                                 weight = out.weight;
                             }
                             else {
                                 if (weight != out.weight) {
-                                    disable = false;
-                                    return;
+                                    showFilter = true;
+                                    break;
                                 }
                             }
                         }
                     }
-                    disable = true;
                 } 
-                $("#sliderEdgeWeight").slider( "option", "disabled", disable );
+                $("#sliderEdgeWeight").slider( "option", "disabled", false );
             }
         });
+        
         
 
     });

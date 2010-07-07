@@ -66,13 +66,12 @@ $(document).ready(function(){
     $("#level").button({
         text: true,
         icons: {
-            //primary: null,
-            secondary: 'ui-icon-help'
+            primary: 'ui-icon-help'
         }
     }).click( function(eventObject) {
         tinaviz.toggleView();
     });
-
+  $("#level").attr("title","click to switch the level");
     $("#search_button").button({
         text: false,
         icons: {
@@ -224,8 +223,9 @@ $(document).ready(function(){
                 // empty the selection, and ask the applet to select opposite nodes
                 var i = 0;
                 tinaviz.infodiv.selection = {};
-                for (var nbid in tinaviz.infodiv.oppositeSelection) {       
-                    tinaviz.selectFromId(nbid, (++i == tinaviz.infodiv.oppositeSelection.length));
+                for (var nbid in tinaviz.infodiv.oppositeSelection) {  
+                    var cb = (++i == tinaviz.infodiv.oppositeSelection.length);
+                    tinaviz.selectFromId(tinaviz.infodiv.oppositeSelection[nbid], cb);
                 }
             }
             tinaviz.infodiv.display_current_category();
