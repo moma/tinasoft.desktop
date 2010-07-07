@@ -4,7 +4,7 @@
 echo "copying latest version of tinaweb (js and css)"
 if [ -e ../tinaweb/html ]
    then
-   rm -rf tina/chrome/content/tinaweb
-   cp -Rf ../tinaweb/html tina/chrome/content/tinaweb
+   rm -rf static/tinaweb
+   cp -Rf ../tinaweb/html static/tinaweb
 fi
 
