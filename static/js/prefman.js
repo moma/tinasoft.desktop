@@ -20,9 +20,7 @@
 function tinasoftdesktop_PrefManager() {
     var startPoint="tinasoft.desktop.";
 
-    var pref=Components.classes["@mozilla.org/preferences-service;1"].
-        getService(Components.interfaces.nsIPrefService).
-        getBranch(startPoint);
+    var pref={};
 
     var observers={};
 
@@ -116,16 +114,16 @@ function tinasoftdesktop_PrefManager() {
 
 /* Gives the userscript access to prefmanager */
 function tinasoftdesktop_ScriptStorage() {
-    this.prefMan=new tinasoftdesktop_PrefManager();
+    //this.prefMan=new tinasoftdesktop_PrefManager();
 }
 tinasoftdesktop_ScriptStorage.prototype.setValue = function(name, val) {
-    this.prefMan.setValue(name, val);
+    //this.prefMan.setValue(name, val);
 }
 tinasoftdesktop_ScriptStorage.prototype.getValue = function(name, defVal) {
-    return this.prefMan.getValue(name, defVal);
+    //return this.prefMan.getValue(name, defVal);
 }
 tinasoftdesktop_ScriptStorage.prototype.remove = function(name) {
-    return this.prefMan.remove(name);
+    //return this.prefMan.remove(name);
 }
 var prefManager = new tinasoftdesktop_ScriptStorage();
 
