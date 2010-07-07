@@ -88,13 +88,13 @@ class Client (Processus):
         """run xulrunner on our application"""
         if platform.system() == 'Linux':
             import commands
-            commands.getstatusoutput('xulrunner --app '+ join(TINASOFT_DIR, 'application.ini'))
+            commands.getstatusoutput('firefox http://localhost:8888')
         elif platform.system() == 'Windows':
             import commands
-            commands.getstatusoutput('xulrunner.exe --app '+ join(TINASOFT_DIR, 'application.ini'))
+            commands.getstatusoutput('firefox.exe http://localhost:8888')
         else:
             import commands
-            commands.getstatusoutput('/Library/Frameworks/XUL.framework/xulrunner-bin --app '+ join(TINASOFT_DIR, 'application.ini'))
+            commands.getstatusoutput('firefox http://localhost:8888')
 
         self.server.stop()
 
