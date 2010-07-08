@@ -65,8 +65,6 @@ class Server():
     def __init__(self,customdir):
         self.p = Process(target=httpserver.run,args=(customdir,))
         print "server conguration file location = %s"%customdir
-        self.client = None
-
     def start(self):
         self.p.start()
 
@@ -76,50 +74,18 @@ class Server():
 
     def __del__(self):
         """safe object deletion"""
-        if self.client is not None:
-            self.client.stop()
         self.p.terminate()
 
 
-
-class Client (Processus):
-
-    def run(self):
-        """run xulrunner on our application"""
-        if platform.system() == 'Linux':
-            import commands
-            commands.getstatusoutput('firefox http://localhost:8888')
-        elif platform.system() == 'Windows':
-            import commands
-            commands.getstatusoutput('firefox.exe http://localhost:8888')
-        else:
-            import commands
-            commands.getstatusoutput('firefox http://localhost:8888')
-
-        self.server.stop()
-
-
-
-###########################################
-
 server = Server(os.getcwd())
-client = Client()
-
-# attach the two objects
-server.client = client
-client.server = server
 
 try:
     print "\nstarting tinasoft server, please wait..\n-----------------------------------------------------------------\n"
     server.start()
     time.sleep(5)
-    print "\nstarting tinasoft desktop, please wait..\n-----------------------------------------------------------------\n"
-    client.start()
 except KeyboardInterrupt:
     print "stopping"
     server.stop()
-    client.stop()
-
 
 
 

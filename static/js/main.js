@@ -13,76 +13,43 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-
-function resizeApplet() {
-    var w = getScreenWidth() - 57;
-    var h = getScreenHeight() - 142;
-
-    $('.tabfiller').css("height",""+(h+15)+"px");
-
-    $('#whitebox').css("height",""+(h)+"px");
-    $('#whitebox').css("width",""+(w)+"px");
-
-    // the iframe
-    $('#vizframe').css("height",""+(h)+"px");
-    $('#vizframe').css("width",""+(w-300)+"px");
-
-    $('#hide').show();
-    $('#infodiv').css("height",""+(h-50)+"px");
-    $('#infodiv').css("width",""+(300)+"px");
-    tinaviz.size(w - 350,h);
-
-   //$("#infodiv").css( 'height', getScreenHeight() - $("#hd").height() - $("#ft").height() - 60);
-}
-
 var tinaviz = {};
 // wait for the DOM to be loaded
 $(document).ready(function() {
+	
+    $("#title").html("<h3>Tinasoft Desktop</h3>");
 
-    $('#appletInfo').effect('pulsate', {}, 'fast');
-
-    var dirService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    var tinavizDir = dirService.get("AChrom", Components.interfaces.nsIFile);
-    tinavizDir.append("content");
-    tinavizDir.append("tinaweb");
-    tinavizDir.append("js");
-    tinavizDir.append("tinaviz"); // returns an nsIFile object
-
-    var ios = Components.classes["@mozilla.org/network/io-service;1"].
-                    getService(Components.interfaces.nsIIOService);
-    var URL = ios.newFileURI(tinavizDir);
-
-    //alert("url:"+URL.spec);
-
-    var w = getScreenWidth() - 390;
-    var h = getScreenHeight() - $("#hd").height() - $("#ft").height() - 60;
-
+    var ressourcesPrefix = "tinaweb/js/tinaviz/";
+    
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
-        path: URL.spec,
-        context: "",
-        engine: "software",
+        path: ressourcesPrefix,
         branding: false,
-        width: w,
-        height: h
+        width: 100,
+        height: 100
     });
-
+    
+   $('#appletInfo').effect('pulsate', {}, 'fast');
+   
+    $(window).bind('resize', function() {
+        var size = resize();
+        tinaviz.size(size.w, size.h);
+    });
+    
     tinaviz.ready(function(){
-        console.log("tinaviz.ready !");
+    
         var infodiv =  InfoDiv('infodiv');
         tinaviz.infodiv = infodiv;
+        tinaviz.infodiv.reset();
+        
+        resize();
 
-        // auto-adjusting infodiv height
-        $(infodiv.id).css('height', tinaviz.height - 40);
-
-        $(infodiv.id).accordion({
-            fillSpace: true,
+        $("#infodiv").accordion({
+            fillSpace: true
         });
-
-        infodiv.reset();
-
-
-        tinaviz.setView("macro");
+        
+        var defaultView = "macro";
+        tinaviz.setView(defaultView);
 
         var session = tinaviz.session();
         var macro = tinaviz.view("macro");
@@ -121,7 +88,6 @@ $(document).ready(function() {
         tinaviz.getNodes( "macro", "Document" );
 
         tinaviz.open({
-
             success: function() {
              // init the node list with ngrams
              tinaviz.updateNodes( defaultView, "NGram" );
@@ -133,27 +99,63 @@ $(document).ready(function() {
              tinaviz.infodiv.display_current_view();
 
              $("#appletInfo").hide();
-             tinaviz.size(w, h);
            },
            error: function(msg) {
              $("#appletInfo").html("Error, couldn't load graph: "+msg);
            }
         });
 
+        tinaviz.event({
+        
+            viewChanged: function(view) {
+
+                tinaviz.autoCentering();
+
+                $("#sliderEdgeWeight").slider( "option", "values", [
+                    parseInt( view.get("edgeWeight/min") ),
+                    parseInt(view.get("edgeWeight/max")) *100 
+                ]);
+                $("#sliderNodeWeight").slider( "option", "values", [
+                    parseInt(view.get("nodeWeight/min") ),
+                    parseInt(view.get("nodeWeight/max")) *100 
+                ]);
+                tinaviz.infodiv.display_current_category();
+                tinaviz.infodiv.display_current_view();
+                
+                var disable = false;
+                if (view.name == "meso") {
+                    // TODO check selection
+                    // if selection has edges with edge of all the same weight, we disable the filter
+                    var weight = null;
+                    for (node in view.nodes) {
+                        for (out in node.outputs) {
+                            if (weight == null) {
+                                weight = out.weight;
+                            }
+                            else {
+                                if (weight != out.weight) {
+                                    disable = false;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    disable = true;
+                } 
+                $("#sliderEdgeWeight").slider( "option", "disabled", disable );
+            }
+        });
         //infodiv.display_current_category();
         //infodiv.display_current_view();
+
+        var size = resize();
+        tinaviz.size(size.w, size.h);
+        
+        tinaviz.open({
+            view: "macro",
+            url: "default.gexf"
+        });
     });
 
 
-    if (!tinaviz.isEnabled()) {
-        //resizeApplet();
-        tinaviz.setEnabled(true);
-        tinaviz.setView("macro");
-    }
-
-    $(window).bind('resize', function() {
-        if (tinaviz.isEnabled()) {
-            resizeApplet();
-        }
-    });
 });

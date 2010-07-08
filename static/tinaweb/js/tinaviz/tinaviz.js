@@ -798,7 +798,9 @@ function Tinaviz(args) {
          */
         this.getNodes = function(view, category) {
             if (applet == null) return;
-            this.infodiv.data[category] = $.parseJSON( applet.getNodes(view, category) );
+            var tmp = $.parseJSON( applet.getNodes(view, category) );
+            console.dir(tmp);
+            this.infodiv.data[category] = tmp;
             return this.infodiv.data[category];
         }
         /*

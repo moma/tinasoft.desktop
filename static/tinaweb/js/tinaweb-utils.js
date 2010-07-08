@@ -13,10 +13,11 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
+
+
 function IsNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
-
 
 /*
  * utility modifying the Object prototype
@@ -41,10 +42,6 @@ Object.values = function(obj) {
     return values;
 };
 
-/*
- * utility to safely decode encoded
- * values from JSON sent by the java applet
- */
 function decodeJSON(encvalue) {
     if (encvalue !== undefined)
         return decodeURIComponent(encvalue).replace(/\+/g, " ").replace(/%21/g, "!").replace(/%27/g, "'").replace(/%28/g, "(").replace(/%29/g, ")").replace(/%2A/g, "*");
@@ -52,7 +49,9 @@ function decodeJSON(encvalue) {
         return "";
 };
 
- /* useful for fullscreen mode */
+
+/* useful for fullscreen mode */
+
 function getScreenWidth() {
     var x = 0;
     if (self.innerHeight) {
@@ -83,18 +82,14 @@ function getScreenHeight() {
     return y;
 }
 
+var resize = function() {
+        var infoDivWidth = 390;
 
-$(function(){
-    $.extend($.fn.disableTextSelect = function() {
-        return this.each(function() {
-            if($.browser.mozilla){//Firefox $("#sliderEdgeWeight")
-                $(this).css('MozUserSelect','none');
-            } else if($.browser.msie) {//IE
-                $(this).bind('selectstart',function(){return false;});
-            } else {//Opera, etc.
-                $(this).mousedown(function(){return false;});
-            }
-        });
-    });
-});
-
+        var size = { w: getScreenWidth() - infoDivWidth - 55,
+                      h: getScreenHeight() - $("#hd").height() - $("#ft").height() - 60 };
+                      
+        $("#appletdiv").css('width', size.w);
+        $("#infodiv").css('width', infoDivWidth);
+        $("#infodivparent").css('height', size.h);
+        return size;
+};
