@@ -1,1 +1,0 @@
-To start Tinasoft, please double-click on the "tina.bat" file.
