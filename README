@@ -2,7 +2,10 @@ Thanks for using Tinasoft Desktop
 
 This work is part of TINA, an European Union FP7 project - FP7-ICT-2009-C : http://tinasoft.eu/
 
-The software implements scientific works by David Chavalarias (CREA lab; CNRS/Ecole Polytechnique UMR 7656, http://chavalarias.com) and Jean-Philippe Cointet (INRA, http://jph.cointet.free.fr). You can read their publications here:
+The software implements scientific works by David Chavalarias (http://chavalarias.com)
+and Jean-Philippe Cointet (INRA, http://jph.cointet.free.fr).
+
+You can read their publications here:
 
 http://arxiv.org/abs/0904.3154v1
 http://www.springerlink.com/content/v57686u275653nt4/
@@ -40,15 +43,23 @@ SUPPORT AND FEEDBACK
     http://tinasoft.eu/
     http://github.com/jbilcke/tinasoft.desktop/issues
 
-MULTI PLATFORM PACKAGES
+MULTI PLATFORM READY-TO-USE PACKAGES
 
     Find them at http://tinasoft.eu
 
+DEPENDENCIES
+
+    JAVA : please download it from http://java.com
+    WEB BROWSER : we highly recommend Firefox (http://getfirefox.com)
+
+USAGE
+
+    MS Windows : execute start_win.bat
+    GNU/Linux (and probably other Unix-like systems) : execute start_unix.sh
+
 INSTALL AS A DEVELOPPER
 
-    DEPENDENCIES
-
-        JAVA : please download it from http://java.com
+    DEVELOPPER DEPENDENCIES
 
         BERKELEY DB : install it on your system from http://www.oracle.com/technology/software/products/berkeley-db/index.html
 
@@ -70,12 +81,9 @@ INSTALL AS A DEVELOPPER
             Downloader> d brown
             Downloader> d conll2000
 
-        WEB BROWSER : we higly recommend Firefox (http://getfirefox.com)
+    DEVELOPER DOCUMENTATION
 
-    USAGE
-
-        MS Windows : execute start_win.bat
-        GNU/Linux (and probably other Unix-like systems) : execute start_unix.sh
+        http://moma.csregistry.org/tiki-index.php?page=tinadevdoc
 
 
 SUPPORTED OPERATING SYSTEMS
