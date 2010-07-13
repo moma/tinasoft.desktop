@@ -1,21 +1,95 @@
+Thanks for using Tinasoft Desktop
+
+This work is part of TINA, an European Union FP7 project - FP7-ICT-2009-C : http://tinasoft.eu/
+
+The software implements scientific works by David Chavalarias (http://chavalarias.com)
+and Jean-Philippe Cointet (INRA, http://jph.cointet.free.fr).
+
+You can read their publications here:
+
+http://arxiv.org/abs/0904.3154v1
+http://www.springerlink.com/content/v57686u275653nt4/
+
+COPYRIGHT AND LICENSE
+
+Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
+
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+
+    the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+SOURCE CODE REPOSITORY
+
+    http://github.com/jbilcke/tinasoft.desktop
+
+AUTHORS
+
+- Researchers and engineers at CREA lab (UMR 7656, CNRS, Ecole Polytechnique, France)
+
+    david chavalarias <david.chavalarias@polytechnique.edu>
+    elias showk <elishowk@nonutc.fr>
+    julian bilcke <julian.bilcke@iscpif.fr>
+
+SUPPORT AND FEEDBACK
+
+    http://tinasoft.eu/
+    http://github.com/jbilcke/tinasoft.desktop/issues
+
+MULTI PLATFORM READY-TO-USE PACKAGES
+
+    Find them at http://tinasoft.eu
+
+DEPENDENCIES
+
+    JAVA : please download it from http://java.com
+    WEB BROWSER : we highly recommend Firefox (http://getfirefox.com)
+
 USAGE
 
+    MS Windows : execute start_win.bat
+    GNU/Linux (and probably other Unix-like systems) : execute start_unix.sh
+
+INSTALL AS A DEVELOPPER
+
+    DEVELOPPER DEPENDENCIES
+
+        BERKELEY DB : install it on your system from http://www.oracle.com/technology/software/products/berkeley-db/index.html
+
+        PYTHON : you'll need Python 2.6 interpreter : http://python.org/
+
+            $ sudo python setup.py install
+            or
+            $ sudo python setup.py develop
+
+        Dependencies should be checked : numpy, nltk, twisted, jsonpickle, pytenjin, pyyaml
+
+        DOWNLOAD NLTK DATA
+
+        You'll need to install manually required nltk corpus data
+            $ export NLTK_DATA="/path/to/TinasoftPytextminer/shared/nltk_data"
+            $ python
+            > import nltk.download()
+            Downloader> d punkt
+            Downloader> d brown
+            Downloader> d conll2000
+
+    DEVELOPER DOCUMENTATION
+
+        http://moma.csregistry.org/tiki-index.php?page=tinadevdoc
 
 
-DEVELOPER
+SUPPORTED OPERATING SYSTEMS
 
-If you have xulrunner, java VM, python (and TinasoftPytextminer python package) installed, you can simply go into the project root directory (current dir) and run:
+    tinasoft desktop was tested on the following platforms:
 
-  ./start
+        Linux 64 bits (AMD64, i386) with Python 2.6
+        Windows XP SP2 and SP3 (32bit)
 
-   to test the application
-
-
-To generate other platform distribution, you can run the script:
-
-
- ./package.sh
-
-  To generate binaries for other plateforms in the "dist/" directory,
-  and compressed archives (.tar.gz and .zip) for each plateform
-  in the project root directory (the current dir).
