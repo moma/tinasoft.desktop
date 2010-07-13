@@ -302,6 +302,11 @@ var initPytextminerUi = function() {
             $(this).data("whitelistpath", ui.draggable.data("whitelistpath"));
         }
     }).html("<p>drag and drop here a white list</p>");
+    /* Init every upload file handler */
+    var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");
+    $("#importfilepath").get(0).addEventListener( "change", extract_input_upload.handleDrop, false );
+
+    //console.log(extract_input_upload.handleDrop);
 };
 
 

@@ -51,6 +51,7 @@
     <script type="text/javascript" src="js/tinaservice.js" language="javascript"></script>
     <script type="text/javascript" src="js/tinaservice-callbacks.js" language="javascript"></script>
     <script type="text/javascript" src="js/pytextminer-form-submit.js" language="javascript"></script>
+    <script type="text/javascript" src="js/upload-file.js" language="javascript"></script>
 
     <!-- TINASOFT APP MAIN SCRIPT -->
     <script type="text/javascript" src="js/main.js" language="javascript"></script>
@@ -58,7 +59,7 @@
 
    <!-- UNCOMMENT THE FOLLOWING LINE TO ENABLE DEBUG -->
    <script type="text/javascript" src="tinaweb/js/firebug-lite/firebug-lite-beta.js" language="javascript"></script>
-        
+
     <!--TINASOFT CSS -->
    <link type="text/css" rel="stylesheet" href="tinaweb/css/tinaweb.css"/>
 
@@ -94,6 +95,7 @@
                         </tr>
                         <tr>
                             <th>source file <input id="importfilepath" type="file" name="import file path" value='' />
+                            <div id="importfilenotifier"><p></p></div>
                             </th>
                             <th>file type <select id="importfiletype" name="import filetype">
                                     <option selected value='tinacsv'>tinasoft csv</option>

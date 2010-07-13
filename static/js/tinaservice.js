@@ -25,7 +25,7 @@ function TinaServiceClass(url) {
     var SERVER_URL = url; // don't forget the "/" at the end
 
     return {
-
+    SERVER_URL: SERVER_URL,
     /*
     url="http://localhost:8888/graph?$dataset&filetype=gexf"
     */
@@ -46,6 +46,7 @@ function TinaServiceClass(url) {
     url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
     */
     getFile: function(_path, _dataset, _whitelistlabel, _format, _overwrite, _minoccs, _userstopwords, cb) {
+
         this._GET("file",
             {
                 path: _path,
@@ -113,7 +114,6 @@ function TinaServiceClass(url) {
         this._GET("ngram", { dataset: _dataset, id: _id }, {error:"couldn't getNgram"}, cb);
     },
     getDocument: function(_dataset, _id, cb) {
-        //console.log("calling getDocument("+_dataset+", "+_id+", "+cb+")");
         this._GET("document",
             {
                 dataset: _dataset, id: _id
@@ -139,7 +139,6 @@ function TinaServiceClass(url) {
     Special method to list existing datasets
     */
     getDatasetList: function(cb) {
-        console.log("getting datasets");
         this.getDataset("", cb);
     },
 
@@ -167,7 +166,6 @@ function TinaServiceClass(url) {
 
         // call the jquery ajax, passing the params and the callbacks
         $.ajax({
-                // jquery to url
                 url: SERVER_URL+"/"+path,
                 data: params,
                 type: "GET",
@@ -320,22 +318,50 @@ function TinaServiceClass(url) {
 
         // call the jquery ajax, passing the params and the callbacks
         $.ajax({
-                // jquery to url
-                url: SERVER_URL+"/"+path,
-                type: "POST",
-                dataType: "json",
-                data: params,
-                beforeSend: cb.beforeSend,
-                error: cb.error,
-                success: cb.success,
-                complete: cb.complete
-         });
+            // jquery to url
+            url: SERVER_URL+"/"+path,
+            type: "POST",
+            dataType: "json",
+            data: params,
+            beforeSend: cb.beforeSend,
+            error: cb.error,
+            success: cb.success,
+            complete: cb.complete
+        });
 
     },
-    /* transforms a relative path ("user/etc/") to an http url */
+    /*
+     * transforms a relative path ("user/etc/") to an http url
+     * UNUSED
+     */
     fileURL: function(relativePath) {
         var relativeURL = relativePath.split("user/");
         return SERVER_URL+"/user/"+relativeURL[1];
+    },
+
+    uploadFile: function(files, name) {
+        //this.ctrl = createThrobber(img);
+        var xhr = new XMLHttpRequest();
+        //this.xhr = xhr;
+        //var self = this;
+        file = files[0];
+        /*this.xhr.upload.addEventListener("progress", function(e) {
+            if (e.lengthComputable) {
+                var percentage = Math.round((e.loaded * 100) / e.total);
+                self.ctrl.update(percentage);
+            }
+        }, false);*/
+
+        xhr.upload.addEventListener("load", function(e){
+            /*self.ctrl.update(100);
+            var canvas = self.ctrl.ctx.canvas;
+            canvas.parentNode.removeChild(canvas);*/
+            alert("loaded");
+        }, false);
+
+        xhr.open("POST", SERVER_URL + "/files/" + name);
+        //xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
+        xhr.sendAsBinary(file.readAsDataURL());
     },
 
     };

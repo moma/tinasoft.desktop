@@ -18,29 +18,35 @@
  * see tinaservice.js and tinaservicecallbacks.js
 *******************************************************************************/
 
+
 /*
- * Requests to import/extract a data set source file
+ * Requests Pytextminer services
  */
 $(function() {
+
     var submitImportfile = function(event) {
         var corpora = $("#importdatasetid");
-        var path = $("#importfilepath");
-
+        console.log("will uploadFile");
+        //TinaService.uploadFile("#importfilepath", "path");
+        //var file_contents = loadFile(document.getElementById("importfilepath"));
+        //console.log(file_contents);
         if ( corpora.val() == '' ) {
             corpora.addClass('ui-state-error');
             console.log( "missing the corpora field" );
             return false;
         }
-        if ( path.val() == "" ) {
+        /*if ( path.val() == "" ) {
             path.addClass('ui-state-error');
             console.log( "missing the path field" );
             return false;
-        }
+        }*/
 
         var whitelistlabel = $("#importwhitelistlabel");
 
         var filetype = $("#importfiletype");
+
         var userstopwords = $("#importuserstopwords");
+
         overwrite = 'False';
 
         var minoccs = parseInt($("#extractminoccs").val());
@@ -49,30 +55,17 @@ $(function() {
             $("#extractminoccs").addClass("ui-state-error");
             return false;
         }
-        //var extract = $("#importextract:checked");
-        //if (extract.val() !== undefined) {
-            TinaService.getFile(
-                path.val(),
-                corpora.val(),
-                whitelistlabel.val(),
-                filetype.val(),
-                overwrite,
-                minoccs,
-                userstopwords.val(),
-                TinaServiceCallback.extractFile
-            );
-            //return true;
-        //}
-        /*else {
-            TinaService.postFile(
-                corpora.val(),
-                path.val(),
-                filetype.val(),
-                overwrite,
-                TinaServiceCallback.importFile
-            );
-            //return true;
-        }*/
+
+        /*TinaService.getFile(
+            $("#importfilepath").text(),
+            corpora.val(),
+            whitelistlabel.val(),
+            filetype.val(),
+            overwrite,
+            minoccs,
+            userstopwords.val(),
+            TinaServiceCallback.extractFile
+        );*/
 
     };
     /*
