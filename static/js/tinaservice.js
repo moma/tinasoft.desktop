@@ -174,7 +174,7 @@ function TinaServiceClass(url) {
                 error: cb.error,
                 success: cb.success,
                 complete: cb.complete,
-                //async : _async
+                cache: false,
          });
     },
 
@@ -326,7 +326,8 @@ function TinaServiceClass(url) {
             beforeSend: cb.beforeSend,
             error: cb.error,
             success: cb.success,
-            complete: cb.complete
+            complete: cb.complete,
+            cache: false,
         });
 
     },
@@ -339,30 +340,6 @@ function TinaServiceClass(url) {
         return SERVER_URL+"/user/"+relativeURL[1];
     },
 
-    uploadFile: function(files, name) {
-        //this.ctrl = createThrobber(img);
-        var xhr = new XMLHttpRequest();
-        //this.xhr = xhr;
-        //var self = this;
-        file = files[0];
-        /*this.xhr.upload.addEventListener("progress", function(e) {
-            if (e.lengthComputable) {
-                var percentage = Math.round((e.loaded * 100) / e.total);
-                self.ctrl.update(percentage);
-            }
-        }, false);*/
-
-        xhr.upload.addEventListener("load", function(e){
-            /*self.ctrl.update(100);
-            var canvas = self.ctrl.ctx.canvas;
-            canvas.parentNode.removeChild(canvas);*/
-            alert("loaded");
-        }, false);
-
-        xhr.open("POST", SERVER_URL + "/files/" + name);
-        //xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
-        xhr.sendAsBinary(file.readAsDataURL());
-    },
 
     };
 

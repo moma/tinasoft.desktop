@@ -7,40 +7,47 @@ function UploadFileClass(id, server_url) {
     var id = id;
     var server_url = server_url;
 
-    var uploadProgressXHR= function (event) {
-        $("#importfilenotifier > p").text(Math.round((event.loaded * 100) / event.total)+"%");
-        if (event.lengthComputable) {
-        var percentage = Math.round((event.loaded * 100) / event.total),
-            loaderIndicator = event.target.log;
-            if (percentage < 100) {
-                //loaderIndicator.width = (percentage*2) + "px";
-                loaderIndicator.text( percentage + "%");
-            }
-        }
+    var progressXHR= function (event) {
+        //$("#importfilenotifier > p").text(Math.round((event.loaded * 100) / event.total)+"%");
     };
 
     var loadedXHR= function (event) {
         //var currentImageItem = event.target.log;
-        $("#importfilenotifier > p").addClass("loaded");
-        $("#importfilenotifier > p").empty();
+        $("#importfilenotifier > p").addClass("ui-state-default");
+        //$("#importfilenotifier > p").empty();
         //console.log("xhr upload of "+event.target.log.id+" complete");
     };
 
-    var uploadError= function (error) {
-        alert(error);
+    var errorXHR= function (error) {
+        $("#importfilenotifier > p").addClass("ui-state-error");
+        alert("xhr error : " + error);
+    };
+
+    var successXHR= function (evt) {
+        $("#importfilenotifier > p").text("success !");
     };
 
     var processXHR= function (evt, file, index) {
         var xhr = new XMLHttpRequest();
         //var getBinaryDataReader = new FileReader();
-        var container = $("#importfilenotifier > p");
-        //var fileUpload = xhr.upload;
-        container.addClass("progressBar");
-        container.text("0%");
-        xhr.log = container;
-        xhr.onprogress= uploadProgressXHR(evt);
+        $("#importfilenotifier > p").removeClass("ui-state-error");
+        $("#importfilenotifier > p").addClass("ui-state-highlight");
+        $("#importfilenotifier > p").text("0%");
+        /*$.ajax({
+            url: server_url,
+            type: "POST",
+            dataType: "text/plain",
+            data: evt.target.result,
+            processData: false,
+            error: uploadError(evt),
+            success: successXHR(evt),
+            complete: loadedXHR(evt),
+        });*/
+
+        /*xhr.log = container;*/
+        xhr.onprogress= progressXHR(evt);
         xhr.onload= loadedXHR(evt);
-        xhr.onerror= uploadError(evt);
+        xhr.onerror= errorXHR(evt);
 
         xhr.open("POST", server_url);
         xhr.setRequestHeader("Content-Type","text/plain;charset=x-user-defined-binary");
