@@ -8,7 +8,7 @@ echo ""
 name="Tinasoft"
 version="1.0alpha6"
 arch="GNU_Linux_32"
-buildname="exe.linux-x86-2.6"
+buildname="exe.linux-i686-2.6"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
@@ -32,7 +32,7 @@ cp install/start_unix.sh $outpath
 echo " - freezing pytextminer..."
 cd TinasoftPytextminer
 #### platform specific freezeer
-python freeze_linux.py build
+python-2.6 freeze_linux.py build
 cd ..
 chmod -R 775 TinasoftPytextminer/build/
 #### platform specific build directory
