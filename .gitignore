@@ -1,6 +1,7 @@
 .*
 *.pyc
 *.pyo
+*.log
 .packaging
 install/libs
 install/libs/pyxpcomext/*
