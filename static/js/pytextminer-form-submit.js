@@ -26,20 +26,15 @@ $(function() {
 
     var submitImportfile = function(event) {
         var corpora = $("#importdatasetid");
-        console.log("will uploadFile");
-        //TinaService.uploadFile("#importfilepath", "path");
-        //var file_contents = loadFile(document.getElementById("importfilepath"));
-        //console.log(file_contents);
         if ( corpora.val() == '' ) {
             corpora.addClass('ui-state-error');
-            console.log( "missing the corpora field" );
             return false;
         }
-        /*if ( path.val() == "" ) {
+        var path = $("#importfilepath");
+        if ( path.val() == "" ) {
             path.addClass('ui-state-error');
-            console.log( "missing the path field" );
             return false;
-        }*/
+        }
 
         var whitelistlabel = $("#importwhitelistlabel");
 
@@ -51,13 +46,13 @@ $(function() {
 
         var minoccs = parseInt($("#extractminoccs").val());
         if( ! IsNumeric(minoccs) ) {
-            alert("minimum occurrences parameter must be an integer");
+            alert("minimum occurrences must be an integer");
             $("#extractminoccs").addClass("ui-state-error");
             return false;
         }
 
-        /*TinaService.getFile(
-            $("#importfilepath").text(),
+        TinaService.getFile(
+            path.val(),
             corpora.val(),
             whitelistlabel.val(),
             filetype.val(),
@@ -65,7 +60,7 @@ $(function() {
             minoccs,
             userstopwords.val(),
             TinaServiceCallback.extractFile
-        );*/
+        );
 
     };
     /*

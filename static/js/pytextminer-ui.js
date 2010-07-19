@@ -115,7 +115,7 @@ function displayWhitelistColumn(corpora) {
                         }
                     }).click( function(eventObject) {
                         alert("make sure you save this file after editing");
-                        var url = getFileUrl($(this).attr("id"));
+                        var url = TinaService.fileURL($(this).attr("id"));
                         window.location.assign( url );
                     });
                     label.append(open_button);
@@ -223,6 +223,18 @@ function displayDataTable(parent_div) {
     });
 }
 
+function loadSourceFiles(select_id) {
+    var select = $(select_id);
+    TinaService.getWalkSourceFiles({
+        success: function(list) {
+            select.empty().append($("<option value=''></option>"));
+            for ( var i=0; i < list.length; i++ ) {
+                select.append($("<option value='"+list[i]+"'>"+list[i]+"</option>"))
+            }
+        }
+    });
+}
+
 var initPytextminerUi = function() {
     /*
      * Initialize Pytextminer UI
@@ -303,9 +315,10 @@ var initPytextminerUi = function() {
         }
     }).html("<p>drag and drop here a white list</p>");
     /* Init every upload file handler */
-    var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");
-    $("#importfilepath").get(0).addEventListener( "change", extract_input_upload.handleDrop, false );
-
+    /*var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");
+    $("#importfilepath").get(0).addEventListener( "change", extract_input_upload.handleDrop, false );*/
+    loadSourceFiles("#importfilepath");
+    loadSourceFiles("#indexfilepath");
     //console.log(extract_input_upload.handleDrop);
 };
 

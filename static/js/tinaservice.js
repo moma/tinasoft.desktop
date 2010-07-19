@@ -190,6 +190,16 @@ function TinaServiceClass(url) {
             cb
         );
     },
+
+    getWalkSourceFiles: function(cb) {
+        this._GET("walk_source_files",
+            {},
+            {
+                error: "couldn't getWalkSourceFiles"
+            },
+            cb
+        );
+    },
     /************************************************************************
      * POST
      ************************************************************************/
@@ -333,7 +343,6 @@ function TinaServiceClass(url) {
     },
     /*
      * transforms a relative path ("user/etc/") to an http url
-     * UNUSED
      */
     fileURL: function(relativePath) {
         var relativeURL = relativePath.split("user/");

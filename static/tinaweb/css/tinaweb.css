@@ -34,11 +34,11 @@ body {
 }
 
 #toggle-unselect {
-    /*height:0;*/
-    right:25px;
-    position:relative;
-    /*top:0;
-    width:0;*/
+    float:right;
+    margin: 7px;
+    position:absolute;
+    right: 0px;
+    top: 0px;
 }
 
 #appletdiv {
@@ -91,6 +91,3 @@ body {
 }
 
 
-/*.detailtext {
-    color: #000000;
-}*/

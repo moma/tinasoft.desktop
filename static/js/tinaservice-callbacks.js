@@ -16,7 +16,7 @@
 /*
  *  convert the serverDir to a file:// URI
  */
-function getFileUrl(serverRelativePath) {
+/*function getFileUrl(serverRelativePath) {
 
     var arr = serverRelativePath.split(/\/|\\/), i;
     // service producing URI
@@ -34,7 +34,7 @@ function getFileUrl(serverRelativePath) {
                     getService(Components.interfaces.nsIIOService);
     return ios.newFileURI(parentDir).spec;
 
-}
+}*/
 
 
 
@@ -42,7 +42,7 @@ function getFileUrl(serverRelativePath) {
 var SERVER_URL= "http://localhost:8888";
 //$(document).ready(function() {
     var TinaServiceCallback = {
-        importFile : {
+        /*importFile : {
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains json encoded list of duplicate documents found
                 displayDuplicateDocs( data );
@@ -54,23 +54,23 @@ var SERVER_URL= "http://localhost:8888";
             complete: function(XMLHttpRequest, textStatus) {
                 $('#importFile').removeClass("ui-state-disabled", 1);
                 $('#importFile').html( "Launch" );
-                /* Fetch data into table */
                 displayDataTable( "data_table" );
             },
             beforeSend: function() {
                 $("#importfilepath").removeClass("ui-state-error", 1);
                 $("#importdatasetid").removeClass("ui-state-error", 1);
+                $("#extractminoccs").removeClass("ui-state-error", 1);
                 $('#importFile').removeClass("ui-state-error", 1);
                 $('#importFile').addClass("ui-state-disabled", 1);
                 $('#importFile').html( "please wait during import" );
                 // add progress state notification
             }
-        },
+        },*/
         extractFile : {
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains a path to the whitelist extracted
                 alert("make sure you save this file after editing");
-                var url = getFileUrl(data);
+                var url = TinaService.fileURL(data);
                 window.location.assign( url );
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -83,6 +83,8 @@ var SERVER_URL= "http://localhost:8888";
                 displayDataTable( "data_table" );
             },
             beforeSend: function() {
+                $("#extractfilepath").removeClass("ui-state-error", 1);
+                $("#extractdatasetid").removeClass("ui-state-error", 1);
                 $("#extractminoccs").removeClass("ui-state-error", 1);
                 $('#importFile').removeClass("ui-state-error", 1);
                 $('#importFile').addClass("ui-state-disabled", 1);
@@ -140,10 +142,8 @@ var SERVER_URL= "http://localhost:8888";
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains a path to the graph exported
                 $('#processCooc').html( "Loading macro view" );
-                //tinaviz.clear();
-                //switchTab( "macro" );
-                var url = getFileUrl(data);
-                tinaviz.readGraphAJAX("macro", url);
+                //var url = TinaService.fileURL(data);
+                tinaviz.readGraphAJAX("macro", data);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#processCooc').addClass("ui-state-error", 1);
@@ -164,7 +164,7 @@ var SERVER_URL= "http://localhost:8888";
         getWhitelist: {
             success: function(data, textStatus, XMLHttpRequest) {
                 alert("make sure you save this file after editing");
-                var url = getFileUrl(data);
+                var url = TinaService.fileURL(data);
                 window.location.assign( url );
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {

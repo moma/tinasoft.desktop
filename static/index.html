@@ -51,7 +51,7 @@
     <script type="text/javascript" src="js/tinaservice.js" language="javascript"></script>
     <script type="text/javascript" src="js/tinaservice-callbacks.js" language="javascript"></script>
     <script type="text/javascript" src="js/pytextminer-form-submit.js" language="javascript"></script>
-    <script type="text/javascript" src="js/upload-file.js" language="javascript"></script>
+    <!--<script type="text/javascript" src="js/upload-file.js" language="javascript"></script> -->
 
     <!-- TINASOFT APP MAIN SCRIPT -->
     <script type="text/javascript" src="js/main.js" language="javascript"></script>
@@ -94,8 +94,7 @@
                             <th class="ui-widget-header">Extraction</th>
                         </tr>
                         <tr>
-                            <th>source file <input id="importfilepath" type="file" name="import file path" value='' />
-                            <div id="importfilenotifier"><p></p></div>
+                            <th>source file <select id="importfilepath"></select>
                             </th>
                             <th>file type <select id="importfiletype" name="import filetype">
                                     <option selected value='tinacsv'>tinasoft csv</option>
@@ -128,7 +127,7 @@
                             <th id="index_whitelist" class="whitelistdroppable">
                             <!--<input id="indexwhitelistpath" type="file" name="index whitelist path" value='' />-->
                             </th>
-                            <th>source file <input id="indexfilepath" type="file" name="index file path" value='' />
+                            <th>source file <select id="indexfilepath"><option value=""></option></select>
                             </th>
                             <th>file type <select id="indexfiletype" name="index filetype">
                                     <option selected value='tinacsv'>tinasoft csv</option>
