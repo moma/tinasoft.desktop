@@ -6,6 +6,7 @@ echo "#############################################"
 echo ""
 
 name="Tinasoft"
+
 version="1.0alpha6"
 arch="GNU_Linux_64"
 

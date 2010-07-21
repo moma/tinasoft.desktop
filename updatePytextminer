@@ -1,0 +1,10 @@
+#!/bin/bash
+# we also want to reuse some GUI components (JS and CSS)
+# (tinaviz will be an undirect dependency)
+echo "copying latest version"
+if [ -e ../TinasoftPytextminer ]
+   then
+   rm -Rf TinasoftPytextminer
+   cp -Rf ../TinasoftPytextminer .
+fi
+
