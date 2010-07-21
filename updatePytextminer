@@ -5,6 +5,5 @@ echo "copying latest version"
 if [ -e ../TinasoftPytextminer ]
    then
    rm -Rf TinasoftPytextminer
-   cp -Rf ../TinasoftPytextminer .
 fi
-
+cp -RLf ../TinasoftPytextminer .
