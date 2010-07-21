@@ -25,7 +25,7 @@ function TinaServiceClass(url) {
     var SERVER_URL = url; // don't forget the "/" at the end
 
     return {
-
+    SERVER_URL: SERVER_URL,
     /*
     url="http://localhost:8888/graph?$dataset&filetype=gexf"
     */
@@ -46,6 +46,7 @@ function TinaServiceClass(url) {
     url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
     */
     getFile: function(_path, _dataset, _whitelistlabel, _format, _overwrite, _minoccs, _userstopwords, cb) {
+
         this._GET("file",
             {
                 path: _path,
@@ -113,7 +114,6 @@ function TinaServiceClass(url) {
         this._GET("ngram", { dataset: _dataset, id: _id }, {error:"couldn't getNgram"}, cb);
     },
     getDocument: function(_dataset, _id, cb) {
-        //console.log("calling getDocument("+_dataset+", "+_id+", "+cb+")");
         this._GET("document",
             {
                 dataset: _dataset, id: _id
@@ -139,7 +139,6 @@ function TinaServiceClass(url) {
     Special method to list existing datasets
     */
     getDatasetList: function(cb) {
-        console.log("getting datasets");
         this.getDataset("", cb);
     },
 
@@ -167,7 +166,6 @@ function TinaServiceClass(url) {
 
         // call the jquery ajax, passing the params and the callbacks
         $.ajax({
-                // jquery to url
                 url: SERVER_URL+"/"+path,
                 data: params,
                 type: "GET",
@@ -176,7 +174,7 @@ function TinaServiceClass(url) {
                 error: cb.error,
                 success: cb.success,
                 complete: cb.complete,
-                //async : _async
+                cache: false,
          });
     },
 
@@ -188,6 +186,16 @@ function TinaServiceClass(url) {
             },
             {
                 error: "couldn't getWalkUserPath"
+            },
+            cb
+        );
+    },
+
+    getWalkSourceFiles: function(cb) {
+        this._GET("walk_source_files",
+            {},
+            {
+                error: "couldn't getWalkSourceFiles"
             },
             cb
         );
@@ -320,23 +328,27 @@ function TinaServiceClass(url) {
 
         // call the jquery ajax, passing the params and the callbacks
         $.ajax({
-                // jquery to url
-                url: SERVER_URL+"/"+path,
-                type: "POST",
-                dataType: "json",
-                data: params,
-                beforeSend: cb.beforeSend,
-                error: cb.error,
-                success: cb.success,
-                complete: cb.complete
-         });
+            // jquery to url
+            url: SERVER_URL+"/"+path,
+            type: "POST",
+            dataType: "json",
+            data: params,
+            beforeSend: cb.beforeSend,
+            error: cb.error,
+            success: cb.success,
+            complete: cb.complete,
+            cache: false,
+        });
 
     },
-    /* transforms a relative path ("user/etc/") to an http url */
+    /*
+     * transforms a relative path ("user/etc/") to an http url
+     */
     fileURL: function(relativePath) {
         var relativeURL = relativePath.split("user/");
         return SERVER_URL+"/user/"+relativeURL[1];
     },
+
 
     };
 

@@ -18,61 +18,49 @@
  * see tinaservice.js and tinaservicecallbacks.js
 *******************************************************************************/
 
+
 /*
- * Requests to import/extract a data set source file
+ * Requests Pytextminer services
  */
 $(function() {
+
     var submitImportfile = function(event) {
         var corpora = $("#importdatasetid");
-        var path = $("#importfilepath");
-
         if ( corpora.val() == '' ) {
             corpora.addClass('ui-state-error');
-            console.log( "missing the corpora field" );
             return false;
         }
+        var path = $("#importfilepath");
         if ( path.val() == "" ) {
             path.addClass('ui-state-error');
-            console.log( "missing the path field" );
             return false;
         }
 
         var whitelistlabel = $("#importwhitelistlabel");
 
         var filetype = $("#importfiletype");
+
         var userstopwords = $("#importuserstopwords");
+
         overwrite = 'False';
 
         var minoccs = parseInt($("#extractminoccs").val());
         if( ! IsNumeric(minoccs) ) {
-            alert("minimum occurrences parameter must be an integer");
+            alert("minimum occurrences must be an integer");
             $("#extractminoccs").addClass("ui-state-error");
             return false;
         }
-        //var extract = $("#importextract:checked");
-        //if (extract.val() !== undefined) {
-            TinaService.getFile(
-                path.val(),
-                corpora.val(),
-                whitelistlabel.val(),
-                filetype.val(),
-                overwrite,
-                minoccs,
-                userstopwords.val(),
-                TinaServiceCallback.extractFile
-            );
-            //return true;
-        //}
-        /*else {
-            TinaService.postFile(
-                corpora.val(),
-                path.val(),
-                filetype.val(),
-                overwrite,
-                TinaServiceCallback.importFile
-            );
-            //return true;
-        }*/
+
+        TinaService.getFile(
+            path.val(),
+            corpora.val(),
+            whitelistlabel.val(),
+            filetype.val(),
+            overwrite,
+            minoccs,
+            userstopwords.val(),
+            TinaServiceCallback.extractFile
+        );
 
     };
     /*
