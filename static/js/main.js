@@ -80,7 +80,9 @@ $(document).ready(function() {
         meso.filter("EdgeWeightRangeHack", "edgeWeight");
         meso.filter("NodeFunction", "radiusByWeight");
         meso.filter("Output", "output");
-
+        
+        toolbar.init();
+        
         // init the node list with ngrams
         tinaviz.updateNodes( "macro", "NGram" );
 
