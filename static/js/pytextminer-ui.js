@@ -239,6 +239,7 @@ var initPytextminerUi = function() {
     /*
      * Initialize Pytextminer UI
      */
+
     /* resets cache vars */
     var corporaAndPeriods = Cache.setValue( "last_selected_periods", {} );
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
@@ -301,6 +302,8 @@ var initPytextminerUi = function() {
     .click(function(event) {
         $("#about_tinasoft").dialog({modal: true});
     });
+    /* wait a little bit for the http server to wake up */
+    setTimeout("",1000);
     /* Fetch data into table */
     displayDataTable("data_table");
 
