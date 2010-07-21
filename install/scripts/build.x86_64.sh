@@ -35,6 +35,11 @@ python freeze_linux.py build
 cd ..
 chmod -R 775 TinasoftPytextminer/build/
 cp -Rf TinasoftPytextminer/build/exe.linux-x86_64-2.6 $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
+
 
 echo " - creating release archive..."
 find $outpath -name *swp -delete
