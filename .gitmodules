@@ -1,0 +1,3 @@
+[submodule "TinasoftPytextminer"]
+	path = TinasoftPytextminer
+	url = git@github.com:elishowk/TinasoftPytextminer
