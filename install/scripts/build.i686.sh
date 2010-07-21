@@ -8,7 +8,7 @@ echo ""
 name="Tinasoft"
 version="1.0alpha6"
 arch="GNU_Linux_32"
-
+buildname="exe.linux-x86-2.6"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
@@ -36,7 +36,7 @@ python freeze_linux.py build
 cd ..
 chmod -R 775 TinasoftPytextminer/build/
 #### platform specific build directory
-cp -Rf TinasoftPytextminer/build/exe.linux-x86_64-2.6 $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/build/$buildname $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
