@@ -27,7 +27,7 @@ cp -R examples $outpath
 cp README $outpath
 cp LICENSE $outpath
 cp desktop_config_unix.yaml $outpath
-cp start_unix.sh $outpath
+cp install/start_unix.sh $outpath
 
 echo " - freezing pytextminer..."
 cd TinasoftPytextminer

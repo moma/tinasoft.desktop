@@ -17,8 +17,8 @@ if [ -e $outpath ]
   then
     rm -rf $outpath
 fi
-
-
+mkdir dist
+mkdir $outpath
 echo " - copying tinasoft desktop files to output..."
 
 cp -R static $outpath
@@ -26,13 +26,19 @@ cp -R examples $outpath
 cp README $outpath
 cp LICENSE $outpath
 cp desktop_config_unix.yaml $outpath
-cp start_unix.sh $outpath
+cp install/start_unix.sh $outpath
 
 echo " - freezing pytextminer..."
 cd TinasoftPytextminer
 python freeze_linux.py build
-cp -R build/exe.linux-x86-2.6 ../$outpath/TinasoftPytextminer
 cd ..
+chmod -R 775 TinasoftPytextminer/build/
+cp -Rf TinasoftPytextminer/build/exe.linux-x86_64-2.6 $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
+
 
 echo " - creating release archive..."
 find $outpath -name *swp -delete
