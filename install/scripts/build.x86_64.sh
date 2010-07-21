@@ -7,29 +7,19 @@ echo ""
 
 name="Tinasoft"
 version="1.0alpha4"
-arch="Linux_x86_64"
-xulrunner="xulrunner-1.9.1"
-#xulrunnerdownfile="xulrunner-1.9.1.7.en-US.linux-i686.tar.bz2"
-#xulrunnerdownpath="http://mirrors.ircam.fr/pub/mozillla/xulrunner/releases/1.9.1.7/runtimes/"
+arch="Linux_x86"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
-#pyxpcomextdownpath="http://downloads.mozdev.org/pyxpcomext"
-#pyxpcomextdownfile="pythonext-2.6.1.20090330-Linux_x86_64-gcc3.xpi"
 
 if [ -e $outfile ]
   then
     rm $outfile
 fi
 
-echo " - copying xulrunner files to output distribution.."
-cp -R tina $outpath
-
-rm -Rf $outpath/user/*
-rm -Rf $outpath/index/*
-rm -Rf $outpath/db/*
-rm -Rf $outpath/extensions/*
-rm -Rf $outpath/log/*
-rm -Rf $outpath/shared/gexf/gexf.template.*
+cp -R static/ $outpath
+cd TinasoftPytextminer
+python freeze_linux.py build
+cp -R build
 find $outpath -name *~ -delete
 
 #rm $outpath/tina
