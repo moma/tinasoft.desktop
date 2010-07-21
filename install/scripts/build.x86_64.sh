@@ -32,8 +32,9 @@ cp start_unix.sh $outpath
 echo " - freezing pytextminer..."
 cd TinasoftPytextminer
 python freeze_linux.py build
-cp -R build/exe.linux-x86_64-2.6 ../$outpath/TinasoftPytextminer
 cd ..
+chmod -R 775 TinasoftPytextminer/build/
+cp -Rf TinasoftPytextminer/build/exe.linux-x86_64-2.6 $outpath/TinasoftPytextminer
 
 echo " - creating release archive..."
 find $outpath -name *swp -delete
