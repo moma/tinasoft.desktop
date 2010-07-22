@@ -29,7 +29,7 @@ cp -r examples $outpathres
 cp README $outpath
 cp LICENCE $outpath
 cp desktop_config_unix.yaml $outpathres
-
+cp install/*txt $outpath/TinasoftPytextminer
 echo " - creating release archive.."
 #find $outpath -name *swp -delete
 #find $outpath -name *~ -delete

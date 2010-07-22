@@ -1,17 +1,15 @@
 #/bin/bash
 
 echo "#############################################"
-echo "# BUILD TINASOFT FOR 32 BIT LINUX PLATFORMS #"
+echo "# BUILD TINASOFT FOR WINDOWS 32BIT PLATFORMS #"
 echo "#############################################"
 echo ""
-
+sleep 2
 name="Tinasoft"
 version="1.0alpha6"
 arch="WIN32"
-
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
-
 
 if [ -e $outpath ]
   then
@@ -19,37 +17,40 @@ if [ -e $outpath ]
 fi
 mkdir dist
 mkdir $outpath
-echo " - copying tinasoft desktop files to output..."
 
-cp -R static $outpath
-cp -R examples $outpath
-cp README $outpath
-cp LICENSE $outpath
-cp desktop_config_win.yaml $outpath
-#### platform specific starter
+
+echo " - moving platform specific files to 'dist/'"
+sleep 2
 cp install/start_win.bat $outpath
 
-
-
-#### platform specific build directory
 if [ -e TinasoftPytextminer/build/exe.win32-2.6 ]
     then
         cp -Rf TinasoftPytextminer/build/exe.win32-2.6 $outpath/TinasoftPytextminer
 fi
+
+echo " - copying tinasoft desktop files to output..."
+sleep 2
+cp -R static $outpath
+cp -R examples $outpath
+cp README $outpath
+cp LICENSE $outpath
+cp GPL-LICENSE.txt $outpath
+cp desktop_config_win.yaml $outpath
 cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
-mv $outpath/TinasoftPytextminer/shared/nltk_data $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/user_stopwords.csv $outpath/TinasoftPytextminer
+cp -Rf install/Microsoft.VC90.CRT $outpath/TinasoftPytextminer
+cp install/*.txt $outpath/TinasoftPytextminer
 
-
-echo " - creating release archive..."
+echo " - cleaning dist and creating the release compressed archive..."
+sleep 2
 find $outpath -name *swp -delete
 find $outpath -name *~ -delete
 find $outpath -name *swo -delete
-
+find $outpath/TinasoftPytextminer/shared/nltk_data -name *.zip -delete
 cd dist
-zip -r $outfile.zip $outfile
+zip -q -r $outfile.zip $outfile
 cd ..
-mv dist/$outfile.zip .
+echo " - created the archive : dist/$outfile.zip"

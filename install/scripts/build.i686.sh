@@ -42,7 +42,7 @@ cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/user_stopwords.csv $outpath/TinasoftPytextminer
-
+cp install/*txt $outpath/TinasoftPytextminer
 
 echo " - creating release archive..."
 find $outpath -name *swp -delete

@@ -346,8 +346,7 @@ function TinaServiceClass(url) {
      */
     fileURL: function(relativePath) {
         var relativeURL = relativePath.split('user');
-        relativeURL[1].replace(/\\/g,'/');
-        return SERVER_URL+"/user"+relativeURL[1];
+        return SERVER_URL+"/user"+partURL;
     },
 
 
