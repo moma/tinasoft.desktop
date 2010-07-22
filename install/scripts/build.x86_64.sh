@@ -27,7 +27,7 @@ cp -R examples $outpath
 cp README $outpath
 cp LICENSE $outpath
 cp desktop_config_unix.yaml $outpath
-cp start_unix.sh $outpath
+cp install/start_unix.sh $outpath
 
 echo " - freezing pytextminer..."
 cd TinasoftPytextminer
@@ -39,6 +39,7 @@ cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/user_stopwords.csv $outpath/TinasoftPytextminer
 
 
 echo " - creating release archive..."

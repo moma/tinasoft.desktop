@@ -8,7 +8,7 @@ echo ""
 name="Tinasoft"
 version="1.0alpha6"
 arch="GNU_Linux_32"
-
+buildname="exe.linux-x86-2.6"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
@@ -17,8 +17,8 @@ if [ -e $outpath ]
   then
     rm -rf $outpath
 fi
-
-
+mkdir dist
+mkdir $outpath
 echo " - copying tinasoft desktop files to output..."
 
 cp -R static $outpath
@@ -26,13 +26,23 @@ cp -R examples $outpath
 cp README $outpath
 cp LICENSE $outpath
 cp desktop_config_unix.yaml $outpath
-cp start_unix.sh $outpath
+#### platform specific starter
+cp install/start_unix.sh $outpath
 
 echo " - freezing pytextminer..."
 cd TinasoftPytextminer
+#### platform specific freezeer
 python freeze_linux.py build
-cp -R build/exe.linux-x86-2.6 ../$outpath/TinasoftPytextminer
 cd ..
+chmod -R 775 TinasoftPytextminer/build/
+#### platform specific build directory
+cp -Rf TinasoftPytextminer/build/$buildname $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
+cp -Rf TinasoftPytextminer/user_stopwords.csv $outpath/TinasoftPytextminer
+
 
 echo " - creating release archive..."
 find $outpath -name *swp -delete
