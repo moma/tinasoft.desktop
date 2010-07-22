@@ -114,7 +114,7 @@ function displayWhitelistColumn(corpora) {
                             primary: 'ui-icon-pencil'
                         }
                     }).click( function(eventObject) {
-                        alert("make sure you save this file after editing");
+                        alert("make sure you save lotation this file after editing");
                         var url = TinaService.fileURL($(this).attr("id"));
                         window.location.assign( url );
                     });

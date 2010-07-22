@@ -33,10 +33,11 @@ cp install/start_win.bat $outpath
 
 #### platform specific build directory
 if [ -e TinasoftPytextminer/build/exe.win32-2.6 ]
-	then
-		cp -Rf TinasoftPytextminer/build/exe.win32-2.6 $outpath/TinasoftPytextminer
+    then
+        cp -Rf TinasoftPytextminer/build/exe.win32-2.6 $outpath/TinasoftPytextminer
 fi
 cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
+mv $outpath/TinasoftPytextminer/shared/nltk_data $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
