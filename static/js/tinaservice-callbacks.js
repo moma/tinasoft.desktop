@@ -143,7 +143,8 @@ var SERVER_URL= "http://localhost:8888";
                 // data contains a path to the graph exported
                 $('#processCooc').html( "Loading macro view" );
                 //var url = TinaService.fileURL(data);
-                tinaviz.readGraphAJAX("macro", data);
+                var url = TinaService.fileURL(data);
+                tinaviz.readGraphAJAX("macro", url);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#processCooc').addClass("ui-state-error", 1);
