@@ -69,9 +69,7 @@ var SERVER_URL= "http://localhost:8888";
         extractFile : {
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains a path to the whitelist extracted
-                alert("make sure you save this file after editing");
-                var url = TinaService.fileURL(data);
-                window.location.assign( url );
+                editUserFile(data);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#importFile').addClass("ui-state-error", 1);
@@ -120,7 +118,6 @@ var SERVER_URL= "http://localhost:8888";
         postCooc: {
             success: function(data, textStatus, XMLHttpRequest) {
                 console.log("postCooc success");
-                // data contains a path to the whitelist extracted
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#processCooc').addClass("ui-state-error", 1);
@@ -164,9 +161,7 @@ var SERVER_URL= "http://localhost:8888";
         },
         getWhitelist: {
             success: function(data, textStatus, XMLHttpRequest) {
-                alert("make sure you save this file after editing");
-                var url = TinaService.fileURL(data);
-                window.location.assign( url );
+                editUserFile(data);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#exportWhitelist').addClass("ui-state-error", 1);

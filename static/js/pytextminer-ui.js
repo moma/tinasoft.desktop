@@ -41,7 +41,11 @@ function parseFileLabel(filename) {
     return filename.split("-")[1];
 }
 
-
+function editUserFile(path) {
+    var url = TinaService.fileURL(path);
+    alert("make sure you save this file after editing\nif nothing happens (blowser security blocking), please copy and paste this URL in your address bar : "+ url + "\nWe recommend using OpenOffice Calc, otherwise any other spreadsheet editor than can handle CSV file without altering encoding and formatting");
+    window.open( url );
+}
 /*
  * displays the list of existing graphs
  * for a given <TR> and a dataset id
@@ -114,9 +118,7 @@ function displayWhitelistColumn(corpora) {
                             primary: 'ui-icon-pencil'
                         }
                     }).click( function(eventObject) {
-                        alert("make sure you save lotation this file after editing");
-                        var url = TinaService.fileURL($(this).attr("id"));
-                        window.location.assign( url );
+                        editUserFile($(this).attr("id"));
                     });
                     label.append(open_button);
                     ol.append(label);

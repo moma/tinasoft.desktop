@@ -344,9 +344,11 @@ function TinaServiceClass(url) {
     /*
      * transforms a relative path ("user/etc/") to an http url
      */
-    fileURL: function(relativePath) {
-        var relativeURL = relativePath.split('user');
-        return SERVER_URL+"/user"+partURL;
+    fileURL: function(absPath) {
+        /*var relativeURL = relativePath.split('user');
+        var partURL = relativeURL[1].replace(/\\/,"/");
+        return SERVER_URL+"/user"+partURL;*/
+        return "file://"+absPath
     },
 
 
