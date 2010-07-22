@@ -45,9 +45,10 @@ cp -Rf TinasoftPytextminer/user_stopwords.csv $outpath/TinasoftPytextminer
 cp install/*txt $outpath/TinasoftPytextminer
 
 echo " - creating release archive..."
-find $outpath -name *swp -delete
-find $outpath -name *~ -delete
-find $outpath -name *swo -delete
+find $outpath -name "*swp" -delete
+find $outpath -name "*~" -delete
+find $outpath -name "*swo" -delete
+find $outpath/TinasoftPytextminer/shared/nltk_data -name "*.zip" -delete
 
 cd dist
 tar -cjf $outfile.tar.bz2 $outfile

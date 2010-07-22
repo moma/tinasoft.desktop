@@ -31,9 +31,10 @@ cp LICENCE $outpath
 cp desktop_config_unix.yaml $outpathres
 cp install/*txt $outpath/TinasoftPytextminer
 echo " - creating release archive.."
-#find $outpath -name *swp -delete
-#find $outpath -name *~ -delete
-#find $outpath -name *swo -delete
+find $outpath -name "*swp" -delete
+find $outpath -name "*~" -delete
+find $outpath -name "*swo" -delete
+find $outpath/TinasoftPytextminer/shared/nltk_data -name "*.zip" -delete
 
 zip -r $outfile.zip $outpath
 hdiutil create $outfile.dmg -volname "$name $version" -fs HFS+ -srcfolder "$outpath"

@@ -27,6 +27,7 @@ if [ -e TinasoftPytextminer/build/exe.win32-2.6 ]
     then
         cp -Rf TinasoftPytextminer/build/exe.win32-2.6 $outpath/TinasoftPytextminer
 fi
+cp -Rf install/Microsoft.VC90.CRT $outpath/TinasoftPytextminer
 
 echo " - copying tinasoft desktop files to output..."
 sleep 2
@@ -41,15 +42,14 @@ cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/user_stopwords.csv $outpath/TinasoftPytextminer
-cp -Rf install/Microsoft.VC90.CRT $outpath/TinasoftPytextminer
 cp install/*.txt $outpath/TinasoftPytextminer
 
 echo " - cleaning dist and creating the release compressed archive..."
 sleep 2
-find $outpath -name *swp -delete
-find $outpath -name *~ -delete
-find $outpath -name *swo -delete
-find $outpath/TinasoftPytextminer/shared/nltk_data -name *.zip -delete
+find $outpath -name "*swp" -delete
+find $outpath -name "*~" -delete
+find $outpath -name "*swo" -delete
+find $outpath/TinasoftPytextminer/shared/nltk_data -name "*.zip" -delete
 cd dist
 zip -q -r $outfile.zip $outfile
 cd ..
