@@ -44,8 +44,12 @@ cp -r static $outpathres/static
 cp -r examples $outpathres/examples
 cp README $outpathres/README
 cp LICENCE $outpathres/LICENCE
-cp -r $outpathres/shared $outpathres/$pytextminer/shared
-cp -r $outpathres/source_files $outpathres/$pytextminer
+if [ ! -e $outpathres/$pytextminer ]
+  then
+    mkdir $outpathres/$pytextminer
+fi
+mv $outpathres/shared $outpathres/$pytextminer
+mv $outpathres/source_files $outpathres/$pytextminer
 cp desktop_config_unix.yaml $outpathres
 cp install/*.txt $outpathres
 echo " - creating release archive.."
