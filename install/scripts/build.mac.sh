@@ -44,7 +44,7 @@ cp -r static $outpathres/static
 cp -r examples $outpathres/examples
 cp README $outpathres/README
 cp LICENCE $outpathres/LICENCE
-cp -r $outpathres/shared $outpathres/$pytextminer
+cp -r $outpathres/shared $outpathres/$pytextminer/shared
 cp -r $outpathres/source_files $outpathres/$pytextminer
 cp desktop_config_unix.yaml $outpathres
 cp install/*.txt $outpathres
