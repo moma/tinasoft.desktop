@@ -1,3 +1,4 @@
+#/bin/bash
 echo "############################################"
 echo "# BUILD TINASOFT FOR SNOW LEOPARD PLATFORM #"
 echo "############################################"
@@ -7,13 +8,18 @@ name="Tinasoft"
 version="1.0alpha6"
 arch="macosx-10.6"
 
-outpath="TinasoftPytextminer/dist/httpserver.app"
+outpath="TinasoftPytextminer/dist/$name.app"
 outpathres="$outpath/Contents/Resources"
 outfile="$name-$version-$arch"
 
-if [ -e $outpath ]
+if [ -e TinasoftPytextminer/dist ]
   then
-    rm -rf $outpath
+    rm -rf TinasoftPytextminer/dist
+fi
+
+if [ -e TinasoftPytextminer/build ]
+  then
+    rm -rf TinasoftPytextminer/build
 fi
 
 if [ -e $outfile.zip ]
@@ -27,7 +33,9 @@ fi
 
 echo " - freezing TinasoftPytextminer.."
 cd TinasoftPytextminer
+cp httpserver.py Tinasoft.py
 python freeze_mac.py py2app
+rm Tinasoft.py
 cd ..
 
 echo " - copying tinasoft.desktop files to $outpath.."
