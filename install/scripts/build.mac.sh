@@ -8,18 +8,19 @@ name="Tinasoft"
 version="1.0alpha6"
 arch="macosx-10.6"
 
-outpath="TinasoftPytextminer/dist/$name.app"
+pytextminer="TinasoftPytextminer"
+outpath="$pytextminer/dist/$name.app"
 outpathres="$outpath/Contents/Resources"
 outfile="$name-$version-$arch"
 
-if [ -e TinasoftPytextminer/dist ]
+if [ -e $pytextminer/dist ]
   then
-    rm -rf TinasoftPytextminer/dist
+    rm -rf $pytextminer/dist
 fi
 
-if [ -e TinasoftPytextminer/build ]
+if [ -e $pytextminer/build ]
   then
-    rm -rf TinasoftPytextminer/build
+    rm -rf $pytextminer/build
 fi
 
 if [ -e $outfile.zip ]
@@ -31,11 +32,11 @@ if [ -e $outfile.dmg ]
     rm -rf $outfile.dmg
 fi
 
-echo " - freezing TinasoftPytextminer.."
-cd TinasoftPytextminer
-cp httpserver.py Tinasoft.py
+echo " - freezing $pytextminer.."
+cd $pytextminer
+cp httpserver.py $name.py
 python freeze_mac.py py2app
-rm Tinasoft.py
+rm $name.py
 cd ..
 
 echo " - copying tinasoft.desktop files to $outpath.."
@@ -43,6 +44,8 @@ cp -r static $outpathres/static
 cp -r examples $outpathres/examples
 cp README $outpathres/README
 cp LICENCE $outpathres/LICENCE
+cp -r $outpathres/shared $outpathres/$pytextminer
+cp -r $outpathres/source_files $outpathres/$pytextminer
 cp desktop_config_unix.yaml $outpathres
 cp install/*.txt $outpathres
 echo " - creating release archive.."
