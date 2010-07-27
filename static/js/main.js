@@ -19,7 +19,7 @@ $(document).ready(function() {
 	
     $("#title").html("<h3>Tinasoft Desktop</h3>");
 
-    var ressourcesPrefix = "tinaweb/js/tinaviz/";
+    var ressourcesPrefix = "tinaweb/";
     
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
