@@ -239,52 +239,62 @@
 
                     </div><!-- End of htoolbar -->
                 </div><!-- End of hdb -->
-            </div><!-- End of hd -->
-
+           </div><!-- End of hd -->
+            
             <div id="bd">
                 <div id="yui-main">
                     <div class="yui-b">
-                        <div class="yui-gc">
-                            <!-- LEFT MAIN COLUMN-->
-                            <div id="appletdiv" class="yui-u first">
-                                <div id="appletInfo" class="appletInfo">Please wait while loading..</div>
-                                <div id="vizdiv"></div>
-                            </div>
-                            <!-- RIGHT MAIN COLUMN-->
-                            <div id="infodivparent">
-                                <div id="infodiv" class="yui-u">
-                                    <h3><a href="#">Current selection</a> <a href="#" id="toggle-unselect"></a></h3>
-                                    <div id="node_details">
-                                    <!--
-                                        <div id="node_unselect" class="fg-buttonset">
-                                                <a href="#"
-                                                    id="toggle-unselect"
-                                                    class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                                                   title="unselect"><span class="ui-icon ui-icon-close"></span></a>
-                                        </div>-->
-                                        <!--<div style="clear:both;"></div>-->
-                                        <div id="node_label" class="ui-widget-header ui-corner-all"></div>
-                                        <div id="node_neighbourhood" class="ui-widget-content ui-corner-all"></div>
-                                        <div id="node_contents" class="ui-widget-content ui-corner-all">  </div>
-                                    </div>
-                                    <h3><a href="#">All nodes</a></h3>
-                                    <div>
-                                        <div id="node_list">
+						<div class="yui-gc">
+							<!-- LEFT MAIN COLUMN-->
+							<div id="appletdiv" class="yui-u first">
+								<div id="appletInfo" class="appletInfo">Please wait while loading..</div>
+								<div id="vizdiv"></div>
+							</div>
+							<!-- RIGHT MAIN COLUMN-->
+							<div id="infodivparent">
+								<div id="infodiv" class="yui-u">
+									<h3><a href="#">Current selection <button id="toggle-unselect"></button></a></h3>
+									<div id="node_details">
+									<!--
+										<div id="node_unselect" class="fg-buttonset">
+												<a href="#"
+													id="toggle-unselect"
+													class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
+												   title="unselect"><span class="ui-icon ui-icon-close"></span></a>
+										</div>-->
+										<!--<div style="clear:both;"></div>-->
+										
+                    <!-- Modif David inversion des accordéon + ajout-->
+										<div id="node_label" class="ui-widget-header ui-corner-all"></div>
+										<div id="node_neighbourhood" class="ui-widget-content ui-corner-all"></div>
+										<div id="node_contents" class="ui-widget-content ui-corner-all">  </div>
+									</div>  <!-- /accordion 1 -->
+									 <h3><a href="#">Global Web Searches</a></h3>
+                  <div>
+                  <div id="resources">
+                  
+                  </div>
+                  <div id="node_neighbourhoodForSearch" class="ui-widget-content ui-corner-all"></div>
+                  </div> <!-- /accordion 2 -->
+									<h3><a href="#">All nodes</a></h3>
+									<div>
+										<div id="node_list">
 
-                                            <table id="node_table">
-                                            <thead>
-                                            <tr>
-                                                <th>List of all nodes of the current category<span class="ui-icon ui-icon-help icon-right" title="click on a label to switch to its meso view"></span></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                            </table>
-                                        </div>
-                                    </div> <!-- accordion 2 -->
-                                </div><!-- /infodiv  -->
-                            </div><!-- / INFODIVPARENT -->
-                        </div><!-- end of yui-gc -->
+											<table id="node_table">
+											<thead>
+											<tr>
+												<th>List of all nodes of the current category<span class="ui-icon ui-icon-help icon-right" title="click on a label to switch to its meso view"></span></th>
+											</tr>
+											</thead>
+											<tbody>
+											</tbody>
+											</table>
+										</div>
+									</div> <!-- accordion 3 -->
+								</div><!-- /infodiv  -->
+								
+							</div><!-- / INFODIVPARENT -->
+						</div><!-- end of yui-gc -->
                     </div><!-- end of yui-b -->
                 </div><!-- end of yui-main -->
             </div><!-- end of bd -->
