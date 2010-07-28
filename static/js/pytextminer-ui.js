@@ -43,8 +43,14 @@ function parseFileLabel(filename) {
 
 function editUserFile(path) {
     var url = TinaService.fileURL(path);
-    alert("make sure you save this file after editing\nif nothing happens (blowser security blocking), please copy and paste this URL in your address bar : "+ url + "\nWe recommend using OpenOffice Calc, otherwise any other spreadsheet editor than can handle CSV file without altering encoding and formatting");
-    window.open( url );
+    alert("Opening the file, please follow these instructions :\n"
+    +"- choose N-Lemmas you want to keep by writing 'w' in the 'status' column\n"
+    +"- make sure you've saved this file in place after editing\n"
+    +"- we recommend using OpenOffice.org Calc, or any other spreadsheet editor than can handle CSV file without altering encoding and formatting (default utf-8, comma separated values, double-quoted text cells)\n"
+    +"- if nothing happens (e.g. blowser security), please copy and paste this URL in your address bar : "+ url
+    );
+    TinaService.getOpenUserFile(url);
+    /*window.open( url );*/
 }
 /*
  * displays the list of existing graphs
@@ -75,7 +81,7 @@ function displayGraphColumn(corpora) {
                         + parseFileLabel(path_comp[0])
                         + "</button><br/>"
                     ).click(function(event) {
-                        var url = TinaService.fileURL($(this).attr('value'));
+                        var url = TinaService.httpURL($(this).attr('value'));
                         tinaviz.readGraphAJAX("macro", url);
                     });
                     ol.append(button);
@@ -102,26 +108,29 @@ function displayWhitelistColumn(corpora) {
         {
             success: function(list) {
                 for ( var i=0; i < list.length; i++ ) {
+                    // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
-                    var label = $("<li>"
+                    var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
                         + parseFileLabel(path_comp[0])
                         + "&#09;"
                         + "</li>"
                     ).draggable({
                         helper: "clone",
                     })
-                    .data("whitelistpath",list[i]);
-                    var open_button = $("<div></div>").attr("id",list[i]);
-                    open_button.button({
+                    var edit_link = $("<a href='"+TinaService.fileURL(list[i])+"' title='click to open in an external software'></a>")
+                    .button({
                         text: false,
                         icons: {
                             primary: 'ui-icon-pencil'
                         }
-                    }).click( function(eventObject) {
+                    })
+                    .attr("id",list[i])
+                    .click( function(eventObject) {
                         editUserFile($(this).attr("id"));
                     });
-                    label.append(open_button);
-                    ol.append(label);
+                    /*.css('height',10);*/
+                    whitelist_item.append(edit_link);
+                    ol.append(whitelist_item);
                 }
             }
         }
@@ -302,7 +311,13 @@ var initPytextminerUi = function() {
         label: "about tinasoft"
     })
     .click(function(event) {
-        $("#about_tinasoft").dialog({modal: true});
+        $("#about_tinasoft").dialog(
+            {
+                modal: true,
+                position: ['right','top'],
+                maxWidth: 300
+            }
+        );
     });
     /* wait a little bit for the http server to wake up */
     setTimeout("",1000);

@@ -200,6 +200,19 @@ function TinaServiceClass(url) {
             cb
         );
     },
+
+
+    getOpenUserFile: function(_fileurl, cb) {
+        this._GET("open_user_file",
+            {
+                fileurl: _fileurl
+            },
+            {
+                error: "couldn't getOpenUserFile"
+            },
+            cb
+        );
+    },
     /************************************************************************
      * POST
      ************************************************************************/
@@ -342,14 +355,17 @@ function TinaServiceClass(url) {
 
     },
     /*
-     * transforms an absolute path ("user/etc/") to an file:// url
+     * transforms an absolute path ("user/etc/") to an file:// url, compatible with windows paths
      */
     fileURL: function(absPath) {
+        if ( /\\/.test(absPath) == true ) {
+            return "file:///"+absPath
+        }
         return "file://"+absPath
     },
 
     /*
-     * transforms a relative path ("user/etc/") to an http:// url
+     * transforms a relative path ("user/etc/") to an http:// url, compatible with windows paths
      */
     httpURL: function(absPath) {
         var relativeURL = relativePath.split('user');
