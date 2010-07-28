@@ -41,7 +41,7 @@ datasets:
     training_tagger_size: 1000
     stemmer: 'tinasoft.pytextminer.stemmer'
     # under "share" directory
-    tagger: 'shared/tagger.pickle'
+    tagger: 'TinasoftPytextminer\shared\tagger.pickle'
 datamining:
     template: 'TinasoftPytextminer\shared\gexf\gexf.template'
     DocumentGraph:
