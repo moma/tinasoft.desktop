@@ -55,7 +55,11 @@ function editUserFile(path) {
 function loadGraph(data) {
     var url = TinaService.httpURL(data);
     alert("will open graph sending this url to tinaviz : "+ url);
-    tinaviz.readGraphAJAX("macro", url);
+    tinaviz.open({
+        view: "macro",
+        clear: true, // clean everything before adding the graph
+        url: url
+    });
 }
 /*
  * displays the list of existing graphs
