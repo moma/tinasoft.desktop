@@ -52,6 +52,11 @@ function editUserFile(path) {
     TinaService.getOpenUserFile(url);
     /*window.open( url );*/
 }
+function loadGraph(data) {
+    var url = TinaService.httpURL(data);
+    alert("will open graph sending this url to tinaviz : "+ url);
+    tinaviz.readGraphAJAX("macro", url);
+}
 /*
  * displays the list of existing graphs
  * for a given <TR> and a dataset id
@@ -81,8 +86,7 @@ function displayGraphColumn(corpora) {
                         + parseFileLabel(path_comp[0])
                         + "</button><br/>"
                     ).click(function(event) {
-                        var url = TinaService.httpURL($(this).attr('value'));
-                        tinaviz.readGraphAJAX("macro", url);
+                        loadGraph($(this).attr('value'));
                     });
                     ol.append(button);
                 }
@@ -117,6 +121,7 @@ function displayWhitelistColumn(corpora) {
                     ).draggable({
                         helper: "clone",
                     })
+                    .data("whitelistpath", list[i])
                     var edit_link = $("<a href='"+TinaService.fileURL(list[i])+"' title='click to open in an external software'></a>")
                     .button({
                         text: false,

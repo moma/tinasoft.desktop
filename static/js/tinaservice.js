@@ -367,7 +367,7 @@ function TinaServiceClass(url) {
     /*
      * transforms a relative path ("user/etc/") to an http:// url, compatible with windows paths
      */
-    httpURL: function(absPath) {
+    httpURL: function(relativePath) {
         var relativeURL = relativePath.split('user');
         var partURL = relativeURL[1].replace(/\\/,"/");
         return SERVER_URL+"/user"+partURL;
