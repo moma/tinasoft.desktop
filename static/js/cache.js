@@ -30,9 +30,9 @@ var Cache = {
         value stored
     */
     setValue : function( key, value ) {
-        $("#"+this.prefix+'key').remove();
-        $('<div></div>').attr('id',this.prefix+'key').data( key, value ).appendTo('body');
-        return this.prefix+'key';
+        $("#"+this.prefix+key).remove();
+        $('<div></div>').attr('id',this.prefix+key).data( key, value ).appendTo('body');
+        return this.prefix+key;
     },
     /*
     Function: getValue
@@ -47,7 +47,7 @@ var Cache = {
         if (defaultValue === undefined ) {
             defaultValue = {};
         }
-        var storagediv = $("#"+this.prefix+'key');
+        var storagediv = $("#"+this.prefix+key);
         var result = storagediv.data( key );
         if ( result == null || result === undefined) {
             return defaultValue;

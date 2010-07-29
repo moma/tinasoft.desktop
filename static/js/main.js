@@ -91,16 +91,17 @@ $(document).ready(function() {
 
         tinaviz.open({
             success: function() {
-             // init the node list with ngrams
-             tinaviz.updateNodes( defaultView, "NGram" );
+                // init the node list with ngrams
+                tinaviz.updateNodes( defaultView, "NGram" );
+                alert("updated ngram node list");
+                console.log( tinaviz.infodiv.data );
+                // cache the document list
+                tinaviz.getNodes(defaultView, "Document" );
 
-             // cache the document list
-             tinaviz.getNodes(defaultView, "Document" );
+                tinaviz.infodiv.display_current_category();
+                tinaviz.infodiv.display_current_view();
 
-             tinaviz.infodiv.display_current_category();
-             tinaviz.infodiv.display_current_view();
-
-             $("#appletInfo").hide();
+                $("#appletInfo").hide();
            },
            error: function(msg) {
              $("#appletInfo").html("Error, couldn't load graph: "+msg);
@@ -153,10 +154,10 @@ $(document).ready(function() {
         var size = resize();
         tinaviz.size(size.w, size.h);
 
-        tinaviz.open({
+        /*tinaviz.open({
             view: "macro",
             url: "user/ty/gexf/20100728-1-graph.gexf"
-        });
+        });*/
     });
 
 
