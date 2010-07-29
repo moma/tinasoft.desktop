@@ -16,11 +16,11 @@
 var tinaviz = {};
 // wait for the DOM to be loaded
 $(document).ready(function() {
-	
+
     $("#title").html("<h3>Tinasoft Desktop</h3>");
 
     var ressourcesPrefix = "tinaweb/";
-    
+
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
         path: ressourcesPrefix,
@@ -28,26 +28,26 @@ $(document).ready(function() {
         width: 100,
         height: 100
     });
-    
+
    $('#appletInfo').effect('pulsate', {}, 'fast');
-   
+
     $(window).bind('resize', function() {
         var size = resize();
         tinaviz.size(size.w, size.h);
     });
-    
+
     tinaviz.ready(function(){
-    
+
         var infodiv =  InfoDiv('infodiv');
         tinaviz.infodiv = infodiv;
         tinaviz.infodiv.reset();
-        
+
         resize();
 
         $("#infodiv").accordion({
             fillSpace: true
         });
-        
+
         var defaultView = "macro";
         tinaviz.setView(defaultView);
 
@@ -80,9 +80,9 @@ $(document).ready(function() {
         meso.filter("EdgeWeightRangeHack", "edgeWeight");
         meso.filter("NodeFunction", "radiusByWeight");
         meso.filter("Output", "output");
-        
+
         toolbar.init();
-        
+
         // init the node list with ngrams
         tinaviz.updateNodes( "macro", "NGram" );
 
@@ -108,22 +108,22 @@ $(document).ready(function() {
         });
 
         tinaviz.event({
-        
+
             viewChanged: function(view) {
 
                 tinaviz.autoCentering();
 
                 $("#sliderEdgeWeight").slider( "option", "values", [
                     parseInt( view.get("edgeWeight/min") ),
-                    parseInt(view.get("edgeWeight/max")) *100 
+                    parseInt(view.get("edgeWeight/max")) *100
                 ]);
                 $("#sliderNodeWeight").slider( "option", "values", [
                     parseInt(view.get("nodeWeight/min") ),
-                    parseInt(view.get("nodeWeight/max")) *100 
+                    parseInt(view.get("nodeWeight/max")) *100
                 ]);
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
-                
+
                 var disable = false;
                 if (view.name == "meso") {
                     // TODO check selection
@@ -143,7 +143,7 @@ $(document).ready(function() {
                         }
                     }
                     disable = true;
-                } 
+                }
                 $("#sliderEdgeWeight").slider( "option", "disabled", disable );
             }
         });
@@ -152,10 +152,10 @@ $(document).ready(function() {
 
         var size = resize();
         tinaviz.size(size.w, size.h);
-        
+
         tinaviz.open({
             view: "macro",
-            url: "default.gexf"
+            url: "user/ty/gexf/20100728-1-graph.gexf"
         });
     });
 
