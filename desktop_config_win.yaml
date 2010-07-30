@@ -35,27 +35,30 @@ datasets:
         delimiter: ','
         quotechar: '"'
         locale: ''
-    # extraction params
+    # extraction size
     ngramMin: 1
     ngramMax: 4
-    training_tagger_size: 1000
+    # tagger learning on 2 x training_tagger_size sentences of tagged nltk corpus
+    training_tagger_size: 8000
     stemmer: 'tinasoft.pytextminer.stemmer'
-    # under "share" directory
+    # under "basedirectory" directory, delete this file to regenerate a new one on next starting
     tagger: 'TinasoftPytextminer\shared\tagger.pickle'
 datamining:
     template: 'TinasoftPytextminer\shared\gexf\gexf.template'
     DocumentGraph:
         edgethreshold:
             - 0.0
-            - 2.0
+            - 0.2
         nodethreshold:
             - 1
             - 'inf'
+        proximity: 'DocumentGraph.inverseLogOccNGrams'
     NGramGraph:
         edgethreshold:
-            - 0.0
+            - 0.5
             - 1.0
         nodethreshold:
             - 1
             - 'inf'
-        alpha: 0.01
+        alpha: 0.1
+        proximity: 'NGramGraph.pseudoInclusionProx'
