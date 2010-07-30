@@ -17,6 +17,10 @@ function Tinaviz(args) {
         engine: 'software',
         branding: true,
         pause: false,
+        
+        // we define the functions
+        getNeighbourhood: applet.getNeighbourhood,
+        
         width: 0,
         height: 0
     };
@@ -496,7 +500,7 @@ function Tinaviz(args) {
          */
         this.getNeighbourhood = function(view,id) {
             if (applet == null) return;
-            return $.parseJSON( applet.getNeighbourhood(view,id) );
+            return $.parseJSON( opts.getNeighbourhood(view,id) );
         }
 
 
