@@ -78,10 +78,10 @@
                 <table id="corpora_table">
                     <thead>
                         <tr>
-                            <th>data sets</th>
-                            <th>white lists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></th>
-                            <th>periods <button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
-                            <th>graphs <button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
+                            <th class="ui-widget-header">data sets</th>
+                            <th class="ui-widget-header">white lists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></th>
+                            <th class="ui-widget-header">periods <button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
+                            <th class="ui-widget-header">graphs <button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
                         </tr>
                     </thead>
                     <!--<tbody class="ui-widget-content"></tbody>-->
@@ -94,22 +94,22 @@
                             <th class="ui-widget-header">Extraction</th>
                         </tr>
                         <tr>
-                            <th>source file <select id="importfilepath"></select>
+                            <th class="ui-widget-content">source file <select id="importfilepath"></select>
                             </th>
-                            <th>file type <select id="importfiletype" name="import filetype">
+                            <th class="ui-widget-content">file type <select id="importfiletype" name="import filetype">
                                     <option selected value='tinacsv'>tinasoft csv</option>
                                     <!--<option value ='medline'>pubmed medline abstracts</option>-->
                                 </select>
                             </th>
-                            <th>data set name <input id="importdatasetid" type="text" name="import dataset id" size="12"/>
+                            <th class="ui-widget-content">data set name <input id="importdatasetid" type="text" name="import dataset id" size="12"/>
                             </th>
                             <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
 
-                            <th><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
+                            <th class="ui-widget-content"><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
                             </th>
-                            <th>white list label <input id="impotwhitelistlabel" type="text" size="12" name="white list label" value="" />
+                            <th class="ui-widget-content">white list label\n(default: same as the data set)<input id="impotwhitelistlabel" type="text" size="12" name="white list label" value="" />
                             </th>
-                            <th>minimum occurrences <input id="extractminoccs" type="text" size="4" name="minimum n-grams occurrences" value="1" />
+                            <th class="ui-widget-content">key-phrases minimum occurrence <input id="extractminoccs" type="text" size="4" name="minimum n-grams occurrences" value="1" />
                             </th>
                             <!--<th>extra stopwords file <input id="importuserstopwords" type="file" name="user stopwords file" value=""/>
                             </th>-->
@@ -124,23 +124,23 @@
                             <th class="ui-widget-header">Indexation</th>
                         </tr>
                         <tr>
-                            <th id="index_whitelist" class="whitelistdroppable">
+                            <th id="index_whitelist" class="ui-widget-content whitelistdroppable">
                             <!--<input id="indexwhitelistpath" type="file" name="index whitelist path" value='' />-->
                             </th>
-                            <th>source file <select id="indexfilepath"><option value=""></option></select>
+                            <th class="ui-widget-content">source file <select id="indexfilepath"><option value=""></option></select>
                             </th>
-                            <th>file type <select id="indexfiletype" name="index filetype">
+                            <th class="ui-widget-content">file type <select id="indexfiletype" name="index filetype">
                                     <option selected value='tinacsv'>tinasoft csv</option>
                                     <!--<option value ='medline'>pubmed medline abstracts</option>-->
                                 </select>
                             </th>
-                            <th>data set name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
+                            <th class="ui-widget-content">data set name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
                             </th>
                             <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
 
-                            <th><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
+                            <th class="ui-widget-content"><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
                             </th>
-                            <th><div id="duplicate_docs_toggle">duplicated documents</div></th>
+                            <th class="ui-widget-content"><div id="duplicate_docs_toggle">duplicated documents</div></th>
                         </tr>
                     </thead>
                 </table>
@@ -153,8 +153,9 @@
                             <th class="ui-widget-header">Create a graph</th>
                         </tr>
                         <tr>
-                            <th id="graph_whitelist" class="whitelistdroppable"></th>
-                            <th><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
+                            <th id="graph_whitelist" class="ui-widget-content whitelistdroppable"></th>
+                            <th class="ui-widget-content">select periods from the above table\n(ctrl key for multiple selection)</th>
+                            <th class="ui-widget-content"><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
                         </tr>
                     </thead>
                 </table>

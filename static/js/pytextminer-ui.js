@@ -71,7 +71,7 @@ function displayGraphColumn(corpora) {
     var tr = $( "#" +trid );
     // corpus list cell
     var olid = 'graph_list_' + trid
-    tr.append("<td>"
+    tr.append("<td class='ui-widget-content'>"
         + "<ol id='"
         + olid + "' >"
         + "</ol></td>"
@@ -104,7 +104,7 @@ function displayWhitelistColumn(corpora) {
     var tr = $( "#" +trid );
     // corpus list cell
     var olid = 'whitelist_' + trid
-    tr.append("<td>"
+    tr.append("<td class='ui-widget-content'>"
         + "<ol id='"
         + olid + "' >"
         + "</ol></td>"
@@ -155,7 +155,7 @@ function displayPeriodColumn(corpora) {
     var tr = $( "#" +trid );
     // corpus list cell
     var olid = 'selectable_corpus_' + trid
-    tr.append("<td>"
+    tr.append("<td class='ui-widget-content'>"
         + "<ol id='"
         + olid + "' class='selectable'>"
         + "</ol></td>"
@@ -210,7 +210,7 @@ function displayDatasetRow(list) {
         var trid = dataset_id + "_tr";
         var tr = $("<tr id='"+dataset_id+"_tr'></tr>")
             //.addClass("ui-widget-content")
-            .append( $("<td></td>").html(dataset_id) )
+            .append( $("<td class='ui-widget-content'></td>").html(dataset_id) )
         ;
         tbody.append(tr);
         TinaService.getDataset(dataset_id, {
