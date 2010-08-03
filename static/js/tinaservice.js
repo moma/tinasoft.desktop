@@ -13,8 +13,6 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-
-
 jQuery.ajaxSettings.traditional = true;
 
 function TinaServiceClass(url) {
@@ -359,14 +357,15 @@ function TinaServiceClass(url) {
         });
 
     },
+
     /*
      * transforms an absolute path ("user/etc/") to an file:// url, compatible with windows paths
      */
     fileURL: function(absPath) {
         if ( /\\/.test(absPath) == true ) {
-            return "file:///"+encodeURI(absPath);
+            return "file:///"+this.encodeURL(absPath);
         }
-        return "file://"+encodeURI(absPath);
+        return "file://"+this.encodeURL(absPath);
     },
 
     /*
@@ -374,10 +373,16 @@ function TinaServiceClass(url) {
      */
     httpURL: function(relativePath) {
         var relativeURL = relativePath.split('user');
-        var partURL = encodeURI(relativeURL[1].replace(/\\/,"/"));
+        var partURL = this.encodeURL(relativeURL[1].replace(/\\/,"/"));
         return SERVER_URL+"/user"+partURL;
     },
 
+    encodeURL: function(url) {
+        return encodeURI(url).replace(/\+/,"%2B").replace(/#/,"%23")
+        .replace(/@/,"%40").replace(/\$/,"%24").replace(/&/,"%26")
+        .replace(/=/,"%3D").replace(/:/,"%3A").replace(/,/,"%2C")
+        .replace(/;/,"%3B").replace(/\?/,"%3F");
+    },
 
     };
 
