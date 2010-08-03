@@ -109,15 +109,46 @@ $(function() {
         }
         var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
         if( Object.size(corporaAndPeriods) == 0) {
+            $("#graph_periods").addClass('ui-state-error');
             alert("please select one or more periods");
             return false;
         }
+        // UNUSED
         var userfilterspath  = $("#userstopwordsfile_graph");
+        var outpath = $("#graphlabel");
+        var ngramGraphOptions = {
+            alpha: $("#graphalpha").spinner('value'),
+            proximity: $("#ngrams-graph-type").val(),
+            edgethreshold: [
+                $("#graph-ngrams-edges-min").spinner('value'),
+                $("#graph-ngrams-edges-max").spinner('value')
+            ],
+            nodethreshold: [
+                $("#graph-ngrams-nodes-min").spinner('value'),
+                $("#graph-ngrams-nodes-max").spinner('value')
+            ]
+        };
+        var documentGraphOptions = {
+            proximity: $("#documents-graph-type").val(),
+            edgethreshold: [
+                $("#graph-documents-edges-min").spinner('value'),
+                $("#graph-documents-edges-max").spinner('value')
+            ],
+            nodethreshold: [
+                $("#graph-documents-nodes-min").spinner('value'),
+                $("#graph-documents-nodes-max").spinner('value')
+            ]
+        };
+        console.log(ngramGraphOptions);
+
         TinaServiceCallback.postCooc.success = function(){
             TinaService.postGraph(
                 corpora,
                 corporaAndPeriods[corpora],
                 whitelistpath,
+                outpath.val(),
+                ngramGraphOptions,
+                documentGraphOptions,
                 TinaServiceCallback.postGraph
             );
         };

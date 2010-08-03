@@ -260,8 +260,6 @@ function TinaServiceClass(url) {
     curl http://localhost:8888/cooccurrences -d dataset="test_data_set" -d whitelist="tests/data/pubmed_whitelist.csv" -d periods="1"
     */
     postCooccurrences: function(_dataset, _periods, _whitelistpath, _userstopwords, cb) {
-        //console.log("calling postCooccurrences("+_dataset+","+_periods+","+_whitelist+","+cb+")");
-
         this._POST("cooccurrences",
             // inpost params
             {
@@ -280,13 +278,17 @@ function TinaServiceClass(url) {
     /*
     curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
     */
-    postGraph: function(_dataset, _periods, _whitelistpath, cb) {
-        //console.log("calling postGraph("+_dataset+", "+cb+")");
+    postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, cb) {
+        console.log($.param( _ngramoptions ));
+        console.log(_ngramoptions);
         this._POST("graph",
             {
                 dataset: _dataset,
                 periods: _periods,
                 whitelistpath: _whitelistpath,
+                outpath: _outpath,
+                ngramgraphconfig: $.param( _ngramoptions ),
+                documentgraphconfig: $.param( _documentoptions )
             },
             {
                 error:"couldn't post graph"
@@ -326,8 +328,9 @@ function TinaServiceClass(url) {
      * SERVER_URL is a constant,
      * path is a parameter,
      */
-    _POST: function(path, params, defaultcb, _cb) {
-
+    _POST: function(path, params, defaultcb, _cb, traditional) {
+        if (traditional === undefined)
+            traditional = true;
         // setup default values, if defined
         var cb = {};
         for (key in defaultcb) { cb[key] = defaultcb[key]; }
@@ -345,12 +348,16 @@ function TinaServiceClass(url) {
             url: SERVER_URL+"/"+path,
             type: "POST",
             dataType: "json",
+            //data: $.parseJSON(params),
             data: params,
             beforeSend: cb.beforeSend,
             error: cb.error,
             success: cb.success,
             complete: cb.complete,
             cache: false,
+            traditional: traditional
+            /*processData: false,
+            contentType: "application/json"*/
         });
 
     },

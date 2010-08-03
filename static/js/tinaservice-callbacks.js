@@ -36,7 +36,7 @@
 
 }*/
 
-
+var ERROR_MSG = "error, please report the logs to bug tracker";
 
 /* Tinasoft Server callback */
 var SERVER_URL= "http://localhost:8888";
@@ -73,7 +73,7 @@ var SERVER_URL= "http://localhost:8888";
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#importFile').addClass("ui-state-error", 1);
-                $('#importFile').html( "error, please report the log file to bugtracker" );
+                $('#importFile').html( ERROR_MSG );
             },
             complete: function(XMLHttpRequest, textStatus) {
                 $('#importFile').removeClass("ui-state-disabled", 1);
@@ -97,7 +97,7 @@ var SERVER_URL= "http://localhost:8888";
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#indexFile').addClass("ui-state-error", 1);
-                $('#indexFile').html( "error, please report the log file to bugtracker" );
+                $('#indexFile').html( ERROR_MSG );
             },
             complete: function(XMLHttpRequest, textStatus) {
                 $('#indexFile').removeClass("ui-state-disabled", 1);
@@ -121,11 +121,12 @@ var SERVER_URL= "http://localhost:8888";
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#processCooc').addClass("ui-state-error", 1);
-                $('#processCooc').html( "error, please report the log file to bugtracker" );
+                $('#processCooc').html( ERROR_MSG );
             },
             complete: function(XMLHttpRequest, textStatus) {
-                $('#processCooc').removeClass("ui-state-disabled", 1);
-                $('#processCooc').html( "Launch" );
+                console.log("postCooc completed");
+                //$('#processCooc').removeClass("ui-state-disabled", 1);
+                //$('#processCooc').html( "Launch" );
             },
             beforeSend: function() {
                 $("#coocwhitelistpath").removeClass("ui-state-error", 1);
@@ -143,7 +144,7 @@ var SERVER_URL= "http://localhost:8888";
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#processCooc').addClass("ui-state-error", 1);
-                $('#processCooc').html( "error, please report the logs to bugtracker" );
+                $('#processCooc').html( ERROR_MSG );
             },
             complete: function(XMLHttpRequest, textStatus) {
                 $('#processCooc').removeClass("ui-state-disabled", 1);
@@ -153,7 +154,7 @@ var SERVER_URL= "http://localhost:8888";
             beforeSend: function() {
                 $('#processCooc').removeClass("ui-state-error", 1);
                 $('#processCooc').addClass("ui-state-disabled", 1);
-                $('#processCooc').html( "please wait during graph exportation" );
+                $('#processCooc').html( "please wait during graph production" );
                 // add progress state notification
             }
         },
@@ -163,7 +164,7 @@ var SERVER_URL= "http://localhost:8888";
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $('#exportWhitelist').addClass("ui-state-error", 1);
-                $('#exportWhitelist').html( "error, please report the logs to bugtracker" );
+                $('#exportWhitelist').html( ERROR_MSG );
             },
             complete: function(XMLHttpRequest, textStatus) {
                 $('#exportWhitelist').removeClass("ui-state-disabled", 1);
