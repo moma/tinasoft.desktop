@@ -81,8 +81,8 @@ var SERVER_URL= "http://localhost:8888";
                 displayDataTable( "data_table" );
             },
             beforeSend: function() {
-                $("#extractfilepath").removeClass("ui-state-error", 1);
-                $("#extractdatasetid").removeClass("ui-state-error", 1);
+                $("#importfilepath").removeClass("ui-state-error", 1);
+                $("#importdatasetid").removeClass("ui-state-error", 1);
                 $("#extractminoccs").removeClass("ui-state-error", 1);
                 $('#importFile').removeClass("ui-state-error", 1);
                 $('#importFile').addClass("ui-state-disabled", 1);

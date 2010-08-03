@@ -359,6 +359,9 @@ var initPytextminerUi = function() {
     $("#graph-ngrams-nodes-max").spinner();
     $("#graph-documents-nodes-min").spinner();
     $("#graph-documents-nodes-max").spinner();
+    $("#extractminoccs").spinner();
+    $(".ui-spinner-buttons").height(12);
+    $(".ui-spinner-button").height(6);
 };
 
 

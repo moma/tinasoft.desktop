@@ -28,12 +28,12 @@
     <!-- JQUERY UI -->
     <script type="text/javascript" src="js/jquery-ui/jquery-ui-1.8.min.js" language="javascript"></script>
     <!-- JQUERY UI PLUGINS -->
-    <script type="text/javascript" src="js/jquery-ui/jquery.ui.spinner/ui.spinner.min.js" language="javascript"></script>
+    <script type="text/javascript" src="js/jquery-ui/ui.spinner.min.js" language="javascript"></script>
     <!-- JQUERY UI -->
     <!-- <script type="text/javascript" src="js/firebug-lite.js" language="javascript"></script>-->
     <!-- JQUERY UI CSS -->
     <link type="text/css" rel="stylesheet" href="tinaweb/css/eggplant/jquery-ui-1.8.1.custom.css"/>
-    <link type="text/css" rel="stylesheet" href="js/jquery-ui/jquery.ui.spinner/ui.spinner.css"/>
+    <link type="text/css" rel="stylesheet" href="css/ui.spinner.css"/>
     <!-- UTILITIES -->
     <script type="text/javascript" src="js/cache.js"></script>
 
@@ -109,9 +109,9 @@
 
                             <th class="ui-widget-content"><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
                             </th>
-                            <th class="ui-widget-content">white list label<br/>(default: same as the data set)<input id="impotwhitelistlabel" type="text" size="12" name="white list label" value="" />
+                            <th class="ui-widget-content">white list label<br/>(default: same as the data set)<input id="impotwhitelistlabel" class="ui-widget-content" type="text" size="12" name="white list label" value="" />
                             </th>
-                            <th class="ui-widget-content">key-phrases minimum occurrence <input id="extractminoccs" type="text" size="4" name="minimum n-grams occurrences" value="1" />
+                            <th class="ui-widget-content">key-phrases minimum occurrence <input id="extractminoccs" class="ui-widget-content" type="number" name="minimum n-grams occurrences" value=1 min=0 step=1 />
                             </th>
                             <!--<th>extra stopwords file <input id="importuserstopwords" type="file" name="user stopwords file" value=""/>
                             </th>-->
@@ -166,27 +166,27 @@
                                     <option selected value='DocumentGraph.inverseLogOccNGrams'>1 / log(1 + Number of common key-phrases)</option>
                                 </select>
                             </th>
-                            <th class="ui-widget-content">pseudo-inclusion alpha <input type="number" id="graphalpha" maxlength="4" value="0.1" min="0.0" max="10" step="0.1d" />
+                            <th class="ui-widget-content">pseudo-inclusion alpha <input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d />
                             </th>
                             <th class="ui-widget-content">graph label <input id="graphlabel" type="text" name="graph label" value="" />
                             </th>
                         </tr>
                         <tr>
                             <th class="ui-widget-content">key-phrases edges' weight limits :
-                            <br/>min <input id="graph-ngrams-edges-min" type="number" maxlength="4" value="0.0" min="0" step="0.1d" />
-                            <br/>max (0 = no limit) <input id="graph-ngrams-edges-max"  type="number" maxlength="4" value="1.0" max="1.0" step="0.1d" />
+                            <br/>min <input id="graph-ngrams-edges-min" class="ui-widget-content" type="number" value=0.0 min=0.0  max=1.0 step=0.01 />
+                            <br/>max <input id="graph-ngrams-edges-max" class="ui-widget-content" type="number" value=1.0 min=0.0  max=1.0 step=0.01 />
                             </th>
                             <th class="ui-widget-content">documents edges' weight limits :
-                            <br/>min <input id="graph-documents-edges-min" type="number" maxlength="4" value="0.0" min="0.0" step="0.1d" />
-                            <br/>max (0 = no limit) <input id="graph-documents-edges-max"  type="number" maxlength="4" value="2.0" max="2.0" step="0.1d" />
+                            <br/>min <input id="graph-documents-edges-min" class="ui-widget-content" type="number" value=0.0 min=0.0  max=1.0 step=0.01 />
+                            <br/>max <input id="graph-documents-edges-max" class="ui-widget-content" type="number" value=1.0 min=0.0  max=1.0 step=0.01 />
                             </th>
                             <th class="ui-widget-content">key-phrases nodes' weight limits :
-                            <br/>min <input id="graph-ngrams-nodes-min" type="number" maxlength="10" value="0" min="0" step="1" />
-                            <br/>max (0 = no limit) <input id="graph-ngrams-nodes-max"  type="number" maxlength="10" value="0" min="0" step="1" />
+                            <br/>min <input id="graph-ngrams-nodes-min" class="ui-widget-content" type="number" value=0 min=0 step=1 />
+                            <br/>max (0 = no limit) <input id="graph-ngrams-nodes-max" class="ui-widget-content" type="number" value=0 min=0 step=1 />
                             </th>
                             <th class="ui-widget-content">documents nodes' weight limits :
-                            <br/>min <input id="graph-documents-nodes-min" type="number" maxlength="10" value="0" min="0" step="1" />
-                            <br/>max (0 = no limit) <input id="graph-documents-nodes-max"  type="number" maxlength="10" value="0" min="0" step="1" />
+                            <br/>min <input id="graph-documents-nodes-min" class="ui-widget-content" type="number" value=0 min=0 step=1 />
+                            <br/>max (0 = no limit) <input id="graph-documents-nodes-max" class="ui-widget-content" type="number" value=0 min=0 step=1 />
                             </th>
                         </tr>
                     </thead>
