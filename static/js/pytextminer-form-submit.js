@@ -139,7 +139,6 @@ $(function() {
                 $("#graph-documents-nodes-max").spinner('value')
             ]
         };
-        console.log(ngramGraphOptions);
 
         TinaServiceCallback.postCooc.success = function(){
             TinaService.postGraph(

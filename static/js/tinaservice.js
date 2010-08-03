@@ -279,8 +279,6 @@ function TinaServiceClass(url) {
     curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
     */
     postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, cb) {
-        console.log($.param( _ngramoptions ));
-        console.log(_ngramoptions);
         this._POST("graph",
             {
                 dataset: _dataset,
@@ -366,9 +364,9 @@ function TinaServiceClass(url) {
      */
     fileURL: function(absPath) {
         if ( /\\/.test(absPath) == true ) {
-            return "file:///"+absPath
+            return "file:///"+encodeURI(absPath);
         }
-        return "file://"+absPath
+        return "file://"+encodeURI(absPath);
     },
 
     /*
@@ -376,7 +374,7 @@ function TinaServiceClass(url) {
      */
     httpURL: function(relativePath) {
         var relativeURL = relativePath.split('user');
-        var partURL = relativeURL[1].replace(/\\/,"/");
+        var partURL = encodeURI(relativeURL[1].replace(/\\/,"/"));
         return SERVER_URL+"/user"+partURL;
     },
 
