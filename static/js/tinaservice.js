@@ -49,7 +49,7 @@ function TinaServiceClass(url) {
             {
                 path: _path,
                 dataset: _dataset,
-                whitelistlabel: _whitelistlabel,
+                whitelistlabel: this.protectPath(_whitelistlabel),
                 format:  _format,
                 overwrite:  _overwrite,
                 minoccs: _minoccs,
@@ -86,9 +86,9 @@ function TinaServiceClass(url) {
         //console.log(_periods);
         this._GET("whitelist",
             {
-                dataset: _dataset,
+                dataset: this.protectPath(_dataset),
                 periods: _periods,
-                whitelistlabel: _whitelistlabel,
+                whitelistlabel: this.protectPath(_whitelistlabel),
                 whitelistpath: _complementarywhitelist,
                 userstopwords: _userstopwords,
                 minoccs: _minoccs,
@@ -224,7 +224,7 @@ function TinaServiceClass(url) {
         this._POST("file",
             {
                 path: _path,
-                dataset: _dataset,
+                dataset: this.encodeURL(_dataset),
                 whitelistpath: _whitelistpath,
                 format: _format,
                 overwrite: _overwrite
@@ -244,8 +244,8 @@ function TinaServiceClass(url) {
         //console.log("calling postWhitelist("+_path+","+_whitelistlabel+","+cb+")");
         this._POST("whitelist",
             {
-              path: _path,
-              whitelistlabel: _whitelistlabel
+                path: _path,
+                whitelistlabel: _whitelistlabel
             },
             {
                 error:"couldn't postWhitelist"
@@ -282,7 +282,7 @@ function TinaServiceClass(url) {
                 dataset: _dataset,
                 periods: _periods,
                 whitelistpath: _whitelistpath,
-                outpath: _outpath,
+                outpath: this.protectPath(_outpath),
                 ngramgraphconfig: $.param( _ngramoptions ),
                 documentgraphconfig: $.param( _documentoptions )
             },
@@ -294,28 +294,16 @@ function TinaServiceClass(url) {
     },
 
     postDataset: function(_obj, cb) {
-        //console.log("calling dataset("+_obj+","+cb+")");
-        this._POST("dataset",
-            {
-                dataset: _obj
-            },
-            {
-                error:"couldn't postDataset"
-            },
-            cb
-        );
+        this._POST("dataset", { dataset: _obj }, { error:"couldn't postDataset" }, cb);
     },
 
     postCorpus: function(_dataset, _obj, cb) {
-        //console.log("calling postCorpus("+_dataset+", "+_obj+","+cb+")");
         this._POST("corpus", { dataset: _dataset, id: _obj }, {error:"couldn't postCorpus"}, cb);
     },
     postNGram: function(_dataset, _obj, cb) {
-        //console.log("calling postNGram("+_dataset+","+_obj+","+cb+")");
         this._POST("ngram", { dataset: _dataset, id: _obj }, {error:"couldn't postNGram"}, cb);
     },
     postDocument: function(_dataset, _obj, cb) {
-        //console.log("calling postDocument("+_dataset+", "+_obj+", "+cb+")");
         this._POST("document", { dataset: _dataset, id: _obj }, {error:"couldn't postDocument"}, cb);
     },
 
@@ -382,6 +370,10 @@ function TinaServiceClass(url) {
         .replace(/@/,"%40").replace(/\$/,"%24").replace(/&/,"%26")
         .replace(/=/,"%3D").replace(/:/,"%3A").replace(/,/,"%2C")
         .replace(/;/,"%3B").replace(/\?/,"%3F");
+    },
+
+    protectPath: function(label) {
+        return label.replace(/\\/,"").replace(/\//,"").replace(/\./,"");
     },
 
     };

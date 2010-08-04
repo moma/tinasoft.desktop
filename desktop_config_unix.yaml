@@ -35,6 +35,9 @@ datasets:
         delimiter: ','
         quotechar: '"'
         locale: 'en_US.UTF-8'
+    medline:
+        period_size: 4
+        locale: 'en_US.UTF-8'
     # extraction size
     ngramMin: 1
     ngramMax: 4
@@ -48,14 +51,14 @@ datamining:
     DocumentGraph:
         edgethreshold:
             - 0.0
-            - 0.2
+            - 'inf'
         nodethreshold:
             - 1
             - 'inf'
         proximity: 'DocumentGraph.inverseLogOccNGrams'
     NGramGraph:
         edgethreshold:
-            - 0.5
+            - 0.0
             - 1.0
         nodethreshold:
             - 1

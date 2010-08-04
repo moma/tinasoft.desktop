@@ -147,7 +147,7 @@ $(function() {
                 corpora,
                 corporaAndPeriods[corpora],
                 whitelistpath,
-                outpath.val().replace(/\\/,"").replace(/\//,"").replace(/\./,""),
+                outpath.val(),
                 ngramGraphOptions,
                 documentGraphOptions,
                 TinaServiceCallback.postGraph

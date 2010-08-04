@@ -101,7 +101,8 @@ function displayGraphColumn(corpora) {
 
 function displayWhitelistColumn(corpora) {
     var trid = corpora['id'] + "_tr";
-    var tr = $( "#" +trid );
+    var tr = $( "#" + trid );
+    alert(tr.html());
     // corpus list cell
     var olid = 'whitelist_' + trid
     tr.append("<td class='ui-widget-content'>"
@@ -111,13 +112,14 @@ function displayWhitelistColumn(corpora) {
     );
     var ol = $( "#" + olid  ).empty();
     TinaService.getWalkUserPath(
-        corpora.id,
+        corpora['id'],
         "whitelist",
         {
             success: function(list) {
                 for ( var i=0; i < list.length; i++ ) {
                     // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
+                    alert(parseFileLabel(path_comp[0]));
                     var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
                         + parseFileLabel(path_comp[0])
                         + "&#09;"
