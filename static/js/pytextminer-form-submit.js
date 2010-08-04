@@ -46,7 +46,7 @@ $(function() {
 
         //var minoccs = parseInt($("#extractminoccs").val());
         var minoccs = $("#extractminoccs").spinner('value');
-        alert(minoccs);
+
         if( ! IsNumeric(minoccs) ) {
             alert("minimum occurrences must be an integer");
             $("#extractminoccs").addClass("ui-state-error");
