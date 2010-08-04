@@ -34,18 +34,20 @@ cp -Rf TinasoftPytextminer/build/exe.linux-x86_64-2.6 $outpath/TinasoftPytextmin
 
 echo " - copying tinasoft desktop files to output..."
 sleep 2
-cp -R static $outpath
-cp -R examples $outpath
-cp README $outpath
-cp LICENSE $outpath
-cp GPL-LICENSE.txt $outpath
-cp desktop_config_unix.yaml $outpath
+cp -Rf static $outpath
+cp -Rf examples $outpath
+cp -f README $outpath
+cp -f LICENSE $outpath
+cp -f GNU-GPL.txt $outpath
+cp -f desktop_config_unix.yaml $outpath
 cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
-cp -Rf TinasoftPytextminer/README $outpath/TinasoftPytextminer
-cp -Rf TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
-cp -Rf TinasoftPytextminer/user_stopwords.csv $outpath/TinasoftPytextminer
-cp install/*.txt $outpath/TinasoftPytextminer
+cp -f TinasoftPytextminer/README $outpath/TinasoftPytextminer
+cp -f TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
+cp -f TinasoftPytextminer/GNU-GPL.txt $outpath/TinasoftPytextminer
+cp -f TinasoftPytextminer/user_stopwords.csv $outpath/TinasoftPytextminer
+cp -f install/*.txt $outpath/TinasoftPytextminer
+
 
 echo " - cleaning dist and creating the release compressed archive..."
 sleep 2
@@ -53,6 +55,7 @@ find $outpath -name "*swp" -delete
 find $outpath -name "*~" -delete
 find $outpath -name "*swo" -delete
 find $outpath/TinasoftPytextminer/shared/nltk_data -name "*.zip" -delete
+find $outpath/TinasoftPytextminer/source_files -name "*.txt" -delete
 cd dist
 zip -q -r $outfile.zip $outfile
 cd ..

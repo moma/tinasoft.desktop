@@ -28,11 +28,12 @@ if [ -e $outfile.zip ]
     rm -rf $outfile.zip
 fi
 if [ -e $outfile.dmg ]
-  then  
+  then
     rm -rf $outfile.dmg
 fi
 
 echo " - freezing $pytextminer.."
+sleep 2
 cd $pytextminer
 cp httpserver.py $name.py
 python freeze_mac.py py2app
@@ -40,6 +41,7 @@ rm $name.py
 cd ..
 
 echo " - copying tinasoft.desktop files to $outpath.."
+sleep 2
 cp -r static $outpathres/static
 cp -r examples $outpathres/examples
 cp README $outpathres/README
@@ -55,7 +57,9 @@ mv $outpathres/source_files $outpathres/$pytextminer
 cp desktop_config_unix.yaml $outpathres
 cp install/*.txt $outpathres
 cp TinasoftPytextminer/user_stopwords.csv $outpathres/$pytextminer
+
 echo " - creating release archive.."
+sleep 2
 
 #find $outpath -name "*.swp" -delete
 #find $outpath -name "*~" -delete
