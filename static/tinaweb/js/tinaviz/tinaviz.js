@@ -17,10 +17,6 @@ function Tinaviz(args) {
         engine: 'software',
         branding: true,
         pause: false,
-        
-        // we define the functions
-        getNeighbourhood: applet.getNeighbourhood,
-        
         width: 0,
         height: 0
     };
@@ -500,7 +496,7 @@ function Tinaviz(args) {
          */
         this.getNeighbourhood = function(view,id) {
             if (applet == null) return;
-            return $.parseJSON( opts.getNeighbourhood(view,id) );
+            return $.parseJSON( applet.getNeighbourhood(view,id) );
         }
 
 
@@ -589,6 +585,9 @@ function Tinaviz(args) {
                 this.viewMeso(decodeJSON(id), category);
                 break;
             }
+            this.current.set("layout/iter", 0);
+            this.current.commitProperties();
+            this.autoCentering();
             /*if (view =="macro") {
             }
             if (view == "meso") {
@@ -606,8 +605,7 @@ function Tinaviz(args) {
             data = $.parseJSON(attr);
             this.infodiv.reset();
             this.infodiv.update(view, data);
-
-            // left == selecteghbourd a node
+            // left == selected a node
             if ( mouse == "left" ) {
                 //this.nodeLeftClicked(view,data);
             }
