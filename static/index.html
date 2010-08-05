@@ -133,7 +133,7 @@
                             </th>
                             <th class="ui-widget-content">file type <select id="indexfiletype" name="index filetype">
                                     <option selected value='tinacsv'>tinasoft csv</option>
-                                    <!--<option value ='medline'>pubmed medline abstracts</option>-->
+                                    <option value ='medline'>pubmed.gov medline file</option>
                                 </select>
                             </th>
                             <th class="ui-widget-content">data set name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
@@ -280,7 +280,7 @@
                         <div class="yui-gc">
                             <!-- LEFT MAIN COLUMN-->
                             <div id="appletdiv" class="yui-u first">
-                                <div id="appletInfo" class="appletInfo">Please wait while loading..</div>
+                                <div id="appletInfo" class="appletInfo"></div>
                                 <div id="vizdiv"></div>
                             </div>
                             <!-- RIGHT MAIN COLUMN-->
@@ -288,31 +288,19 @@
                                 <div id="infodiv" class="yui-u">
                                     <h3><a href="#">Current selection <button id="toggle-unselect"></button></a></h3>
                                     <div id="node_details">
-                                    <!--
-                                        <div id="node_unselect" class="fg-buttonset">
-                                                <a href="#"
-                                                    id="toggle-unselect"
-                                                    class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                                                   title="unselect"><span class="ui-icon ui-icon-close"></span></a>
-                                        </div>-->
-                                        <!--<div style="clear:both;"></div>-->
-
-                    <!-- Modif David inversion des accordéon + ajout-->
                                         <div id="node_label" class="ui-widget-header ui-corner-all"></div>
                                         <div id="node_neighbourhood" class="ui-widget-content ui-corner-all"></div>
                                         <div id="node_contents" class="ui-widget-content ui-corner-all">  </div>
                                     </div>  <!-- /accordion 1 -->
-                                     <h3><a href="#">Global Web Searches</a></h3>
-                  <div>
-                  <div id="resources">
-
-                  </div>
-                  <div id="node_neighbourhoodForSearch" class="ui-widget-content ui-corner-all"></div>
-                  </div> <!-- /accordion 2 -->
+                                    <h3><a href="#">Global Web Searches</a></h3>
+                                    <div>
+                                    <div id="resources">
+                                    </div>
+                                    <div id="node_neighbourhoodForSearch" class="ui-widget-content ui-corner-all"></div>
+                                    </div> <!-- /accordion 2 -->
                                     <h3><a href="#">All nodes</a></h3>
                                     <div>
                                         <div id="node_list">
-
                                             <table id="node_table">
                                             <thead>
                                             <tr>
