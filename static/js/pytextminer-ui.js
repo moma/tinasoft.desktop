@@ -101,7 +101,8 @@ function displayGraphColumn(corpora) {
 
 function displayWhitelistColumn(corpora) {
     var trid = corpora['id'] + "_tr";
-    var tr = $( "#" +trid );
+    var tr = $( "#" + trid );
+    alert(tr.html());
     // corpus list cell
     var olid = 'whitelist_' + trid
     tr.append("<td class='ui-widget-content'>"
@@ -111,13 +112,14 @@ function displayWhitelistColumn(corpora) {
     );
     var ol = $( "#" + olid  ).empty();
     TinaService.getWalkUserPath(
-        corpora.id,
+        corpora['id'],
         "whitelist",
         {
             success: function(list) {
                 for ( var i=0; i < list.length; i++ ) {
                     // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
+                    alert(parseFileLabel(path_comp[0]));
                     var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
                         + parseFileLabel(path_comp[0])
                         + "&#09;"
@@ -346,9 +348,22 @@ var initPytextminerUi = function() {
     /* Init every upload file handler */
     /*var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");
     $("#importfilepath").get(0).addEventListener( "change", extract_input_upload.handleDrop, false );*/
+
     loadSourceFiles("#importfilepath");
     loadSourceFiles("#indexfilepath");
-    //console.log(extract_input_upload.handleDrop);
+
+    $("#graphalpha").spinner();
+    $("#graph-ngrams-edges-min").spinner();
+    $("#graph-ngrams-edges-max").spinner();
+    $("#graph-documents-edges-min").spinner();
+    $("#graph-documents-edges-max").spinner();
+    $("#graph-ngrams-nodes-min").spinner();
+    $("#graph-ngrams-nodes-max").spinner();
+    $("#graph-documents-nodes-min").spinner();
+    $("#graph-documents-nodes-max").spinner();
+    $("#extractminoccs").spinner();
+    $(".ui-spinner-buttons").height(12);
+    $(".ui-spinner-button").height(6);
 };
 
 

@@ -13,8 +13,6 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-
-
 jQuery.ajaxSettings.traditional = true;
 
 function TinaServiceClass(url) {
@@ -51,7 +49,7 @@ function TinaServiceClass(url) {
             {
                 path: _path,
                 dataset: _dataset,
-                whitelistlabel: _whitelistlabel,
+                whitelistlabel: this.protectPath(_whitelistlabel),
                 format:  _format,
                 overwrite:  _overwrite,
                 minoccs: _minoccs,
@@ -88,9 +86,9 @@ function TinaServiceClass(url) {
         //console.log(_periods);
         this._GET("whitelist",
             {
-                dataset: _dataset,
+                dataset: this.protectPath(_dataset),
                 periods: _periods,
-                whitelistlabel: _whitelistlabel,
+                whitelistlabel: this.protectPath(_whitelistlabel),
                 whitelistpath: _complementarywhitelist,
                 userstopwords: _userstopwords,
                 minoccs: _minoccs,
@@ -226,7 +224,7 @@ function TinaServiceClass(url) {
         this._POST("file",
             {
                 path: _path,
-                dataset: _dataset,
+                dataset: this.encodeURL(_dataset),
                 whitelistpath: _whitelistpath,
                 format: _format,
                 overwrite: _overwrite
@@ -246,8 +244,8 @@ function TinaServiceClass(url) {
         //console.log("calling postWhitelist("+_path+","+_whitelistlabel+","+cb+")");
         this._POST("whitelist",
             {
-              path: _path,
-              whitelistlabel: _whitelistlabel
+                path: _path,
+                whitelistlabel: _whitelistlabel
             },
             {
                 error:"couldn't postWhitelist"
@@ -260,8 +258,6 @@ function TinaServiceClass(url) {
     curl http://localhost:8888/cooccurrences -d dataset="test_data_set" -d whitelist="tests/data/pubmed_whitelist.csv" -d periods="1"
     */
     postCooccurrences: function(_dataset, _periods, _whitelistpath, _userstopwords, cb) {
-        //console.log("calling postCooccurrences("+_dataset+","+_periods+","+_whitelist+","+cb+")");
-
         this._POST("cooccurrences",
             // inpost params
             {
@@ -280,13 +276,15 @@ function TinaServiceClass(url) {
     /*
     curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
     */
-    postGraph: function(_dataset, _periods, _whitelistpath, cb) {
-        //console.log("calling postGraph("+_dataset+", "+cb+")");
+    postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, cb) {
         this._POST("graph",
             {
                 dataset: _dataset,
                 periods: _periods,
                 whitelistpath: _whitelistpath,
+                outpath: this.protectPath(_outpath),
+                ngramgraphconfig: $.param( _ngramoptions ),
+                documentgraphconfig: $.param( _documentoptions )
             },
             {
                 error:"couldn't post graph"
@@ -296,28 +294,16 @@ function TinaServiceClass(url) {
     },
 
     postDataset: function(_obj, cb) {
-        //console.log("calling dataset("+_obj+","+cb+")");
-        this._POST("dataset",
-            {
-                dataset: _obj
-            },
-            {
-                error:"couldn't postDataset"
-            },
-            cb
-        );
+        this._POST("dataset", { dataset: _obj }, { error:"couldn't postDataset" }, cb);
     },
 
     postCorpus: function(_dataset, _obj, cb) {
-        //console.log("calling postCorpus("+_dataset+", "+_obj+","+cb+")");
         this._POST("corpus", { dataset: _dataset, id: _obj }, {error:"couldn't postCorpus"}, cb);
     },
     postNGram: function(_dataset, _obj, cb) {
-        //console.log("calling postNGram("+_dataset+","+_obj+","+cb+")");
         this._POST("ngram", { dataset: _dataset, id: _obj }, {error:"couldn't postNGram"}, cb);
     },
     postDocument: function(_dataset, _obj, cb) {
-        //console.log("calling postDocument("+_dataset+", "+_obj+", "+cb+")");
         this._POST("document", { dataset: _dataset, id: _obj }, {error:"couldn't postDocument"}, cb);
     },
 
@@ -326,8 +312,9 @@ function TinaServiceClass(url) {
      * SERVER_URL is a constant,
      * path is a parameter,
      */
-    _POST: function(path, params, defaultcb, _cb) {
-
+    _POST: function(path, params, defaultcb, _cb, traditional) {
+        if (traditional === undefined)
+            traditional = true;
         // setup default values, if defined
         var cb = {};
         for (key in defaultcb) { cb[key] = defaultcb[key]; }
@@ -345,23 +332,28 @@ function TinaServiceClass(url) {
             url: SERVER_URL+"/"+path,
             type: "POST",
             dataType: "json",
+            //data: $.parseJSON(params),
             data: params,
             beforeSend: cb.beforeSend,
             error: cb.error,
             success: cb.success,
             complete: cb.complete,
             cache: false,
+            traditional: traditional
+            /*processData: false,
+            contentType: "application/json"*/
         });
 
     },
+
     /*
      * transforms an absolute path ("user/etc/") to an file:// url, compatible with windows paths
      */
     fileURL: function(absPath) {
         if ( /\\/.test(absPath) == true ) {
-            return "file:///"+absPath
+            return "file:///"+this.encodeURL(absPath);
         }
-        return "file://"+absPath
+        return "file://"+this.encodeURL(absPath);
     },
 
     /*
@@ -369,10 +361,20 @@ function TinaServiceClass(url) {
      */
     httpURL: function(relativePath) {
         var relativeURL = relativePath.split('user');
-        var partURL = relativeURL[1].replace(/\\/,"/");
+        var partURL = this.encodeURL(relativeURL[1].replace(/\\/,"/"));
         return SERVER_URL+"/user"+partURL;
     },
 
+    encodeURL: function(url) {
+        return encodeURI(url).replace(/\+/,"%2B").replace(/#/,"%23")
+        .replace(/@/,"%40").replace(/\$/,"%24").replace(/&/,"%26")
+        .replace(/=/,"%3D").replace(/:/,"%3A").replace(/,/,"%2C")
+        .replace(/;/,"%3B").replace(/\?/,"%3F");
+    },
+
+    protectPath: function(label) {
+        return label.replace(/\\/,"").replace(/\//,"").replace(/\./,"");
+    },
 
     };
 

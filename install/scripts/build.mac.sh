@@ -44,14 +44,17 @@ cp -r static $outpathres/static
 cp -r examples $outpathres/examples
 cp README $outpathres/README
 cp LICENCE $outpathres/LICENCE
+cp GNU-GPL.txt $outpathres
 if [ ! -e $outpathres/$pytextminer ]
   then
     mkdir $outpathres/$pytextminer
 fi
 mv $outpathres/shared $outpathres/$pytextminer
 mv $outpathres/source_files $outpathres/$pytextminer
+
 cp desktop_config_unix.yaml $outpathres
 cp install/*.txt $outpathres
+cp TinasoftPytextminer/user_stopwords.csv $outpathres/$pytextminer
 echo " - creating release archive.."
 
 #find $outpath -name "*.swp" -delete
