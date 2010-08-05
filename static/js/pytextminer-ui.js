@@ -54,7 +54,6 @@ function editUserFile(path) {
 }
 function loadGraph(data) {
     var url = TinaService.httpURL(data);
-    //alert("will open graph sending this url to tinaviz : "+ url);
     tinaviz.open({
         view: "macro",
         clear: true, // clean everything before adding the graph
@@ -102,7 +101,6 @@ function displayGraphColumn(corpora) {
 function displayWhitelistColumn(corpora) {
     var trid = corpora['id'] + "_tr";
     var tr = $( "#" + trid );
-    alert(tr.html());
     // corpus list cell
     var olid = 'whitelist_' + trid
     tr.append("<td class='ui-widget-content'>"
@@ -119,7 +117,6 @@ function displayWhitelistColumn(corpora) {
                 for ( var i=0; i < list.length; i++ ) {
                     // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
-                    alert(parseFileLabel(path_comp[0]));
                     var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
                         + parseFileLabel(path_comp[0])
                         + "&#09;"
@@ -199,7 +196,6 @@ function selectableCorpusInit( ol, corpora ) {
                 corporaAndPeriods[corpora.id].push(( selected_li.html() ));
             });
             Cache.setValue( "last_selected_periods", corporaAndPeriods );
-            //console.log ( Cache.getValue( "last_selected_periods", "", 1 ) );
         },
     });
 }
@@ -207,12 +203,11 @@ function selectableCorpusInit( ol, corpora ) {
 function displayDatasetRow(list) {
     var tbody = $("#data_table > table > tbody");
     for ( var i=0; i<list.length; i++ ) {
-        // populates each row
+        // populates and attach table rows
         var dataset_id = list[i];
         var trid = dataset_id + "_tr";
         var tr = $("<tr id='"+dataset_id+"_tr'></tr>")
-            //.addClass("ui-widget-content")
-            .append( $("<td class='ui-widget-content'></td>").html(dataset_id) )
+            .append( $("<td class='ui-widget-content'></td>").text(dataset_id).html() )
         ;
         tbody.append(tr);
         TinaService.getDataset(dataset_id, {

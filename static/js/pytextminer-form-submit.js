@@ -206,7 +206,7 @@ $(function() {
         var whitelistlabel = $("#whitelistlabel");
         var minoccs = parseInt($("#exportminoccs").val());
         if( IsNumeric(minoccs) === false ) {
-            alert("minimum occurrences parameter must be an integer");
+            alert("minimum occurrence must be a positive integer");
             $("#extractminoccs").addClass("ui-state-error");
             return false;
         }

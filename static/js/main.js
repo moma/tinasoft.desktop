@@ -29,7 +29,7 @@ $(document).ready(function() {
         height: 100
     });
 
-   $('#appletInfo').effect('pulsate', {}, 'fast');
+   //$('#appletInfo').effect('pulsate', {}, 'fast');
 
     $(window).bind('resize', function() {
         var size = resize();
@@ -90,22 +90,25 @@ $(document).ready(function() {
         tinaviz.getNodes( "macro", "Document" );
 
         tinaviz.open({
+            before: function() {
+                $('#appletInfo').show();
+                $('#appletInfo').html("please wait while loading the graph");
+                $('#appletInfo').effect('pulsate', {}, 'fast');
+                tinaviz.infodiv.reset();
+            },
             success: function() {
                 // init the node list with ngrams
                 tinaviz.updateNodes( defaultView, "NGram" );
-                alert("updated ngram node list");
-                console.log( tinaviz.infodiv.data );
                 // cache the document list
                 tinaviz.getNodes(defaultView, "Document" );
-
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
-
                 $("#appletInfo").hide();
-           },
-           error: function(msg) {
-             $("#appletInfo").html("Error, couldn't load graph: "+msg);
-           }
+            },
+            error: function(msg) {
+                $("#appletInfo").html("error loading graph: "+msg);
+            },
+            cache: false
         });
 
         tinaviz.event({
@@ -148,8 +151,6 @@ $(document).ready(function() {
                 $("#sliderEdgeWeight").slider( "option", "disabled", disable );
             }
         });
-        //infodiv.display_current_category();
-        //infodiv.display_current_view();
 
         var size = resize();
         tinaviz.size(size.w, size.h);

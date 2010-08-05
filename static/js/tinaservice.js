@@ -156,7 +156,7 @@ function TinaServiceClass(url) {
         for (key in defaultcb) { cb[key] = defaultcb[key]; }
         if ("error" in defaultcb) {
             cb.error = function(XMLHttpRequest, textStatus, errorThrown) {
-                // alert("default error cb: "+defaultcb["error"]);
+                alert("default error cb: "+defaultcb["error"]);
                 console.log(XMLHttpRequest, textStatus, errorThrown);
             };
         }
