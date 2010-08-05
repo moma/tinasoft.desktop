@@ -24,6 +24,10 @@
  */
 $(function() {
 
+    var safeString = function(unsafe) {
+        return unsafe.replace(/[^\w]/g,"");
+    };
+
     var submitImportfile = function(event) {
         var corpora = $("#importdatasetid");
         if ( corpora.val() == '' ) {
@@ -55,8 +59,8 @@ $(function() {
 
         TinaService.getFile(
             path.val(),
-            corpora.val(),
-            whitelistlabel.val(),
+            safeString(corpora.val()),
+            safeString(whitelistlabel.val()),
             filetype.val(),
             overwrite,
             minoccs,
@@ -90,7 +94,7 @@ $(function() {
         var overwrite = 'False';
         TinaService.postFile(
             path.val(),
-            corpora.val(),
+            safeString(corpora.val()),
             whitelistpath,
             filetype.val(),
             overwrite,
@@ -147,7 +151,7 @@ $(function() {
                 corpora,
                 corporaAndPeriods[corpora],
                 whitelistpath,
-                outpath.val(),
+                safeString(outpath.val()),
                 ngramGraphOptions,
                 documentGraphOptions,
                 TinaServiceCallback.postGraph
