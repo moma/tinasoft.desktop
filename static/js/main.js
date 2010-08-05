@@ -19,11 +19,9 @@ $(document).ready(function() {
 
     $("#title").html("<h3>Tinasoft Desktop</h3>");
 
-    var ressourcesPrefix = "tinaweb/";
-
     tinaviz = new Tinaviz({
         tag: $("#vizdiv"),
-        path: ressourcesPrefix,
+        path: "tinaweb/",
         branding: false,
         width: 100,
         height: 100
@@ -71,7 +69,7 @@ $(document).ready(function() {
         macro.filter("NodeFunction", "radiusByWeight");
         macro.filter("Output", "output");
 
-        meso.filter("SubGraphCopyStandalone", "category");
+        meso.filter("Category", "category");
         meso.set("category/source", "macro");
         meso.set("category/category", "Document");
         meso.set("category/mode", "keep");
@@ -97,6 +95,7 @@ $(document).ready(function() {
                 tinaviz.infodiv.reset();
             },
             success: function() {
+
                 // init the node list with ngrams
                 tinaviz.updateNodes( defaultView, "NGram" );
                 // cache the document list
@@ -130,6 +129,9 @@ $(document).ready(function() {
 
                 var disable = false;
                 if (view.name == "meso") {
+
+                    // send asynchronously a new graph to the view
+
                     // TODO check selection
                     // if selection has edges with edge of all the same weight, we disable the filter
                     var weight = null;
