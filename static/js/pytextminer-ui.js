@@ -17,7 +17,10 @@
  * Functions displaying dynamic content
  *****************************************************************************/
 
-/* Duplicate documents found after data set import */
+/*
+ * Displays all duplicate documents
+ * returned after data set indexation
+ */
 function displayDuplicateDocs(data) {
     var div = $( "#duplicate_docs" )
     if (data.length == 0) {
@@ -27,7 +30,12 @@ function displayDuplicateDocs(data) {
         div.empty().show();
         div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
         for ( var i=0; i < data.length; i++ ) {
-            div.append( "<p class='ui-state-active'>"+data[i]['id']+"<br/>"+data[i]['label']+"</p>" );
+            div.append( "<p class='ui-state-active'>"
+                +htmlEncode(data[i]['id'])
+                +"<br/>"
+                +htmlEncode(data[i]['label'])
+                +"</p>"
+            );
         }
     }
 }
@@ -38,9 +46,12 @@ function displayDuplicateDocs(data) {
  * $DATE-$LABEL-$TYPE.$EXT
  */
 function parseFileLabel(filename) {
-    return filename.split("-")[1];
+    return htmlEncode(filename.split("-")[1]);
 }
 
+/*
+ * Common function sending signal to the server that externally opens a file
+ */
 function editUserFile(path) {
     var url = TinaService.fileURL(path);
     alert("Opening the file, please follow these instructions :\n"
@@ -52,6 +63,10 @@ function editUserFile(path) {
     TinaService.getOpenUserFile(url);
     /*window.open( url );*/
 }
+
+/*
+ * Commen function to ask Tinaviz to open a graph
+ */
 function loadGraph(data) {
     var url = TinaService.httpURL(data);
     tinaviz.open({
@@ -62,7 +77,7 @@ function loadGraph(data) {
 }
 /*
  * displays the list of existing graphs
- * for a given <TR> and a dataset id
+ * for a given <TR> and a dataset id (using the same TR id)
  */
 function displayGraphColumn(corpora) {
     //console.log("displayListGraph : row = " + trid + " , dataset = "+ corpora);
@@ -98,6 +113,9 @@ function displayGraphColumn(corpora) {
     );
 }
 
+/*
+ * Adds the whitelist files list to the dataset row (using the same TR id)
+ */
 function displayWhitelistColumn(corpora) {
     var trid = corpora['id'] + "_tr";
     var tr = $( "#" + trid );
@@ -117,6 +135,7 @@ function displayWhitelistColumn(corpora) {
                 for ( var i=0; i < list.length; i++ ) {
                     // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
+                    console.log(path_comp);
                     var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
                         + parseFileLabel(path_comp[0])
                         + "&#09;"
@@ -124,7 +143,7 @@ function displayWhitelistColumn(corpora) {
                     ).draggable({
                         helper: "clone",
                     })
-                    .data("whitelistpath", list[i])
+                    .data("whitelistpath", list[i]);
                     var edit_link = $("<a href='"+TinaService.fileURL(list[i])+"' title='click to open in an external software'></a>")
                     .button({
                         text: false,
@@ -151,7 +170,7 @@ function displayWhitelistColumn(corpora) {
  */
 function displayPeriodColumn(corpora) {
     var trid = corpora['id'] + "_tr";
-    var tr = $( "#" +trid );
+    var tr = $( "#" + trid );
     // corpus list cell
     var olid = 'selectable_corpus_' + trid
     tr.append("<td class='ui-widget-content'>"
@@ -206,8 +225,8 @@ function displayDatasetRow(list) {
         // populates and attach table rows
         var dataset_id = list[i];
         var trid = dataset_id + "_tr";
-        var tr = $("<tr id='"+dataset_id+"_tr'></tr>")
-            .append( $("<td class='ui-widget-content'></td>").text(dataset_id).html() )
+        var tr = $("<tr id='"+trid+"'></tr>")
+            .append( $("<td class='ui-widget-content'></td>").html(htmlEncode(dataset_id)) )
         ;
         tbody.append(tr);
         TinaService.getDataset(dataset_id, {
@@ -246,7 +265,7 @@ function loadSourceFiles(select_id) {
         success: function(list) {
             select.empty().append($("<option value=''></option>"));
             for ( var i=0; i < list.length; i++ ) {
-                select.append($("<option value='"+list[i]+"'>"+list[i]+"</option>"))
+                select.append($("<option value='"+list[i]+"'>"+htmlEncode(list[i])+"</option>"))
             }
         }
     });
@@ -291,7 +310,7 @@ var initPytextminerUi = function() {
     $("#processcooc_form").hide();
     $("#toggle_processcooc_form").button({
         icons: {primary:'ui-icon-plus'},
-        text: false,
+        text: false
     })
     .click(function(event) {
         $(".fold_form:visible:not(#processcooc_form)").hide("fold");
