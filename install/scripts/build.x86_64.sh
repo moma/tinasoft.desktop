@@ -56,7 +56,9 @@ find $outpath -name "*~" -delete
 find $outpath -name "*swo" -delete
 find $outpath/TinasoftPytextminer/shared/nltk_data -name "*.zip" -delete
 find $outpath/TinasoftPytextminer/source_files -name "*.txt" -delete
+
 cd dist
-zip -q -r $outfile.zip $outfile
+tar -cjf $outfile.tar.bz2 $outfile
 cd ..
-echo " - created the archive : dist/$outfile.zip"
+mv dist/$outfile.tar.bz2 .
+echo " - created the archive : $outfile.tar.bz2"
