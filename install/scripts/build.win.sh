@@ -36,7 +36,7 @@ cp -Rf examples $outpath
 cp -f README $outpath
 cp -f LICENSE $outpath
 cp -f GNU-GPL.txt $outpath
-cp -f desktop_config_unix.yaml $outpath
+cp -f desktop_config_win.yaml $outpath
 cp -Rf TinasoftPytextminer/shared $outpath/TinasoftPytextminer
 cp -Rf TinasoftPytextminer/source_files $outpath/TinasoftPytextminer
 cp -f TinasoftPytextminer/README $outpath/TinasoftPytextminer
