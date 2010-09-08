@@ -135,7 +135,6 @@ function displayWhitelistColumn(corpora) {
                 for ( var i=0; i < list.length; i++ ) {
                     // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
-                    console.log(path_comp);
                     var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
                         + parseFileLabel(path_comp[0])
                         + "&#09;"

@@ -361,19 +361,19 @@ function TinaServiceClass(url) {
      */
     httpURL: function(relativePath) {
         var relativeURL = relativePath.split('user');
-        var partURL = this.encodeURL(relativeURL[1].replace(/\\/,"/"));
+        var partURL = this.encodeURL(relativeURL[1].replace(/\\/g,"/").replace(/\%5C/g,"/"));
         return SERVER_URL+"/user"+partURL;
     },
 
     encodeURL: function(url) {
-        return encodeURI(url).replace(/\+/,"%2B").replace(/#/,"%23")
-        .replace(/@/,"%40").replace(/\$/,"%24").replace(/&/,"%26")
-        .replace(/=/,"%3D").replace(/:/,"%3A").replace(/,/,"%2C")
-        .replace(/;/,"%3B").replace(/\?/,"%3F");
+        return encodeURI(url).replace(/\+/g,"%2B").replace(/#/g,"%23")
+        .replace(/@/g,"%40").replace(/\$/g,"%24").replace(/&/g,"%26")
+        .replace(/=/g,"%3D").replace(/:/g,"%3A").replace(/,/g,"%2C")
+        .replace(/;/g,"%3B").replace(/\?/g,"%3F");
     },
 
     protectPath: function(label) {
-        return label.replace(/\\/,"").replace(/\//,"").replace(/\./,"");
+        return label.replace(/\\/g,"").replace(/\//g,"").replace(/\./g,"");
     },
 
     };
