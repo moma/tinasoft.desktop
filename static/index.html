@@ -126,9 +126,6 @@
                             <th class="ui-widget-header">Indexation</th>
                         </tr>
                         <tr>
-                            <th id="index_whitelist" class="ui-widget-content whitelistdroppable">
-                            <!--<input id="indexwhitelistpath" type="file" name="index whitelist path" value='' />-->
-                            </th>
                             <th class="ui-widget-content">source file <select id="indexfilepath"><option value=""></option></select>
                             </th>
                             <th class="ui-widget-content">file type <select id="indexfiletype" name="index filetype">
@@ -138,11 +135,13 @@
                             </th>
                             <th class="ui-widget-content">data set name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
                             </th>
+                            <th id="index_whitelist" class="ui-widget-content whitelistdroppable">
+                            </th>
                             <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
 
                             <th class="ui-widget-content"><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
                             </th>
-                            <th class="ui-widget-content"><div id="duplicate_docs_toggle">duplicated documents</div></th>
+                            <th class="ui-widget-content"><div id="duplicate_docs_toggle">display duplicated documents</div></th>
                         </tr>
                     </thead>
                 </table>
@@ -155,20 +154,20 @@
                             <th class="ui-widget-header">Create a graph</th>
                         </tr>
                         <tr>
-                            <th id="graph_whitelist" class="ui-widget-content whitelistdroppable"></th>
                             <th id="graph_periods" class="ui-widget-content">select periods from the above table<br/>(ctrl key for multiple selection)</th>
+                            <th id="graph_whitelist" class="ui-widget-content whitelistdroppable"></th>
                             <th class="ui-widget-content"><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
-                            <th class="ui-widget-content">key-phrases edges type <select id="ngrams-graph-type" name="ngrams graph type">
+                            <th class="ui-widget-content">graph label <input class="ui-widget-content"  id="graphlabel" type="text" name="graph label" value="" />
+                            </th>
+                            <th class="ui-widget-content">key-phrases edges type <select id="ngrams-graph-type" name="ngrams graph type" class="ui-widget-content" >
                                     <option selected value='NGramGraph.pseudoInclusionProx'>pseudo-inclusion</option>
                                 </select>
                             </th>
-                            <th class="ui-widget-content">documents edges type <select id="documents-graph-type" name="document graph type">
-                                    <option selected value='DocumentGraph.inverseLogOccNGrams'>1 / log(1 + Number of common key-phrases)</option>
+                            <th class="ui-widget-content">documents edges type <select id="documents-graph-type" name="document graph type" class="ui-widget-content" >
+                                    <option selected value='DocumentGraph.logJacquard'>log jacquard normalized</option>
                                 </select>
                             </th>
-                            <th class="ui-widget-content">pseudo-inclusion alpha <input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d />
-                            </th>
-                            <th class="ui-widget-content">graph label <input id="graphlabel" type="text" name="graph label" value="" />
+                            <th class="ui-widget-content">pseudo-inclusion alpha <input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d class="ui-widget-content" />
                             </th>
                         </tr>
                         <tr>
