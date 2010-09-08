@@ -60,7 +60,7 @@ function editUserFile(path) {
     +"- we recommend using OpenOffice.org Calc, or any other spreadsheet editor than can handle CSV file without altering encoding and formatting (default utf-8, comma separated values, double-quoted text cells)\n"
     +"- if nothing happens (e.g. blowser security), please copy and paste this URL in your address bar : "+ url
     );
-    TinaService.getOpenUserFile(url);
+    TinaService.getOpenUserFile(encodeURIComponent(url));
     /*window.open( url );*/
 }
 
@@ -143,7 +143,7 @@ function displayWhitelistColumn(corpora) {
                         helper: "clone",
                     })
                     .data("whitelistpath", list[i]);
-                    var edit_link = $("<a href='"+TinaService.fileURL(list[i])+"' title='click to open in an external software'></a>")
+                    var edit_link = $("<a href='#' title='click to open in an external software'></a>")
                     .button({
                         text: false,
                         icons: {
