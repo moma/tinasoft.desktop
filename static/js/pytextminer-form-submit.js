@@ -108,11 +108,11 @@ $(function() {
 
     var submitprocessCoocGraph = function(event) {
         var whitelistpath = $("#graph_whitelist").data("whitelistpath");
-        if ( whitelistpath == '' ||  whitelistpath === undefined ) {
+        /*if ( whitelistpath == '' ||  whitelistpath === undefined ) {
             $("#graph_whitelist").addClass('ui-state-error');
             alert("please select a white list");
             return false;
-        }
+        }*/
         var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
         if( Object.size(corporaAndPeriods) == 0) {
             $("#graph_periods").addClass('ui-state-error');
@@ -121,7 +121,7 @@ $(function() {
         }
         // UNUSED
         var userfilterspath  = $("#userstopwordsfile_graph");
-        var outpath = $("#graphlabel");
+        var label = $("#graphlabel");
         var ngramGraphOptions = {
             alpha: $("#graphalpha").spinner('value'),
             proximity: $("#ngrams-graph-type").val(),
@@ -151,7 +151,7 @@ $(function() {
                 corpora,
                 corporaAndPeriods[corpora],
                 whitelistpath,
-                safeString(outpath.val()),
+                safeString(label.val()),
                 ngramGraphOptions,
                 documentGraphOptions,
                 TinaServiceCallback.postGraph
@@ -161,8 +161,8 @@ $(function() {
             TinaService.postCooccurrences(
                 corpora,
                 corporaAndPeriods[corpora],
-                whitelistpath,
-                userfilterspath.val(),
+                /*whitelistpath,
+                userfilterspath.val(),*/
                 TinaServiceCallback.postCooc
             );
             break;
