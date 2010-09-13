@@ -224,7 +224,7 @@ function TinaServiceClass(url) {
         this._POST("file",
             {
                 path: _path,
-                dataset: this.encodeURL(_dataset),
+                dataset: encodeURIComponent(_dataset),
                 whitelistpath: _whitelistpath,
                 format: _format,
                 overwrite: _overwrite
@@ -257,14 +257,14 @@ function TinaServiceClass(url) {
     /*
     curl http://localhost:8888/cooccurrences -d dataset="test_data_set" -d whitelist="tests/data/pubmed_whitelist.csv" -d periods="1"
     */
-    postCooccurrences: function(_dataset, _periods, _whitelistpath, _userstopwords, cb) {
+    postCooccurrences: function(_dataset, _periods, cb) {
         this._POST("cooccurrences",
             // inpost params
             {
                 dataset: _dataset,
                 periods: _periods,
-                whitelistpath: _whitelistpath,
-                userstopwords: _userstopwords,
+                /*whitelistpath: _whitelistpath,
+                userstopwords: _userstopwords,*/
             },
             {
                 error:"couldn't postCooccurrences"
@@ -348,12 +348,13 @@ function TinaServiceClass(url) {
 
     /*
      * transforms an absolute path ("user/etc/") to an file:// url, compatible with windows paths
+     * for use in AJAX Request
      */
     fileURL: function(absPath) {
         if ( /\\/.test(absPath) == true ) {
-            return "file:///"+this.encodeURL(absPath);
+            return "file:///"+absPath.replace(/\\/g,"%5C").replace(/\//g,"%2F");
         }
-        return "file://"+this.encodeURL(absPath);
+        return "file://"+absPath.replace(/\\/g,"%5C").replace(/\//g,"%2F");
     },
 
     /*
@@ -361,19 +362,16 @@ function TinaServiceClass(url) {
      */
     httpURL: function(relativePath) {
         var relativeURL = relativePath.split('user');
-        var partURL = this.encodeURL(relativeURL[1].replace(/\\/,"/"));
+        var partURL = relativeURL[1].replace(/\\/g,"/").replace(/%5C/g,"/");
         return SERVER_URL+"/user"+partURL;
     },
 
-    encodeURL: function(url) {
-        return encodeURI(url).replace(/\+/,"%2B").replace(/#/,"%23")
-        .replace(/@/,"%40").replace(/\$/,"%24").replace(/&/,"%26")
-        .replace(/=/,"%3D").replace(/:/,"%3A").replace(/,/,"%2C")
-        .replace(/;/,"%3B").replace(/\?/,"%3F");
+    encodeURIComponent: function(component) {
+        return encodeURIComponent(component).replace(/\\/g,"%5C").replace(/\//g,"%2F");
     },
 
     protectPath: function(label) {
-        return label.replace(/\\/,"").replace(/\//,"").replace(/\./,"");
+        return label.replace(/\\/g,"").replace(/\//g,"").replace(/\./g,"");
     },
 
     };

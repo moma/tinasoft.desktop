@@ -2,7 +2,7 @@
 # application main params
 general:
     # where all path and following file are located
-    basedirectory: 'TinasoftPytextminer'
+    basedirectory: ''
     locale: ''
     index: 'index'
     dbenv: 'db'
@@ -11,9 +11,9 @@ general:
     user: 'user'
     shared: 'shared'
     source_file_directory: 'source_files'
+    userstopwords: 'user_stopwords.csv'
     # stopwords are under share
     stopwords: 'stopwords\en.txt'
-    userstopwords: 'user_stopwords.csv'
 # extraction settings
 datasets:
     # tina csv columns declaration
@@ -37,7 +37,7 @@ datasets:
         locale: ''
     medline:
         period_size: 4
-        locale: 'en_US.UTF-8'
+        locale: ''
     # extraction size
     ngramMin: 1
     ngramMax: 4
@@ -45,9 +45,9 @@ datasets:
     training_tagger_size: 8000
     stemmer: 'tinasoft.pytextminer.stemmer'
     # under "basedirectory" directory, delete this file to regenerate a new one on next starting
-    tagger: 'TinasoftPytextminer\shared\tagger.pickle'
+    tagger: 'shared\tagger.pickle'
 datamining:
-    template: 'TinasoftPytextminer\shared\gexf\gexf.template'
+    template: 'shared\gexf\gexf.template'
     DocumentGraph:
         edgethreshold:
             - 0.0
@@ -55,7 +55,7 @@ datamining:
         nodethreshold:
             - 1
             - 'inf'
-        proximity: 'DocumentGraph.inverseLogOccNGrams'
+        proximity: 'DocumentGraph.logJacquard'
     NGramGraph:
         edgethreshold:
             - 0.0
