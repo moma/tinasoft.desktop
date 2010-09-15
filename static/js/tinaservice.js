@@ -30,7 +30,7 @@ function TinaServiceClass(url) {
     getGraph: function(_dataset, cb) {
         this._GET("graph",
             {
-                dataset: _dataset,
+                dataset: _dataset
             },
             {
                 error: "couldn't getGraph"
@@ -91,7 +91,7 @@ function TinaServiceClass(url) {
                 whitelistlabel: this.protectPath(_whitelistlabel),
                 whitelistpath: _complementarywhitelist,
                 userstopwords: _userstopwords,
-                minoccs: _minoccs,
+                minoccs: _minoccs
             },
             {
                 error:"couldn't getWhitelist"
@@ -172,7 +172,7 @@ function TinaServiceClass(url) {
                 error: cb.error,
                 success: cb.success,
                 complete: cb.complete,
-                cache: false,
+                cache: false
          });
     },
 
@@ -262,7 +262,7 @@ function TinaServiceClass(url) {
             // inpost params
             {
                 dataset: _dataset,
-                periods: _periods,
+                periods: _periods
                 /*whitelistpath: _whitelistpath,
                 userstopwords: _userstopwords,*/
             },
@@ -372,7 +372,7 @@ function TinaServiceClass(url) {
 
     protectPath: function(label) {
         return label.replace(/\\/g,"").replace(/\//g,"").replace(/\./g,"");
-    },
+    }
 
     };
 
