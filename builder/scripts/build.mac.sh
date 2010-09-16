@@ -53,7 +53,7 @@ fi
 mv $outpathres/shared $outpathres
 mv $outpathres/source_files $outpathres
 
-cp desktop_config_unix.yaml $outpathres
+cp $pytextminer/config_unix.yaml $outpathres
 cp builder/*.txt $outpathres
 cp TinasoftPytextminer/user_stopwords.csv $outpathres
 

@@ -35,7 +35,7 @@ cp -Rf static $outpath
 cp -f README $outpath
 cp -f LICENSE $outpath
 cp -f GNU-GPL.txt $outpath
-cp -f desktop_config_win.yaml $outpath
+cp -f $outpath/TinasoftPytextminer/config_win.yaml $outpath
 #cp -Rf TinasoftPytextminer/shared $outpath
 mv $outpath/TinasoftPytextminer/shared $outpath
 mkdir $outpath/source_files
