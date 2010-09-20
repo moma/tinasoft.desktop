@@ -28,7 +28,7 @@ Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
 
 SOURCE CODE REPOSITORY
 
-    http://github.com/jbilcke/tinasoft.desktop
+    https://forge.iscpif.fr/projects/tinasoft-desktop
 
 AUTHORS
 
@@ -41,13 +41,13 @@ AUTHORS
 SUPPORT AND FEEDBACK
 
     http://tinasoft.eu/
-    http://github.com/jbilcke/tinasoft.desktop/issues
+    https://forge.iscpif.fr/projects/tinasoft-desktop
 
 MULTI PLATFORM READY-TO-USE PACKAGES
 
-    Find them at http://tinasoft.eu
+    Find them at http://tinasoft.eu/download
 
-DEPENDENCIES
+REQUIREMENTS
 
     JAVA : please download it from http://java.com
     WEB BROWSER : we highly recommend Firefox (http://getfirefox.com)
@@ -57,29 +57,20 @@ USAGE
     MS Windows : execute start_win.bat
     GNU/Linux (and probably other Unix-like systems) : execute start_unix.sh
 
-INSTALL AS A DEVELOPPER
+INSTALL TINASOFT AS A DEVELOPPER
+
+    - get the source code :
+
+    https://forge.iscpif.fr/projects/tinasoft-desktop/repository
+    OR
+    git clone https://sources.iscpif.fr/tinasoft.desktop.git/
 
     DEVELOPPER DEPENDENCIES
 
-        BERKELEY DB : install it on your system from http://www.oracle.com/technology/software/products/berkeley-db/index.html
+        1- follow instructions from the README file of TinasoftPytextminer submodule
+        2- copy files and dirs from TinasoftPytextminer/ to .
+            - directories "shared",
 
-        PYTHON : you'll need Python 2.6 interpreter : http://python.org/
-
-            $ sudo python setup.py install
-            or
-            $ sudo python setup.py develop
-
-        Dependencies should be checked : numpy, nltk, twisted, jsonpickle, pytenjin, pyyaml
-
-        DOWNLOAD NLTK DATA
-
-        You'll need to install manually required nltk corpus data
-            $ export NLTK_DATA="/path/to/TinasoftPytextminer/shared/nltk_data"
-            $ python
-            > import nltk.download()
-            Downloader> d punkt
-            Downloader> d brown
-            Downloader> d conll2000
 
     DEVELOPER DOCUMENTATION
 
