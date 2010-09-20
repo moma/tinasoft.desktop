@@ -41,9 +41,10 @@ AUTHORS
 SUPPORT AND FEEDBACK
 
     http://tinasoft.eu/
+    http://tinasoft.eu/tinauserdoc
     https://forge.iscpif.fr/projects/tinasoft-desktop
 
-MULTI PLATFORM READY-TO-USE PACKAGES
+DOWNLOAD STANDALONE PACKAGES
 
     Find them at http://tinasoft.eu/download
 
@@ -57,24 +58,31 @@ USAGE
     MS Windows : execute start_win.bat
     GNU/Linux (and probably other Unix-like systems) : execute start_unix.sh
 
-INSTALL TINASOFT AS A DEVELOPPER
+INSTALL TINASOFT AS A DEVELOPER
 
     - get the source code :
 
     https://forge.iscpif.fr/projects/tinasoft-desktop/repository
     OR
-    git clone https://sources.iscpif.fr/tinasoft.desktop.git/
+    git clone https://sources.iscpif.fr/tinasoft.desktop.git
+    git submodule update
 
-    DEVELOPPER DEPENDENCIES
+    - prepare working directory
 
-        1- follow instructions from the README file of TinasoftPytextminer submodule
+        1- follow instructions from the README file of "TinasoftPytextminer" git submodule
         2- copy files and dirs from TinasoftPytextminer/ to .
-            - directories "shared",
+            - directories "shared", "source_files"
+            - files : "user_stopwords.csv"
 
+    - test !
+
+        start_unix.sh
+        OR
+        start_win.bat
 
     DEVELOPER DOCUMENTATION
 
-        http://moma.csregistry.org/tiki-index.php?page=tinadevdoc
+        http://tina.csregistry.org/tinadevdoc
 
 
 SUPPORTED OPERATING SYSTEMS
@@ -83,4 +91,4 @@ SUPPORTED OPERATING SYSTEMS
 
         Linux 64 bits (AMD64, i386) with Python 2.6
         Windows XP SP2 and SP3 (32bit)
-
+        Mac OS X >= 10.6
