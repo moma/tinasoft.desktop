@@ -69,7 +69,7 @@ $(document).ready(function() {
         macro.filter("NodeFunction", "radiusByWeight");
         macro.filter("Output", "output");
 
-        meso.filter("Category", "category");
+        meso.filter("SubGraphCopyREST", "category");
         meso.set("category/source", "macro");
         meso.set("category/category", "Document");
         meso.set("category/mode", "keep");
@@ -111,7 +111,27 @@ $(document).ready(function() {
         });
 
         tinaviz.event({
-
+            
+            selectionChanged: function(selection) {
+                tinaviz.infodiv.reset();
+                if ( selection.mouseMode == "left" ) {
+                // nothing to do
+                } else if ( selection.mouseMode == "right" ) {
+                // nothing to do
+                } else if (selection.mouseMode == "doubleLeft") {
+                    var macroCategory = tinaviz.views.macro.get("category/category");
+                    console.log("selected doubleLeft ("+selection.viewName+","+selection.data+")");
+                    tinaviz.views.meso.set("category/category", macroCategory);
+                    if (selection.viewName == "macro") {
+                        tinaviz.setView("meso");
+                    }
+                    tinaviz.updateNodes("meso", macroCategory);
+                    tinaviz.views.meso.set("layout/iter", 0);
+                    tinaviz.views.meso.commitProperties();
+                    tinaviz.autoCentering();
+                }
+                tinaviz.infodiv.update(selection.viewName, selection.data);
+            },
             viewChanged: function(view) {
 
                 tinaviz.autoCentering();

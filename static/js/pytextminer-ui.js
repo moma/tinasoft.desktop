@@ -140,7 +140,7 @@ function displayWhitelistColumn(corpora) {
                         + "&#09;"
                         + "</li>"
                     ).draggable({
-                        helper: "clone",
+                        helper: "clone"
                     })
                     .data("whitelistpath", list[i]);
                     var edit_link = $("<a href='#' title='click to open in an external software'></a>")
@@ -214,7 +214,7 @@ function selectableCorpusInit( ol, corpora ) {
                 corporaAndPeriods[corpora.id].push(( selected_li.html() ));
             });
             Cache.setValue( "last_selected_periods", corporaAndPeriods );
-        },
+        }
     });
 }
 
@@ -280,7 +280,7 @@ var initPytextminerUi = function() {
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
     $("#duplicate_docs_toggle").button({
         icons: {primary:'ui-icon-lightbulb'},
-        text: true,
+        text: true
     })
     .click(function(event) {
         $("#duplicate_docs").toggle("fold");
@@ -289,7 +289,7 @@ var initPytextminerUi = function() {
     $("#import_form").hide();
     $("#toggle_import_form").button({
         icons: {primary:'ui-icon-plus'},
-        text: false,
+        text: false
     })
     .click(function(event) {
         $(".fold_form:visible:not(#import_form)").hide("fold");
@@ -299,7 +299,7 @@ var initPytextminerUi = function() {
     $("#index_form").hide();
     $("#toggle_index_form").button({
         icons: {primary:'ui-icon-plus'},
-        text: false,
+        text: false
     })
     .click(function(event) {
         $(".fold_form:visible:not(#index_form)").hide("fold");
