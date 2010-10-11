@@ -257,27 +257,25 @@ function TinaServiceClass(url) {
     /*
     curl http://localhost:8888/cooccurrences -d dataset="test_data_set" -d whitelist="tests/data/pubmed_whitelist.csv" -d periods="1"
     */
-    postCooccurrences: function(_dataset, _periods, cb) {
+    /*postCooccurrences: function(_dataset, _periods, cb) {
         this._POST("cooccurrences",
             // inpost params
             {
                 dataset: _dataset,
                 periods: _periods
-                /*whitelistpath: _whitelistpath,
-                userstopwords: _userstopwords,*/
             },
             {
                 error:"couldn't postCooccurrences"
             },
             cb
         );
-    },
+    },*/
 
     /*
     curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
     */
     postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, cb) {
-        this._POST("graph",
+        this._POST("generate_graph",
             {
                 dataset: _dataset,
                 periods: _periods,

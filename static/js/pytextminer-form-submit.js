@@ -120,7 +120,7 @@ $(function() {
             return false;
         }
         // UNUSED
-        var userfilterspath  = $("#userstopwordsfile_graph");
+        //var userfilterspath  = $("#userstopwordsfile_graph");
         var label = $("#graphlabel");
         var ngramGraphOptions = {
             alpha: $("#graphalpha").spinner('value'),
@@ -145,28 +145,15 @@ $(function() {
                 $("#graph-documents-nodes-max").spinner('value')
             ]
         };
-
-        TinaServiceCallback.postCooc.success = function(){
-            TinaService.postGraph(
-                corpora,
-                corporaAndPeriods[corpora],
-                whitelistpath,
-                safeString(label.val()),
-                ngramGraphOptions,
-                documentGraphOptions,
-                TinaServiceCallback.postGraph
-            );
-        };
-        for (corpora in corporaAndPeriods) {
-            TinaService.postCooccurrences(
-                corpora,
-                corporaAndPeriods[corpora],
-                /*whitelistpath,
-                userfilterspath.val(),*/
-                TinaServiceCallback.postCooc
-            );
-            break;
-        }
+        TinaService.postGraph(
+            corpora,
+            corporaAndPeriods[corpora],
+            whitelistpath,
+            safeString(label.val()),
+            ngramGraphOptions,
+            documentGraphOptions,
+            TinaServiceCallback.postGraph
+        );
         //return true;
     };
 
@@ -199,7 +186,7 @@ $(function() {
 
     /* Requests to export a data set's whitelist csv */
 
-    var submitExportWhitelist = function(event) {
+    /*var submitExportWhitelist = function(event) {
         var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
         if( Object.size(corporaAndPeriods) == 0) {
             alert("please select one or periods");
@@ -232,7 +219,7 @@ $(function() {
             );
             return true;
         }
-    };
+    };*/
     $('#importFile').click(function(event) {
         submitImportfile(event);
     });

@@ -115,7 +115,7 @@ var SERVER_URL= "http://localhost:8888";
                 // add progress state notification
             }
         },
-        postCooc: {
+        /*postCooc: {
             success: function(data, textStatus, XMLHttpRequest) {
                 console.log("postCooc success");
             },
@@ -135,7 +135,7 @@ var SERVER_URL= "http://localhost:8888";
                 $('#processCooc').html( "please wait during cooccurrences processing" );
                 // add progress state notification
             }
-        },
+        },*/
         postGraph: {
             success: function(data, textStatus, XMLHttpRequest) {
                 // data contains a path to the graph exported
