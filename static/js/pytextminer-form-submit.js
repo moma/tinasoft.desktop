@@ -119,7 +119,7 @@ $(function() {
             alert("please select one or more periods");
             return false;
         }
-        for ( corpname in corporaAndPeriods ) {
+        for ( var corpname in corporaAndPeriods ) {
             var corpora = corpname;
             break;
         }
@@ -128,14 +128,14 @@ $(function() {
         var ngramGraphOptions = {
             alpha: $("#graphalpha").spinner('value'),
             proximity: $("#ngrams-graph-type").val(),
-            /*edgethreshold: [
+            edgethreshold: [
                 $("#graph-ngrams-edges-min").spinner('value'),
                 $("#graph-ngrams-edges-max").spinner('value')
             ],
             nodethreshold: [
                 $("#graph-ngrams-nodes-min").spinner('value'),
                 $("#graph-ngrams-nodes-max").spinner('value')
-            ]*/
+            ]
         };
         var documentGraphOptions = {
             proximity: $("#documents-graph-type").val(),

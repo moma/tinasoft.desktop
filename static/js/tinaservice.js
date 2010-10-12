@@ -30,7 +30,7 @@ function TinaServiceClass(url) {
     getGraph: function(_dataset, cb) {
         this._GET("graph",
             {
-                dataset: _dataset
+                dataset: this.encodeURIComponent(_dataset)
             },
             {
                 error: "couldn't getGraph"
@@ -41,15 +41,15 @@ function TinaServiceClass(url) {
     },
 
     /*
-    url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
+     * url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
     */
     getFile: function(_path, _dataset, _whitelistlabel, _format, _overwrite, _minoccs, _userstopwords, cb) {
 
         this._GET("file",
             {
                 path: _path,
-                dataset: _dataset,
-                whitelistlabel: this.protectPath(_whitelistlabel),
+                dataset: this.encodeURIComponent(this.protectPath(_dataset)),
+                whitelistlabel: this.encodeURIComponent(this.protectPath(_whitelistlabel)),
                 format:  _format,
                 overwrite:  _overwrite,
                 minoccs: _minoccs,
@@ -63,7 +63,9 @@ function TinaServiceClass(url) {
     },
 
     /*
-    url="http://localhost:8888/cooccurrences?$periods$whitelist"
+     * OBSOLETE
+     * TODO update to export cooc matrix file
+     * url="http://localhost:8888/cooccurrences?$periods$whitelist"
     */
     getCooccurrences: function(_periods, _whitelistpath, cb) {
         this._GET("cooccurrences",
@@ -79,7 +81,8 @@ function TinaServiceClass(url) {
     },
 
     /*
-    url="http://localhost:8888/whitelist?$periods$dataset$whitelistlabel"
+     * OBSOLETE
+     * url="http://localhost:8888/whitelist?$periods$dataset$whitelistlabel"
     */
     getWhitelist: function(_dataset, _periods, _whitelistlabel, _complementarywhitelist, _userstopwords, _minoccs, cb) {
         //console.log("calling getWhitelist("+_dataset+","+_periods+","+_whitelistlabel+","+cb+")");
@@ -105,16 +108,17 @@ function TinaServiceClass(url) {
     */
     getCorpus: function(_dataset, _id, cb) {
         //console.log("calling getCorpus("+_dataset+", "+_id+","+cb+")");
-        this._GET("corpus", { dataset: _dataset, id: _id }, {error:"couldn't getCorpus"}, cb);
+        this._GET("corpus", { dataset: this.encodeURIComponent(_dataset), id: this.encodeURIComponent(_id) }, {error:"couldn't getCorpus"}, cb);
     },
     getNGram: function(_dataset, _id, cb) {
         //console.log("calling getNGram("+_dataset+","+_id+","+cb+")");
-        this._GET("ngram", { dataset: _dataset, id: _id }, {error:"couldn't getNgram"}, cb);
+        this._GET("ngram", { dataset: this.encodeURIComponent(_dataset), id: this.encodeURIComponent(_id) }, {error:"couldn't getNgram"}, cb);
     },
     getDocument: function(_dataset, _id, cb) {
         this._GET("document",
             {
-                dataset: _dataset, id: _id
+                dataset: this.encodeURIComponent(_dataset),
+                id: this.encodeURIComponent(_id)
             },
             {
                 error:"couldn't getDocument"
@@ -125,7 +129,7 @@ function TinaServiceClass(url) {
     getDataset: function(_dataset, cb) {
         this._GET("dataset",
             {
-                dataset: _dataset
+                dataset: this.encodeURIComponent(_dataset)
             },
             {
                 error: "couldn't getDataset"
@@ -179,8 +183,8 @@ function TinaServiceClass(url) {
     getWalkUserPath: function(_dataset, _filetype, cb) {
         this._GET("walk_user_path",
             {
-                dataset: _dataset,
-                filetype: _filetype
+                dataset: this.encodeURIComponent(_dataset),
+                filetype: this.encodeURIComponent(_filetype)
             },
             {
                 error: "couldn't getWalkUserPath"
@@ -203,7 +207,7 @@ function TinaServiceClass(url) {
     getOpenUserFile: function(_fileurl, cb) {
         this._GET("open_user_file",
             {
-                fileurl: _fileurl
+                fileurl: this.encodeURIComponent( _fileurl )
             },
             {
                 error: "couldn't getOpenUserFile"
@@ -224,7 +228,7 @@ function TinaServiceClass(url) {
         this._POST("file",
             {
                 path: _path,
-                dataset: encodeURIComponent(_dataset),
+                dataset: this.encodeURIComponent(_dataset),
                 whitelistpath: _whitelistpath,
                 format: _format,
                 overwrite: _overwrite
@@ -342,17 +346,6 @@ function TinaServiceClass(url) {
             contentType: "application/json"*/
         });
 
-    },
-
-    /*
-     * transforms an absolute path ("user/etc/") to an file:// url, compatible with windows paths
-     * for use in AJAX Request
-     */
-    fileURL: function(absPath) {
-        if ( /\\/.test(absPath) == true ) {
-            return "file:///"+absPath.replace(/\\/g,"%5C").replace(/\//g,"%2F");
-        }
-        return "file://"+absPath.replace(/\\/g,"%5C").replace(/\//g,"%2F");
     },
 
     /*
