@@ -1,198 +1,203 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
-<!--
-        This program is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation; either version 2 of the License, or
-        (at your option) any later version.
+    <!--
+            This program is free software; you can redistribute it and/or modify
+            it under the terms of the GNU General Public License as published by
+            the Free Software Foundation; either version 2 of the License, or
+            (at your option) any later version.
+    
+            This program is distributed in the hope that it will be useful,
+            but WITHOUT ANY WARRANTY; without even the implied warranty of
+            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+            GNU General Public License for more details.
+    
+            You should have received a copy of the GNU General Public License
+            along with this program; if not, write to the Free Software
+            Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+            MA 02110-1301, USA.
+    -->
+    <head>
+        <title>Tinasoft Desktop</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="description" content="scientometrics datamining graphviz"/>
+        <meta name="keywords" content="TinaSoft,TinaViz,CREA"/>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
-        This program is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
+        <!-- JQUERY -->
+        <script type="text/javascript" src="js/jquery/jquery-1.4.2.js" language="javascript"></script>
+        <script type="text/javascript" src="js/jquery/jquery.ba-dotimeout.min.js" language="javascript"></script>
+                
+        <!-- JQUERY UI -->
+        <script type="text/javascript" src="js/jquery-ui/jquery-ui-1.8.min.js" language="javascript"></script>
+        <script src='js/rating/jquery.ratings.js' type="text/javascript" language="javascript"></script>  
+        <link href='js/rating/jquery.ratings.16.css' type="text/css" rel="stylesheet"/> 
+        
+        <!-- JQUERY UI PLUGINS -->
+        <script type="text/javascript" src="js/jquery-ui/ui.spinner.min.js" language="javascript"></script>
+        <!-- JQUERY UI -->
+        <!-- <script type="text/javascript" src="js/firebug-lite.js" language="javascript"></script>-->
+        <!-- JQUERY UI CSS -->
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/eggplant/jquery-ui-1.8.1.custom.css"/>
+        <link type="text/css" rel="stylesheet" href="css/ui.spinner.css"/>
+        <!-- UTILITIES -->
+        <script type="text/javascript" src="js/cache.js"></script>
 
-        You should have received a copy of the GNU General Public License
-        along with this program; if not, write to the Free Software
-        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-        MA 02110-1301, USA.
--->
-<head>
-    <title>Tinasoft Desktop</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="description" content="scientometrics datamining graphviz"/>
-    <meta name="keywords" content="TinaSoft,TinaViz,CREA"/>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+        <!-- TINAVIZ -->
+        <script type="text/javascript" src="tinaweb/js/tinaviz/tinaviz.js" language="javascript"></script>
 
-    <!-- JQUERY -->
-    <script type="text/javascript" src="js/jquery/jquery-1.4.2.js" language="javascript"></script>
-    <!-- JQUERY UI -->
-    <script type="text/javascript" src="js/jquery-ui/jquery-ui-1.8.min.js" language="javascript"></script>
-    <!-- JQUERY UI PLUGINS -->
-    <script type="text/javascript" src="js/jquery-ui/ui.spinner.min.js" language="javascript"></script>
-    <!-- JQUERY UI -->
-    <!-- <script type="text/javascript" src="js/firebug-lite.js" language="javascript"></script>-->
-    <!-- JQUERY UI CSS -->
-    <link type="text/css" rel="stylesheet" href="tinaweb/css/eggplant/jquery-ui-1.8.1.custom.css"/>
-    <link type="text/css" rel="stylesheet" href="css/ui.spinner.css"/>
-    <!-- UTILITIES -->
-    <script type="text/javascript" src="js/cache.js"></script>
+        <!-- WE USE TINAWEB UTILS-->
+        <script type="text/javascript" src="tinaweb/js/tinaweb-utils.js" language="javascript"></script>
 
-    <!-- TINAVIZ -->
-    <script type="text/javascript" src="tinaweb/js/tinaviz/tinaviz.js" language="javascript"></script>
+        <!-- WE USE TINAWEB INFO PANEL -->
+        <script type="text/javascript" src="tinaweb/js/tinaweb-info.js" language="javascript"></script>
 
-    <!-- WE USE TINAWEB UTILS-->
-    <script type="text/javascript" src="tinaweb/js/tinaweb-utils.js" language="javascript"></script>
+        <!-- WE USE TINAWEB INFO PANEL -->
+        <script type="text/javascript" src="tinaweb/js/tinaweb-toolbar.js" language="javascript"></script>
 
-    <!-- WE USE TINAWEB INFO PANEL -->
-    <script type="text/javascript" src="tinaweb/js/tinaweb-info.js" language="javascript"></script>
+        <!-- TINASOFT APP FUNCTIONS -->
+        <script type="text/javascript" src="js/tinaservice.js" language="javascript"></script>
+        <script type="text/javascript" src="js/tinaservice-callbacks.js" language="javascript"></script>
+        <script type="text/javascript" src="js/pytextminer-form-submit.js" language="javascript"></script>
+        <!--<script type="text/javascript" src="js/upload-file.js" language="javascript"></script> -->
 
-    <!-- WE USE TINAWEB INFO PANEL -->
-    <script type="text/javascript" src="tinaweb/js/tinaweb-toolbar.js" language="javascript"></script>
+        <!-- TINASOFT APP MAIN SCRIPT -->
+        <script type="text/javascript" src="js/main.js" language="javascript"></script>
+        <script type="text/javascript" src="js/pytextminer-ui.js" language="javascript"></script>
 
-    <!-- TINASOFT APP FUNCTIONS -->
-    <script type="text/javascript" src="js/tinaservice.js" language="javascript"></script>
-    <script type="text/javascript" src="js/tinaservice-callbacks.js" language="javascript"></script>
-    <script type="text/javascript" src="js/pytextminer-form-submit.js" language="javascript"></script>
-    <!--<script type="text/javascript" src="js/upload-file.js" language="javascript"></script> -->
+        <!-- UNCOMMENT THE FOLLOWING LINE TO ENABLE DEBUG -->
+        <script type="text/javascript" src="tinaweb/js/firebug-lite/firebug-lite-beta.js" language="javascript"></script>
 
-    <!-- TINASOFT APP MAIN SCRIPT -->
-    <script type="text/javascript" src="js/main.js" language="javascript"></script>
-    <script type="text/javascript" src="js/pytextminer-ui.js" language="javascript"></script>
+        <!--TINASOFT CSS -->
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/tinaweb.css"/>
 
-   <!-- UNCOMMENT THE FOLLOWING LINE TO ENABLE DEBUG -->
-   <script type="text/javascript" src="tinaweb/js/firebug-lite/firebug-lite-beta.js" language="javascript"></script>
-
-    <!--TINASOFT CSS -->
-   <link type="text/css" rel="stylesheet" href="tinaweb/css/tinaweb.css"/>
-
-    <!--TINASOFT CSS -->
-    <link type="text/css" rel="stylesheet" href="css/main.css"/>
+        <!--TINASOFT CSS -->
+        <link type="text/css" rel="stylesheet" href="css/main.css"/>
 
 
-</head>
+    </head>
 
-<body>
-    <div id="main">
-        <div id="working_session" class="ui-widget ui-corner-all">
-            <button id="toggle_working_session"></button>
-            <button id="toggle_about"></button>
-            <div id="data_table" class="ui-widget-content ui-corner-all">
-                <table id="corpora_table">
-                    <thead>
-                        <tr>
-                            <th class="ui-widget-header">data sets</th>
-                            <th class="ui-widget-header">white lists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></th>
-                            <th class="ui-widget-header">periods <button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
-                            <th class="ui-widget-header">graphs <button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
-                        </tr>
-                    </thead>
-                    <!--<tbody class="ui-widget-content"></tbody>-->
-                </table>
+    <body>
+        <div id="main">
+            <div id="working_session" class="ui-widget ui-corner-all">
+                <button id="toggle_working_session"></button>
+                <button id="toggle_about"></button>
+                <div id="data_table" class="ui-widget-content ui-corner-all">
+                    <table id="corpora_table">
+                        <thead>
+                            <tr>
+                                <th class="ui-widget-header">data sets</th>
+                                <th class="ui-widget-header">white lists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></th>
+                                <th class="ui-widget-header">periods <button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
+                                <th class="ui-widget-header">graphs <button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
+                            </tr>
+                        </thead>
+                        <!--<tbody class="ui-widget-content"></tbody>-->
+                    </table>
+                </div>
+                <div id="import_form" class="fold_form">
+                    <table id="import_table" class="ui-widget-content ui-corner-all">
+                        <thead>
+                            <tr>
+                                <th class="ui-widget-header">Extraction</th>
+                            </tr>
+                            <tr>
+                                <th class="ui-widget-content">source file <select id="importfilepath"></select>
+                                </th>
+                                <th class="ui-widget-content">file type <select id="importfiletype" name="import filetype">
+                                        <option selected value='tinacsv'>tinasoft csv</option>
+                                        <option value ='medline'>pubmed.gov medline file</option>
+                                    </select>
+                                </th>
+                                <th class="ui-widget-content">data set name <input id="importdatasetid" type="text" name="import dataset id" size="12"/>
+                                </th>
+                                <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
+
+                                <th class="ui-widget-content"><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
+                                </th>
+                                <th class="ui-widget-content">white list label<br/>(default: same as the data set)<input id="importwhitelistlabel" class="ui-widget-content" type="text" size="12" name="white list label" value="" />
+                                </th>
+                                <th class="ui-widget-content">key-phrases minimum occurrence <input id="extractminoccs" class="ui-widget-content" type="number" name="minimum n-grams occurrences" value=1 min=0 step=1 />
+                                </th>
+                                <!--<th>extra stopwords file <input id="importuserstopwords" type="file" name="user stopwords file" value=""/>
+                                </th>-->
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="index_form" class="fold_form">
+                    <table id="index_table" class="ui-widget-content ui-corner-all">
+                        <thead>
+                            <tr>
+                                <th class="ui-widget-header">Indexation</th>
+                            </tr>
+                            <tr>
+                                <th class="ui-widget-content">source file <select id="indexfilepath"><option value=""></option></select>
+                                </th>
+                                <th class="ui-widget-content">file type <select id="indexfiletype" name="index filetype">
+                                        <option selected value='tinacsv'>tinasoft csv</option>
+                                        <option value ='medline'>pubmed.gov medline file</option>
+                                    </select>
+                                </th>
+                                <th class="ui-widget-content">data set name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
+                                </th>
+                                <th id="index_whitelist" class="ui-widget-content whitelistdroppable">
+                                </th>
+                                <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
+
+                                <th class="ui-widget-content"><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
+                                </th>
+                                <th class="ui-widget-content"><div id="duplicate_docs_toggle">display duplicated documents</div></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="duplicate_docs" class="ui-widget ui-widget-content ui-corner-all"></div>
+                </div>
+                <div id="processcooc_form" class="fold_form">
+                    <table id="processcooc_table" class="ui-widget-content ui-corner-all">
+                        <thead>
+                            <tr>
+                                <th class="ui-widget-header">Create a graph</th>
+                            </tr>
+                            <tr>
+                                <th id="graph_periods" class="ui-widget-content">select periods from the above table<br/>(ctrl key for multiple selection)</th>
+                                <th class="ui-widget-content"><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
+                                <th id="graph_whitelist" class="ui-widget-content whitelistdroppable"></th>
+                                <th class="ui-widget-content">graph label <input class="ui-widget-content"  id="graphlabel" type="text" name="graph label" value="" />
+                                </th>
+                                <th class="ui-widget-content">key-phrases edges type <select id="ngrams-graph-type" name="ngrams graph type" class="ui-widget-content" >
+                                        <option selected value='NGramGraph.pseudoInclusionProx'>pseudo-inclusion</option>
+                                    </select>
+                                </th>
+                                <th class="ui-widget-content">documents edges type <select id="documents-graph-type" name="document graph type" class="ui-widget-content" >
+                                        <option selected value='DocumentGraph.logJaccard'>jaccard like distance</option>
+                                    </select>
+                                </th>
+                                <th class="ui-widget-content">alpha coef for pseudo-inclusion<input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d class="ui-widget-content" />
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="ui-widget-content">key-phrases edges' weight limits :
+                                    <br/>min <input id="graph-ngrams-edges-min" class="ui-widget-content" type="number" value=0.0 min=0.0  max=1.0 step=0.01 />
+                                    <br/>max <input id="graph-ngrams-edges-max" class="ui-widget-content" type="number" value=1.0 min=0.0  max=1.0 step=0.01 />
+                                </th>
+                                <th class="ui-widget-content">documents edges' weight limits :
+                                    <br/>min <input id="graph-documents-edges-min" class="ui-widget-content" type="number" value=0.0 min=0.0  max=1.0 step=0.01 />
+                                    <br/>max <input id="graph-documents-edges-max" class="ui-widget-content" type="number" value=1.0 min=0.0  max=1.0 step=0.01 />
+                                </th>
+                                <th class="ui-widget-content">key-phrases nodes' weight limits :
+                                    <br/>min <input id="graph-ngrams-nodes-min" class="ui-widget-content" type="number" value=0 min=0 step=1 />
+                                    <br/>max (0 = no limit) <input id="graph-ngrams-nodes-max" class="ui-widget-content" type="number" value=0 min=0 step=1 />
+                                </th>
+                                <th class="ui-widget-content">documents nodes' weight limits :
+                                    <br/>min <input id="graph-documents-nodes-min" class="ui-widget-content" type="number" value=0 min=0 step=1 />
+                                    <br/>max (0 = no limit) <input id="graph-documents-nodes-max" class="ui-widget-content" type="number" value=0 min=0 step=1 />
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
             </div>
-            <div id="import_form" class="fold_form">
-                <table id="import_table" class="ui-widget-content ui-corner-all">
-                    <thead>
-                        <tr>
-                            <th class="ui-widget-header">Extraction</th>
-                        </tr>
-                        <tr>
-                            <th class="ui-widget-content">source file <select id="importfilepath"></select>
-                            </th>
-                            <th class="ui-widget-content">file type <select id="importfiletype" name="import filetype">
-                                    <option selected value='tinacsv'>tinasoft csv</option>
-                                    <option value ='medline'>pubmed.gov medline file</option>
-                                </select>
-                            </th>
-                            <th class="ui-widget-content">data set name <input id="importdatasetid" type="text" name="import dataset id" size="12"/>
-                            </th>
-                            <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
-
-                            <th class="ui-widget-content"><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
-                            </th>
-                            <th class="ui-widget-content">white list label<br/>(default: same as the data set)<input id="importwhitelistlabel" class="ui-widget-content" type="text" size="12" name="white list label" value="" />
-                            </th>
-                            <th class="ui-widget-content">key-phrases minimum occurrence <input id="extractminoccs" class="ui-widget-content" type="number" name="minimum n-grams occurrences" value=1 min=0 step=1 />
-                            </th>
-                            <!--<th>extra stopwords file <input id="importuserstopwords" type="file" name="user stopwords file" value=""/>
-                            </th>-->
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <div id="index_form" class="fold_form">
-                <table id="index_table" class="ui-widget-content ui-corner-all">
-                    <thead>
-                        <tr>
-                            <th class="ui-widget-header">Indexation</th>
-                        </tr>
-                        <tr>
-                            <th class="ui-widget-content">source file <select id="indexfilepath"><option value=""></option></select>
-                            </th>
-                            <th class="ui-widget-content">file type <select id="indexfiletype" name="index filetype">
-                                    <option selected value='tinacsv'>tinasoft csv</option>
-                                    <option value ='medline'>pubmed.gov medline file</option>
-                                </select>
-                            </th>
-                            <th class="ui-widget-content">data set name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
-                            </th>
-                            <th id="index_whitelist" class="ui-widget-content whitelistdroppable">
-                            </th>
-                            <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
-
-                            <th class="ui-widget-content"><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
-                            </th>
-                            <th class="ui-widget-content"><div id="duplicate_docs_toggle">display duplicated documents</div></th>
-                        </tr>
-                    </thead>
-                </table>
-                <div id="duplicate_docs" class="ui-widget ui-widget-content ui-corner-all"></div>
-            </div>
-            <div id="processcooc_form" class="fold_form">
-                <table id="processcooc_table" class="ui-widget-content ui-corner-all">
-                    <thead>
-                        <tr>
-                            <th class="ui-widget-header">Create a graph</th>
-                        </tr>
-                        <tr>
-                            <th id="graph_periods" class="ui-widget-content">select periods from the above table<br/>(ctrl key for multiple selection)</th>
-                            <th class="ui-widget-content"><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
-                            <th id="graph_whitelist" class="ui-widget-content whitelistdroppable"></th>
-                            <th class="ui-widget-content">graph label <input class="ui-widget-content"  id="graphlabel" type="text" name="graph label" value="" />
-                            </th>
-                            <th class="ui-widget-content">key-phrases edges type <select id="ngrams-graph-type" name="ngrams graph type" class="ui-widget-content" >
-                                    <option selected value='NGramGraph.pseudoInclusionProx'>pseudo-inclusion</option>
-                                </select>
-                            </th>
-                            <th class="ui-widget-content">documents edges type <select id="documents-graph-type" name="document graph type" class="ui-widget-content" >
-                                    <option selected value='DocumentGraph.logJaccard'>jaccard like distance</option>
-                                </select>
-                            </th>
-                            <th class="ui-widget-content">alpha coef for pseudo-inclusion<input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d class="ui-widget-content" />
-                            </th>
-                        </tr>
-                        <tr>
-                            <th class="ui-widget-content">key-phrases edges' weight limits :
-                            <br/>min <input id="graph-ngrams-edges-min" class="ui-widget-content" type="number" value=0.0 min=0.0  max=1.0 step=0.01 />
-                            <br/>max <input id="graph-ngrams-edges-max" class="ui-widget-content" type="number" value=1.0 min=0.0  max=1.0 step=0.01 />
-                            </th>
-                            <th class="ui-widget-content">documents edges' weight limits :
-                            <br/>min <input id="graph-documents-edges-min" class="ui-widget-content" type="number" value=0.0 min=0.0  max=1.0 step=0.01 />
-                            <br/>max <input id="graph-documents-edges-max" class="ui-widget-content" type="number" value=1.0 min=0.0  max=1.0 step=0.01 />
-                            </th>
-                            <th class="ui-widget-content">key-phrases nodes' weight limits :
-                            <br/>min <input id="graph-ngrams-nodes-min" class="ui-widget-content" type="number" value=0 min=0 step=1 />
-                            <br/>max (0 = no limit) <input id="graph-ngrams-nodes-max" class="ui-widget-content" type="number" value=0 min=0 step=1 />
-                            </th>
-                            <th class="ui-widget-content">documents nodes' weight limits :
-                            <br/>min <input id="graph-documents-nodes-min" class="ui-widget-content" type="number" value=0 min=0 step=1 />
-                            <br/>max (0 = no limit) <input id="graph-documents-nodes-max" class="ui-widget-content" type="number" value=0 min=0 step=1 />
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-
-        </div>
         </div><!-- main -->
         <div id="doc3" class="yui-t5 ui-widget">
             <div id="hd"  class="ui-widget">
@@ -255,13 +260,13 @@
 
                         <!-- end of sliders -->
                         <!--<div class="fg-buttonset ui-helper-clearfix fg-button">-->
-                            <!--<a href="#"
-                              id="open"
-                              class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
-                              title="pause">-->
-                              <!--<input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input> -->
-                              <!--<input id="inputgraph" type="file" value="Open">-->
-                            <!--</a> -->
+                        <!--<a href="#"
+                          id="open"
+                          class="fg-button ui-state-default fg-button-icon-left ui-priority-primary ui-corner-all"
+                          title="pause">-->
+                        <!--<input id="inputgraph" type="file" size="2" style="height: 15px; opacity: 0; width: 10px;">Open</input> -->
+                        <!--<input id="inputgraph" type="file" value="Open">-->
+                        <!--</a> -->
                         <!--</div>-->
                         <button id="toggle-autoCentering" class="fg-button toolbar-right">recenter</button>
                         <form id="search" action="#" class="toolbar-right">
@@ -271,7 +276,7 @@
 
                     </div><!-- End of htoolbar -->
                 </div><!-- End of hdb -->
-           </div><!-- End of hd -->
+            </div><!-- End of hd -->
 
             <div id="bd">
                 <div id="yui-main">
@@ -293,24 +298,69 @@
                                     </div>  <!-- /accordion 1 -->
                                     <h3><a href="#">Global Web Searches</a></h3>
                                     <div>
-                                    <div id="node_neighbourhoodCopy">
-                                    </div>
-                                    <div id="node_neighbourhoodForSearch" class="ui-widget-content ui-corner-all"></div>
+                                        <div id="node_neighbourhoodCopy">
+                                        </div>
+                                        <div id="node_neighbourhoodForSearch" class="ui-widget-content ui-corner-all"></div>
                                     </div> <!-- /accordion 2 -->
                                     <h3><a href="#">All nodes</a></h3>
                                     <div>
                                         <div id="node_list">
                                             <table id="node_table">
-                                            <thead>
-                                            <tr>
-                                                <th>List of all nodes of the current category<span class="ui-icon ui-icon-help icon-right" title="click on a label to switch to its meso view"></span></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
+                                                <thead>
+                                                    <tr>
+                                                        <th>List of all nodes of the current category<span class="ui-icon ui-icon-help icon-right" title="click on a label to switch to its meso view"></span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div> <!-- accordion 3 -->
+                                    <h3><a href="#">Visualization</a></h3>
+                                    <div>
+                                        <div id="node_visualization" class="ui-widget-content ui-corner-all">
+
+                                            <form>
+                                                <table id="mappingTable">
+                                                    <tr>
+                                                        <th>Node Color</th>
+                                                        <td><select id="nodeColorSelector">
+                                                                <option>category</option>
+                                                                <option>rate</option>
+                                                                <option>co-occurrences</option>
+                                                                <option> </option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Node Radius</th>
+                                                        <td><select id="nodeRadiusSelector">
+                                                                <option>radius</option>
+                                                                <option>weight</option>
+                                                                <option>co-occurrences</option>
+                                                                <option>rate</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Node Weight</th>
+                                                        <td><select id="nodeWeightSelector">
+                                                                <option>weight</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Node Shape</th>
+                                                        <td><select id="nodeShapeSelector">                                                                
+                                                                <option>category</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </form>
+                                        </div>
+
+                                    </div> <!-- /accordion 4 -->
                                 </div><!-- /infodiv  -->
 
                             </div><!-- / INFODIVPARENT -->
@@ -323,8 +373,8 @@
                 <p class="ui-corner-all" style="margin: 0;">Copyright MOMA, CREA, CNRS - 2009, 2010, 2011.</p>
                 <p class="ui-widget-content ui-corner-all" style="margin: 0;">
                     Tinasoft is developed by <a href="http://moma.csregistry.org" target="_BLANK"><img src="tinaweb/css/branding/moma-crea.png" height="15px" /></a> under the  <a href="http://www.gnu.org/licenses/gpl.html" target="_BLANK">GNU GPL license</a> with the support of <a href="http://cordis.europa.eu/fp7/ict/programme/fet_en.html" target="_BLANK">EU FP7 ICT - Future and emerging technologies</a><br/>
-                Our partners : <img src="tinaweb/css/branding/partners_small.jpg" height="15px"/>
-                Our softwares : <a href="http://tinasoft.eu/" target="_BLANK"><img src="tinaweb/css/branding/get-tinasoft.png" height="15px"/></a>
+                    Our partners : <img src="tinaweb/css/branding/partners_small.jpg" height="15px"/>
+                    Our softwares : <a href="http://tinasoft.eu/" target="_BLANK"><img src="tinaweb/css/branding/get-tinasoft.png" height="15px"/></a>
                 </p>
             </div><!-- end of ft -->
         </div><!-- end of doc3 -->

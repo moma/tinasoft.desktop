@@ -23,8 +23,8 @@ $(document).ready(function() {
         tag: $("#vizdiv"),
         path: "tinaweb/",
         branding: false,
-        width: 100,
-        height: 100
+        width: 1,
+        height: 1
     });
 
    //$('#appletInfo').effect('pulsate', {}, 'fast');
@@ -35,74 +35,108 @@ $(document).ready(function() {
     });
 
     tinaviz.ready(function(){
-
-        var infodiv =  InfoDiv('infodiv');
-        tinaviz.infodiv = infodiv;
-        tinaviz.infodiv.reset();
-
-        resize();
-
-        $("#infodiv").accordion({
-            fillSpace: true
-        });
-
-        var defaultView = "macro";
-        tinaviz.setView(defaultView);
+        
+   
+    var prefs = {    
+            gexf: "default.gexf",
+            view: "macro",
+            category: "Document",
+            node_id: "",
+            search: "",
+            magnify: "0.5",
+            cursor_size: "1.0",
+            edge_filter_min: "0.0",
+            edge_filter_max: "1.0",
+            node_filter_min: "0.0",
+            node_filter_max: "1.0",
+            layout: "tinaforce",
+            edge_rendering: "curve"
+            
+        };
+        var urlVars = getUrlVars();
+        for (x in urlVars) {
+            prefs[x] = urlVars[x];
+        }
+        
+        tinaviz.setView(prefs.view);
 
         var session = tinaviz.session();
-        var macro = tinaviz.view("macro");
-        var meso = tinaviz.view("meso");
+        var macro = tinaviz.views.macro;
+        var meso = tinaviz.views.meso;
+        
+        
+        session.add("nodes/0/keywords", "newKeyword");
 
-        session.set("edgeWeight/min", 0.0);
-        session.set("edgeWeight/max", 1.0);
-        session.set("nodeWeight/min", 0.0);
-        session.set("nodeWeight/max", 1.0);
-        session.set("category/category", "NGram");
+        session.set("edgeWeight/min", parseFloat(prefs.edge_filter_min));
+        session.set("edgeWeight/max", parseFloat(prefs.edge_filter_max));
+        session.set("nodeWeight/min", parseFloat(prefs.node_filter_min));
+        session.set("nodeWeight/max", parseFloat(prefs.node_filter_max));
+        session.set("category/category", prefs.category);
         session.set("output/nodeSizeMin", 5.0);
         session.set("output/nodeSizeMax", 20.0);
-        session.set("output/nodeSizeRatio", 50.0/100.0);
-        session.set("selection/radius", 1.0);
+        session.set("output/nodeSizeRatio", parseFloat(prefs.magnify));
+        session.set("selection/radius", parseFloat(prefs.cursor_size));
+        session.set("layout/algorithm", prefs.layout)
+        session.set("rendering/edge/shape", prefs.edge_rendering);
+        session.set("data/source", "gexf");
 
         macro.filter("Category", "category");
         macro.filter("NodeWeightRange", "nodeWeight");
         macro.filter("EdgeWeightRange", "edgeWeight");
-        macro.filter("NodeFunction", "radiusByWeight");
         macro.filter("Output", "output");
 
-        meso.filter("SubGraphCopyREST", "category");
+        meso.filter("SubGraphCopyStandalone", "category");
         meso.set("category/source", "macro");
         meso.set("category/category", "Document");
         meso.set("category/mode", "keep");
 
         meso.filter("NodeWeightRangeHack", "nodeWeight");
         meso.filter("EdgeWeightRangeHack", "edgeWeight");
-        meso.filter("NodeFunction", "radiusByWeight");
         meso.filter("Output", "output");
+                
+        var layout_name=tinaviz.get("layout/algorithm");
+        if (layout_name=="phyloforce"){
+            tinaviz.infodiv = InfoDivPhyloweb('infodiv');
+        }
+        else{
+            tinaviz.infodiv = InfoDiv('infodiv');
+        }
+        tinaviz.infodiv.reset();
+        
+        $("#infodiv").accordion({
+            fillSpace: true
+        });
 
         toolbar.init();
 
+/*
         // init the node list with ngrams
         tinaviz.updateNodes( "macro", "NGram" );
 
         // cache the document list
-        tinaviz.getNodes( "macro", "Document" );
+        tinaviz.getNodes( "macro", "Document" );*/
 
         tinaviz.open({
             before: function() {
                 $('#appletInfo').show();
-                $('#appletInfo').html("please wait while loading the graph");
-                $('#appletInfo').effect('pulsate', {}, 'fast');
+                $('#appletInfo').html("please wait while loading the graph..");
+                //$('#appletInfo').effect('pulsate', { 'times':5 }, 1000);
                 tinaviz.infodiv.reset();
             },
             success: function() {
 
                 // init the node list with ngrams
-                tinaviz.updateNodes( defaultView, "NGram" );
+                tinaviz.updateNodes( "macro", "NGram" );
                 // cache the document list
-                tinaviz.getNodes(defaultView, "Document" );
+                tinaviz.getNodes("macro", "Document" );
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
-                $("#appletInfo").hide();
+                $('#appletInfo').html("Graph loaded");
+                $('#appletInfo').effect('pulsate', { 'times':1 }, 1000);
+                $.doTimeout(1000, function() {
+                    $("#appletInfo").hide();
+                });
+                
             },
             error: function(msg) {
                 $("#appletInfo").html("error loading graph: "+msg);
@@ -114,20 +148,21 @@ $(document).ready(function() {
             
             selectionChanged: function(selection) {
                 tinaviz.infodiv.reset();
+                
                 if ( selection.mouseMode == "left" ) {
                 // nothing to do
                 } else if ( selection.mouseMode == "right" ) {
                 // nothing to do
                 } else if (selection.mouseMode == "doubleLeft") {
-                    var macroCategory = tinaviz.views.macro.get("category/category");
-                    console.log("selected doubleLeft ("+selection.viewName+","+selection.data+")");
-                    tinaviz.views.meso.set("category/category", macroCategory);
+                    var macroCategory = tinaviz.views.macro.category();
+                    //console.log("selected doubleLeft ("+selection.viewName+","+selection.data+")");
+                    tinaviz.views.meso.category(macroCategory);
                     if (selection.viewName == "macro") {
                         tinaviz.setView("meso");
                     }
                     tinaviz.updateNodes("meso", macroCategory);
                     tinaviz.views.meso.set("layout/iter", 0);
-                    tinaviz.views.meso.commitProperties();
+                    tinaviz.views.meso.commit();
                     tinaviz.autoCentering();
                 }
                 tinaviz.infodiv.update(selection.viewName, selection.data);
@@ -147,30 +182,30 @@ $(document).ready(function() {
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
 
-                var disable = false;
-                if (view.name == "meso") {
-
-                    // send asynchronously a new graph to the view
-
+                var showFilter = false;
+                if (view.getName() == "meso") {
+                
                     // TODO check selection
                     // if selection has edges with edge of all the same weight, we disable the filter
                     var weight = null;
                     for (node in view.nodes) {
+                        //alert("node:"+node);
                         for (out in node.outputs) {
+                            //alert("node weight:"+out.weight);
                             if (weight == null) {
                                 weight = out.weight;
                             }
                             else {
                                 if (weight != out.weight) {
-                                    disable = false;
-                                    return;
+                                    showFilter = true;
+                                    break;
                                 }
                             }
                         }
                     }
-                    disable = true;
-                }
-                $("#sliderEdgeWeight").slider( "option", "disabled", disable );
+                    
+                } 
+                $("#sliderEdgeWeight").slider( "option", "disabled", false );
             }
         });
 
