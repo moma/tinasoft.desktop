@@ -155,16 +155,18 @@
                         </tr>
                         <tr>
                             <th id="graph_periods" class="ui-widget-content">select periods from the above table<br/>(ctrl key for multiple selection)</th>
-                            <th class="ui-widget-content"><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
                             <th id="graph_whitelist" class="ui-widget-content whitelistdroppable"></th>
+                            <th class="ui-widget-content"><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
                             <th class="ui-widget-content">graph label <input class="ui-widget-content"  id="graphlabel" type="text" name="graph label" value="" />
                             </th>
                             <th class="ui-widget-content">key-phrases edges type <select id="ngrams-graph-type" name="ngrams graph type" class="ui-widget-content" >
-                                    <option selected value='NGramGraph.pseudoInclusionProx'>pseudo-inclusion</option>
+                                    <option selected value='pseudoInclusion'>pseudo-inclusion</option>
+                                    <option value='cooccurrences'>cooccurrences</option>
                                 </select>
                             </th>
                             <th class="ui-widget-content">documents edges type <select id="documents-graph-type" name="document graph type" class="ui-widget-content" >
-                                    <option selected value='DocumentGraph.logJaccard'>jaccard like distance</option>
+                                    <option selected value='logJaccard'>jaccard similarity</option>
+                                    <option value='sharedNgrams'>number of common key-phrases</option>
                                 </select>
                             </th>
                             <th class="ui-widget-content">alpha coef for pseudo-inclusion<input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d class="ui-widget-content" />

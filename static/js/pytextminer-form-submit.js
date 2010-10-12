@@ -108,53 +108,55 @@ $(function() {
 
     var submitprocessCoocGraph = function(event) {
         var whitelistpath = $("#graph_whitelist").data("whitelistpath");
-        /*if ( whitelistpath == '' ||  whitelistpath === undefined ) {
+        if ( whitelistpath == '' ||  whitelistpath === undefined ) {
             $("#graph_whitelist").addClass('ui-state-error');
             alert("please select a white list");
             return false;
-        }*/
+        }
         var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
         if( Object.size(corporaAndPeriods) == 0) {
             $("#graph_periods").addClass('ui-state-error');
             alert("please select one or more periods");
             return false;
         }
-        // UNUSED
-        //var userfilterspath  = $("#userstopwordsfile_graph");
+        for ( corpname in corporaAndPeriods ) {
+            var corpora = corpname;
+            break;
+        }
+
         var label = $("#graphlabel");
         var ngramGraphOptions = {
             alpha: $("#graphalpha").spinner('value'),
             proximity: $("#ngrams-graph-type").val(),
-            edgethreshold: [
+            /*edgethreshold: [
                 $("#graph-ngrams-edges-min").spinner('value'),
                 $("#graph-ngrams-edges-max").spinner('value')
             ],
             nodethreshold: [
                 $("#graph-ngrams-nodes-min").spinner('value'),
                 $("#graph-ngrams-nodes-max").spinner('value')
-            ]
+            ]*/
         };
         var documentGraphOptions = {
             proximity: $("#documents-graph-type").val(),
-            edgethreshold: [
+            /*edgethreshold: [
                 $("#graph-documents-edges-min").spinner('value'),
                 $("#graph-documents-edges-max").spinner('value')
             ],
             nodethreshold: [
                 $("#graph-documents-nodes-min").spinner('value'),
                 $("#graph-documents-nodes-max").spinner('value')
-            ]
+            ]*/
         };
         TinaService.postGraph(
             corpora,
             corporaAndPeriods[corpora],
             whitelistpath,
-            safeString(label.val()),
+            safeString( label.val() ),
             ngramGraphOptions,
             documentGraphOptions,
             TinaServiceCallback.postGraph
         );
-        //return true;
     };
 
 
@@ -226,14 +228,10 @@ $(function() {
     $('#indexFile').click(function(event) {
         submitIndexFile(event);
     });
-    /*$('#exportWhitelist').click(function(event) {
-        submitExportWhitelist(event)
-    });*/
+
     $('#processCooc').click(function(event) {
         submitprocessCoocGraph(event)
     });
-    /*$('#exportGraph button').click(function(event) {
-        submitExportGraph(event)
-    });*/
+
 
 });

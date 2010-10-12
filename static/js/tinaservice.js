@@ -275,7 +275,7 @@ function TinaServiceClass(url) {
     curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
     */
     postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, cb) {
-        this._POST("generate_graph",
+        this._POST("graph",
             {
                 dataset: _dataset,
                 periods: _periods,
