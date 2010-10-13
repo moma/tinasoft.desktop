@@ -115,6 +115,21 @@ var SERVER_URL= "http://localhost:8888";
                 // add progress state notification
             }
         },
+        getDocument: {
+            success: function(data, textStatus, XMLHttpRequest) {
+                alert("data:"+data);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("error in tinaservice.getDocument:"+textStatus);
+            },
+            complete: function(XMLHttpRequest, textStatus) {
+                // execute apres error ou success
+            },
+            beforeSend: function() {
+                // 
+            }
+            
+        },
         /*postCooc: {
             success: function(data, textStatus, XMLHttpRequest) {
                 console.log("postCooc success");
