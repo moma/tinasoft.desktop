@@ -293,11 +293,10 @@ function loadSourceFiles(select_id) {
     });
 }
 
+/*
+ * Initialize Pytextminer UI
+ */
 var initPytextminerUi = function() {
-    /*
-     * Initialize Pytextminer UI
-     */
-
     /* resets cache vars */
     var corporaAndPeriods = Cache.setValue( "last_selected_periods", {} );
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
@@ -383,6 +382,7 @@ var initPytextminerUi = function() {
     }).html("<p>drag and drop here a white list</p>");
 
     $(".periodselectable").html("<p>select periods<br/>(ctrl key for multiple selection)</p>");
+
     /* Init every upload file handler */
     /*var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");
     $("#importfilepath").get(0).addEventListener( "change", extract_input_upload.handleDrop, false );*/

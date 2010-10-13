@@ -104,7 +104,7 @@ function TinaServiceClass(url) {
     },
 
     /*
-      Access methods to objects stored in the database
+     * Access methods to objects stored in the database
     */
     getCorpus: function(_dataset, _id, cb) {
         //console.log("calling getCorpus("+_dataset+", "+_id+","+cb+")");
@@ -138,7 +138,7 @@ function TinaServiceClass(url) {
         );
     },
     /*
-    Special method to list existing datasets
+    Special method listing all existing datasets
     */
     getDatasetList: function(cb) {
         this.getDataset("", cb);
