@@ -35,9 +35,9 @@ $(document).ready(function() {
     });
 
     tinaviz.ready(function(){
-        
-   
-    var prefs = {    
+
+
+    var prefs = {
             gexf: "default.gexf",
             view: "macro",
             category: "Document",
@@ -51,20 +51,20 @@ $(document).ready(function() {
             node_filter_max: "1.0",
             layout: "tinaforce",
             edge_rendering: "curve"
-            
+
         };
         var urlVars = getUrlVars();
         for (x in urlVars) {
             prefs[x] = urlVars[x];
         }
-        
+
         tinaviz.setView(prefs.view);
 
         var session = tinaviz.session();
         var macro = tinaviz.views.macro;
         var meso = tinaviz.views.meso;
-        
-        
+
+
         session.add("nodes/0/keywords", "newKeyword");
 
         session.set("edgeWeight/min", parseFloat(prefs.edge_filter_min));
@@ -93,7 +93,7 @@ $(document).ready(function() {
         meso.filter("NodeWeightRangeHack", "nodeWeight");
         meso.filter("EdgeWeightRangeHack", "edgeWeight");
         meso.filter("Output", "output");
-                
+
         var layout_name=tinaviz.get("layout/algorithm");
         if (layout_name=="phyloforce"){
             tinaviz.infodiv = InfoDivPhyloweb('infodiv');
@@ -102,9 +102,9 @@ $(document).ready(function() {
             tinaviz.infodiv = InfoDiv('infodiv');
         }
         tinaviz.infodiv.reset();
-        
+
         $("#infodiv").accordion({
-            fillSpace: true
+            //fillSpace: true
         });
 
         toolbar.init();
@@ -136,7 +136,7 @@ $(document).ready(function() {
                 $.doTimeout(1000, function() {
                     $("#appletInfo").hide();
                 });
-                
+
             },
             error: function(msg) {
                 $("#appletInfo").html("error loading graph: "+msg);
@@ -145,10 +145,10 @@ $(document).ready(function() {
         });
 
         tinaviz.event({
-            
+
             selectionChanged: function(selection) {
                 tinaviz.infodiv.reset();
-                
+
                 if ( selection.mouseMode == "left" ) {
                 // nothing to do
                 } else if ( selection.mouseMode == "right" ) {
@@ -184,7 +184,7 @@ $(document).ready(function() {
 
                 var showFilter = false;
                 if (view.getName() == "meso") {
-                
+
                     // TODO check selection
                     // if selection has edges with edge of all the same weight, we disable the filter
                     var weight = null;
@@ -203,8 +203,8 @@ $(document).ready(function() {
                             }
                         }
                     }
-                    
-                } 
+
+                }
                 $("#sliderEdgeWeight").slider( "option", "disabled", false );
             }
         });
