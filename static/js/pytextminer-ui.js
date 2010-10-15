@@ -376,7 +376,7 @@ var initPytextminerUi = function() {
         hoverClass: "ui-state-hover",
         drop: function(event, ui) {
             $(this).empty();
-            $(this).append(ui.draggable.text());
+            $(this).append("chosen whitelist : " + ui.draggable.text());
             $(this).data("whitelistpath", ui.draggable.data("whitelistpath"));
         }
     }).html("<p>drag and drop here a white list</p>");
