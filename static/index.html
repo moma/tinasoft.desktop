@@ -170,14 +170,14 @@
                                     </select>
                                 </th>
                                 <th class="ui-widget-content">documents edges type <select id="documents-graph-type" name="document graph type" class="ui-widget-content" >
-                                        <option selected value='logJaccard'>jaccard similarity</option>
-                                        <option value='sharedNgrams'>number of common key-phrases</option>
+                                        <option selected value='logJaccard'>jaccard-like similarity</option>
+                                        <option value='sharedNgrams'>count shared key-phrases</option>
                                     </select>
                                 </th>
                                 <th class="ui-widget-content">alpha coef for pseudo-inclusion<input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d class="ui-widget-content" />
                                 </th>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <th class="ui-widget-content">key-phrases edges' weight limits :
                                     <br/>min <input id="graph-ngrams-edges-min" class="ui-widget-content" type="number" value=0.0 min=0.0  max=1.0 step=0.01 />
                                     <br/>max <input id="graph-ngrams-edges-max" class="ui-widget-content" type="number" value=1.0 min=0.0  max=1.0 step=0.01 />
@@ -194,7 +194,7 @@
                                     <br/>min <input id="graph-documents-nodes-min" class="ui-widget-content" type="number" value=0 min=0 step=1 />
                                     <br/>max (0 = no limit) <input id="graph-documents-nodes-max" class="ui-widget-content" type="number" value=0 min=0 step=1 />
                                 </th>
-                            </tr>
+                            </tr>-->
                         </thead>
                     </table>
                 </div>

@@ -159,76 +159,12 @@ $(function() {
         );
     };
 
-
-    /* Writing a data set's graph action controler */
-
-    /*
-    var submitExportGraph = function(event) {
-        var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-        var whitelistpath = $("#whitelistfile")
-        // DEBUG
-        if ( whitelistpath.val() == '' ) {
-            whitelistpath.addClass('ui-state-error');
-            whitelistpath.addClass('ui-state-error');
-            console.log( "missing the white list path field" );
-            return false;
-        }
-        threshold = [0,1];
-        for (corpora in corporaAndPeriods) {
-            TinaService.runExportGraph(
-                corpora,
-                corporaAndPeriods[corpora],
-                threshold,
-                whitelistpath.val()
-            );
-            return true;
-        }
-    };
-    * /
-
-    /* Requests to export a data set's whitelist csv */
-
-    /*var submitExportWhitelist = function(event) {
-        var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
-        if( Object.size(corporaAndPeriods) == 0) {
-            alert("please select one or periods");
-            return false;
-        }
-        var complementwhitelistfile = $("#complementwhitelistfile");
-        var userstopwordsfile = $("#userstopwordsfile_whitelist");
-        var whitelistlabel = $("#whitelistlabel");
-        var minoccs = parseInt($("#exportminoccs").val());
-        if( IsNumeric(minoccs) === false ) {
-            alert("minimum occurrence must be a positive integer");
-            $("#extractminoccs").addClass("ui-state-error");
-            return false;
-        }
-        if ( whitelistlabel.val() == '' ) {
-            whitelistlabel.addClass('ui-state-error');
-            alert( "please choose a white list label" );
-            return false;
-        }
-
-        for (corpora in corporaAndPeriods) {
-            TinaService.getWhitelist(
-                corpora,
-                corporaAndPeriods[corpora],
-                whitelistlabel.val(),
-                complementwhitelistfile.val(),
-                userstopwordsfile.val(),
-                minoccs,
-                TinaServiceCallback.getWhitelist
-            );
-            return true;
-        }
-    };*/
     $('#importFile').click(function(event) {
         submitImportfile(event);
     });
     $('#indexFile').click(function(event) {
         submitIndexFile(event);
     });
-
     $('#processCooc').click(function(event) {
         submitprocessCoocGraph(event)
     });
