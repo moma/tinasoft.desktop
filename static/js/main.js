@@ -59,31 +59,28 @@ $(document).ready(function() {
         }
 
         tinaviz.setView(prefs.view);
-
-        var session = tinaviz.session();
         var macro = tinaviz.views.macro;
         var meso = tinaviz.views.meso;
 
+        //session.add("nodes/0/keywords", "newKeyword");
 
-        session.add("nodes/0/keywords", "newKeyword");
-
-        session.set("edgeWeight/min", parseFloat(prefs.edge_filter_min));
-        session.set("edgeWeight/max", parseFloat(prefs.edge_filter_max));
-        session.set("nodeWeight/min", parseFloat(prefs.node_filter_min));
-        session.set("nodeWeight/max", parseFloat(prefs.node_filter_max));
-        session.set("category/category", prefs.category);
-        session.set("output/nodeSizeMin", 5.0);
-        session.set("output/nodeSizeMax", 20.0);
-        session.set("output/nodeSizeRatio", parseFloat(prefs.magnify));
-        session.set("selection/radius", parseFloat(prefs.cursor_size));
-        session.set("layout/algorithm", prefs.layout)
-        session.set("rendering/edge/shape", prefs.edge_rendering);
-        session.set("data/source", "gexf");
+        tinaviz.set("edgeWeight/min", parseFloat(prefs.edge_filter_min));
+        tinaviz.set("edgeWeight/max", parseFloat(prefs.edge_filter_max));
+        tinaviz.set("nodeWeight/min", parseFloat(prefs.node_filter_min));
+        tinaviz.set("nodeWeight/max", parseFloat(prefs.node_filter_max));
+        tinaviz.set("category/category", prefs.category);
+        tinaviz.set("output/nodeSizeMin", 5.0);
+        tinaviz.set("output/nodeSizeMax", 20.0);
+        tinaviz.set("output/nodeSizeRatio", parseFloat(prefs.magnify));
+        tinaviz.set("selection/radius", parseFloat(prefs.cursor_size));
+        tinaviz.set("layout/algorithm", prefs.layout)
+        tinaviz.set("rendering/edge/shape", prefs.edge_rendering);
+        tinaviz.set("data/source", "gexf");
 
         macro.filter("Category", "category");
-        //macro.filter("NodeWeightRange", "nodeWeight");
-        //macro.filter("EdgeWeightRange", "edgeWeight");
-        macro.filter("Output", "output");
+        macro.filter("NodeWeightRange", "nodeWeight");
+        macro.filter("EdgeWeightRange", "edgeWeight");
+        //macro.filter("Output", "output");
 
         meso.filter("SubGraphCopyStandalone", "category");
         meso.set("category/source", "macro");
@@ -162,7 +159,6 @@ $(document).ready(function() {
                     }
                     tinaviz.updateNodes("meso", macroCategory);
                     tinaviz.views.meso.set("layout/iter", 0);
-                    tinaviz.views.meso.commit();
                     tinaviz.autoCentering();
                 }
                 tinaviz.infodiv.update(selection.viewName, selection.data);
