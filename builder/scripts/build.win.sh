@@ -26,9 +26,9 @@ mkdir $outpath
 echo " - copying freezed pytextminer from $buildname"
 sleep 2
 cp -Rf TinasoftPytextminer/build/$buildname $outpath/TinasoftPytextminer
-echo " - copying builder/Microsoft.VC90.CRT"
-sleep 2
-cp -Rf builder/Microsoft.VC90.CRT $outpath/TinasoftPytextminer
+#echo " - copying builder/Microsoft.VC90.CRT"
+#sleep 2
+#cp -Rf builder/Microsoft.VC90.CRT $outpath/TinasoftPytextminer
 
 echo " - moving platform specific files to the $outpath"
 sleep 2
