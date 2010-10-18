@@ -6,7 +6,7 @@ echo "#############################################"
 echo ""
 sleep 2
 name="Tinasoft"
-version="1.0alpha6"
+version="1.0alpha7"
 arch="WIN32"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
