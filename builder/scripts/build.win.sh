@@ -9,52 +9,37 @@ version="1.0alpha7"
 arch="WIN32"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
+buildname="exe.win32-2.6"
 
+echo " - creating or emptying $outpath"
+sleep 2
 if [ -e $outpath ]
   then
     rm -rf $outpath
 fi
-mkdir dist
+if [ ! -e dist ]
+    then
+        mkdir dist
+fi
 mkdir $outpath
 
-
-echo " - moving platform specific files to 'dist/'"
+echo " - copying freezed pytextminer from $buildname"
 sleep 2
-cp builder/start_win.bat $outpath
-
-if [ -e TinasoftPytextminer/build/exe.win32-2.6 ]
-    then
-        cp -Rf TinasoftPytextminer/build/exe.win32-2.6 $outpath/TinasoftPytextminer
-fi
+cp -Rf TinasoftPytextminer/build/$buildname $outpath/TinasoftPytextminer
+echo " - copying builder/Microsoft.VC90.CRT"
+sleep 2
 cp -Rf builder/Microsoft.VC90.CRT $outpath/TinasoftPytextminer
 
-echo " - copying tinasoft desktop files to output..."
+echo " - moving platform specific files to the $outpath"
 sleep 2
-cp -Rf static $outpath
-cp -f README $outpath
-cp -f LICENSE $outpath
-cp -f GNU-GPL.txt $outpath
-cp -f config_win.yaml $outpath
-cp -Rf shared $outpath
-mkdir $outpath/source_files
-cp TinasoftPytextminer/source_files/tinacsv_test*.csv $outpath/source_files
-cp -f TinasoftPytextminer/README $outpath/TinasoftPytextminer
-cp -f TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
-cp -f TinasoftPytextminer/GNU-GPL.txt $outpath/TinasoftPytextminer
-cp -f user_stopwords.csv $outpath
-cp -f builder/*.txt $outpath/TinasoftPytextminer
+cp builder/start_win.bat $outpath
+cp -f TinasoftPytextminer/config_win.yaml $outpath
 
-echo " - cleaning dist and creating the release compressed archive..."
+./builder/scripts/subscript.build.common.sh "$outpath"
+
+echo " - creating the compressed archive..."
 sleep 2
-find $outpath -name "*swp" -delete
-find $outpath -name "*~" -delete
-find $outpath -name "*swo" -delete
-find $outpath -name "*.log" -delete
-find $outpath/shared/nltk_data -name "*.zip" -delete
-find $outpath/shared -name "*.cache" -delete
-#find $outpath/shared -name "*.pickle" -delete
-find $outpath/source_files -name "*.txt" -delete
 cd dist
 zip -q -r $outfile.zip $outfile
 cd ..
-echo " - created the archive : dist/$outfile.zip"
+echo " - finished, archive is : $outfile.zip"

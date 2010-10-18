@@ -12,4 +12,4 @@ buildname="exe.linux-i686-2.6"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
-sh ./builder/scripts/subscript.build.linux.sh $outpath $buildname $outfile
+./builder/scripts/subscript.build.linux.sh "$outpath" "$buildname" "$outfile"
