@@ -1,5 +1,4 @@
-#/bin/bash
-
+#!/usr/bin/env bash
 echo "#############################################"
 echo "# BUILD TINASOFT FOR WINDOWS 32BIT PLATFORMS #"
 echo "#############################################"
@@ -35,16 +34,14 @@ cp -Rf static $outpath
 cp -f README $outpath
 cp -f LICENSE $outpath
 cp -f GNU-GPL.txt $outpath
-cp -f $outpath/TinasoftPytextminer/config_win.yaml $outpath
-#cp -Rf TinasoftPytextminer/shared $outpath
-mv $outpath/TinasoftPytextminer/shared $outpath
+cp -f config_win.yaml $outpath
+cp -Rf shared $outpath
 mkdir $outpath/source_files
 cp TinasoftPytextminer/source_files/tinacsv_test*.csv $outpath/source_files
-#cp -Rf TinasoftPytextminer/source_files $outpath
 cp -f TinasoftPytextminer/README $outpath/TinasoftPytextminer
 cp -f TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
 cp -f TinasoftPytextminer/GNU-GPL.txt $outpath/TinasoftPytextminer
-cp -f TinasoftPytextminer/user_stopwords.csv $outpath
+cp -f user_stopwords.csv $outpath
 cp -f builder/*.txt $outpath/TinasoftPytextminer
 
 echo " - cleaning dist and creating the release compressed archive..."
@@ -55,6 +52,7 @@ find $outpath -name "*swo" -delete
 find $outpath -name "*.log" -delete
 find $outpath/shared/nltk_data -name "*.zip" -delete
 find $outpath/shared -name "*.cache" -delete
+#find $outpath/shared -name "*.pickle" -delete
 find $outpath/source_files -name "*.txt" -delete
 cd dist
 zip -q -r $outfile.zip $outfile
