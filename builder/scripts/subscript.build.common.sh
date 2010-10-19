@@ -7,18 +7,17 @@ cp -Rf static $outpath
 cp -Rf shared $outpath
 mkdir $outpath/source_files
 cp TinasoftPytextminer/source_files/tinacsv_test*.csv $outpath/source_files
-cp -f user_stopwords.csv $outpath
+cp TinasoftPytextminer/user_stopwords.csv $outpath
 
-echo " - copying information texts to output..."
+echo " - copying information texts to $outpath..."
 sleep 2
-cp -f README $outpath
-cp -f LICENSE $outpath
-cp -f GNU-GPL.txt $outpath
-cp -f TinasoftPytextminer/README $outpath/TinasoftPytextminer
-cp -f TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
-cp -f TinasoftPytextminer/GNU-GPL.txt $outpath/TinasoftPytextminer
-cp -f builder/*.txt $outpath/TinasoftPytextminer
-
+cp README $outpath
+cp LICENSE $outpath
+cp GNU-GPL.txt $outpath
+cp TinasoftPytextminer/README $outpath/TinasoftPytextminer
+cp TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer
+cp TinasoftPytextminer/GNU-GPL.txt $outpath/TinasoftPytextminer
+cp builder/*.txt $outpath/TinasoftPytextminer
 
 echo " - cleaning some files..."
 sleep 2
