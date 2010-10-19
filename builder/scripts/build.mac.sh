@@ -42,7 +42,11 @@ cd ..
 
 echo " - moving platform specific files to the $outpathred"
 cp $pytextminer/config_unix.yaml $outpathres
-
+# special directory for common files
+if [ ! -e $outpathres/TinasoftPytextminer ]
+    then
+        mkdir $outpathres/TinasoftPytextminer
+fi
 ./builder/scripts/subscript.build.common.sh "$outpathres"
 
 echo " - creating a release archive and a DMG"
