@@ -13,6 +13,8 @@ outpath="$pytextminer/dist/$name.app"
 outpathres="$outpath/Contents/Resources"
 outfile="$name-$version-$arch"
 
+echo " - cleaning temporary dist and build directories..."
+sleep 2
 if [ -e $pytextminer/dist ]
   then
     rm -rf $pytextminer/dist
@@ -23,6 +25,11 @@ if [ -e $pytextminer/build ]
     rm -rf $pytextminer/build
 fi
 
+mkdir $pytextminer/build
+mkdir $pytextminer/dist 
+
+echo " - removing older packages..."
+sleep 2
 if [ -e $outfile.zip ]
   then
     rm -rf $outfile.zip
@@ -47,6 +54,8 @@ cp $pytextminer/config_unix.yaml $outpathres
 
 echo " - creating a release archive and a DMG"
 sleep 2
-zip -r $outfile.zip $outpath
+cd $pytextminer/dist
+zip -q -r $outfile.zip $name.app
+cd ../.. && mv $pytextminer/dist/$outfile.zip .
 hdiutil create $outfile.dmg -volname "$name $version" -fs HFS+ -srcfolder "$outpath"
 
