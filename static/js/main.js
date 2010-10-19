@@ -79,7 +79,7 @@ $(document).ready(function() {
 
         macro.filter("Category", "category");
         macro.filter("NodeWeightRange", "nodeWeight");
-        //macro.filter("EdgeWeightRange", "edgeWeight");
+        macro.filter("EdgeWeightRange", "edgeWeight");
         macro.filter("Output", "output");
 
         meso.filter("SubGraphCopyStandalone", "category");
@@ -153,8 +153,8 @@ $(document).ready(function() {
                         tinaviz.setView("meso");
                     }
                     tinaviz.updateNodes("meso", macroCategory);
-                    tinaviz.views.meso.set("layout/iter", 0);
                     tinaviz.autoCentering();
+                    tinaviz.views.meso.set("layout/iter", 0);
                 }
                 tinaviz.infodiv.update(selection.viewName, selection.data);
             },
