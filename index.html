@@ -45,12 +45,17 @@
         <div class="slide">
           <section>
             <header>
-              <h2>Prerequisites</h2>
+              <h2>Get it</h2>
             </header>
             <ul class="bulleted">
+                <li>Download the latest package (no installation needed) from <a href="http://tinasoft.eu/download">our website</a></p></li>
+                <li>Prerequisites</p>
+                <ul class="bulleted">
                 <li>MS Windows XP/Vista, GNU/Linux 2.6+, and soon Mac OS X 10.6+</p></li>
                 <li><a href="http://getfirefox.com">a modern web browser</a></p></li>
                 <li><a href="http://java.com">Oracle Java 6+</a></p></li>
+                </ul>
+                </li>
             </ul>
           </section>
         </div>
@@ -84,11 +89,12 @@ scientific research projects and proposals."
                     </pre>
                 </li>
                 <li>
-                    <a href="http://pubmed.gov">pubmed.gov</a> <b>Medline</b></p>try this query
+                    <a href="http://pubmed.gov">pubmed.gov</a> <b>Medline</b></p>
+                    try this query
                     <pre>
 ("cancer"[Title/Abstract]) AND "2000/01/01"[Publication Date] :
 "2010/01/01"[Publication Date]
-                    </pre>
+                    </pre></p>
                 </li>
                 <li>and more soon...</p></li>
             </ul>
@@ -126,7 +132,7 @@ scientific research projects and proposals."
         <div class="slide">
           <section>
             <header>
-              <h2>Dataset</h2>
+              <h2>Data set : a directed and weighted graph database</h2>
             </header>
             <script type="text/javascript+protovis">
                 var w = 800,
@@ -144,17 +150,17 @@ scientific research projects and proposals."
                     .nodes(dataset.nodes)
                     .links(dataset.links);
 
-                force.link.add(pv.Line).size(function(d) d.linkDegree + 4);
+                force.link.add(pv.Line);
 
                 force.node.add(pv.Dot)
-                    .size(function(d) (d.linkDegree + 4) * Math.pow(this.Scale, -1.5))
+                    .size(function(d) (d.linkDegree + 4) * Math.pow(this.scale, -1.5))
                     .fillStyle(function(d) d.fix ? "brown" : colors(d.group))
                     .strokeStyle(function() this.fillStyle().darker())
                     .lineWidth(1)
                     .title(function(d) d.nodeName)
                     .event("mousedown", pv.Behavior.drag())
                     .event("drag", force)
-                    .add(pv.Label).text(function(d) d.nodeName);
+                    .add(pv.Label).text(function(d) d.nodeName).event("drag", force);
 
                 vis.render();
             </script>
@@ -169,6 +175,39 @@ scientific research projects and proposals."
             <ul class="bulleted">
                 <li>choose period(s) within a dataset and a <i>whitelist</i></p></li>
                 <li>select relationships between documents and keyphrases</p></li>
+                <li>update the data set with new edges</p></li>
+                <li>optionnally export the entire graph to <a href="http://gexf.net/">gexf file</a> and <a href="http://github.com/moma/tinaweb">publish it online with Tinaweb</a> or <a href="http://gephi.org">explore it with Gephi</a></p></li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="slide">
+          <section>
+            <header>
+              <h2>Explore graphs</h2>
+            </header>
+            <ul class="bulleted">
+                <li>Navigating in the network
+                <ul class="bulleted">
+                    <li>Translation: Click anywhere and drag the mouse</li>
+                    <li>Zoom: Use the mouse scroll, or double-click </li>
+                </ul>
+                </p></li>
+                <li>Node selection and related informations (right panel)
+                <ul class="bulleted">
+                    <li>Click on a a node to append it to the current selection</li>
+                    <li>Click on a selected node to remove it from the current selection</li>
+                    <li>Double-click on a node to switch to it's local neighbourhood</li>
+                    <li>Click on the <i>close</i> button, in the right panel, to empty the selection</li>
+                    <li>Change the cursor size, in the top toolbar, to select multiple nodes at the same time</li>
+                </ul>
+                </p></li>
+                <li>Graph filtering
+                <ul class="bulleted">
+                    <li>The top toolbar contains node's and edge's weight filters</li>
+                    <li>Spatialization automatically adapts to the filtered graph</li>
+                </ul>
+                </p></li>
             </ul>
           </section>
         </div>

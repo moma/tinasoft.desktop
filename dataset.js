@@ -18,6 +18,8 @@ var dataset = {
     {source:3, target:1, value:5},
     {source:2, target:3, value:10},
     {source:3, target:2, value:10},
+    {source:5, target:3, value:1},
+    {source:3, target:5, value:1},
     {source:2, target:5, value:15},
     {source:5, target:2, value:15},
     {source:4, target:5, value:1},
