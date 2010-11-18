@@ -28,7 +28,7 @@ $(function() {
         return unsafe.replace(/[^\w]/g,"");
     };
 
-    var submitImportfile = function(event) {
+    var submitExtractFile = function(event) {
         var corpora = $("#importdatasetid");
         if ( corpora.val() == '' ) {
             corpora.addClass('ui-state-error');
@@ -106,7 +106,7 @@ $(function() {
      * then to generate a graph
      */
 
-    var submitprocessCoocGraph = function(event) {
+    var submitGenerateGraph = function(event) {
         var whitelistpath = $("#graph_whitelist").data("whitelistpath");
         if ( whitelistpath == '' ||  whitelistpath === undefined ) {
             $("#graph_whitelist").addClass('ui-state-error');
@@ -159,14 +159,14 @@ $(function() {
         );
     };
 
-    $('#importFile').click(function(event) {
-        submitImportfile(event);
+    $('#extractFile').click(function(event) {
+        submitExtractFile(event);
     });
     $('#indexFile').click(function(event) {
         submitIndexFile(event);
     });
-    $('#processCooc').click(function(event) {
-        submitprocessCoocGraph(event)
+    $('#genGraph').click(function(event) {
+        submitGenerateGraph(event)
     });
 
 

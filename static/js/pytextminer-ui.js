@@ -365,6 +365,15 @@ var initPytextminerUi = function() {
             }
         );
     });
+    $("#exit_server").button({
+        icons: { primary:'ui-icon-power' },
+        text: true,
+        label: "shutdown server"
+    })
+    .click(function(event) {
+        TinaService.exit(TinaServiceCallback.exit);
+    });
+
     /* wait a little bit for the http server to wake up */
     setTimeout("",1000);
     /* Fetch data into table */

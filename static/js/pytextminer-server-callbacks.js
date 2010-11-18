@@ -40,174 +40,93 @@ var ERROR_MSG = "error, please report the logs to bug tracker";
 
 /* Tinasoft Server callback */
 var SERVER_URL= "http://localhost:8888";
-//$(document).ready(function() {
-    var TinaServiceCallback = {
-        /*importFile : {
-            success: function(data, textStatus, XMLHttpRequest) {
-                // data contains json encoded list of duplicate documents found
-                displayDuplicateDocs( data );
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $('#importFile').addClass("ui-state-error", 1);
-                $('#importFile').html( "error, please report the log file to bugtracker" );
-            },
-            complete: function(XMLHttpRequest, textStatus) {
-                $('#importFile').removeClass("ui-state-disabled", 1);
-                $('#importFile').html( "Launch" );
-                displayDataTable( "data_table" );
-            },
-            beforeSend: function() {
-                $("#importfilepath").removeClass("ui-state-error", 1);
-                $("#importdatasetid").removeClass("ui-state-error", 1);
-                $("#extractminoccs").removeClass("ui-state-error", 1);
-                $('#importFile').removeClass("ui-state-error", 1);
-                $('#importFile').addClass("ui-state-disabled", 1);
-                $('#importFile').html( "please wait during import" );
-                // add progress state notification
-            }
-        },*/
-        extractFile : {
-            success: function(data, textStatus, XMLHttpRequest) {
-                // data contains a path to the whitelist extracted
-                editUserFile(data);
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $('#importFile').addClass("ui-state-error", 1);
-                $('#importFile').html( ERROR_MSG );
-            },
-            complete: function(XMLHttpRequest, textStatus) {
-                $('#importFile').removeClass("ui-state-disabled", 1);
-                $('#importFile').html( "Launch" );
-                displayDataTable( "data_table" );
-            },
-            beforeSend: function() {
-                $("#importfilepath").removeClass("ui-state-error", 1);
-                $("#importdatasetid").removeClass("ui-state-error", 1);
-                $("#extractminoccs").removeClass("ui-state-error", 1);
-                $('#importFile').removeClass("ui-state-error", 1);
-                $('#importFile').addClass("ui-state-disabled", 1);
-                $('#importFile').html( "please wait during extraction" );
-                // add progress state notification
-            }
-        },
-        postFile : {
-            success: function(data, textStatus, XMLHttpRequest) {
-                // data contains json encoded list of duplicate documents found
-                displayDuplicateDocs( data );
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $('#indexFile').addClass("ui-state-error", 1);
-                $('#indexFile').html( ERROR_MSG );
-            },
-            complete: function(XMLHttpRequest, textStatus) {
-                $('#indexFile').removeClass("ui-state-disabled", 1);
-                $('#indexFile').html( "Launch" );
-                /* Fetch data into table */
-                displayDataTable( "data_table" );
-            },
-            beforeSend: function() {
-                $("#indexfilepath").removeClass("ui-state-error", 1);
-                $("#indexdatasetid").removeClass("ui-state-error", 1);
-                $("#indexwhitelistpath").removeClass("ui-state-error", 1);
-                $('#indexFile').removeClass("ui-state-error", 1);
-                $('#indexFile').addClass("ui-state-disabled", 1);
-                $('#indexFile').html( "please wait during indexation" );
-                // add progress state notification
-            }
-        },
-        getDocument: {
-            success: function(data, textStatus, XMLHttpRequest) {
-                alert("data:"+data);
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("error in tinaservice.getDocument:"+textStatus);
-            },
-            complete: function(XMLHttpRequest, textStatus) {
-                // execute apres error ou success
-            },
-            beforeSend: function() {
-                // 
-            }
-            
-        },
-        /*postCooc: {
-            success: function(data, textStatus, XMLHttpRequest) {
-                console.log("postCooc success");
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $('#processCooc').addClass("ui-state-error", 1);
-                $('#processCooc').html( ERROR_MSG );
-            },
-            complete: function(XMLHttpRequest, textStatus) {
-                console.log("postCooc completed");
-                //$('#processCooc').removeClass("ui-state-disabled", 1);
-                //$('#processCooc').html( "Launch" );
-            },
-            beforeSend: function() {
-                $("#coocwhitelistpath").removeClass("ui-state-error", 1);
-                $('#processCooc').removeClass("ui-state-error", 1);
-                $('#processCooc').addClass("ui-state-disabled", 1);
-                $('#processCooc').html( "please wait during cooccurrences processing" );
-                // add progress state notification
-            }
-        },*/
-        postGraph: {
-            success: function(data, textStatus, XMLHttpRequest) {
-                // data contains a path to the graph exported
-                $('#processCooc').html( "Loading macro view" );
-                loadGraph(data);
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $('#processCooc').addClass("ui-state-error", 1);
-                $('#processCooc').html( ERROR_MSG );
-            },
-            complete: function(XMLHttpRequest, textStatus) {
-                $('#processCooc').removeClass("ui-state-disabled", 1);
-                $('#processCooc').html( "Launch" );
-                displayDataTable( "data_table" );
-            },
-            beforeSend: function() {
-                $('#processCooc').removeClass("ui-state-error", 1);
-                $('#processCooc').addClass("ui-state-disabled", 1);
-                $('#processCooc').html( "please wait during graph production" );
-                // add progress state notification
-            }
-        },
-        getWhitelist: {
-            success: function(data, textStatus, XMLHttpRequest) {
-                editUserFile(data);
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $('#exportWhitelist').addClass("ui-state-error", 1);
-                $('#exportWhitelist').html( ERROR_MSG );
-            },
-            complete: function(XMLHttpRequest, textStatus) {
-                $('#exportWhitelist').removeClass("ui-state-disabled", 1);
-                $('#exportWhitelist').html( "Export a whitelist" );
-                displayDataTable( "data_table" );
-            },
-            beforeSend: function() {
-                $("#whitelistlabel").removeClass("ui-state-error");
-                $("#extractminoccs").removeClass("ui-state-error");
-                $('#exportWhitelist').removeClass("ui-state-error", 1);
-                $('#exportWhitelist').addClass("ui-state-disabled", 1);
-                $('#exportWhitelist').html( "please wait during whitelist exportation" );
-                // add progress state notification
-            }
-        }
-    };
-//});
 
-/* Setting Tinasoft observers */
-/*
-var ObserverServ = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-// Observers registering
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runImportFile_running_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportCorpora_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportCorpora_running_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runProcessCoocGraph_running_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_finish_status" , false );
-ObserverServ.addObserver ( tinasoftTaskObserver , "tinasoft_runExportGraph_running_status" , false );
-*/
+var TinaServiceCallback = {
+
+    extractFile : {
+        success: function(data, textStatus, XMLHttpRequest) {
+            // data contains a path to the whitelist extracted
+            editUserFile(data);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            $('#importFile').addClass("ui-state-error", 1);
+            $('#importFile').html( ERROR_MSG );
+        },
+        complete: function(XMLHttpRequest, textStatus) {
+            $('#importFile').removeClass("ui-state-disabled", 1);
+            $('#importFile').html( "Launch" );
+            displayDataTable( "data_table" );
+        },
+        beforeSend: function() {
+            $("#importfilepath").removeClass("ui-state-error", 1);
+            $("#importdatasetid").removeClass("ui-state-error", 1);
+            $("#extractminoccs").removeClass("ui-state-error", 1);
+            $('#importFile').removeClass("ui-state-error", 1);
+            $('#importFile').addClass("ui-state-disabled", 1);
+            $('#importFile').html( "please wait during extraction" );
+            // add progress state notification
+        }
+    },
+
+    postFile : {
+        success: function(data, textStatus, XMLHttpRequest) {
+            // data contains json encoded list of duplicate documents found
+            displayDuplicateDocs( data );
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            $('#indexFile').addClass("ui-state-error", 1);
+            $('#indexFile').html( ERROR_MSG );
+        },
+        complete: function(XMLHttpRequest, textStatus) {
+            $('#indexFile').removeClass("ui-state-disabled", 1);
+            $('#indexFile').html( "Launch" );
+            /* Fetch data into table */
+            displayDataTable( "data_table" );
+        },
+        beforeSend: function() {
+            $("#indexfilepath").removeClass("ui-state-error", 1);
+            $("#indexdatasetid").removeClass("ui-state-error", 1);
+            $("#indexwhitelistpath").removeClass("ui-state-error", 1);
+            $('#indexFile').removeClass("ui-state-error", 1);
+            $('#indexFile').addClass("ui-state-disabled", 1);
+            $('#indexFile').html( "please wait during indexation" );
+            // add progress state notification
+        }
+    },
+
+    postGraph: {
+        success: function(data, textStatus, XMLHttpRequest) {
+            // data contains a path to the graph exported
+            $('#processCooc').html( "Loading macro view" );
+            loadGraph(data);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            $('#processCooc').addClass("ui-state-error", 1);
+            $('#processCooc').html( ERROR_MSG );
+        },
+        complete: function(XMLHttpRequest, textStatus) {
+            $('#processCooc').removeClass("ui-state-disabled", 1);
+            $('#processCooc').html( "Launch" );
+            displayDataTable( "data_table" );
+        },
+        beforeSend: function() {
+            $('#processCooc').removeClass("ui-state-error", 1);
+            $('#processCooc').addClass("ui-state-disabled", 1);
+            $('#processCooc').html( "please wait during graph production" );
+            // add progress state notification
+        }
+    },
+
+    exit: {
+        success: function(data, textStatus, XMLHttpRequest) {
+        },
+        complete: function(XMLHttpRequest, textStatus) {
+
+        },
+        beforeSend: function() {
+            $("#exit_server").button("disable");
+            $("#exit_server").button("option", "icons", { primary: "ui-icon-alert" });
+            $("#exit_server").addClass('ui-state-error')
+        }
+    }
+};

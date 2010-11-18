@@ -72,6 +72,7 @@
             <div id="working_session" class="ui-widget ui-corner-all">
                 <button id="toggle_working_session"></button>
                 <button id="toggle_about"></button>
+                <button id="exit_server"></button>
                 <div id="data_table" class="ui-widget-content ui-corner-all">
                     <table id="corpora_table">
                         <thead>
@@ -103,7 +104,7 @@
                                 </th>
                                 <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
 
-                                <th class="ui-widget-content"><button id="importFile" class="ui-state-default ui-corner-all">Launch</button>
+                                <th class="ui-widget-content"><button id="extractFile" class="ui-state-default ui-corner-all">Launch</button>
                                 </th>
                                 <th class="ui-widget-content">white list label<br/>(default: same as the data set)<input id="importwhitelistlabel" class="ui-widget-content" type="text" size="12" name="white list label" value="" />
                                 </th>
@@ -152,7 +153,7 @@
                             <tr>
                                 <th id="graph_periods" class="ui-widget-content periodselectable"></th>
                                 <th id="graph_whitelist" class="ui-widget-content whitelistdroppable"></th>
-                                <th class="ui-widget-content"><button id="processCooc" class="ui-state-default ui-corner-all">Launch</button></th>
+                                <th class="ui-widget-content"><button id="genGraph" class="ui-state-default ui-corner-all">Launch</button></th>
                                 <th class="ui-widget-content">graph label <input class="ui-widget-content"  id="graphlabel" type="text" name="graph label" value="" />
                                 </th>
                                 <th class="ui-widget-content">key-phrases edges type <select id="ngrams-graph-type" name="ngrams graph type" class="ui-widget-content" >

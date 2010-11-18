@@ -23,27 +23,13 @@ function TinaServiceClass(url) {
     var SERVER_URL = url; // don't forget the "/" at the end
 
     return {
-    SERVER_URL: SERVER_URL,
-    /*
-    url="http://localhost:8888/graph?$dataset&filetype=gexf"
-    */
-    getGraph: function(_dataset, cb) {
-        this._GET("graph",
-            {
-                dataset: this.encodeURIComponent(_dataset)
-            },
-            {
-                error: "couldn't getGraph"
-            },
-            cb
-        );
 
-    },
+    SERVER_URL: SERVER_URL,
 
     /*
      * url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
     */
-    getFile: function(_path, _dataset, _whitelistlabel, _format, _overwrite, _minoccs, _userstopwords, cb) {
+    getFile: function(_path, _dataset, _whitelistlabel, _format, _minoccs, _userstopwords, cb) {
 
         this._GET("file",
             {
@@ -51,7 +37,6 @@ function TinaServiceClass(url) {
                 dataset: this.encodeURIComponent(this.protectPath(_dataset)),
                 whitelistlabel: this.encodeURIComponent(this.protectPath(_whitelistlabel)),
                 format:  _format,
-                overwrite:  _overwrite,
                 minoccs: _minoccs,
                 userstopwords: _userstopwords
             },
@@ -63,56 +48,31 @@ function TinaServiceClass(url) {
     },
 
     /*
-     * OBSOLETE
-     * TODO update to export cooc matrix file
-     * url="http://localhost:8888/cooccurrences?$periods$whitelist"
-    */
-    getCooccurrences: function(_periods, _whitelistpath, cb) {
-        this._GET("cooccurrences",
-            {
-                periods: _periods,
-                whitelistpath: _whitelistpath
-            },
-            {
-                error:"couldn't getCooccurrences"
-            },
-            cb
-        );
-    },
-
-    /*
-     * OBSOLETE
-     * url="http://localhost:8888/whitelist?$periods$dataset$whitelistlabel"
-    */
-    getWhitelist: function(_dataset, _periods, _whitelistlabel, _complementarywhitelist, _userstopwords, _minoccs, cb) {
-        //console.log("calling getWhitelist("+_dataset+","+_periods+","+_whitelistlabel+","+cb+")");
-        //console.log(_periods);
-        this._GET("whitelist",
-            {
-                dataset: this.protectPath(_dataset),
-                periods: _periods,
-                whitelistlabel: this.protectPath(_whitelistlabel),
-                whitelistpath: _complementarywhitelist,
-                userstopwords: _userstopwords,
-                minoccs: _minoccs
-            },
-            {
-                error:"couldn't getWhitelist"
-            },
-            cb
-        );
-    },
-
-    /*
      * Access methods to objects stored in the database
     */
     getCorpus: function(_dataset, _id, cb) {
-        //console.log("calling getCorpus("+_dataset+", "+_id+","+cb+")");
-        this._GET("corpus", { dataset: this.encodeURIComponent(_dataset), id: this.encodeURIComponent(_id) }, {error:"couldn't getCorpus"}, cb);
+        this._GET("corpus",
+            {
+                dataset: this.encodeURIComponent(_dataset),
+                id: this.encodeURIComponent(_id)
+            },
+            {
+                error:"couldn't getCorpus"
+            },
+            cb
+        );
     },
     getNGram: function(_dataset, _id, cb) {
-        //console.log("calling getNGram("+_dataset+","+_id+","+cb+")");
-        this._GET("ngram", { dataset: this.encodeURIComponent(_dataset), id: this.encodeURIComponent(_id) }, {error:"couldn't getNgram"}, cb);
+        this._GET("ngram",
+            {
+                dataset: this.encodeURIComponent(_dataset),
+                id: this.encodeURIComponent(_id)
+            },
+            {
+                error:"couldn't getNgram"
+            },
+            cb
+        );
     },
     getDocument: function(_dataset, _id, cb) {
         this._GET("document",
@@ -142,6 +102,16 @@ function TinaServiceClass(url) {
     */
     getDatasetList: function(cb) {
         this.getDataset("", cb);
+    },
+
+    getLog: function(cb) {
+        this._GET("log",
+            {},
+            {
+                error: "couldn't getLog"
+            },
+            cb
+        );
     },
 
     /*
@@ -180,6 +150,10 @@ function TinaServiceClass(url) {
          });
     },
 
+    exit: function(cb) {
+        this._GET("exit", {}, {error:"couldn't exit"}, cb);
+    },
+
     getWalkUserPath: function(_dataset, _filetype, cb) {
         this._GET("walk_user_path",
             {
@@ -215,6 +189,7 @@ function TinaServiceClass(url) {
             cb
         );
     },
+
     /************************************************************************
      * POST
      ************************************************************************/
@@ -239,41 +214,6 @@ function TinaServiceClass(url) {
             cb
         );
     },
-
-    /*
-     * postWhitelist
-     * curl http://localhost:8888/whitelist -d path="tests/data/pubmed_whitelist.csv" -d whitelistlabel="testwhitelist"
-    */
-    postWhitelist: function(_path, _whitelistlabel, cb) {
-        //console.log("calling postWhitelist("+_path+","+_whitelistlabel+","+cb+")");
-        this._POST("whitelist",
-            {
-                path: _path,
-                whitelistlabel: _whitelistlabel
-            },
-            {
-                error:"couldn't postWhitelist"
-            },
-            cb
-       );
-    },
-
-    /*
-    curl http://localhost:8888/cooccurrences -d dataset="test_data_set" -d whitelist="tests/data/pubmed_whitelist.csv" -d periods="1"
-    */
-    /*postCooccurrences: function(_dataset, _periods, cb) {
-        this._POST("cooccurrences",
-            // inpost params
-            {
-                dataset: _dataset,
-                periods: _periods
-            },
-            {
-                error:"couldn't postCooccurrences"
-            },
-            cb
-        );
-    },*/
 
     /*
     curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
@@ -334,7 +274,6 @@ function TinaServiceClass(url) {
             url: SERVER_URL+"/"+path,
             type: "POST",
             dataType: "json",
-            //data: $.parseJSON(params),
             data: params,
             beforeSend: cb.beforeSend,
             error: cb.error,
