@@ -417,6 +417,7 @@ var initPytextminerUi = function() {
     $(".ui-spinner-buttons").height(12);
     $(".ui-spinner-button").height(6);
 
+    TinaService.getLog(TinaServiceCallback.getLog);
 };
 
 

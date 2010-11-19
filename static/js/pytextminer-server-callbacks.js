@@ -107,5 +107,28 @@ var TinaServiceCallback = {
             $("#exit_server").button("option", "icons", { primary: "ui-icon-alert" });
             $("#exit_server").addClass('ui-state-error');
         }
+    },
+
+    getLog: {
+        success: function(data, textStatus, XMLHttpRequest) {
+            if (data.length == 0) {
+                setTimeout("", 500000);
+                TinaService.getLog(TinaServiceCallback.getLog);
+            }
+            else {
+                for (line in data) {
+                    console.log("pytextmier server : " + data[line]);
+                }
+                setTimeout("", 100000);
+                TinaService.getLog(TinaServiceCallback.getLog);
+            }
+        },
+        complete: function(XMLHttpRequest, textStatus) {
+        },
+        beforeSend: function() {
+        },
+        error: function(XMLHttpRequest, textStatus) {
+            console.error("error getting server's log, please open tinasoft-log.txt file instead");
+        },
     }
 };
