@@ -89,9 +89,9 @@ $(document).ready(function() {
         meso.set("category/category", "Document");
         meso.set("category/mode", "keep");
 
-        meso.filter("NodeWeightRangeHack", "nodeWeight");
-        meso.filter("EdgeWeightRangeHack", "edgeWeight");
-        meso.filter("Output", "output");
+        //meso.filter("NodeWeightRangeHack", "nodeWeight");
+        //meso.filter("EdgeWeightRangeHack", "edgeWeight");
+        //meso.filter("Output", "output");
 
         tinaviz.infodiv = InfoDiv('infodiv');
 
