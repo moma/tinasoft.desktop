@@ -411,6 +411,7 @@ var initPytextminerUi = function() {
     $("#extractminoccs").spinner();
     $(".ui-spinner-buttons").height(12);
     $(".ui-spinner-button").height(6);
+
 };
 
 

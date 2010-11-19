@@ -62,7 +62,6 @@ $(function() {
             safeString(corpora.val()),
             safeString(whitelistlabel.val()),
             filetype.val(),
-            overwrite,
             minoccs,
             userstopwords.val(),
             TinaServiceCallback.extractFile
