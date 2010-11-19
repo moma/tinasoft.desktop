@@ -68,10 +68,11 @@ function getFileURL(absPath) {
  */
 function editUserFile(path) {
     var url = getFileURL(path);
-    alert("How-to constitute a whitelist ?\n"
-    +"1- open the requested CSV file using a spreadsheet or text editor\n"
-    +"2- choose the keyphrases you want to keep by writing 'w' in the 'status' column\n"
-    +"3- make sure you've saved this file in place after editing\n"
+    alert("WHITE LIST EDITION\n"
+    +"Tips :\n"
+    +"1- choose a spreadsheet or text editor to open the requested CSV file\n"
+    +"2- choose keyphrases you want to index by writing w in the status column\n"
+    +"3- make sure you save this file in place when finished\n"
     +"We recommend using OpenOffice.org Calc, or any other spreadsheet editor than can handle CSV file without changing the native encoding and formatting (default utf-8, comma separated values, double-quoted text cells)\n"
     +"Warning : if nothing happens  after you close this window (e.g. blowser security blocking), please retry then copy and paste this URL in your browser's address bar :\n"+ url
     );

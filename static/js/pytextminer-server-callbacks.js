@@ -33,7 +33,7 @@ var TinaServiceCallback = {
             $('#importFile').html( ERROR_MSG );
         },
         complete: function(XMLHttpRequest, textStatus) {
-            $('#importFile').removeClass("ui-state-disabled", 1);
+            $('#importFile').button("enable");
             $('#importFile').html( "Launch" );
             displayDataTable( "data_table" );
         },
@@ -42,7 +42,7 @@ var TinaServiceCallback = {
             $("#importdatasetid").removeClass("ui-state-error", 1);
             $("#extractminoccs").removeClass("ui-state-error", 1);
             $('#importFile').removeClass("ui-state-error", 1);
-            $('#importFile').addClass("ui-state-disabled", 1);
+            $('#importFile').button("disable");
             $('#importFile').html( "please wait during extraction" );
             // add progress state notification
         }
@@ -58,7 +58,7 @@ var TinaServiceCallback = {
             $('#indexFile').html( ERROR_MSG );
         },
         complete: function(XMLHttpRequest, textStatus) {
-            $('#indexFile').removeClass("ui-state-disabled", 1);
+            $('#indexFile').button("enable");
             $('#indexFile').html( "Launch" );
             /* Fetch data into table */
             displayDataTable( "data_table" );
@@ -68,7 +68,7 @@ var TinaServiceCallback = {
             $("#indexdatasetid").removeClass("ui-state-error", 1);
             $("#indexwhitelistpath").removeClass("ui-state-error", 1);
             $('#indexFile').removeClass("ui-state-error", 1);
-            $('#indexFile').addClass("ui-state-disabled", 1);
+            $('#indexFile').button("disable");
             $('#indexFile').html( "please wait during indexation" );
             // add progress state notification
         }
@@ -85,13 +85,13 @@ var TinaServiceCallback = {
             $('#processCooc').html( ERROR_MSG );
         },
         complete: function(XMLHttpRequest, textStatus) {
-            $('#processCooc').removeClass("ui-state-disabled", 1);
+            $('#processCooc').button("enable");
             $('#processCooc').html( "Launch" );
             displayDataTable( "data_table" );
         },
         beforeSend: function() {
             $('#processCooc').removeClass("ui-state-error", 1);
-            $('#processCooc').addClass("ui-state-disabled", 1);
+            $('#processCooc').button("disable");
             $('#processCooc').html( "please wait during graph production" );
             // add progress state notification
         }
@@ -118,7 +118,7 @@ var TinaServiceCallback = {
             }
             else {
                 for (line in data) {
-                    console.log("pytextmier server : " + data[line]);
+                    console.log("pytextminer server : " + data[line]);
                 }
                 $.doTimeout( 1000, function(){
                     TinaService.getLog(TinaServiceCallback.getLog);
