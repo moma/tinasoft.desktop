@@ -121,7 +121,6 @@ var TinaServiceCallback = {
         success: function(data, textStatus, XMLHttpRequest) {
         },
         complete: function(XMLHttpRequest, textStatus) {
-
         },
         beforeSend: function() {
             $("#exit_server").button("disable");

@@ -46,7 +46,7 @@ function displayDuplicateDocs(data) {
  * $DATE-$LABEL-$TYPE.$EXT
  */
 function parseFileLabel(filename) {
-    return htmlEncode(filename.split("-")[1]);
+    return htmlEncode(filename.split("-")[0]);
 }
 
 /*
