@@ -112,15 +112,17 @@ var TinaServiceCallback = {
     getLog: {
         success: function(data, textStatus, XMLHttpRequest) {
             if (data.length == 0) {
-                setTimeout("", 500000);
-                TinaService.getLog(TinaServiceCallback.getLog);
+                $.doTimeout( 5000, function(){
+                    TinaService.getLog(TinaServiceCallback.getLog);
+                });
             }
             else {
                 for (line in data) {
                     console.log("pytextmier server : " + data[line]);
                 }
-                setTimeout("", 100000);
-                TinaService.getLog(TinaServiceCallback.getLog);
+                $.doTimeout( 1000, function(){
+                    TinaService.getLog(TinaServiceCallback.getLog);
+                });
             }
         },
         complete: function(XMLHttpRequest, textStatus) {
