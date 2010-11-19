@@ -54,45 +54,44 @@ var TinaServiceCallback = {
             displayDuplicateDocs( data );
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            $('#indexFile').addClass("ui-state-error", 1);
-            $('#indexFile').html( ERROR_MSG );
+            $('#indexFile').addClass("ui-state-error");
+            $('#indexFile').button( "option", "label", ERROR_MSG );
         },
         complete: function(XMLHttpRequest, textStatus) {
             $('#indexFile').button("enable");
-            $('#indexFile').html( "Launch" );
+            $('#indexFile').button( "option", "label", "launch" );
             /* Fetch data into table */
             displayDataTable( "data_table" );
         },
         beforeSend: function() {
-            $("#indexfilepath").removeClass("ui-state-error", 1);
-            $("#indexdatasetid").removeClass("ui-state-error", 1);
-            $("#indexwhitelistpath").removeClass("ui-state-error", 1);
-            $('#indexFile').removeClass("ui-state-error", 1);
+            $("#indexfilepath").removeClass("ui-state-error");
+            $("#indexdatasetid").removeClass("ui-state-error");
+            $("#indexwhitelistpath").removeClass("ui-state-error");
+            $('#indexFile').removeClass("ui-state-error");
             $('#indexFile').button("disable");
-            $('#indexFile').html( "please wait during indexation" );
-            // add progress state notification
+            $('#indexFile').button( "option", "label", "indexation in progress" );
         }
     },
 
     postGraph: {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the graph exported
-            $('#processCooc').html( "Loading macro view" );
+            $('#processCooc').button( "option", "label", "loading graph viz" );
             loadGraph(data);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            $('#processCooc').addClass("ui-state-error", 1);
-            $('#processCooc').html( ERROR_MSG );
+            $('#processCooc').addClass("ui-state-error");
+            $('#processCooc').button( "option", "label", ERROR_MSG );
         },
         complete: function(XMLHttpRequest, textStatus) {
             $('#processCooc').button("enable");
-            $('#processCooc').html( "Launch" );
+            $('#processCooc').button( "option", "label", "launch" );
             displayDataTable( "data_table" );
         },
         beforeSend: function() {
-            $('#processCooc').removeClass("ui-state-error", 1);
+            $('#processCooc').removeClass("ui-state-error");
             $('#processCooc').button("disable");
-            $('#processCooc').html( "please wait during graph production" );
+            $('#processCooc').button( "option", "label", "generating the graph" );
             // add progress state notification
         }
     },
