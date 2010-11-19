@@ -1,17 +1,19 @@
-//      This program is free software; you can redistribute it and/or modify
-//      it under the terms of the GNU General Public License as published by
-//      the Free Software Foundation; either version 2 of the License, or
-//      (at your option) any later version.
-//
-//      This program is distributed in the hope that it will be useful,
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//      GNU General Public License for more details.
-//
-//      You should have received a copy of the GNU General Public License
-//      along with this program; if not, write to the Free Software
-//      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-//      MA 02110-1301, USA.
+/*
+    Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
+#
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+#
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+#
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 /******************************************************************************
  * Functions displaying dynamic content
@@ -66,11 +68,12 @@ function getFileURL(absPath) {
  */
 function editUserFile(path) {
     var url = getFileURL(path);
-    alert("Opening the file, please follow these instructions :\n"
-    +"- choose N-Lemmas you want to keep by writing 'w' in the 'status' column\n"
-    +"- make sure you've saved this file in place after editing\n"
-    +"- we recommend using OpenOffice.org Calc, or any other spreadsheet editor than can handle CSV file without altering encoding and formatting (default utf-8, comma separated values, double-quoted text cells)\n"
-    +"- if nothing happens (e.g. blowser security), please copy and paste this URL in your address bar :\n"+ url
+    alert("How-to constitute a whitelist ?\n"
+    +"1- open the requested CSV file using a spreadsheet or text editor\n"
+    +"2- choose the keyphrases you want to keep by writing 'w' in the 'status' column\n"
+    +"3- make sure you've saved this file in place after editing\n"
+    +"We recommend using OpenOffice.org Calc, or any other spreadsheet editor than can handle CSV file without changing the native encoding and formatting (default utf-8, comma separated values, double-quoted text cells)\n"
+    +"Warning : if nothing happens  after you close this window (e.g. blowser security blocking), please retry then copy and paste this URL in your browser's address bar :\n"+ url
     );
     TinaService.getOpenUserFile(url);
 }
@@ -103,8 +106,9 @@ function displayGraphColumn(corpora) {
     );
     var ol = $( "#" + olid  ).empty();
 
-    TinaService.getGraph(
-        corpora.id,
+    TinaService.getWalkUserPath(
+        corpora['id'],
+        "gexf",
         {
             success: function(graphList) {
                 for ( var i=0; i < graphList.length; i++ ) {
@@ -368,11 +372,12 @@ var initPytextminerUi = function() {
     $("#exit_server").button({
         icons: { primary:'ui-icon-power' },
         text: true,
-        label: "shutdown server"
+        label: "shutdown server",
     })
     .click(function(event) {
         TinaService.exit(TinaServiceCallback.exit);
     });
+    $("#exit_server").button("enable");
 
     /* wait a little bit for the http server to wake up */
     setTimeout("",1000);

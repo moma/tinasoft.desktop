@@ -1,40 +1,20 @@
-//      This program is free software; you can redistribute it and/or modify
-//      it under the terms of the GNU General Public License as published by
-//      the Free Software Foundation; either version 2 of the License, or
-//      (at your option) any later version.
-//
-//      This program is distributed in the hope that it will be useful,
-//      but WITHOUT ANY WARRANTY; without even the implied warranty of
-//      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//      GNU General Public License for more details.
-//
-//      You should have received a copy of the GNU General Public License
-//      along with this program; if not, write to the Free Software
-//      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-//      MA 02110-1301, USA.
-
 /*
- *  convert the serverDir to a file:// URI
- */
-/*function getFileUrl(serverRelativePath) {
+    Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
+#
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+#
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+#
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
-    var arr = serverRelativePath.split(/\/|\\/), i;
-    // service producing URI
-    var ios = Components.classes["@mozilla.org/network/io-service;1"].
-                    getService(Components.interfaces.nsIIOService);
-
-    // directory service
-    var dirService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    var tinavizDir = dirService.get("resource:app", Components.interfaces.nsIFile);
-    var parentDir = tinavizDir.parent;
-    for (i = 0; i < arr.length; ++i) {
-        parentDir.append(arr[i]);
-    }
-    var ios = Components.classes["@mozilla.org/network/io-service;1"].
-                    getService(Components.interfaces.nsIIOService);
-    return ios.newFileURI(parentDir).spec;
-
-}*/
 
 var ERROR_MSG = "error, please report the logs to bug tracker";
 
@@ -125,7 +105,7 @@ var TinaServiceCallback = {
         beforeSend: function() {
             $("#exit_server").button("disable");
             $("#exit_server").button("option", "icons", { primary: "ui-icon-alert" });
-            $("#exit_server").addClass('ui-state-error')
+            $("#exit_server").addClass('ui-state-error');
         }
     }
 };
