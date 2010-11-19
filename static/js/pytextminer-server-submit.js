@@ -127,7 +127,7 @@ $(function() {
 
         var label = $("#graphlabel");
         var ngramGraphOptions = {
-            alpha: $("#graphalpha").spinner('value'),
+            //alpha: $("#graphalpha").spinner('value'),
             proximity: $("#ngrams-graph-type").val(),
             /*edgethreshold: [
                 $("#graph-ngrams-edges-min").spinner('value'),
@@ -160,15 +160,26 @@ $(function() {
         );
     };
 
-    $('#extractFile').click(function(event) {
-        submitExtractFile(event);
-    });
-    $('#indexFile').click(function(event) {
-        submitIndexFile(event);
-    });
-    $('#genGraph').click(function(event) {
-        submitGenerateGraph(event)
-    });
+    $('#extractFile')
+        .button({
+            text: true,
+            label: "launch",
+        }).click(function(event) {
+            submitExtractFile(event);
+        });
+    $('#indexFile').button({
+            text: true,
+            label: "launch",
+        }).click(function(event) {
+            submitIndexFile(event);
+        });
+    $('#genGraph')
+        .button({
+            text: true,
+            label: "launch",
+        }).click(function(event) {
+            submitGenerateGraph(event)
+        });
 
 
 });

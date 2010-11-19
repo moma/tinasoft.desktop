@@ -104,7 +104,7 @@
                                 </th>
                                 <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
 
-                                <th class="ui-widget-content"><button id="extractFile" class="ui-state-default ui-corner-all">Launch</button>
+                                <th class="ui-widget-content"><button id="extractFile"></button>
                                 </th>
                                 <th class="ui-widget-content">white list label<br/>(default: same as the data set)<input id="importwhitelistlabel" class="ui-widget-content" type="text" size="12" name="white list label" value="" />
                                 </th>
@@ -136,7 +136,7 @@
                                 </th>
                                 <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
 
-                                <th class="ui-widget-content"><button id="indexFile" class="ui-state-default ui-corner-all">Launch</button>
+                                <th class="ui-widget-content"><button id="indexFile"></button>
                                 </th>
                                 <th class="ui-widget-content"><div id="duplicate_docs_toggle">display duplicated documents</div></th>
                             </tr>
@@ -153,7 +153,7 @@
                             <tr>
                                 <th id="graph_periods" class="ui-widget-content periodselectable"></th>
                                 <th id="graph_whitelist" class="ui-widget-content whitelistdroppable"></th>
-                                <th class="ui-widget-content"><button id="genGraph" class="ui-state-default ui-corner-all">Launch</button></th>
+                                <th class="ui-widget-content"><button id="genGraph"></button></th>
                                 <th class="ui-widget-content">graph label <input class="ui-widget-content"  id="graphlabel" type="text" name="graph label" value="" />
                                 </th>
                                 <th class="ui-widget-content">key-phrases edges type <select id="ngrams-graph-type" name="ngrams graph type" class="ui-widget-content" >
@@ -164,11 +164,11 @@
                                 </th>
                                 <th class="ui-widget-content">documents edges type <select id="documents-graph-type" name="document graph type" class="ui-widget-content" >
                                         <option selected value='logJaccard'>jaccard-like similarity</option>
-                                        <option value='sharedNGrams'>count shared key-phrases</option>
+                                        <option value='sharedNGrams'>count shared keyphrases</option>
                                     </select>
                                 </th>
-                                <th class="ui-widget-content">alpha coef for pseudo-inclusion<input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d class="ui-widget-content" />
-                                </th>
+                                <!--<th class="ui-widget-content">alpha coef for pseudo-inclusion<input type="number" id="graphalpha" value=0.10 min=0.0 max=10 step=0.01d class="ui-widget-content" />
+                                </th>-->
                             </tr>
                             <!--<tr>
                                 <th class="ui-widget-content">key-phrases edges' weight limits :
