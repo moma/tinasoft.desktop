@@ -220,7 +220,7 @@ function TinaServiceClass(url) {
     /*
     curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
     */
-    postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, cb) {
+    postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, _exportedges, cb) {
         this._POST("graph",
             {
                 dataset: _dataset,
@@ -228,7 +228,8 @@ function TinaServiceClass(url) {
                 whitelistpath: _whitelistpath,
                 outpath: this.protectPath(_outpath),
                 ngramgraphconfig: $.param( _ngramoptions ),
-                documentgraphconfig: $.param( _documentoptions )
+                documentgraphconfig: $.param( _documentoptions ),
+                exportedges: _exportedges
             },
             {
                 error:"couldn't post graph"

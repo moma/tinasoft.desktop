@@ -54,7 +54,6 @@ $(document).ready(function() {
             $("#extractminoccs").addClass("ui-state-error");
             return false;
         }
-
         TinaService.getFile(
             path.val(),
             safeString(corpora.val()),
@@ -88,6 +87,7 @@ $(document).ready(function() {
             alert("please select a white list");
             return false;
         }
+        // debug
         var overwrite = 'False';
         TinaService.postFile(
             path.val(),
@@ -119,7 +119,6 @@ $(document).ready(function() {
             var corpora = corpname;
             break;
         }
-
         var label = $("#graphlabel");
         var ngramGraphOptions = {
             //alpha: $("#graphalpha").spinner('value'),
@@ -144,6 +143,9 @@ $(document).ready(function() {
                 $("#graph-documents-nodes-max").spinner('value')
             ]*/
         };
+        var exportGexf = $("#export-gexf").attr("checked");
+        if (exportGexf == true) exportGexf = 'True';
+        else exportGexf = 'False';
         TinaService.postGraph(
             corpora,
             corporaAndPeriods[corpora],
@@ -151,6 +153,7 @@ $(document).ready(function() {
             safeString( label.val() ),
             ngramGraphOptions,
             documentGraphOptions,
+            exportGexf,
             TinaServiceCallback.postGraph
         );
     };
@@ -176,5 +179,5 @@ $(document).ready(function() {
         }).click(function(event) {
             submitGenerateGraph(event)
         });
-
+    $("#export-gexf").button();
 });

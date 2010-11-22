@@ -106,6 +106,9 @@ var TinaServiceCallback = {
             $("#exit_server").button("disable");
             $("#exit_server").button("option", "icons", { primary: "ui-icon-alert" });
             $("#exit_server").addClass('ui-state-error');
+            $('#indexFileButton').button("disable");
+            $('#generateGraphButton').button("disable");
+            $('#extractFileButton').button("disable");
         }
     },
 

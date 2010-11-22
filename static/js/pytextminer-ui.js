@@ -397,7 +397,6 @@ var initPytextminerUi = function() {
     }).html("<p>drag and drop here a white list</p>");
 
     $(".periodselectable").html("<p>select periods<br/>(ctrl key for multiple selection)</p>");
-
     /* Init every upload file handler */
     /*var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");
     $("#importfilepath").get(0).addEventListener( "change", extract_input_upload.handleDrop, false );*/
