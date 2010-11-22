@@ -172,12 +172,12 @@ $(document).ready(function() {
                     parseInt(view.get("nodeWeight/min") ),
                     parseInt(view.get("nodeWeight/max")) *100
                 ]);
-                console.log("viewChanged");
+
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
 
                 var showFilter = false;
-                if (view.getName() == "meso") {
+                if (view.name == "meso") {
 
                     // TODO check selection
                     // if selection has edges with edge of all the same weight, we disable the filter
