@@ -1,16 +1,16 @@
 /*
     Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
-#
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-#
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-#
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -170,7 +170,6 @@ function displayWhitelistColumn(corpora) {
                     .click( function(eventObject) {
                         editUserFile($(this).attr("id"));
                     });
-                    /*.css('height',10);*/
                     whitelist_item.append(edit_link);
                     ol.append(whitelist_item);
                 }
@@ -252,7 +251,22 @@ function displayDatasetRow(list) {
         // populates and attach table rows
         var dataset_id = list[i];
         var trid = dataset_id + "_tr";
+        var edit_dataset = $("<a href='#'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-trash'
+                }
+            })
+            .attr("title", "click to definitely remove all dataset's files")
+            .data("id", dataset_id)
+            .click( function(eventObject) {
+                alert("WARNING\nAll the dataset's files and database will be erased !");
+                console.log($(this).data("id"));
+                TinaService.deleteDataset($(this).data("id"), TinaServiceCallback.deleteDataset);
+            });
         var tr = $("<tr id='"+trid+"'></tr>")
+            .append( $("<td class='ui-widget-content'></td>").append(edit_dataset) )
             .append( $("<td class='ui-widget-content'></td>").html(htmlEncode(dataset_id)) )
         ;
         tbody.append(tr);
@@ -370,14 +384,14 @@ var initPytextminerUi = function() {
             }
         );
     });
-    $("#exit_server").button({
-        icons: { primary:'ui-icon-power' },
-        text: true,
-        label: "shutdown server",
-    })
-    .click(function(event) {
-        TinaService.exit(TinaServiceCallback.exit);
-    });
+    $("#exit_server")
+        .button({
+            icons: { primary:'ui-icon-power' },
+            text: true,
+            label: "shutdown server",
+        }).click(function(event) {
+            TinaService.exit(TinaServiceCallback.exit);
+        });
     $("#exit_server").button("enable");
 
     /* wait a little bit for the http server to wake up */
@@ -397,7 +411,6 @@ var initPytextminerUi = function() {
     }).html("<p>drag and drop here a white list</p>");
 
     $(".periodselectable").html("<p>select periods<br/>(ctrl key for multiple selection)</p>");
-
     /* Init every upload file handler */
     /*var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");
     $("#importfilepath").get(0).addEventListener( "change", extract_input_upload.handleDrop, false );*/

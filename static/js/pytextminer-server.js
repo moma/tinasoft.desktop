@@ -1,21 +1,21 @@
 /*
     Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
-#
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-#
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-#
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-jQuery.ajaxSettings.traditional = true;
+//jQuery.ajaxSettings.traditional = true;
 
 function TinaServiceClass(url) {
 
@@ -27,6 +27,55 @@ function TinaServiceClass(url) {
     return {
 
     SERVER_URL: SERVER_URL,
+
+    /**
+     * do an HTTP REQUEST request to SERVER_URL + path
+     * SERVER_URL is a constant,
+     * path is a parameter,
+     */
+    _REQUEST: function(type, path, params, defaultcb, _cb, traditional, cache) {
+        // setup default values, if defined
+        if (traditional === undefined)
+            traditional = true;
+        if (cache === undefined)
+            cache = false;
+        //if (contentType === undefined)
+        //    contentType = "application/x-www-form-urlencoded";
+        var cb = {};
+        for (key in defaultcb) { cb[key] = defaultcb[key]; }
+        if ("error" in defaultcb) {
+            cb.error = function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("default error cb: "+defaultcb["error"]);
+                console.log(XMLHttpRequest, textStatus, errorThrown);
+            };
+        }
+        // overwrites default with the application's parmas
+        for (key in _cb) { cb[key] = _cb[key]; }
+        console.log( $.ajax({
+            // jquery to url
+            url: SERVER_URL+"/"+path,
+            type: type,
+            // expected return value
+            dataType: "json",
+            // request parameters
+            data: params,
+            beforeSend: cb.beforeSend,
+            error: cb.error,
+            success: cb.success,
+            complete: cb.complete,
+            traditional: traditional,
+            cache: false,
+            //contentType: contentType
+        }) );
+
+    },
+
+    /*
+     * HTTP GET request
+     */
+    _GET: function(path, params, defaultcb, _cb) {
+        this._REQUEST("GET", path, params, defaultcb, _cb);
+    },
 
     /*
      * url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
@@ -99,6 +148,7 @@ function TinaServiceClass(url) {
             cb
         );
     },
+
     /*
     Special method listing all existing datasets
     */
@@ -116,41 +166,6 @@ function TinaServiceClass(url) {
         );
     },
 
-    /*
-     * do an HTTP GET request to SERVER_URL + path + params
-     * SERVER_URL is a constant,
-     * path is a parameter,
-     * params is serialized to URL encoded arguments
-     */
-    _GET: function(path, params, defaultcb, _cb, _async) {
-        _async = true;
-        if (_async === undefined) {
-            _async = true;
-        }
-        // setup default values, if defined
-        var cb = {};
-        for (key in defaultcb) { cb[key] = defaultcb[key]; }
-        if ("error" in defaultcb) {
-            cb.error = function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("default error cb: "+defaultcb["error"]);
-                console.log(XMLHttpRequest, textStatus, errorThrown);
-            };
-        }
-        for (key in _cb) { cb[key] = _cb[key]; }
-
-        // call the jquery ajax, passing the params and the callbacks
-        $.ajax({
-                url: SERVER_URL+"/"+path,
-                data: params,
-                type: "GET",
-                dataType: "json",
-                beforeSend: cb.beforeSend,
-                error: cb.error,
-                success: cb.success,
-                complete: cb.complete,
-                cache: false
-         });
-    },
 
     exit: function(cb) {
         this._GET("exit", {}, {error:"couldn't exit"}, cb);
@@ -192,9 +207,12 @@ function TinaServiceClass(url) {
         );
     },
 
-    /************************************************************************
-     * POST
-     ************************************************************************/
+    /**
+     * HTTP POST request
+     */
+    _POST: function(path, params, defaultcb, _cb) {
+        this._REQUEST("POST", path, params, defaultcb, _cb);
+    },
 
     /*
     * postFile
@@ -218,9 +236,10 @@ function TinaServiceClass(url) {
     },
 
     /*
-    curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
+     * postGraph
+     * curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
     */
-    postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, cb) {
+    postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, _exportedges, cb) {
         this._POST("graph",
             {
                 dataset: _dataset,
@@ -228,7 +247,8 @@ function TinaServiceClass(url) {
                 whitelistpath: _whitelistpath,
                 outpath: this.protectPath(_outpath),
                 ngramgraphconfig: $.param( _ngramoptions ),
-                documentgraphconfig: $.param( _documentoptions )
+                documentgraphconfig: $.param( _documentoptions ),
+                exportedges: _exportedges
             },
             {
                 error:"couldn't post graph"
@@ -252,42 +272,16 @@ function TinaServiceClass(url) {
     },
 
     /**
-     * do an HTTP POST request to SERVER_URL + path
-     * SERVER_URL is a constant,
-     * path is a parameter,
+     * do an HTTP DELETE request to SERVER_URL + path
      */
-    _POST: function(path, params, defaultcb, _cb, traditional) {
-        if (traditional === undefined)
-            traditional = true;
-        // setup default values, if defined
-        var cb = {};
-        for (key in defaultcb) { cb[key] = defaultcb[key]; }
-        if ("error" in defaultcb) {
-            cb.error = function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("default error cb: "+defaultcb["error"]);
-                console.log(XMLHttpRequest, textStatus, errorThrown);
-            };
-        }
-        for (key in _cb) { cb[key] = _cb[key]; }
-
-        // call the jquery ajax, passing the params and the callbacks
-        $.ajax({
-            // jquery to url
-            url: SERVER_URL+"/"+path,
-            type: "POST",
-            dataType: "json",
-            data: params,
-            beforeSend: cb.beforeSend,
-            error: cb.error,
-            success: cb.success,
-            complete: cb.complete,
-            cache: false,
-            traditional: traditional
-            /*processData: false,
-            contentType: "application/json"*/
-        });
-
+    _DELETE: function( path, params, defaultcb, _cb ) {
+        this._REQUEST( "DELETE", path, params, defaultcb, _cb);
     },
+
+    deleteDataset: function( _dataset, cb ) {
+        this._DELETE( "dataset?dataset="+_dataset, {}, { error:"couldn't deleteDataset" }, cb );
+    },
+
 
     /*
      * transforms a relative path ("user/etc/") to an http:// url, compatible with windows paths

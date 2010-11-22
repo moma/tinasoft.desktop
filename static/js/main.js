@@ -1,20 +1,19 @@
 /*
     Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
-#
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-#
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-#
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 var tinaviz = {};
 
 $(document).ready(function() {
@@ -103,7 +102,7 @@ $(document).ready(function() {
 
         toolbar.init();
 
-/*
+        /*
         // init the node list with ngrams
         tinaviz.updateNodes( "macro", "NGram" );
 
@@ -160,6 +159,7 @@ $(document).ready(function() {
                 }
                 tinaviz.infodiv.update(selection.viewName, selection.data);
             },
+
             viewChanged: function(view) {
 
                 tinaviz.autoCentering();
@@ -172,6 +172,7 @@ $(document).ready(function() {
                     parseInt(view.get("nodeWeight/min") ),
                     parseInt(view.get("nodeWeight/max")) *100
                 ]);
+
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
 
