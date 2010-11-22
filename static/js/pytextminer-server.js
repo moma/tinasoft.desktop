@@ -51,7 +51,7 @@ function TinaServiceClass(url) {
         }
         // overwrites default with the application's parmas
         for (key in _cb) { cb[key] = _cb[key]; }
-        console.log( $.ajax({
+        $.ajax({
             // jquery to url
             url: SERVER_URL+"/"+path,
             type: type,
@@ -66,7 +66,7 @@ function TinaServiceClass(url) {
             traditional: traditional,
             cache: false,
             //contentType: contentType
-        }) );
+        });
 
     },
 
