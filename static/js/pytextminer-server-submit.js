@@ -22,15 +22,19 @@
 
 
 /*
- * Requests Pytextminer services
+ * Prepares requests to Pytextminer Server
  */
-$(function() {
+$(document).ready(function() {
 
     var safeString = function(unsafe) {
         return unsafe.replace(/[^\w]/g,"");
     };
 
+    /*
+     * Requests extraction of a source file's keyphrases
+     */
     var submitExtractFile = function(event) {
+
         var corpora = $("#importdatasetid");
         if ( corpora.val() == '' ) {
             corpora.addClass('ui-state-error');
@@ -41,18 +45,10 @@ $(function() {
             path.addClass('ui-state-error');
             return false;
         }
-
         var whitelistlabel = $("#importwhitelistlabel");
-
         var filetype = $("#importfiletype");
-
         var userstopwords = $("#importuserstopwords");
-
-        overwrite = 'False';
-
-        //var minoccs = parseInt($("#extractminoccs").val());
         var minoccs = $("#extractminoccs").spinner('value');
-
         if( ! IsNumeric(minoccs) ) {
             alert("minimum occurrences must be an integer");
             $("#extractminoccs").addClass("ui-state-error");
@@ -70,10 +66,10 @@ $(function() {
         );
 
     };
+
     /*
      * Requests indexation of a source file
      */
-
     var submitIndexFile = function(event) {
         var corpora = $("#indexdatasetid");
         var path = $("#indexfilepath");
@@ -102,11 +98,10 @@ $(function() {
             TinaServiceCallback.postFile
         );
     };
-    /*
-     * Requests to process cooccurrences
-     * then to generate a graph
-     */
 
+    /*
+     * Requests to generate a new graph
+     */
     var submitGenerateGraph = function(event) {
         var whitelistpath = $("#graph_whitelist").data("whitelistpath");
         if ( whitelistpath == '' ||  whitelistpath === undefined ) {
@@ -159,27 +154,27 @@ $(function() {
             TinaServiceCallback.postGraph
         );
     };
-
-    $('#extractFile')
+    $("#extractFileButton")
         .button({
             text: true,
             label: "launch",
         }).click(function(event) {
             submitExtractFile(event);
         });
-    $('#indexFile').button({
+
+    $("#indexFileButton").button({
             text: true,
             label: "launch",
         }).click(function(event) {
             submitIndexFile(event);
         });
-    $('#genGraph')
+
+    $("#generateGraphButton")
         .button({
             text: true,
             label: "launch",
         }).click(function(event) {
             submitGenerateGraph(event)
         });
-
 
 });
