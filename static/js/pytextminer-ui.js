@@ -170,7 +170,6 @@ function displayWhitelistColumn(corpora) {
                     .click( function(eventObject) {
                         editUserFile($(this).attr("id"));
                     });
-                    /*.css('height',10);*/
                     whitelist_item.append(edit_link);
                     ol.append(whitelist_item);
                 }
@@ -252,7 +251,22 @@ function displayDatasetRow(list) {
         // populates and attach table rows
         var dataset_id = list[i];
         var trid = dataset_id + "_tr";
+        var edit_dataset = $("<a href='#'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-trash'
+                }
+            })
+            .attr("title", "click to definitely remove all dataset's files")
+            .data("id", dataset_id)
+            .click( function(eventObject) {
+                alert("WARNING\nAll the dataset's files and database will be erased !");
+                console.log($(this).data("id"));
+                TinaService.deleteDataset($(this).data("id"), TinaServiceCallback.deleteDataset);
+            });
         var tr = $("<tr id='"+trid+"'></tr>")
+            .append( $("<td class='ui-widget-content'></td>").append(edit_dataset) )
             .append( $("<td class='ui-widget-content'></td>").html(htmlEncode(dataset_id)) )
         ;
         tbody.append(tr);

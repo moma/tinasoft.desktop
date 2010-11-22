@@ -61,7 +61,7 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {
             $('#indexFileButton').button("enable");
             $('#indexFileButton').button( "option", "label", "launch" );
-            /* Fetch data into table */
+            /* Updates data into table */
             displayDataTable( "data_table" );
         },
         beforeSend: function() {
@@ -98,10 +98,8 @@ var TinaServiceCallback = {
     },
 
     exit: {
-        success: function(data, textStatus, XMLHttpRequest) {
-        },
-        complete: function(XMLHttpRequest, textStatus) {
-        },
+        success: function(data, textStatus, XMLHttpRequest) {},
+        complete: function(XMLHttpRequest, textStatus) {},
         beforeSend: function() {
             $("#exit_server").button("disable");
             $("#exit_server").button("option", "icons", { primary: "ui-icon-alert" });
@@ -128,12 +126,19 @@ var TinaServiceCallback = {
                 });
             }
         },
-        complete: function(XMLHttpRequest, textStatus) {
-        },
-        beforeSend: function() {
-        },
+        complete: function(XMLHttpRequest, textStatus) {},
+        beforeSend: function() {},
         error: function(XMLHttpRequest, textStatus) {
             console.error("error getting server's log, please open tinasoft-log.txt file instead");
         },
-    }
+    },
+
+    deleteDataset: {
+        success: function(data, textStatus, XMLHttpRequest) {},
+        complete: function(XMLHttpRequest, textStatus) {
+            /* Updates data into table */
+            displayDataTable("data_table");
+        },
+        beforeSend: function() {}
+    },
 };
