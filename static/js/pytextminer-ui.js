@@ -95,7 +95,6 @@ function loadGraph(data) {
  * for a given <TR> and a dataset id (using the same TR id)
  */
 function displayGraphColumn(corpora) {
-    //console.log("displayListGraph : row = " + trid + " , dataset = "+ corpora);
     var trid = corpora['id'] + "_tr";
     var tr = $( "#" +trid );
     // corpus list cell
@@ -262,7 +261,6 @@ function displayDatasetRow(list) {
             .data("id", dataset_id)
             .click( function(eventObject) {
                 alert("WARNING\nAll the dataset's files and database will be erased !");
-                console.log($(this).data("id"));
                 TinaService.deleteDataset($(this).data("id"), TinaServiceCallback.deleteDataset);
             });
         var tr = $("<tr id='"+trid+"'></tr>")
