@@ -28,16 +28,12 @@ $(document).ready(function() {
         height: 1
     });
 
-   //$('#appletInfo').effect('pulsate', {}, 'fast');
-
     $(window).bind('resize', function() {
         var size = resize();
         tinaviz.size(size.w, size.h);
     });
 
     tinaviz.ready(function(){
-
-
     var prefs = {
             gexf: "default.gexf",
             view: "macro",
@@ -63,8 +59,6 @@ $(document).ready(function() {
         var macro = tinaviz.views.macro;
         var meso = tinaviz.views.meso;
 
-        //session.add("nodes/0/keywords", "newKeyword");
-
         tinaviz.set("edgeWeight/min", parseFloat(prefs.edge_filter_min));
         tinaviz.set("edgeWeight/max", parseFloat(prefs.edge_filter_max));
         tinaviz.set("nodeWeight/min", parseFloat(prefs.node_filter_min));
@@ -84,41 +78,28 @@ $(document).ready(function() {
         macro.filter("Output", "output");
 
         meso.filter("SubGraphCopyStandalone", "category");
-        meso.set("category/category", "Document");
+        meso.set("category/category",  prefs.category);
+
         meso.filter("NodeWeightRangeHack", "nodeWeight");
         meso.filter("EdgeWeightRangeHack", "edgeWeight");
         meso.filter("Output", "output");
 
         tinaviz.infodiv = InfoDiv('infodiv');
-
         tinaviz.infodiv.reset();
-
-        $("#infodiv").accordion({
-            //fillSpace: true
-        });
+        $("#infodiv").accordion();
 
         toolbar.init();
-
-        /*
-        // init the node list with ngrams
-        tinaviz.updateNodes( "macro", "NGram" );
-
-        // cache the document list
-        tinaviz.getNodes( "macro", "Document" );*/
 
         tinaviz.open({
             before: function() {
                 $('#appletInfo').show();
                 $('#appletInfo').html("please wait while loading the graph..");
-                //$('#appletInfo').effect('pulsate', { 'times':5 }, 1000);
                 tinaviz.infodiv.reset();
             },
             success: function() {
-
                 // init the node list with ngrams
-                tinaviz.updateNodes( "macro", "NGram" );
-                // cache the document list
-                tinaviz.getNodes("macro", "Document" );
+                tinaviz.infodiv.node_list_cache = {};
+                tinaviz.updateNodes( "macro", prefs.category );
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
                 $('#appletInfo').html("Graph loaded");
@@ -126,7 +107,8 @@ $(document).ready(function() {
                 $.doTimeout(1000, function() {
                     $("#appletInfo").hide();
                 });
-
+                // caches the document list
+                tinaviz.getNodes("macro", "NGrams" );
             },
             error: function(msg) {
                 $("#appletInfo").html("error loading graph: "+msg);
@@ -135,7 +117,6 @@ $(document).ready(function() {
         });
 
         tinaviz.event({
-
             selectionChanged: function(selection) {
                 tinaviz.infodiv.reset();
 
@@ -178,9 +159,7 @@ $(document).ready(function() {
                 tinaviz.infodiv.display_current_view();
 
                 var showFilter = false;
-                if (view.name == "meso") {
-
-                    // TODO check selection
+                if (view.name() == "meso") {
                     // if selection has edges with edge of all the same weight, we disable the filter
                     var weight = null;
                     for (node in view.nodes) {
@@ -198,7 +177,6 @@ $(document).ready(function() {
                             }
                         }
                     }
-
                 }
                 $("#sliderEdgeWeight").slider( "option", "disabled", false );
             }
@@ -212,6 +190,5 @@ $(document).ready(function() {
             url: "user/ty/gexf/20100728-1-graph.gexf"
         });*/
     });
-
 
 });
