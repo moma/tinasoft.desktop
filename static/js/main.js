@@ -85,18 +85,16 @@ $(document).ready(function() {
         meso.filter("Output", "output");
 
         var layout_name = tinaviz.get("layout/algorithm");
-        // generic Infodiv
-        // USE PHyloInfodiv if needed
+        // use of different Infodiv-s following the type of graph
         if ( layout_name == "phyloforce" ) {
-            tinaviz.infodiv = PhyloInfoDiv('infodiv');
+            tinaviz.infodiv = PhyloInfoDiv;
         }
         else {
-            tinaviz.infodiv = InfoDiv('infodiv');
+            tinaviz.infodiv = InfoDiv;
         }
-
+        tinaviz.infodiv.id = 'infodiv';
         tinaviz.infodiv.reset();
         $("#infodiv").accordion();
-
         toolbar.init();
 
         tinaviz.open({
@@ -107,8 +105,7 @@ $(document).ready(function() {
             },
             success: function() {
                 // init the node list with ngrams
-                tinaviz.infodiv.node_list_cache = {};
-                tinaviz.updateNodes( "macro", prefs.category );
+                tinaviz.infodiv.updateNodeList( "macro", prefs.category );
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
                 $('#appletInfo').html("Graph loaded");
@@ -117,7 +114,7 @@ $(document).ready(function() {
                     $("#appletInfo").hide();
                 });
                 // caches the document list
-                tinaviz.getNodes("macro", "NGrams" );
+                //tinaviz.getNodes("macro", "NGrams");
             },
             error: function(msg) {
                 $("#appletInfo").html("error loading graph: "+msg);
@@ -127,7 +124,7 @@ $(document).ready(function() {
 
         tinaviz.event({
             selectionChanged: function(selection) {
-                tinaviz.infodiv.reset();
+                //tinaviz.infodiv.reset();
 
                 if ( selection.mouseMode == "left" ) {
                 // nothing to do
@@ -139,7 +136,7 @@ $(document).ready(function() {
                     if (selection.viewName == "macro") {
                         tinaviz.setView("meso");
                     }
-                    tinaviz.updateNodes("meso", macroCategory);
+                    tinaviz.infodiv.updateNodeList("meso", macroCategory);
                     tinaviz.autoCentering();
                     tinaviz.views.meso.set("layout/iter", 0);
                 }
