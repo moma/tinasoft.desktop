@@ -34,7 +34,7 @@ $(document).ready(function() {
     });
 
     tinaviz.ready(function(){
-    var prefs = {
+        var prefs = {
             gexf: "default.gexf",
             view: "macro",
             category: "Document",
@@ -84,7 +84,16 @@ $(document).ready(function() {
         meso.filter("EdgeWeightRangeHack", "edgeWeight");
         meso.filter("Output", "output");
 
-        tinaviz.infodiv = InfoDiv('infodiv');
+        var layout_name = tinaviz.get("layout/algorithm");
+        // generic Infodiv
+        // USE PHyloInfodiv if needed
+        if ( layout_name == "phyloforce" ) {
+            tinaviz.infodiv = PhyloInfoDiv('infodiv');
+        }
+        else {
+            tinaviz.infodiv = InfoDiv('infodiv');
+        }
+
         tinaviz.infodiv.reset();
         $("#infodiv").accordion();
 
@@ -126,7 +135,6 @@ $(document).ready(function() {
                 // nothing to do
                 } else if (selection.mouseMode == "doubleLeft") {
                     var macroCategory = tinaviz.views.macro.category();
-                    //console.log("selected doubleLeft ("+selection.viewName+","+selection.data+")");
                     tinaviz.views.meso.category(macroCategory);
                     if (selection.viewName == "macro") {
                         tinaviz.setView("meso");
