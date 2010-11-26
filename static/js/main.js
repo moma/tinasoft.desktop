@@ -84,6 +84,9 @@ $(document).ready(function() {
         meso.filter("EdgeWeightRangeHack", "edgeWeight");
         meso.filter("Output", "output");
 
+        /*
+         * Initialization of the Infodiv
+         */
         var layout_name = tinaviz.get("layout/algorithm");
         // use of different Infodiv-s following the type of graph
         if ( layout_name == "phyloforce" ) {
@@ -93,8 +96,21 @@ $(document).ready(function() {
             tinaviz.infodiv = InfoDiv;
         }
         tinaviz.infodiv.id = 'infodiv';
+        tinaviz.infodiv.label = $( "#node_label" );
+        tinaviz.infodiv.contents = $( "#node_contents" );
+        tinaviz.infodiv.cloud = $( "#node_neighbourhood" );
+        tinaviz.infodiv.cloudSearch = $("#node_neighbourhoodForSearch");
+        tinaviz.infodiv.cloudSearchCopy = $( "#node_neighbourhoodCopy" );
+        tinaviz.infodiv.unselect_button= $( "#toggle-unselect" );
+        tinaviz.infodiv.node_table = $( "#node_table > tbody" );
+        tinaviz.infodiv.categories = {
+            'NGram' : 'Keyphrases',
+            'Document' : 'Documents'
+        };
         tinaviz.infodiv.reset();
+
         $("#infodiv").accordion();
+
         toolbar.init();
 
         tinaviz.open({
