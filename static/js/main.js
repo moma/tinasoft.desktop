@@ -153,8 +153,8 @@ $(document).ready(function() {
                         tinaviz.setView("meso");
                     }
                     tinaviz.infodiv.updateNodeList("meso", macroCategory);
-                    tinaviz.autoCentering();
                     tinaviz.views.meso.set("layout/iter", 0);
+                    tinaviz.autoCentering();
                 }
                 tinaviz.infodiv.update(selection.viewName, selection.data);
             },
