@@ -382,6 +382,7 @@ var initPytextminerUi = function() {
             }
         );
     });
+
     $("#exit_server")
         .button({
             icons: { primary:'ui-icon-power' },

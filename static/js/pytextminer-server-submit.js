@@ -165,7 +165,8 @@ $(document).ready(function() {
             submitExtractFile(event);
         });
 
-    $("#indexFileButton").button({
+    $("#indexFileButton")
+        .button({
             text: true,
             label: "launch",
         }).click(function(event) {

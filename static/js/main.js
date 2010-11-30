@@ -34,7 +34,7 @@ $(document).ready(function() {
     });
 
     tinaviz.ready(function(){
-    var prefs = {
+        var prefs = {
             gexf: "default.gexf",
             view: "macro",
             category: "Document",
@@ -84,8 +84,31 @@ $(document).ready(function() {
         meso.filter("EdgeWeightRangeHack", "edgeWeight");
         meso.filter("Output", "output");
 
-        tinaviz.infodiv = InfoDiv('infodiv');
+        /*
+         * Initialization of the Infodiv
+         */
+        var layout_name = tinaviz.get("layout/algorithm");
+        // use of different Infodiv-s following the type of graph
+        if ( layout_name == "phyloforce" ) {
+            tinaviz.infodiv = PhyloInfoDiv;
+        }
+        else {
+            tinaviz.infodiv = InfoDiv;
+        }
+        tinaviz.infodiv.id = 'infodiv';
+        tinaviz.infodiv.label = $( "#node_label" );
+        tinaviz.infodiv.contents = $( "#node_contents" );
+        tinaviz.infodiv.cloud = $( "#node_neighbourhood" );
+        tinaviz.infodiv.cloudSearch = $("#node_neighbourhoodForSearch");
+        tinaviz.infodiv.cloudSearchCopy = $( "#node_neighbourhoodCopy" );
+        tinaviz.infodiv.unselect_button= $( "#toggle-unselect" );
+        tinaviz.infodiv.node_table = $( "#node_table > tbody" );
+        tinaviz.infodiv.categories = {
+            'NGram' : 'Keyphrases',
+            'Document' : 'Documents'
+        };
         tinaviz.infodiv.reset();
+
         $("#infodiv").accordion();
 
         toolbar.init();
@@ -98,8 +121,7 @@ $(document).ready(function() {
             },
             success: function() {
                 // init the node list with ngrams
-                tinaviz.infodiv.node_list_cache = {};
-                tinaviz.updateNodes( "macro", prefs.category );
+                tinaviz.infodiv.updateNodeList( "macro", prefs.category );
                 tinaviz.infodiv.display_current_category();
                 tinaviz.infodiv.display_current_view();
                 $('#appletInfo').html("Graph loaded");
@@ -108,7 +130,7 @@ $(document).ready(function() {
                     $("#appletInfo").hide();
                 });
                 // caches the document list
-                tinaviz.getNodes("macro", "NGrams" );
+                //tinaviz.getNodes("macro", "NGrams");
             },
             error: function(msg) {
                 $("#appletInfo").html("error loading graph: "+msg);
@@ -118,7 +140,7 @@ $(document).ready(function() {
 
         tinaviz.event({
             selectionChanged: function(selection) {
-                tinaviz.infodiv.reset();
+                //tinaviz.infodiv.reset();
 
                 if ( selection.mouseMode == "left" ) {
                 // nothing to do
@@ -126,14 +148,13 @@ $(document).ready(function() {
                 // nothing to do
                 } else if (selection.mouseMode == "doubleLeft") {
                     var macroCategory = tinaviz.views.macro.category();
-                    //console.log("selected doubleLeft ("+selection.viewName+","+selection.data+")");
                     tinaviz.views.meso.category(macroCategory);
                     if (selection.viewName == "macro") {
                         tinaviz.setView("meso");
                     }
-                    tinaviz.updateNodes("meso", macroCategory);
-                    tinaviz.autoCentering();
+                    tinaviz.infodiv.updateNodeList("meso", macroCategory);
                     tinaviz.views.meso.set("layout/iter", 0);
+                    tinaviz.autoCentering();
                 }
                 tinaviz.infodiv.update(selection.viewName, selection.data);
             },
