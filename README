@@ -1,4 +1,3 @@
-
 Thanks for using Tinasoft Desktop
 
 This work is part of TINA, an European Union FP7 project - FP7-ICT-2009-C : http://tinasoft.eu/
@@ -10,22 +9,6 @@ You can read their publications here:
 
 http://arxiv.org/abs/0904.3154v1
 http://www.springerlink.com/content/v57686u275653nt4/
-
-COPYRIGHT AND LICENSE
-
-Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
-
-    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
-
-    the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 SOURCE CODE REPOSITORY
 
@@ -92,4 +75,20 @@ SUPPORTED OPERATING SYSTEMS
 
         Linux 64 bits (AMD64, i386) with Python 2.6
         Windows XP SP2 and SP3 (32bit)
-        Mac OS X >= 10.6
+        soon Mac OS X >= 10.6
+
+COPYRIGHT AND LICENSE
+
+Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
+
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+
+    the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/gpl.html>.

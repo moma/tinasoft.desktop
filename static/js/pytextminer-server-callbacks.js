@@ -77,7 +77,7 @@ var TinaServiceCallback = {
     postGraph: {
         success: function(data, textStatus, XMLHttpRequest) {
             // data contains a path to the graph exported
-            $('#generateGraphButton').button( "option", "label", "loading graph viz" );
+            $('#generateGraphButton').button( "option", "label", "loading graph visualization" );
             loadGraph(data);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
