@@ -6,7 +6,8 @@ sleep 2
 cp -Rf static $outpath
 cp -Rf shared $outpath
 mkdir $outpath/source_files
-cp TinasoftPytextminer/source_files/tinacsv_test*.csv $outpath/source_files
+cp TinasoftPytextminer/source_files/tinacsv_test_14.csv $outpath/source_files
+cp TinasoftPytextminer/source_files/tinacsv_test_3.csv $outpath/source_files
 cp TinasoftPytextminer/user_stopwords.csv $outpath
 
 echo " - copying information texts to $outpath..."

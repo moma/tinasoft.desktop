@@ -5,7 +5,7 @@ echo "############################################"
 echo ""
 
 name="Tinasoft"
-version="1.0alpha7"
+version="1.0alpha8"
 arch="macosx-10.6"
 
 pytextminer="TinasoftPytextminer"
@@ -26,7 +26,7 @@ if [ -e $pytextminer/build ]
 fi
 
 mkdir $pytextminer/build
-mkdir $pytextminer/dist 
+mkdir $pytextminer/dist
 
 echo " - removing older packages..."
 sleep 2
