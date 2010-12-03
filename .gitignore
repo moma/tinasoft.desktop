@@ -15,4 +15,5 @@ user/*
 *.tar.bz*
 user
 current.gexf
+static/default.gexf
 shared
