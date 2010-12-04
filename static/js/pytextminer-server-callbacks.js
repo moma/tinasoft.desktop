@@ -107,6 +107,9 @@ var TinaServiceCallback = {
             $('#indexFileButton').button("disable");
             $('#generateGraphButton').button("disable");
             $('#extractFileButton').button("disable");
+        },
+        error: function() {
+            console.log("TinaService.exit error callback, ignore")
         }
     },
 
@@ -129,8 +132,8 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {},
         beforeSend: function() {},
         error: function(XMLHttpRequest, textStatus) {
-            console.error("error getting server's log, please open tinasoft-log.txt file instead");
-        },
+            console.log("error getting server's log, please open tinasoft-log.txt file instead");
+        }
     },
 
     deleteDataset: {
