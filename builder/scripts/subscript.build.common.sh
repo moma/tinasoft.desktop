@@ -28,6 +28,3 @@ find $outpath -name "*swo" -delete
 find $outpath -name "tinasoft-log.txt*" -delete
 find $outpath/shared/nltk_data -name "*.zip" -delete
 find $outpath/shared -name "*.cache" -delete
-#find $outpath/shared -name "*.pickle" -delete
-find $outpath -name "*.pickle" -delete
-find $outpath/source_files -name "*.txt" -delete
