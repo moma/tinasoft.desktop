@@ -51,7 +51,7 @@ unzip -q site-packages.zip -d site-packages/
 rm site-packages.zip
 mv numpy site-packages/numpy
 zip -q -r site-packages.zip site-packages
-rm -r site-packages/
+#rm -r site-packages/ #do not remove it (or numpy will not load..)
 cd ../../../../../../../
 
 echo " - moving platform specific files to the $outpathred"
