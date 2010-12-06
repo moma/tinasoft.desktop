@@ -22,6 +22,11 @@ sleep 2
 find $outpath -name "*swp" -delete
 find $outpath -name "*~" -delete
 find $outpath -name "*swo" -delete
+find $outpath -name "*.gexf" -delete
+find $outpath -name "*.gitignore" -delete
 find $outpath -name "tinasoft-log.txt*" -delete
 find $outpath/shared/nltk_data -name "*.zip" -delete
 find $outpath/shared -name "*.cache" -delete
+rm -rf $outpath/.git/
+rm -rf $outpath/static/tinaweb/.git/
+rm -rf $outpath/TinasoftPytextminer/.git/
