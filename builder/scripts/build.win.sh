@@ -40,6 +40,7 @@ cp -f TinasoftPytextminer/config_win.yaml $outpath
 echo " - creating the compressed archive..."
 sleep 2
 cd dist
+rm -f $outfile.zip
 zip -q -r $outfile.zip $outfile
 cd ..
 echo " - finished, archive is : $outfile.zip"
