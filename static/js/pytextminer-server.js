@@ -271,6 +271,9 @@ function TinaServiceClass(url) {
         this._POST("document", { dataset: _dataset, id: _obj }, {error:"couldn't postDocument"}, cb);
     },
 
+    postDownload: function(_dataset, _filename, _content, cb) {
+       this._POST("download", { dataset: _dataset, path: _filename, content: _content }, {error:"couldn't postDownload"}, cb);
+    },
     /**
      * do an HTTP DELETE request to SERVER_URL + path
      */

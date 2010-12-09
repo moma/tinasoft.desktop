@@ -97,6 +97,21 @@ var TinaServiceCallback = {
         }
     },
 
+    postDownload: {
+        success: function(data, textStatus, XMLHttpRequest) {
+            console.log("success download(): "+textStatus);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log("error download(): "+textStatus);
+        },
+        complete: function(XMLHttpRequest, textStatus) {
+            displayDataTable( "data_table" );
+        },
+        beforeSend: function() {
+            console.log("before send download()");
+        }
+    },
+
     exit: {
         success: function(data, textStatus, XMLHttpRequest) {},
         complete: function(XMLHttpRequest, textStatus) {},
