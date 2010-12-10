@@ -33,14 +33,14 @@ function TinaServiceClass(url) {
      * SERVER_URL is a constant,
      * path is a parameter,
      */
-    _REQUEST: function(type, path, params, defaultcb, _cb, traditional, cache) {
+    _REQUEST: function(type, path, params, defaultcb, _cb, traditional, cache, contentType) {
         // setup default values, if defined
         if (traditional === undefined)
             traditional = true;
         if (cache === undefined)
             cache = false;
-        //if (contentType === undefined)
-        //    contentType = "application/x-www-form-urlencoded";
+        if (contentType === undefined)
+            contentType = 'application/x-www-form-urlencoded';
         var cb = {};
         for (key in defaultcb) { cb[key] = defaultcb[key]; }
         if ("error" in defaultcb) {
@@ -64,8 +64,8 @@ function TinaServiceClass(url) {
             success: cb.success,
             complete: cb.complete,
             traditional: traditional,
-            cache: false,
-            //contentType: contentType
+            cache: cache,
+            contentType: contentType
         });
 
     },
