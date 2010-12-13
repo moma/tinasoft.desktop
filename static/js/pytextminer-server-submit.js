@@ -157,6 +157,67 @@ $(document).ready(function() {
             TinaServiceCallback.postGraph
         );
     };
+
+
+    /*
+     * Requests to delete a node
+     */
+    var deleteNode = function(event) {
+        var corpora = Cache.getValue( "current_corpora", "" );
+        if( corpora == "" || corpora == null || corpora === undefined) {
+            $("#graph_periods").addClass('ui-state-error');
+            alert("cannot delete node, because corpora is null");
+            return false;
+        }
+
+        var node = $("#ngrams-graph-type").val();
+
+        TinaService.deleteNode(
+            corpora,
+            nodeId,
+            TinaServiceCallback.deleteNode
+        );
+    };
+
+
+    /*
+     * Requests to update a node
+     */
+    var updateNode = function(event) {
+        var corpora = Cache.getValue( "current_corpora", "" );
+        if( corpora == "" || corpora == null || corpora === undefined) {
+            $("#graph_periods").addClass('ui-state-error');
+            alert("cannot update node, because corpora is null");
+            return false;
+        }
+
+        TinaService.updateNode(
+            corpora,
+            nodeId,
+            TinaServiceCallback.updateNode
+        );
+    };
+
+
+    /*
+     * Requests to merge a list of nodes
+     */
+    var mergeNodes = function(event) {
+        var corpora = Cache.getValue( "current_corpora", "" );
+        if( corpora == "" || corpora == null || corpora === undefined) {
+            $("#graph_periods").addClass('ui-state-error');
+            alert("cannot update node, because corpora is null");
+            return false;
+        }
+
+        TinaService.mergeNodes(
+            corpora,
+            nodeId,
+            TinaServiceCallback.mergeNodes
+        );
+    };
+
+
     $("#extractFileButton")
         .button({
             text: true,

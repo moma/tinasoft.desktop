@@ -159,4 +159,34 @@ var TinaServiceCallback = {
         },
         beforeSend: function() {}
     },
+
+    deleteNode: {
+        success: function(data, textStatus, XMLHttpRequest) {},
+        complete: function(XMLHttpRequest, textStatus) {
+            console.log("pytextminer-server-callbacks: deleteNode -> complete: "+textStatus);
+            /* Updates data into table */
+            //displayDataTable("data_table");
+        },
+        beforeSend: function() {}
+    },
+
+   updateNode: {
+        success: function(data, textStatus, XMLHttpRequest) {},
+        complete: function(XMLHttpRequest, textStatus) {
+            console.log("pytextminer-server-callbacks: updateNode -> complete: "+textStatus);
+            /* Updates data into table */
+            //displayDataTable("data_table");
+        },
+        beforeSend: function() {}
+    },
+
+    mergeNodes: {
+        success: function(data, textStatus, XMLHttpRequest) {},
+        complete: function(XMLHttpRequest, textStatus) {
+            console.log("pytextminer-server-callbacks: mergeNodes -> complete: "+textStatus);
+            /* Updates data into table */
+            //displayDataTable("data_table");
+        },
+        beforeSend: function() {}
+    }
 };

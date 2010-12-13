@@ -387,14 +387,12 @@ var initPytextminerUi = function() {
         .button({
             icons: { primary:'ui-icon-power' },
             text: true,
-            label: "shutdown server",
+            label: "shutdown server"
         }).click(function(event) {
             TinaService.exit(TinaServiceCallback.exit);
         });
     $("#exit_server").button("enable");
 
-    /* wait a little bit for the http server to wake up */
-    setTimeout("",1000);
     /* Fetch data into table */
     displayDataTable("data_table");
 
