@@ -250,7 +250,7 @@ function displayDatasetRow(list) {
         // populates and attach table rows
         var dataset_id = list[i];
         var trid = dataset_id + "_tr";
-        var edit_dataset = $("<a href='#'></a>")
+        var delete_dataset = $("<a href='#'></a>")
             .button({
                 text: false,
                 icons: {
@@ -258,15 +258,45 @@ function displayDatasetRow(list) {
                 }
             })
             .attr("title", "click to definitely remove all dataset's files")
+            //.data("id", dataset_id)
+            .click( dataset_id ,function(eventObject) {
+                $("#dialog-confirm-delete-dataset").dialog({
+			resizable: false,
+                        position: ['center','top'],
+			modal: true,
+			buttons: {
+				'Delete all items': function(eventObject) {
+                                        console.log(dataset_id);
+                                        TinaService.deleteDataset(dataset_id, TinaServiceCallback.deleteDataset);
+					$(this).dialog('close');
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+            });
+        var edit_dataset = $("<a href='#'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-pencil'
+                }
+            })
+            .attr("title", "click to edit dataset's contents")
             .data("id", dataset_id)
             .click( function(eventObject) {
-                alert("WARNING\nAll the dataset's files and database will be erased !");
-                TinaService.deleteDataset($(this).data("id"), TinaServiceCallback.deleteDataset);
+                // fills the form
+                var id = $(this).data("id");
+                $(".fold_form:visible:not(#editdocument_form)").hide("fold");
+                $("#editdocument_form").toggle("fold");
             });
+            
         var tr = $("<tr id='"+trid+"'></tr>")
-            .append( $("<td class='ui-widget-content'></td>").append(edit_dataset) )
+            .append( $("<td class='ui-widget-content'></td>").append(delete_dataset).append(edit_dataset) )
             .append( $("<td class='ui-widget-content'></td>").html(htmlEncode(dataset_id)) )
         ;
+        
         tbody.append(tr);
         TinaService.getDataset(dataset_id, {
             success: function(dataset) {
@@ -324,7 +354,11 @@ var initPytextminerUi = function() {
     .click(function(event) {
         $("#duplicate_docs").toggle("fold");
     });
+
+    $("#dialog-confirm-delete-dataset").hide();
+
     // hide by default all submit forms
+    $("#editdocument_form").hide();
     $("#import_form").hide();
     $("#toggle_import_form").button({
         icons: {primary:'ui-icon-plus'},
@@ -387,14 +421,12 @@ var initPytextminerUi = function() {
         .button({
             icons: { primary:'ui-icon-power' },
             text: true,
-            label: "shutdown server",
+            label: "shutdown server"
         }).click(function(event) {
             TinaService.exit(TinaServiceCallback.exit);
         });
     $("#exit_server").button("enable");
 
-    /* wait a little bit for the http server to wake up */
-    setTimeout("",1000);
     /* Fetch data into table */
     displayDataTable("data_table");
 
