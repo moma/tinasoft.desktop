@@ -210,6 +210,7 @@ $(document).ready(function() {
             return false;
         }
 
+        // take the current selection list and send it
         TinaService.mergeNodes(
             corpora,
             nodeId,
@@ -242,4 +243,31 @@ $(document).ready(function() {
             submitGenerateGraph(event)
         });
     $("#export-gexf").button();
+
+    $("#mergeSelectionButton").button({
+        icons: {primary:'ui-icon-plus'},
+        text: true,
+        label: "merge"
+    })
+    .click(function(event) {
+        mergeSelection(event);
+    });
+
+    $("#updateSelectionButton").button({
+        icons: {primary:'ui-icon-plus'},
+        text: true,
+        label: "update"
+    })
+    .click(function(event) {
+        updateSelection(event);
+    });
+
+    $("#deleteSelectionButton").button({
+        icons: {primary:'ui-icon-plus'},
+        text: true,
+        label: "delete"
+    })
+    .click(function(event) {
+        deleteSelection(event);
+    });
 });
