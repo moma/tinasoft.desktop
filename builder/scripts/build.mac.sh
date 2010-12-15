@@ -45,7 +45,14 @@ cd $pytextminer
 cp httpserver.py $name.py
 python freeze_mac.py py2app
 rm $name.py
-cd ..
+cd dist/Tinasoft.app/Contents/Resources/lib/python2.6/
+mkdir site-packages
+unzip -q site-packages.zip -d site-packages/
+rm site-packages.zip
+mv numpy site-packages/numpy
+zip -q -r site-packages.zip site-packages
+#rm -r site-packages/ #do not remove it (or numpy will not load..)
+cd ../../../../../../../
 
 echo " - moving platform specific files to the $outpathred"
 cp $pytextminer/config_unix.yaml $outpathres
