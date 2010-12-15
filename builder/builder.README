@@ -2,7 +2,11 @@
 
 To build a distribuable version of tinasoft desktop, follow the following steps for each platform :
 
-1- go to TinasoftPytextminer directory
-2- for Windows ONLY : freeze the python component with a development python 2.6 environment (all dependent packages installed in the system): python freeze_xxx.py build
-3- go back to the root directory
-4- launch the build script (can be executed from any platform with bash console) : sh install/script/build.xxx.sh5- the build is located in the dist directory, you can verify the decompressed version and distribute the compressed version
+1- for Windows ONLY : go to TinasoftPytextminer directory and :
+    1.1 - execute : $ python freeze_xxx.py build
+    (with all dependent packages, see setup.py, installed in the system)
+    1.2 - execute the build.win.sh script from any unix environment (only a bash script exists)
+
+2- execute the build script :
+    $ sh install/script/build.xxx.sh
+3- the compressed package is located in the "dist" directory, you can check the uncompressed version before distributing
