@@ -265,13 +265,13 @@ function displayDatasetRow(list) {
                         position: ['center','top'],
 			modal: true,
 			buttons: {
-				'Delete': function(eventObject) {
-                                    TinaService.deleteDataset(dataset_id, TinaServiceCallback.deleteDataset);
-                                    $(this).dialog('close');
-				},
-				Cancel: function() {
-                                    $(this).dialog('close');
-				}
+                            'Delete': function(eventObject) {
+                                TinaService.deleteDataset(dataset_id, TinaServiceCallback.deleteDataset);
+                                $(this).dialog('close');
+                            },
+                            Cancel: function() {
+                                $(this).dialog('close');
+                            }
 			}
 		});
             });
@@ -460,6 +460,16 @@ var initPytextminerUi = function() {
     $("#extractminoccs").spinner();
     $(".ui-spinner-buttons").height(12);
     $(".ui-spinner-button").height(6);
+
+    $("#updateDocument")
+        .button({
+            icons: { primary:'ui-icon-check' },
+            text: true,
+            label: "update document indexation"
+        }).click(function(event) {
+            TinaService.postWhitelistUpdate(TinaServiceCallback.postWhitelistUpdate);
+        });
+    $("#updateDocument").button("enable");
 
     TinaService.getLog(TinaServiceCallback.getLog);
 };
