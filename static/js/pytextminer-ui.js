@@ -265,13 +265,12 @@ function displayDatasetRow(list) {
                         position: ['center','top'],
 			modal: true,
 			buttons: {
-				'Delete all items': function(eventObject) {
-                                        console.log(dataset_id);
-                                        TinaService.deleteDataset(dataset_id, TinaServiceCallback.deleteDataset);
-					$(this).dialog('close');
+				'Delete': function(eventObject) {
+                                    TinaService.deleteDataset(dataset_id, TinaServiceCallback.deleteDataset);
+                                    $(this).dialog('close');
 				},
 				Cancel: function() {
-					$(this).dialog('close');
+                                    $(this).dialog('close');
 				}
 			}
 		});
