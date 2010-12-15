@@ -1,14 +1,10 @@
 Thanks for using Tinasoft Desktop
 
-This work is part of TINA, an European Union FP7 project - FP7-ICT-2009-C : http://tinasoft.eu/
+This work is part of TINA, an European Union FP7 project - FP7-ICT-2009-C
 
-The software implements scientific works by David Chavalarias (http://chavalarias.com)
-and Jean-Philippe Cointet (INRA, http://jph.cointet.free.fr).
+HOMEPAGE
 
-You can read their publications here:
-
-http://arxiv.org/abs/0904.3154v1
-http://www.springerlink.com/content/v57686u275653nt4/
+    http://tinasoft.eu/
 
 SOURCE CODE REPOSITORY
 
@@ -16,7 +12,7 @@ SOURCE CODE REPOSITORY
 
 AUTHORS
 
-- Researchers and engineers at CREA lab (UMR 7656, CNRS, Ecole Polytechnique, France)
+- Researchers and engineers of the CREA lab (UMR 7656, CNRS, Ecole Polytechnique, France)
 
     david chavalarias <david.chavalarias@polytechnique.edu>
     elias showk <elishowk@nonutc.fr>
@@ -24,7 +20,6 @@ AUTHORS
 
 SUPPORT AND FEEDBACK
 
-    http://tinasoft.eu/
     http://tinasoft.eu/tinauserdoc
     https://forge.iscpif.fr/projects/tinasoft-desktop
 
@@ -35,7 +30,7 @@ DOWNLOAD STANDALONE PACKAGES
 REQUIREMENTS
 
     JAVA : please download it from http://java.com
-    WEB BROWSER : we highly recommend Firefox (http://getfirefox.com)
+    WEB BROWSER : we recommend Firefox (http://getfirefox.com)
 
 USAGE
 
@@ -73,9 +68,20 @@ SUPPORTED OPERATING SYSTEMS
 
     tinasoft desktop was tested on the following platforms:
 
-        Linux 64 bits (AMD64, i386) with Python 2.6
+        Linux 64 bits (amd64, i386)
         Windows XP SP2 and SP3 (32bit)
-        soon Mac OS X >= 10.6
+        Apple Mac OS X >= 10.6 (only with Chrome browser)
+
+SCIENTIFIC BACKGROUND
+
+The software implements scientific works by David Chavalarias (http://chavalarias.com)
+and Jean-Philippe Cointet (INRA, http://jph.cointet.free.fr).
+
+You can read their publications here:
+
+    http://arxiv.org/abs/0904.3154v1
+    http://www.springerlink.com/content/v57686u275653nt4/
+
 
 COPYRIGHT AND LICENSE
 
