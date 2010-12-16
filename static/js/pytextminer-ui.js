@@ -244,65 +244,6 @@ function selectableCorpusInit( ol, corpora ) {
     });
 }
 
-var datasetEditor = {
-    /*
-    * Handles the dataset editor logic
-    */
-    dataset_id: undefined,
-    
-    init: function() {
-        var self = this;
-        // hide by default all submit forms
-        $("#editdocument_form").hide();
-        $("#editdataset_corpus").change(function(event) {
-            $("#editdataset_corpus option:selected").each(function() {
-                TinaService.getCorpus( self.dataset_id, $(this).val(), { 'success': self.displayDocumentSelect } );
-            })
-        });
-        $("#editdataset_document").change(function(event) {
-            $("#editdataset_document option:selected").each(function() {
-                TinaService.getDocument( self.dataset_id, $(this).val(), { 'success': self.populateDocumentForm } );
-            })
-        });
-    },
-    
-    populateDocumentForm: function(documentObj) {
-        var self = this;
-        console.log(documentObj);
-    },
-    
-    toggleEditionForm: function(dataset_id) {
-        var self = this;
-        // fills the form if it's going to be visible
-        if ( $("#editdocument_form:visible").length == 0 ) {
-            self.dataset_id = dataset_id;
-            TinaService.getDataset( dataset_id, {
-                success: function(data, textStatus, XMLHttpRequest) {
-                    datasetEditor.displayCorpusSelect(data);
-                }
-            });
-        }
-        $(".fold_form:visible:not(#editdocument_form)").hide("fold");
-        $("#editdocument_form").toggle("fold");
-    },
-    
-    displayDocumentSelect: function(data) {
-        var self = this;
-        var document_select = $("#editdataset_document").empty().append($("<option value=''></option>"));
-        for (var doc_id in data['edges']['Document']) {
-            document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
-        }
-    },
-    
-    displayCorpusSelect: function(data) {
-        var self = this;
-        var corpus_select = $("#editdataset_corpus").empty().append($("<option value=''></option>"));
-        for (var corp_id in data['edges']['Corpus']) {
-            corpus_select.append($("<option value='"+corp_id+"'>"+htmlEncode(corp_id)+"</option>"));
-        };
-    }
-};
-
 function displayDeleteDatasetDialog(dataset_id) {
     var button_label = 'Delete '+dataset_id;
     $("#dialog-confirm-delete-dataset").dialog({
@@ -322,8 +263,9 @@ function displayDeleteDatasetDialog(dataset_id) {
     }).data("dataset_id", dataset_id);
 }
 
-function displayDatasetRow(list) {
-    var tbody = $("#data_table > table > tbody");
+function displayDatasetRow(parent_div_id, list) {
+    var tbody = $("#"+parent_div_id+" > table > tbody");
+    tbody.empty();
     for ( var i=0; i<list.length; i++ ) {
         // populates and attach table rows
         var dataset_id = list[i];
@@ -356,7 +298,7 @@ function displayDatasetRow(list) {
             });
             
         // appends action buttons to the dataset's row
-        var tr = $("<tr id='"+trid+"'></tr>")
+        var tr = $("<tr class='ui-widget-content' id='"+trid+"'></tr>")
             .append( $("<td class='ui-widget-content'></td>").append(delete_dataset).append(edit_dataset) )
             .append( $("<td class='ui-widget-content'></td>").text(dataset_id) )
         ;
@@ -379,14 +321,10 @@ function displayDatasetRow(list) {
  * and populates a table
  * with corpus and graphs
  */
-function displayDataTable(parent_div) {
-    // populates each row
-    var tbody = $( "<tbody></tbody>" );
-    $("#"+parent_div+" > table > tbody").remove();
-    $("#"+parent_div+" > table").append(tbody);
+function displayDataTable(parent_div_id) {
     TinaService.getDatasetList({
         success: function(list) {
-            displayDatasetRow(list);
+            displayDatasetRow(parent_div_id, list);
         }
         //Cache.setValue("last_data_table", table);
     });

@@ -159,15 +159,7 @@ $(document).ready(function() {
         );
         return true;
     };
-    
-    var submitUpdateDocumentIndex = function(event) {
-        var documentObject = {};
-        /*TinaService.postWhitelistUpdate(
-            documentObject,    
-            TinaServiceCallback.postWhitelistUpdate
-        );*/
-        return true;
-    };
+
     
     $("#extractFileButton")
         .button({
@@ -193,13 +185,5 @@ $(document).ready(function() {
             submitGenerateGraph(event);
         });
     $("#export-gexf").button();
-    
-    $("#updateDocument")
-        .button({
-            icons: { primary:'ui-icon-check' },
-            text: true,
-            label: "update document indexation"
-        }).click(function(event) {
-            submitUpdateDocumentIndex(event);
-        });
+
 });
