@@ -245,7 +245,6 @@ function selectableCorpusInit( ol, corpora ) {
 }
 
 function displayDeleteDatasetDialog(dataset_id) {
-    var button_label = 'Delete '+dataset_id;
     $("#dialog-confirm-delete-dataset").dialog({
         title: "Erase "+dataset_id+" ?",
         resizable: false,
