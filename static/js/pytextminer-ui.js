@@ -244,12 +244,91 @@ function selectableCorpusInit( ol, corpora ) {
     });
 }
 
+var datasetEditor = {
+    /*
+    * Handles the dataset editor logic
+    */
+    dataset_id: undefined,
+    
+    init: function() {
+        var self = this;
+        // hide by default all submit forms
+        $("#editdocument_form").hide();
+        $("#editdataset_corpus").change(function(event) {
+            $("#editdataset_corpus option:selected").each(function() {
+                TinaService.getCorpus( self.dataset_id, $(this).val(), { 'success': self.displayDocumentSelect } );
+            })
+        });
+        $("#editdataset_document").change(function(event) {
+            $("#editdataset_document option:selected").each(function() {
+                TinaService.getDocument( self.dataset_id, $(this).val(), { 'success': self.populateDocumentForm } );
+            })
+        });
+    },
+    
+    populateDocumentForm: function(documentObj) {
+        var self = this;
+        console.log(documentObj);
+    },
+    
+    toggleEditionForm: function(dataset_id) {
+        var self = this;
+        // fills the form if it's going to be visible
+        if ( $("#editdocument_form:visible").length == 0 ) {
+            self.dataset_id = dataset_id;
+            TinaService.getDataset( dataset_id, {
+                success: function(data, textStatus, XMLHttpRequest) {
+                    datasetEditor.displayCorpusSelect(data);
+                }
+            });
+        }
+        $(".fold_form:visible:not(#editdocument_form)").hide("fold");
+        $("#editdocument_form").toggle("fold");
+    },
+    
+    displayDocumentSelect: function(data) {
+        var self = this;
+        var document_select = $("#editdataset_document").empty().append($("<option value=''></option>"));
+        for (var doc_id in data['edges']['Document']) {
+            document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
+        }
+    },
+    
+    displayCorpusSelect: function(data) {
+        var self = this;
+        var corpus_select = $("#editdataset_corpus").empty().append($("<option value=''></option>"));
+        for (var corp_id in data['edges']['Corpus']) {
+            corpus_select.append($("<option value='"+corp_id+"'>"+htmlEncode(corp_id)+"</option>"));
+        };
+    }
+};
+
+function displayDeleteDatasetDialog(dataset_id) {
+    var button_label = 'Delete '+dataset_id;
+    $("#dialog-confirm-delete-dataset").dialog({
+        title: "Erase "+dataset_id+" ?",
+        resizable: false,
+        position: ['center','top'],
+        modal: true,
+        buttons: {
+            'Delete' : function(eventObject) {
+                TinaService.deleteDataset($(this).data("dataset_id"), TinaServiceCallback.deleteDataset);
+                $(this).dialog('close');
+            },
+            Cancel: function() {
+                $(this).dialog('close');
+            }
+        }
+    }).data("dataset_id", dataset_id);
+}
+
 function displayDatasetRow(list) {
     var tbody = $("#data_table > table > tbody");
     for ( var i=0; i<list.length; i++ ) {
         // populates and attach table rows
         var dataset_id = list[i];
         var trid = dataset_id + "_tr";
+        
         var delete_dataset = $("<a href='#'></a>")
             .button({
                 text: false,
@@ -258,23 +337,11 @@ function displayDatasetRow(list) {
                 }
             })
             .attr("title", "click to definitely remove all dataset's files")
-            //.data("id", dataset_id)
-            .click( dataset_id ,function(eventObject) {
-                $("#dialog-confirm-delete-dataset").dialog({
-			resizable: false,
-                        position: ['center','top'],
-			modal: true,
-			buttons: {
-                            'Delete': function(eventObject) {
-                                TinaService.deleteDataset(dataset_id, TinaServiceCallback.deleteDataset);
-                                $(this).dialog('close');
-                            },
-                            Cancel: function() {
-                                $(this).dialog('close');
-                            }
-			}
-		});
+            .data("dataset_id", dataset_id)
+            .click( function(eventObject) {
+                displayDeleteDatasetDialog($(this).data("dataset_id"));
             });
+            
         var edit_dataset = $("<a href='#'></a>")
             .button({
                 text: false,
@@ -283,17 +350,15 @@ function displayDatasetRow(list) {
                 }
             })
             .attr("title", "click to edit dataset's contents")
-            .data("id", dataset_id)
+            .data("dataset_id", dataset_id)
             .click( function(eventObject) {
-                // fills the form
-                var id = $(this).data("id");
-                $(".fold_form:visible:not(#editdocument_form)").hide("fold");
-                $("#editdocument_form").toggle("fold");
+                datasetEditor.toggleEditionForm($(this).data("dataset_id"));
             });
             
+        // appends action buttons to the dataset's row
         var tr = $("<tr id='"+trid+"'></tr>")
             .append( $("<td class='ui-widget-content'></td>").append(delete_dataset).append(edit_dataset) )
-            .append( $("<td class='ui-widget-content'></td>").html(htmlEncode(dataset_id)) )
+            .append( $("<td class='ui-widget-content'></td>").text(dataset_id) )
         ;
         
         tbody.append(tr);
@@ -333,7 +398,7 @@ function loadSourceFiles(select_id) {
         success: function(list) {
             select.empty().append($("<option value=''></option>"));
             for ( var i=0; i < list.length; i++ ) {
-                select.append($("<option value='"+list[i]+"'>"+htmlEncode(list[i])+"</option>"))
+                select.append($("<option value='"+list[i]+"'>"+htmlEncode(list[i])+"</option>"));
             }
         }
     });
@@ -346,6 +411,7 @@ var initPytextminerUi = function() {
     /* resets cache vars */
     var corporaAndPeriods = Cache.setValue( "last_selected_periods", {} );
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
+    
     $("#duplicate_docs_toggle").button({
         icons: {primary:'ui-icon-lightbulb'},
         text: true
@@ -355,9 +421,7 @@ var initPytextminerUi = function() {
     });
 
     $("#dialog-confirm-delete-dataset").hide();
-
-    // hide by default all submit forms
-    $("#editdocument_form").hide();
+    
     $("#import_form").hide();
     $("#toggle_import_form").button({
         icons: {primary:'ui-icon-plus'},
@@ -461,15 +525,7 @@ var initPytextminerUi = function() {
     $(".ui-spinner-buttons").height(12);
     $(".ui-spinner-button").height(6);
 
-    $("#updateDocument")
-        .button({
-            icons: { primary:'ui-icon-check' },
-            text: true,
-            label: "update document indexation"
-        }).click(function(event) {
-            TinaService.postWhitelistUpdate(TinaServiceCallback.postWhitelistUpdate);
-        });
-    $("#updateDocument").button("enable");
+    datasetEditor.init();
 
     TinaService.getLog(TinaServiceCallback.getLog);
 };

@@ -109,7 +109,7 @@ var TinaServiceCallback = {
             $('#extractFileButton').button("disable");
         },
         error: function() {
-            console.log("TinaService.exit error callback, ignore")
+            console.log("TinaService.exit error callback, ignored");
         }
     },
 
@@ -144,4 +144,12 @@ var TinaServiceCallback = {
         },
         beforeSend: function() {}
     },
+    
+    editDocument: {
+        success: function(data, textStatus, XMLHttpRequest) {
+            console.log(data);
+        },
+        complete: function(XMLHttpRequest, textStatus) {},
+        beforeSend: function() {}
+    }
 };

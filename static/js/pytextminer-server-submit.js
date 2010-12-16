@@ -63,7 +63,7 @@ $(document).ready(function() {
             userstopwords.val(),
             TinaServiceCallback.extractFile
         );
-
+        return true;
     };
 
     /*
@@ -97,6 +97,7 @@ $(document).ready(function() {
             overwrite,
             TinaServiceCallback.postFile
         );
+        return true;
     };
 
     /*
@@ -122,7 +123,7 @@ $(document).ready(function() {
         var label = $("#graphlabel");
         var ngramGraphOptions = {
             //alpha: $("#graphalpha").spinner('value'),
-            proximity: $("#ngrams-graph-type").val(),
+            proximity: $("#ngrams-graph-type").val()
             /*edgethreshold: [
                 $("#graph-ngrams-edges-min").spinner('value'),
                 $("#graph-ngrams-edges-max").spinner('value')
@@ -133,7 +134,7 @@ $(document).ready(function() {
             ]*/
         };
         var documentGraphOptions = {
-            proximity: $("#documents-graph-type").val(),
+            proximity: $("#documents-graph-type").val()
             /*edgethreshold: [
                 $("#graph-documents-edges-min").spinner('value'),
                 $("#graph-documents-edges-max").spinner('value')
@@ -156,11 +157,22 @@ $(document).ready(function() {
             exportGexf,
             TinaServiceCallback.postGraph
         );
+        return true;
     };
+    
+    var submitUpdateDocumentIndex = function(event) {
+        var documentObject = {};
+        /*TinaService.postWhitelistUpdate(
+            documentObject,    
+            TinaServiceCallback.postWhitelistUpdate
+        );*/
+        return true;
+    };
+    
     $("#extractFileButton")
         .button({
             text: true,
-            label: "launch",
+            label: "launch"
         }).click(function(event) {
             submitExtractFile(event);
         });
@@ -168,7 +180,7 @@ $(document).ready(function() {
     $("#indexFileButton")
         .button({
             text: true,
-            label: "launch",
+            label: "launch"
         }).click(function(event) {
             submitIndexFile(event);
         });
@@ -176,9 +188,18 @@ $(document).ready(function() {
     $("#generateGraphButton")
         .button({
             text: true,
-            label: "launch",
+            label: "launch"
         }).click(function(event) {
-            submitGenerateGraph(event)
+            submitGenerateGraph(event);
         });
     $("#export-gexf").button();
+    
+    $("#updateDocument")
+        .button({
+            icons: { primary:'ui-icon-check' },
+            text: true,
+            label: "update document indexation"
+        }).click(function(event) {
+            submitUpdateDocumentIndex(event);
+        });
 });

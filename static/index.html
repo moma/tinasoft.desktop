@@ -87,10 +87,14 @@
                         <!--<tbody class="ui-widget-content"></tbody>-->
                     </table>
                 </div>
-                <div id="dialog-confirm-delete-dataset" title="Erase a data set ?"> 
-                        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>All the dataset's files and database will be erased !</p> 
+                <div id="dialog-confirm-delete-dataset" title="">
+                        <p><span class="ui-icon ui-icon-alert"></span> All the dataset's files and database will be erased !</p> 
                 </div>        
                 <div id="editdocument_form" class="fold_form ui-widget-content">
+                    <div class="ui-widget-header">
+                        period <select id="editdataset_corpus"></select>
+                        document <select id="editdataset_document"></select>
+                    </div>
                     <table id="editdocument_table" class="ui-widget-content ui-corner-all">
                         <thead>
                             <tr>
@@ -98,20 +102,6 @@
                                 <th class="ui-widget-header">value</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <th class="ui-widget-content">label</th>
-                                <th class="ui-widget-content" id="editdocument_label_value"></th>
-                            </tr>
-                            <tr>
-                                <th class="ui-widget-content">content</th>
-                                <th class="ui-widget-content" id="editdocument_content_value"></th>
-                            </tr>
-                           <tr>
-                                <th class="ui-widget-content">keywords</th>
-                                <th class="ui-widget-content" id="editdocument_keywords_value"></th>
-                            </tr>
-                        </tbody>
                     </table>
                     <button id="updateDocument"></button>
                 </div>                
