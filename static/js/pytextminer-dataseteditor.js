@@ -2,6 +2,7 @@
 * Handles the dataset editor events logic and display
 */
 
+
 var datasetEditor = {
 
     dataset_id: undefined,
@@ -158,4 +159,35 @@ var datasetEditor = {
         );*/
         return true;
     }
+};
+
+jQuery.fn.highlightEntireWord = function(pat) {
+ function innerHighlight(node, pat) {
+  var skip = 0;
+  if (node.nodeType == 3) {
+   var pos = node.data.toUpperCase().indexOf(pat);
+   if (pos >= 0) {
+    var spannode = document.createElement('span');
+    spannode.className = 'highlight';
+    var middlebit = node.splitText(pos);
+    var nextbit = middlebit.splitText(pat.length + 1);
+    console.log(nextbit);
+    var endbit = middlebit.splitText(pat.length);
+    console.log(endbit);
+    var middleclone = middlebit.cloneNode(true);
+    spannode.appendChild(middleclone);
+    middlebit.parentNode.replaceChild(spannode, middlebit);
+    skip = 1;
+   }
+  }
+  else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+   for (var i = 0; i < node.childNodes.length; ++i) {
+    i += innerHighlight(node.childNodes[i], pat);
+   }
+  }
+  return skip;
+ }
+ return this.each(function() {
+  innerHighlight(this, pat.toUpperCase());
+ });
 };
