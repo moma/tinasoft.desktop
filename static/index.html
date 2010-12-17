@@ -92,21 +92,25 @@
                 <div id="dialog-confirm-delete-dataset" title="">
                         <p><span class="ui-icon ui-icon-alert"></span> All the dataset's files and database will be erased !</p> 
                 </div>        
-                <div id="editdocument_form" class="fold_form ui-widget-content">
-                    <div class="ui-widget-header">
+                <div id="editdocument_form" class="fold_form ui-widget-content ui-corner-all">
+                    <div class="ui-widget-header ui-corner-all">
+                        <p>
                         period <select id="editdataset_corpus"></select>
                         document <select id="editdataset_document"></select>
+                        </p>
                     </div>
-                    <table id="editdocument_table" class="ui-widget-content ui-corner-all">
-                        <thead>
-                            <tr>
-                                <th class="ui-widget-header">field</th>
-                                <th class="ui-widget-header">value</th>
-                            </tr>
-                        </thead>
-                        <tbody class="ui-widget-content"></tbody>
-                    </table>
-                    <button id="updateDocument"></button>
+                    <div class="ui-widget-content ui-corner-all">
+                        <table id="editdocument_table" class="ui-widget-content ui-corner-all">
+                            <thead>
+    <!--                            <tr>
+                                    <th class="ui-widget-header">field</th>
+                                    <th class="ui-widget-header">value</th>
+                                </tr>-->
+                            </thead>
+                            <tbody class="ui-widget-content"></tbody>
+                        </table>
+                        <button id="updateDocument"></button>
+                    </div>
                 </div>                
                 <div id="import_form" class="fold_form">
                     <table id="import_table" class="ui-widget-content ui-corner-all">

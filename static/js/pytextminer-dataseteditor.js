@@ -49,18 +49,41 @@ var datasetEditor = {
         tbody.append(
             $("<tr class='ui-widget-content'></tr>")
                 .append(
-                    $("<th class='ui-widget-content'></th>").text("content")
+                    $("<td></td>")
+                        .append(
+                            $("<p></p>")
+                                .append("<b>content&nbsp;:</b>&nbsp;&nbsp;")
+                                .append(
+                                    $("<span id='document_to_edit'></span>")
+                                        .data("documentObj", documentObj)
+                                        .text("content")
+                                        .addClass("dynacloud")
+                                        .text(documentObj["content"])
+                                )
+                        )
                 )
                 .append(
-                    $("<td class='ui-widget-content' id='document_to_edit'></td>")
-                        .addClass("dynacloud")
-                        .text(documentObj["content"])
-                        .data("documentObj", documentObj)
+                    $("<td></td>")
+                        .css(
+                            {
+                                width: 200
+                            }
+                        )
+                        .append(
+                            $("<p id='dynacloud'></p>")
+                        )
+                        .append(
+                            $("<p></p>").append(
+                                $("<label></label>").text("user defined keywords (comma separated)")
+                            ).append(
+                                $("<input></input>")
+                                    .autocomplete({
+                                        source: $("#document_to_edit").text().split(" ")
+                                    })
+                            )
+                        )
                 )
-                .append(
-                    $("<td id='dynacloud' class='ui-widget-content'></td>")
-                )
-            );
+        );
         $("#document_to_edit").dynaCloud("#dynacloud");
         for (var ngid in documentObj['edges']['NGram']) {
             TinaService.getNGram(
