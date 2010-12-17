@@ -66,21 +66,35 @@ var datasetEditor = {
                     $("<td></td>")
                         .css(
                             {
-                                width: 200
+                                width: 400
                             }
+                        )
+                        .append(
+                            $("<h4>highest frequency suggestions</h4>")
                         )
                         .append(
                             $("<p id='dynacloud'></p>")
                         )
                         .append(
-                            $("<p></p>").append(
-                                $("<label></label>").text("user defined keywords (comma separated)")
-                            ).append(
-                                $("<input></input>")
-                                    .autocomplete({
-                                        source: $("#document_to_edit").text().split(" ")
+                            $("<p></p>")
+                                .append(
+                                    $("<h4></h4>").text("user defined keywords (comma separated)")
+                                )
+                                .append(
+                                    $("<input></input>")
+                                        .autocomplete({
+                                            source: $("#document_to_edit").text().split(" ")
+                                        })
+                                )
+                                .append(
+                                    $("<button></button>").button({
+                                        icons: { primary:'ui-icon-arrowrefresh-1-e' },
+                                        text: true,
+                                        label: "update index"
+                                    }).click(function(event) {
+                                        //this.submitKeywords(event);
                                     })
-                            )
+                                )
                         )
                 )
         );
@@ -97,7 +111,7 @@ var datasetEditor = {
     highlightNGram: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         for(var form_words in data['edges']['label']) {
-            $("#document_to_edit").highlight(form_words);
+            $("#document_to_edit").highlightEntireWord(form_words);
         }
     },
     
