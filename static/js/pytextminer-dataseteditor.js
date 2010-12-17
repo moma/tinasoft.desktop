@@ -36,10 +36,14 @@ var datasetEditor = {
             }).click(function(event) {
                 this.submitUpdateDocumentIndex(event);
             });
+        $.dynaCloud.max = 100;
+        $.dynaCloud.scale = 2;
+        $.dynaCloud.single = false;
     },
     
     populateDocumentForm: function(documentObj, textStatus, XMLHttpRequest) {
         var self = this;
+        $('#document_to_edit').removeHighlight();
         var tbody = $("#editdocument_table > tbody");
         tbody.empty();
         tbody.append(
@@ -48,9 +52,16 @@ var datasetEditor = {
                     $("<th class='ui-widget-content'></th>").text("content")
                 )
                 .append(
-                    $("<td class='ui-widget-content' id='document_to_edit'></td>").text(documentObj["content"])
+                    $("<td class='ui-widget-content' id='document_to_edit'></td>")
+                        .addClass("dynacloud")
+                        .text(documentObj["content"])
+                        .data("documentObj", documentObj)
+                )
+                .append(
+                    $("<td id='dynacloud' class='ui-widget-content'></td>")
                 )
             );
+        $("#document_to_edit").dynaCloud("#dynacloud");
         for (var ngid in documentObj['edges']['NGram']) {
             TinaService.getNGram(
                 datasetEditor.dataset_id,
@@ -59,20 +70,16 @@ var datasetEditor = {
             );
         }
     },
-    
+
     highlightNGram: function(data, textStatus, XMLHttpRequest) {
         var self = this;
-        console.log(data);
-        for(var form in data['edges']['label']) {
-            console.log(form);
-            $("#document_to_edit:contains('"+form+"')")
-                .wrapAll(
-                    $("<span class='ui-widget-highlight'></span>").click(self.displayNGramEditor)
-                );
+        for(var form_words in data['edges']['label']) {
+            $("#document_to_edit").highlight(form_words);
         }
     },
     
     displayNGramEditor: function() {
+        var documentObj = $("#document_to_edit").data("documentObj");
         console.log(ngramObj);
     },
     

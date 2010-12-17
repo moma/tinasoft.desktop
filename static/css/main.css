@@ -9,3 +9,5 @@ body {
 .ui-widget-content a {
     color: #ADD8E6;
 }
+
+.highlight { background-color: red }
