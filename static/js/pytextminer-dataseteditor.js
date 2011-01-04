@@ -112,14 +112,33 @@ var datasetEditor = {
     highlightNGram: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         for(var form_words in data['edges']['label']) {
-            console.log(form_words);
             $("#document_to_edit").highlightEntireWord(form_words);
         }
     },
 
-    displayNGramEditor: function() {
-        var documentObj = $("#document_to_edit").data("documentObj");
-        console.log(ngramObj);
+    toggleNGramEditor: function(domelement) {
+        $(domelement).toggle(
+            function() {
+                $(this).removeClass("highlight");
+                $(this).addClass("ui-state-highlight");
+                $(this).addClass("ngram_to_delete");
+                var deletebutton = $("<button id='ngram_delete_button'></button>").button({
+                    icons: { primary:'ui-icon-circle-minus' },
+                    text: false,
+                }).click(function(event) {
+                    console.log($(".ngram_to_delete").text());
+                });
+                $(this).append(deletebutton);
+                //deletebutton.effect("bounce");
+            },
+            function() {
+                $("#ngram_delete_button").remove();
+                $(this).removeClass("ui-state-highlight");
+                $(this).removeClass("ngram_to_delete");
+                $(this).addClass("highlight");
+            }
+        );
+
     },
 
     toggleEditionForm: function(dataset_id) {
@@ -163,32 +182,33 @@ var datasetEditor = {
 };
 
 jQuery.fn.highlightEntireWord = function(pat) {
- function innerHighlight(node, pat) {
-  var skip = 0;
-  if (node.nodeType == 3) {
-   var pos = node.data.toUpperCase().indexOf(pat);
-   if (pos >= 0) {
-    var spannode = document.createElement('span');
-    spannode.className = 'highlight';
-    var middlebit = node.splitText(pos);
-    var endbit = middlebit.splitText(pat.length);
-    endbit.splitText(1);
-    if( endbit.data.match(/[^a-zA-Z]/)) {
-        var middleclone = middlebit.cloneNode(true);
-        spannode.appendChild(middleclone);
-        middlebit.parentNode.replaceChild(spannode, middlebit);
-        skip = 1;
+    function innerHighlight(node, pat) {
+        var skip = 0;
+        if (node.nodeType == 3) {
+            var pos = node.data.toUpperCase().indexOf(pat);
+            if (pos >= 0) {
+                var spannode = document.createElement('span');
+                spannode.className = 'highlight ngrameditable';
+                var middlebit = node.splitText(pos);
+                var endbit = middlebit.splitText(pat.length);
+                //if(endbit.length > 0) {
+                    endbit.splitText(1);
+                    if( endbit.data.match(/[^a-zA-Z]/) ) {
+                        var middleclone = middlebit.cloneNode(true);
+                        datasetEditor.toggleNGramEditor(middleclone);
+                        middlebit.parentNode.replaceChild(spannode, middlebit);
+                        skip = 1;
+                    }
+                //}
+            }
+        } else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+            for (var i = 0; i < node.childNodes.length; ++i) {
+                i += innerHighlight(node.childNodes[i], pat);
+            }
+        }
+        return skip;
     }
-   }
-  }
-  else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
-   for (var i = 0; i < node.childNodes.length; ++i) {
-    i += innerHighlight(node.childNodes[i], pat);
-   }
-  }
-  return skip;
- }
- return this.each(function() {
-  innerHighlight(this, pat.toUpperCase());
- });
+    return this.each(function() {
+        innerHighlight(this, pat.toUpperCase());
+    });
 };
