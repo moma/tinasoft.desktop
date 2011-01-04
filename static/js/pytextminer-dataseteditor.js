@@ -6,7 +6,7 @@
 var datasetEditor = {
 
     dataset_id: undefined,
-    
+
     init: function() {
         var self = this;
         // hide by default all submit forms
@@ -41,7 +41,7 @@ var datasetEditor = {
         $.dynaCloud.scale = 2;
         $.dynaCloud.single = false;
     },
-    
+
     populateDocumentForm: function(documentObj, textStatus, XMLHttpRequest) {
         var self = this;
         $('#document_to_edit').removeHighlight();
@@ -112,15 +112,16 @@ var datasetEditor = {
     highlightNGram: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         for(var form_words in data['edges']['label']) {
+            console.log(form_words);
             $("#document_to_edit").highlightEntireWord(form_words);
         }
     },
-    
+
     displayNGramEditor: function() {
         var documentObj = $("#document_to_edit").data("documentObj");
         console.log(ngramObj);
     },
-    
+
     toggleEditionForm: function(dataset_id) {
         var self = this;
         // fills the form if it's going to be visible
@@ -134,7 +135,7 @@ var datasetEditor = {
         $(".fold_form:visible:not(#editdocument_form)").hide("fold");
         $("#editdocument_form").toggle("fold");
     },
-    
+
     displayDocumentSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         var document_select = $("#editdataset_document").empty().append($("<option value=''></option>"));
@@ -142,7 +143,7 @@ var datasetEditor = {
             document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
         }
     },
-    
+
     displayCorpusSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         var corpus_select = $("#editdataset_corpus").empty().append($("<option value=''></option>"));
@@ -150,11 +151,11 @@ var datasetEditor = {
             corpus_select.append($("<option value='"+corp_id+"'>"+htmlEncode(corp_id)+"</option>"));
         };
     },
-    
+
     submitUpdateDocumentIndex: function(event) {
         var documentObject = {};
         /*TinaService.postWhitelistUpdate(
-            documentObject,    
+            documentObject,
             TinaServiceCallback.postWhitelistUpdate
         );*/
         return true;
@@ -170,14 +171,14 @@ jQuery.fn.highlightEntireWord = function(pat) {
     var spannode = document.createElement('span');
     spannode.className = 'highlight';
     var middlebit = node.splitText(pos);
-    var nextbit = middlebit.splitText(pat.length + 1);
-    console.log(nextbit);
     var endbit = middlebit.splitText(pat.length);
-    console.log(endbit);
-    var middleclone = middlebit.cloneNode(true);
-    spannode.appendChild(middleclone);
-    middlebit.parentNode.replaceChild(spannode, middlebit);
-    skip = 1;
+    endbit.splitText(1);
+    if( endbit.data.match(/[^a-zA-Z]/)) {
+        var middleclone = middlebit.cloneNode(true);
+        spannode.appendChild(middleclone);
+        middlebit.parentNode.replaceChild(spannode, middlebit);
+        skip = 1;
+    }
    }
   }
   else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
