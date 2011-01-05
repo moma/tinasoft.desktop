@@ -56,7 +56,7 @@ var datasetEditor = {
                                 .append("<b>content&nbsp;:</b>&nbsp;&nbsp;")
                                 .append(
                                     $("<span id='document_to_edit'></span>")
-                                        .data("documentObj", documentObj)
+                                        //.data("documentObj", documentObj)
                                         .text("content")
                                         .addClass("dynacloud")
                                         .text(documentObj["content"])
@@ -70,12 +70,12 @@ var datasetEditor = {
                                 width: 400
                             }
                         )
-                        .append(
+                        /*.append(
                             $("<h4>highest frequency suggestions</h4>")
                         )
                         .append(
                             $("<p id='dynacloud'></p>")
-                        )
+                        )*/
                         .append(
                             $("<p></p>")
                                 .append(
@@ -83,9 +83,9 @@ var datasetEditor = {
                                 )
                                 .append(
                                     $("<input></input>")
-                                        .autocomplete({
-                                            source: $("#document_to_edit").text().split(" ")
-                                        })
+                                        //.autocomplete({
+                                        //    source: $("#document_to_edit").text().split(" ")
+                                        //})
                                 )
                                 .append(
                                     $("<button></button>").button({
@@ -99,18 +99,17 @@ var datasetEditor = {
                         )
                 )
         );
-        $("#document_to_edit").dynaCloud("#dynacloud");
+        //$("#document_to_edit").dynaCloud("#dynacloud");
         for (var ngid in documentObj['edges']['NGram']) {
             TinaService.getNGram(
                 datasetEditor.dataset_id,
                 ngid,
-                { success: datasetEditor.highlightNGram }
+                { success: datasetEditor.highlightText }
             );
         }
     },
 
-    highlightNGram: function(data, textStatus, XMLHttpRequest) {
-        var self = this;
+    highlightText: function(data, textStatus, XMLHttpRequest) {
         for(var form_words in data['edges']['label']) {
             $("#document_to_edit").highlightEntireWord(form_words);
         }
@@ -122,17 +121,18 @@ var datasetEditor = {
                 $(this).removeClass("highlight");
                 $(this).addClass("ui-state-highlight");
                 $(this).addClass("ngram_to_delete");
-                var deletebutton = $("<button id='ngram_delete_button'></button>").button({
+                var deletebutton = $("<button id='ngram_delete_button'></button>")
+                .button({
                     icons: { primary:'ui-icon-circle-minus' },
-                    text: false,
-                }).click(function(event) {
-                    console.log($(".ngram_to_delete").text());
+                    text: false
+                }).click( function(event){
+                    console.log( $(".ngram_to_delete").text() );
                 });
                 $(this).append(deletebutton);
                 //deletebutton.effect("bounce");
             },
             function() {
-                $("#ngram_delete_button").remove();
+                $("#ngram_delete_button").hide();
                 $(this).removeClass("ui-state-highlight");
                 $(this).removeClass("ngram_to_delete");
                 $(this).addClass("highlight");
@@ -168,7 +168,7 @@ var datasetEditor = {
         var corpus_select = $("#editdataset_corpus").empty().append($("<option value=''></option>"));
         for (var corp_id in data['edges']['Corpus']) {
             corpus_select.append($("<option value='"+corp_id+"'>"+htmlEncode(corp_id)+"</option>"));
-        };
+        }
     },
 
     submitUpdateDocumentIndex: function(event) {
@@ -182,33 +182,35 @@ var datasetEditor = {
 };
 
 jQuery.fn.highlightEntireWord = function(pat) {
-    function innerHighlight(node, pat) {
-        var skip = 0;
-        if (node.nodeType == 3) {
-            var pos = node.data.toUpperCase().indexOf(pat);
-            if (pos >= 0) {
-                var spannode = document.createElement('span');
-                spannode.className = 'highlight ngrameditable';
-                var middlebit = node.splitText(pos);
-                var endbit = middlebit.splitText(pat.length);
-                //if(endbit.length > 0) {
-                    endbit.splitText(1);
-                    if( endbit.data.match(/[^a-zA-Z]/) ) {
-                        var middleclone = middlebit.cloneNode(true);
-                        datasetEditor.toggleNGramEditor(middleclone);
-                        middlebit.parentNode.replaceChild(spannode, middlebit);
-                        skip = 1;
-                    }
-                //}
-            }
-        } else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
-            for (var i = 0; i < node.childNodes.length; ++i) {
-                i += innerHighlight(node.childNodes[i], pat);
-            }
+ function innerHighlight(node, pat) {
+  var skip = 0;
+  if (node.nodeType == 3) {
+   var pos = node.data.toUpperCase().indexOf(pat);
+   if (pos >= 0) {
+    var spannode = document.createElement('span');
+    spannode.className = 'highlight';
+    var middlebit = node.splitText(pos);
+    var endbit = middlebit.splitText(pat.length);
+    console.log(endbit);
+    //if (endbit.length >= 1) {
+        console.log(endbit);
+        if( endbit.textContent[0].match(/[^a-zA-Z]/)) {
+            var middleclone = middlebit.cloneNode(true);
+            spannode.appendChild(middleclone);
+            middlebit.parentNode.replaceChild(spannode, middlebit);
+            skip = 1;
         }
-        return skip;
-    }
-    return this.each(function() {
-        innerHighlight(this, pat.toUpperCase());
-    });
+    //}
+   }
+  }
+  else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+   for (var i = 0; i < node.childNodes.length; ++i) {
+    i += innerHighlight(node.childNodes[i], pat);
+   }
+  }
+  return skip;
+ }
+ return this.each(function() {
+  innerHighlight(this, pat.toUpperCase());
+ });
 };
