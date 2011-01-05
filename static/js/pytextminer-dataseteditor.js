@@ -57,8 +57,7 @@ var datasetEditor = {
                                 .append(
                                     $("<span id='document_to_edit'></span>")
                                         //.data("documentObj", documentObj)
-                                        .text("content")
-                                        .addClass("dynacloud")
+                                        //.addClass("dynacloud")
                                         .text(documentObj["content"])
                                 )
                         )
@@ -110,8 +109,12 @@ var datasetEditor = {
     },
 
     highlightText: function(data, textStatus, XMLHttpRequest) {
-        for(var form_words in data['edges']['label']) {
-            $("#document_to_edit").highlightEntireWord(form_words);
+        for (var form_words in data['edges']['label']) {
+            var pattern = new RegExp(form_words, 'g');
+            var searchString = $("#document_to_edit").html();
+            var resultString = searchString.replace( pattern, "<span class='highlight'>$&</span>" )
+            $("#document_to_edit").html(resultString);
+            //$("#document_to_edit").highlightEntireWord(form_words);
         }
     },
 
@@ -187,30 +190,32 @@ jQuery.fn.highlightEntireWord = function(pat) {
     function innerHighlight(node, pat) {
         var skip = 0;
         if (node.nodeType == 3) {
-            var pos = node.data.toUpperCase().indexOf(pat);
-
+            var pos = node.data.indexOf(pat);
             if (pos >= 0) {
                 var spannode = document.createElement('span');
                 spannode.className = 'highlight';
                 var middlebit = node.splitText(pos);
                 var endbit = middlebit.splitText(pat.length);
-
-                if( endbit.textContent[0].match(/[^a-zA-Z]/)) {
-                    var middleclone = middlebit.cloneNode(true);
-                    spannode.appendChild(middleclone);
-                    middlebit.parentNode.replaceChild(spannode, middlebit);
-                    skip = 1;
+                if (endbit.data.length > 0) {
+                    if( endbit.textContent[0].match(/[^a-zA-Z]/) ) {
+                        //console.log(pat);
+                        var middleclone = middlebit.cloneNode(true);
+                        spannode.appendChild(middleclone);
+                        middlebit.parentNode.replaceChild(spannode, middlebit);
+                        skip = 0;
+                    }
                 }
             }
         }
-        else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
-            for (var i = 0; i < node.childNodes.length; ++i) {
+        //else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+        else if ( node.childNodes ){
+            for (var i = 0; i < node.childNodes.length; i++) {
                 i += innerHighlight(node.childNodes[i], pat);
             }
         }
         return skip;
     }
     return this.each(function() {
-        innerHighlight(this, pat.toUpperCase());
+        innerHighlight(this, pat);
     });
 };
