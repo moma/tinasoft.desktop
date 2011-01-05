@@ -157,18 +157,20 @@ var datasetEditor = {
 
     displayDocumentSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
-        var document_select = $("#editdataset_document").empty().append($("<option value=''></option>"));
+        var document_select = $("#editdataset_document").empty();//.append($("<option value=''></option>"));
         for (var doc_id in data['edges']['Document']) {
             document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
         }
+        document_select.change();
     },
 
     displayCorpusSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
-        var corpus_select = $("#editdataset_corpus").empty().append($("<option value=''></option>"));
+        var corpus_select = $("#editdataset_corpus").empty();//append($("<option value=''></option>"));
         for (var corp_id in data['edges']['Corpus']) {
             corpus_select.append($("<option value='"+corp_id+"'>"+htmlEncode(corp_id)+"</option>"));
         }
+        corpus_select.change();
     },
 
     submitUpdateDocumentIndex: function(event) {
@@ -182,35 +184,33 @@ var datasetEditor = {
 };
 
 jQuery.fn.highlightEntireWord = function(pat) {
- function innerHighlight(node, pat) {
-  var skip = 0;
-  if (node.nodeType == 3) {
-   var pos = node.data.toUpperCase().indexOf(pat);
-   if (pos >= 0) {
-    var spannode = document.createElement('span');
-    spannode.className = 'highlight';
-    var middlebit = node.splitText(pos);
-    var endbit = middlebit.splitText(pat.length);
-    console.log(endbit);
-    //if (endbit.length >= 1) {
-        console.log(endbit);
-        if( endbit.textContent[0].match(/[^a-zA-Z]/)) {
-            var middleclone = middlebit.cloneNode(true);
-            spannode.appendChild(middleclone);
-            middlebit.parentNode.replaceChild(spannode, middlebit);
-            skip = 1;
+    function innerHighlight(node, pat) {
+        var skip = 0;
+        if (node.nodeType == 3) {
+            var pos = node.data.toUpperCase().indexOf(pat);
+
+            if (pos >= 0) {
+                var spannode = document.createElement('span');
+                spannode.className = 'highlight';
+                var middlebit = node.splitText(pos);
+                var endbit = middlebit.splitText(pat.length);
+
+                if( endbit.textContent[0].match(/[^a-zA-Z]/)) {
+                    var middleclone = middlebit.cloneNode(true);
+                    spannode.appendChild(middleclone);
+                    middlebit.parentNode.replaceChild(spannode, middlebit);
+                    skip = 1;
+                }
+            }
         }
-    //}
-   }
-  }
-  else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
-   for (var i = 0; i < node.childNodes.length; ++i) {
-    i += innerHighlight(node.childNodes[i], pat);
-   }
-  }
-  return skip;
- }
- return this.each(function() {
-  innerHighlight(this, pat.toUpperCase());
- });
+        else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+            for (var i = 0; i < node.childNodes.length; ++i) {
+                i += innerHighlight(node.childNodes[i], pat);
+            }
+        }
+        return skip;
+    }
+    return this.each(function() {
+        innerHighlight(this, pat.toUpperCase());
+    });
 };
