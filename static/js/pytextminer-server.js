@@ -262,13 +262,13 @@ function TinaServiceClass(url) {
     },
 
     postCorpus: function(_dataset, _obj, cb) {
-        this._POST("corpus", { dataset: _dataset, id: _obj }, {error:"couldn't postCorpus"}, cb);
+        this._POST("corpus", { dataset: _dataset, object: JSON.stringify(_obj) }, {error:"couldn't postCorpus"}, cb);
     },
     postNGram: function(_dataset, _obj, cb) {
-        this._POST("ngram", { dataset: _dataset, id: _obj }, {error:"couldn't postNGram"}, cb);
+        this._POST("ngram", { dataset: _dataset, object: JSON.stringify(_obj) }, {error:"couldn't postNGram"}, cb);
     },
     postDocument: function(_dataset, _obj, cb) {
-        this._POST("document", { dataset: _dataset, id: _obj }, {error:"couldn't postDocument"}, cb);
+        this._POST("document", { dataset: _dataset, object: JSON.stringify(_obj) }, {error:"couldn't postDocument"}, cb);
     },
 
     /**

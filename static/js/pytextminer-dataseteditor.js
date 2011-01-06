@@ -18,16 +18,14 @@ var datasetEditor = {
                     $(this).val(),
                     { success: self.displayDocumentSelect }
                 );
-            })
+            });
         });
         $("#editdataset_document").change(function(event) {
             $("#editdataset_document option:selected").each(function() {
                 TinaService.getDocument(
                     datasetEditor.dataset_id,
                     $(this).val(),
-                    {
-                        success: self.populateDocumentForm
-                    }
+                    { success: self.populateDocumentForm }
                 );
             })
         });
@@ -49,6 +47,12 @@ var datasetEditor = {
         $('#document_to_edit').removeHighlight();
         var tbody = $("#editdocument_table > tbody");
         tbody.empty();
+        if (documentObj['highlight_content'] !== undefined) {
+            var html = documentObj['highlight_content'];
+        }
+        else {
+            var html = documentObj['content'];
+        }
         tbody.append(
             $("<tr class='ui-widget-content'></tr>")
                 .append(
@@ -58,19 +62,15 @@ var datasetEditor = {
                                 .append("<b>content&nbsp;:</b>&nbsp;&nbsp;")
                                 .append(
                                     $("<span id='document_to_edit'></span>")
-                                        //.data("documentObj", documentObj)
+                                        .data("documentObj", documentObj)
                                         //.addClass("dynacloud")
-                                        .text(documentObj["content"])
+                                        .html(html)
                                 )
                         )
                 )
                 .append(
                     $("<td></td>")
-                        .css(
-                            {
-                                width: 400
-                            }
-                        )
+                        .css({ width: 400 })
                         /*.append(
                             $("<h4>highest frequency suggestions</h4>")
                         )
@@ -83,10 +83,10 @@ var datasetEditor = {
                                     $("<h4></h4>").text("user defined keywords (comma separated)")
                                 )
                                 .append(
-                                    $("<input></input>")
-                                        //.autocomplete({
-                                        //    source: $("#document_to_edit").text().split(" ")
-                                        //})
+                                    $("<input type='text'></input>")
+                                        .autocomplete({
+                                            source: $("#document_to_edit").text().split(" ")
+                                        })
                                 )
                                 .append(
                                     $("<button></button>").button({
@@ -94,19 +94,24 @@ var datasetEditor = {
                                         text: true,
                                         label: "update index"
                                     }).click(function(event) {
-                                        //this.submitKeywords(event);
+                                        //datasetEditor.submitKeywords($(this).parent(input).val().split(","));
                                     })
                                 )
                         )
                 )
         );
         //$("#document_to_edit").dynaCloud("#dynacloud");
-        for (var ngid in documentObj['edges']['NGram']) {
-            TinaService.getNGram(
-                datasetEditor.dataset_id,
-                ngid,
-                { success: datasetEditor.highlightText }
-            );
+        if (documentObj['highlight_content'] === undefined) {
+            for (var ngid in documentObj['edges']['NGram']) {
+                TinaService.getNGram(
+                    datasetEditor.dataset_id,
+                    ngid,
+                    { success: datasetEditor.highlightText }
+                );
+            }
+        }
+        else {
+            datasetEditor.toggleNGramEditor();
         }
     },
 
@@ -126,8 +131,8 @@ var datasetEditor = {
                 icons: { primary:'ui-icon-circle-minus' },
                 text: true,
                 label : $(node).text()
-            }).click( function(event){
-                datasetEditor.submitUpdateDocumentIndex(node);
+            }).click(function(event){
+                datasetEditor.submitUpdateDocument(node);
             })
         ); 
     },
@@ -143,12 +148,41 @@ var datasetEditor = {
         );
     },
 
-    submitUpdateDocumentIndex: function(node) {
-        console.log(node);
-        /*TinaService.postWhitelistUpdate(
-            documentObject,
-            TinaServiceCallback.postWhitelistUpdate
-        );*/
+    submitUpdateDocument: function(node) {
+        var documentObj = $("#document_to_edit").data("documentObj");
+        var ngid = $(node).attr("dbid");
+        documentObj['edges']['NGram'][ngid] -= 1;
+        // update stored html string
+        $("#document_to_edit").filter('button').remove();
+        $(node).removeClass("highlight")
+        documentObj['highlight_content'] = $("#document_to_edit").html();
+        $("#document_to_edit").data("documentObj", documentObj);
+        // TODO remove ngram->doc edge
+        if(documentObj['edges']['NGram'][ngid] <= 0) {
+            //TODO check it's not null or None
+            delete documentObj['edges']['NGram'][ngid];
+            TinaService.getCorpus(
+                datasetEditor.dataset_id,
+                $("#editdataset_corpus").val(),
+                { success:
+                    function(corpusObj, textStatus, XMLHttpRequest) {
+                        // TODO remove ngram->corpus edge
+                        corpusObj['edges']['NGram'][ngid] -= 1;
+                        if (corpusObj['edges']['NGram'][ngid] <= 0) {
+                            delete corpusObj['edges']['NGram'][ngid];
+                        }
+                         TinaService.postCorpus(
+                            datasetEditor.dataset_id,
+                            corpusObj
+                        );
+                    }
+                }
+            );
+        }
+        TinaService.postDocument(
+            datasetEditor.dataset_id,
+            documentObj
+        );
     },
         
     toggleEditionForm: function(dataset_id) {
@@ -182,38 +216,4 @@ var datasetEditor = {
         }
         corpus_select.change();
     }
-};
-
-jQuery.fn.highlightEntireWord = function(pat) {
-    function innerHighlight(node, pat) {
-        var skip = 0;
-        if (node.nodeType == 3) {
-            var pos = node.data.indexOf(pat);
-            if (pos >= 0) {
-                var spannode = document.createElement('span');
-                spannode.className = 'highlight';
-                var middlebit = node.splitText(pos);
-                var endbit = middlebit.splitText(pat.length);
-                if (endbit.data.length > 0) {
-                    if( endbit.textContent[0].match(/[^a-zA-Z]/) ) {
-                        //console.log(pat);
-                        var middleclone = middlebit.cloneNode(true);
-                        spannode.appendChild(middleclone);
-                        middlebit.parentNode.replaceChild(spannode, middlebit);
-                        skip = 0;
-                    }
-                }
-            }
-        }
-        //else if (node.nodeType == 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
-        else if ( node.childNodes ){
-            for (var i = 0; i < node.childNodes.length; i++) {
-                i += innerHighlight(node.childNodes[i], pat);
-            }
-        }
-        return skip;
-    }
-    return this.each(function() {
-        innerHighlight(this, pat);
-    });
 };

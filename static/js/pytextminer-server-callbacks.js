@@ -143,13 +143,5 @@ var TinaServiceCallback = {
             displayDataTable("data_table");
         },
         beforeSend: function() {}
-    },
-    
-    editDocument: {
-        success: function(data, textStatus, XMLHttpRequest) {
-            console.log(data);
-        },
-        complete: function(XMLHttpRequest, textStatus) {},
-        beforeSend: function() {}
     }
 };
