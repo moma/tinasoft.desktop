@@ -110,9 +110,9 @@ var datasetEditor = {
 
     highlightText: function(data, textStatus, XMLHttpRequest) {
         for (var form_words in data['edges']['label']) {
-            var pattern = new RegExp(form_words, 'g');
+            var pattern = new RegExp('\\b'+form_words+'\\b', 'g');
             var searchString = $("#document_to_edit").html();
-            var resultString = searchString.replace( pattern, "<span class='highlight'>$&</span>" )
+            var resultString = searchString.replace( pattern, "<span class='highlight'>$&</span>" );
             $("#document_to_edit").html(resultString);
             //$("#document_to_edit").highlightEntireWord(form_words);
         }
