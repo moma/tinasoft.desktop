@@ -31,7 +31,7 @@ var datasetEditor = {
                 );
             })
         });
-        $("#updateDocument")
+        /*$("#updateDocument")
             .button({
                 icons: { primary:'ui-icon-check' },
                 text: true,
@@ -41,7 +41,7 @@ var datasetEditor = {
             });
         $.dynaCloud.max = 100;
         $.dynaCloud.scale = 2;
-        $.dynaCloud.single = false;
+        $.dynaCloud.single = false;*/
     },
 
     populateDocumentForm: function(documentObj, textStatus, XMLHttpRequest) {
@@ -114,21 +114,20 @@ var datasetEditor = {
         for (var form_words in data['edges']['label']) {
             var pattern = new RegExp('\\b'+form_words+'\\b', 'g');
             var searchString = $("#document_to_edit")[0].innerHTML;
-            var resultString = searchString.replace( pattern, "<span class='highlight'>$&</span>" );
+            var resultString = searchString.replace( pattern, "<span class='highlight' dbid='"+data['id']+"'>$&</span>" );
             $("#document_to_edit")[0].innerHTML = resultString;
         }
         datasetEditor.toggleNGramEditor();
     },
 
     appendNGramButton: function(node) {
-        
         $(node).append(
             $("<button></button>").button({
                 icons: { primary:'ui-icon-circle-minus' },
                 text: true,
                 label : $(node).text()
-            }).click( function(event){  
-                console.log( "edit document request" );
+            }).click( function(event){
+                datasetEditor.submitUpdateDocumentIndex(node);
             })
         ); 
     },
@@ -137,9 +136,6 @@ var datasetEditor = {
         $('span.highlight').toggle(
             function() {
                 datasetEditor.appendNGramButton(this);
-                /*$(this).parent('span.highlight').each(function(){
-                       datasetEditor.appendNGramButton(this);
-                });*/
             },
             function() {
                 $(this).children().filter('button').remove();
@@ -147,6 +143,14 @@ var datasetEditor = {
         );
     },
 
+    submitUpdateDocumentIndex: function(node) {
+        console.log(node);
+        /*TinaService.postWhitelistUpdate(
+            documentObject,
+            TinaServiceCallback.postWhitelistUpdate
+        );*/
+    },
+        
     toggleEditionForm: function(dataset_id) {
         var self = this;
         // fills the form if it's going to be visible
@@ -177,15 +181,6 @@ var datasetEditor = {
             corpus_select.append($("<option value='"+corp_id+"'>"+htmlEncode(corp_id)+"</option>"));
         }
         corpus_select.change();
-    },
-
-    submitUpdateDocumentIndex: function(event) {
-        var documentObject = {};
-        /*TinaService.postWhitelistUpdate(
-            documentObject,
-            TinaServiceCallback.postWhitelistUpdate
-        );*/
-        return true;
     }
 };
 
