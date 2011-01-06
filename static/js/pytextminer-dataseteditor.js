@@ -25,7 +25,9 @@ var datasetEditor = {
                 TinaService.getDocument(
                     datasetEditor.dataset_id,
                     $(this).val(),
-                    { success: self.populateDocumentForm }
+                    {
+                        success: self.populateDocumentForm
+                    }
                 );
             })
         });
@@ -111,37 +113,38 @@ var datasetEditor = {
     highlightText: function(data, textStatus, XMLHttpRequest) {
         for (var form_words in data['edges']['label']) {
             var pattern = new RegExp('\\b'+form_words+'\\b', 'g');
-            var searchString = $("#document_to_edit").html();
+            var searchString = $("#document_to_edit")[0].innerHTML;
             var resultString = searchString.replace( pattern, "<span class='highlight'>$&</span>" );
-            $("#document_to_edit").html(resultString);
-            //$("#document_to_edit").highlightEntireWord(form_words);
+            $("#document_to_edit")[0].innerHTML = resultString;
         }
+        datasetEditor.toggleNGramEditor();
     },
 
-    toggleNGramEditor: function(domelement) {
-        $(domelement).toggle(
+    appendNGramButton: function(node) {
+        
+        $(node).append(
+            $("<button></button>").button({
+                icons: { primary:'ui-icon-circle-minus' },
+                text: true,
+                label : $(node).text()
+            }).click( function(event){  
+                console.log( "edit document request" );
+            })
+        ); 
+    },
+
+    toggleNGramEditor: function() {
+        $('span.highlight').toggle(
             function() {
-                $(this).removeClass("highlight");
-                $(this).addClass("ui-state-highlight");
-                $(this).addClass("ngram_to_delete");
-                var deletebutton = $("<button id='ngram_delete_button'></button>")
-                .button({
-                    icons: { primary:'ui-icon-circle-minus' },
-                    text: false
-                }).click( function(event){
-                    console.log( $(".ngram_to_delete").text() );
-                });
-                $(this).append(deletebutton);
-                //deletebutton.effect("bounce");
+                datasetEditor.appendNGramButton(this);
+                /*$(this).parent('span.highlight').each(function(){
+                       datasetEditor.appendNGramButton(this);
+                });*/
             },
             function() {
-                $("#ngram_delete_button").hide();
-                $(this).removeClass("ui-state-highlight");
-                $(this).removeClass("ngram_to_delete");
-                $(this).addClass("highlight");
+                $(this).children().filter('button').remove();
             }
         );
-
     },
 
     toggleEditionForm: function(dataset_id) {
