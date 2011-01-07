@@ -149,6 +149,7 @@ var datasetEditor = {
     },
 
     submitUpdateDocument: function(node) {
+        
         var documentObj = $("#document_to_edit").data("documentObj");
         var ngid = $(node).attr("dbid");
         documentObj['edges']['NGram'][ngid] -= 1;
@@ -156,32 +157,20 @@ var datasetEditor = {
         $("#document_to_edit").filter('button').remove();
         $(node).removeClass("highlight")
         documentObj['highlight_content'] = $("#document_to_edit").html();
-        $("#document_to_edit").data("documentObj", documentObj);
-        // TODO remove ngram->doc edge
-        if(documentObj['edges']['NGram'][ngid] <= 0) {
-            //TODO check it's not null or None
-            delete documentObj['edges']['NGram'][ngid];
-            TinaService.getCorpus(
-                datasetEditor.dataset_id,
-                $("#editdataset_corpus").val(),
-                { success:
-                    function(corpusObj, textStatus, XMLHttpRequest) {
-                        // TODO remove ngram->corpus edge
-                        corpusObj['edges']['NGram'][ngid] -= 1;
-                        if (corpusObj['edges']['NGram'][ngid] <= 0) {
-                            delete corpusObj['edges']['NGram'][ngid];
-                        }
-                         TinaService.postCorpus(
-                            datasetEditor.dataset_id,
-                            corpusObj
-                        );
-                    }
-                }
-            );
-        }
+        
         TinaService.postDocument(
             datasetEditor.dataset_id,
-            documentObj
+            documentObj,
+            'True',
+            { success : function(data) {
+                TinaService.getDocument(
+                    datasetEditor.dataset_id,
+                    documentObj.id,
+                    { success: function(data) {
+                        $("#document_to_edit").data("documentObj", data);
+                    }}
+                )
+            }}
         );
     },
         

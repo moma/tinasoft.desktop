@@ -257,18 +257,17 @@ function TinaServiceClass(url) {
         );
     },
 
-    postDataset: function(_obj, cb) {
+    postDataset: function(_obj, _recursive, cb) {
         this._POST("dataset", { dataset: _obj }, { error:"couldn't postDataset" }, cb);
     },
-
-    postCorpus: function(_dataset, _obj, cb) {
-        this._POST("corpus", { dataset: _dataset, object: JSON.stringify(_obj) }, {error:"couldn't postCorpus"}, cb);
+    postCorpus: function(_dataset, _obj, _recursive, cb) {
+        this._POST("corpus", { dataset: _dataset, object: JSON.stringify(_obj), recursive: _recursive }, {error:"couldn't postCorpus"}, cb);
     },
-    postNGram: function(_dataset, _obj, cb) {
-        this._POST("ngram", { dataset: _dataset, object: JSON.stringify(_obj) }, {error:"couldn't postNGram"}, cb);
+    postNGram: function(_dataset, _obj, _recursive, cb) {
+        this._POST("ngram", { dataset: _dataset, object: JSON.stringify(_obj), recursive: _recursive }, {error:"couldn't postNGram"}, cb);
     },
-    postDocument: function(_dataset, _obj, cb) {
-        this._POST("document", { dataset: _dataset, object: JSON.stringify(_obj) }, {error:"couldn't postDocument"}, cb);
+    postDocument: function(_dataset, _obj, _recursive, cb) {
+        this._POST("document", { dataset: _dataset, object: JSON.stringify(_obj), recursive: _recursive }, {error:"couldn't postDocument"}, cb);
     },
 
     /**
@@ -281,7 +280,6 @@ function TinaServiceClass(url) {
     deleteDataset: function( _dataset, cb ) {
         this._DELETE( "dataset?dataset="+_dataset, {}, { error:"couldn't deleteDataset" }, cb );
     },
-
 
     /*
      * transforms a relative path ("user/etc/") to an http:// url, compatible with windows paths
