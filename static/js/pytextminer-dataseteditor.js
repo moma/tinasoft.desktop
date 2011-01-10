@@ -85,7 +85,7 @@ var datasetEditor = {
                                 .append(
                                     $("<input type='text'></input>")
                                         .autocomplete({
-                                            source: $("#document_to_edit").text().split(" ")
+                                            source: documentObj['content'].split(" ")
                                         })
                                 )
                                 .append(
@@ -125,38 +125,65 @@ var datasetEditor = {
         datasetEditor.toggleNGramEditor();
     },
 
-    appendNGramButton: function(node) {
+    /*appendNGramButton: function(node) {
         $(node).append(
             $("<button></button>").button({
                 icons: { primary:'ui-icon-circle-minus' },
                 text: true,
                 label : $(node).text()
-            }).click(function(event){
+            })
+            .click(function(event){
                 datasetEditor.submitRemoveNode(node);
             })
         ); 
-    },
+    },*/
 
     toggleNGramEditor: function() {
-        $('span.highlight').toggle(
-            function() {
-                datasetEditor.appendNGramButton(this);
+        $('span.highlight').qtip({
+            content: {
+                text: function() {
+                    var node = $(this);
+                    return $("<button></button>")
+                        .button({
+                            //icons: { primary:'ui-icon-circle-minus' },
+                            text: true,
+                            label : "delete this one"
+                        })
+                        .css({
+                            "font-size": "0.8em"
+                            //"line-height": 1,0
+                        })
+                        .click(function(event){
+                            datasetEditor.submitRemoveNode(node);
+                        });
+                }
             },
-            function() {
-                $(this).children().filter('button').remove();
+            hide: {
+                //event: 'mouseleave'
+                delay : 1000
+            },
+            /*position: {
+                my: 'center',
+                at: 'top left'
+                //container: $(this)
+                //target: this
+            },*/
+            show: {
+                solo: true
             }
-        );
+
+         });
     },
 
     submitRemoveNode: function(node) {
         var documentObj = $("#document_to_edit").data("documentObj");
-        var ngid = $(node).attr("dbid");
+        var ngid = node.attr("dbid");
         if (documentObj['edges']['NGram'][ngid] > 0) {
             documentObj['edges']['NGram'][ngid] -= 1;
 
             // update stored html string
-            $("#document_to_edit button").remove();
-            $(node).removeClass("highlight");
+            $('span.highlight').qtip('api').destroy();
+            node.removeClass("highlight");
             documentObj['highlight_content'] = $("#document_to_edit").html();
             
             TinaService.postDocument(
@@ -170,10 +197,14 @@ var datasetEditor = {
                         { success: function(data) {
                             $("#document_to_edit").data("documentObj", data);
                             $("#document_to_edit").html( data['highlight_content'] );
+                            datasetEditor.toggleNGramEditor();
                         }}
                     )
                 }}
             );
+        }
+        else {
+            console.log(documentObj['edges']['NGram'][ngid]);
         }
     },
         
