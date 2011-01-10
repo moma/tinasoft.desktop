@@ -132,7 +132,7 @@ var datasetEditor = {
                 text: true,
                 label : $(node).text()
             }).click(function(event){
-                datasetEditor.submitUpdateDocument(node);
+                datasetEditor.submitRemoveNode(node);
             })
         ); 
     },
@@ -148,30 +148,33 @@ var datasetEditor = {
         );
     },
 
-    submitUpdateDocument: function(node) {
-        
+    submitRemoveNode: function(node) {
         var documentObj = $("#document_to_edit").data("documentObj");
         var ngid = $(node).attr("dbid");
-        documentObj['edges']['NGram'][ngid] -= 1;
-        // update stored html string
-        $("#document_to_edit").filter('button').remove();
-        $(node).removeClass("highlight")
-        documentObj['highlight_content'] = $("#document_to_edit").html();
-        
-        TinaService.postDocument(
-            datasetEditor.dataset_id,
-            documentObj,
-            'True',
-            { success : function(data) {
-                TinaService.getDocument(
-                    datasetEditor.dataset_id,
-                    documentObj.id,
-                    { success: function(data) {
-                        $("#document_to_edit").data("documentObj", data);
-                    }}
-                )
-            }}
-        );
+        if (documentObj['edges']['NGram'][ngid] > 0) {
+            documentObj['edges']['NGram'][ngid] -= 1;
+
+            // update stored html string
+            $("#document_to_edit button").remove();
+            $(node).removeClass("highlight");
+            documentObj['highlight_content'] = $("#document_to_edit").html();
+            
+            TinaService.postDocument(
+                datasetEditor.dataset_id,
+                documentObj,
+                'True',
+                { success : function(data) {
+                    TinaService.getDocument(
+                        datasetEditor.dataset_id,
+                        documentObj.id,
+                        { success: function(data) {
+                            $("#document_to_edit").data("documentObj", data);
+                            $("#document_to_edit").html( data['highlight_content'] );
+                        }}
+                    )
+                }}
+            );
+        }
     },
         
     toggleEditionForm: function(dataset_id) {
