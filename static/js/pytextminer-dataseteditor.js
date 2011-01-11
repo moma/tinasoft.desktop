@@ -143,19 +143,35 @@ var datasetEditor = {
             content: {
                 text: function() {
                     var node = $(this);
-                    return $("<button></button>")
-                        .button({
-                            //icons: { primary:'ui-icon-circle-minus' },
-                            text: true,
-                            label : "delete this one"
-                        })
-                        .css({
-                            "font-size": "0.8em"
-                            //"line-height": 1,0
-                        })
-                        .click(function(event){
-                            datasetEditor.submitRemoveNode(node);
-                        });
+                    return $('<div></div>').append(
+                        $("<button></button>")
+                            .button({
+                                //icons: { primary:'ui-icon-circle-minus' },
+                                text: true,
+                                label : "delete this one"
+                            })
+                            .css({
+                                "font-size": "0.8em"
+                                //"line-height": 1,0
+                            })
+                            .click(function(event){
+                                datasetEditor.submitRemoveNode(node);
+                            })
+                        ).append(
+                            $("<button></button>") 
+                            .button({
+                                //icons: { primary:'ui-icon-circle-minus' },
+                                text: true,
+                                label : "delete all"
+                            })
+                            .css({
+                                "font-size": "0.8em"
+                                //"line-height": 1,0
+                            })
+                            .click(function(event){
+                                datasetEditor.submitRemoveAllNodes(node);
+                            })
+                        )
                 }
             },
             hide: {
@@ -213,10 +229,32 @@ var datasetEditor = {
             );
         }
         else {
-            console.log(documentObj['edges']['NGram'][ngid]);
+            console.log("document-ngram edge weight is already <= 0");
         }
     },
         
+    submitRemoveAllNodes: function(node) {
+        
+        var documentObj = $("#document_to_edit").data("documentObj");
+        var ngid = node.attr("dbid");
+        var text = node.text();
+        
+        if (documentObj['edges']['NGram'][ngid] === undefined) {
+            console.error(ngid+" is not in Document edges");
+        }
+        
+        if (documentObj['edges']['NGram'][ngid] > 0) {
+            // update stored html string
+            $('span.highlight').qtip('api').destroy();
+            // remove matches in all document highlight_content
+            
+            // queue one storage.deleteNGramForm
+        }
+        else {
+            console.log("ngram edge weight is already <= 0");
+        }
+    },
+
     toggleEditionForm: function(dataset_id) {
         var self = this;
         // fills the form if it's going to be visible
