@@ -237,7 +237,14 @@ function TinaServiceClass(url) {
 
     /*
      * postGraph
-     * curl http://localhost:8888/graph -d dataset="test_data_set" -d periods="1"
+     * @param _dataset {String} dataset id
+     * @param _periods {String} a list of periods
+     * @param _whitelistpath {String} whitelist file path
+     * @param _outpath {String} custom name of the new whitelist
+     * @param _ngramoptions {Object} JSON object of parameters for the NGram Graph
+     * @param _documentoptions {Object} JSON object of parameters for the Document Graph
+     * @param _exportedges {String} 'True' or 'False' asking the server to export the complete graph to "current.gexf" on the local disk
+     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
     */
     postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, _exportedges, cb) {
         this._POST("graph",
@@ -257,17 +264,24 @@ function TinaServiceClass(url) {
         );
     },
 
-    postDataset: function(_obj, _recursive, cb) {
+    /*
+    * POST updates of Pytextminer nodes
+    * @param _obj {Object} a JSON containing a minimal version of a Pytextminer node and only attr and edges you want to update
+    * @param _redondant {String} 'True' or 'False' asking the server to rewrite edges of every linked Pytextminer nodes (from an different category)
+    * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+    * 
+    */
+    postDataset: function(_obj, _redondant, cb) {
         this._POST("dataset", { dataset: _obj }, { error:"couldn't postDataset" }, cb);
     },
-    postCorpus: function(_dataset, _obj, _recursive, cb) {
-        this._POST("corpus", { dataset: _dataset, object: JSON.stringify(_obj), recursive: _recursive }, {error:"couldn't postCorpus"}, cb);
+    postCorpus: function(_dataset, _obj, _redondant, cb) {
+        this._POST("corpus", { dataset: _dataset, object: JSON.stringify(_obj), redondant: _redondant }, {error:"couldn't postCorpus"}, cb);
     },
-    postNGram: function(_dataset, _obj, _recursive, cb) {
-        this._POST("ngram", { dataset: _dataset, object: JSON.stringify(_obj), recursive: _recursive }, {error:"couldn't postNGram"}, cb);
+    postNGram: function(_dataset, _obj, _redondant, cb) {
+        this._POST("ngram", { dataset: _dataset, object: JSON.stringify(_obj), redondant: _redondant }, {error:"couldn't postNGram"}, cb);
     },
-    postDocument: function(_dataset, _obj, _recursive, cb) {
-        this._POST("document", { dataset: _dataset, object: JSON.stringify(_obj), recursive: _recursive }, {error:"couldn't postDocument"}, cb);
+    postDocument: function(_dataset, _obj, _redondant, cb) {
+        this._POST("document", { dataset: _dataset, object: JSON.stringify(_obj), redondant: _redondant }, {error:"couldn't postDocument"}, cb);
     },
 
     /**

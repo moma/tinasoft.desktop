@@ -178,17 +178,26 @@ var datasetEditor = {
     submitRemoveNode: function(node) {
         var documentObj = $("#document_to_edit").data("documentObj");
         var ngid = node.attr("dbid");
+        if (documentObj['edges']['NGram'][ngid] === undefined) {
+            console.log(ngid+" is not in Document edges");
+        }
         if (documentObj['edges']['NGram'][ngid] > 0) {
-            documentObj['edges']['NGram'][ngid] -= 1;
-
             // update stored html string
             $('span.highlight').qtip('api').destroy();
             node.removeClass("highlight");
-            documentObj['highlight_content'] = $("#document_to_edit").html();
-            
+            // will decrement the value on update
+            updateDocument = {
+                "py/object": "tinasoft.pytextminer.document.Document",
+                'id': documentObj.id,
+                'edges': {
+                    'NGram' : {}
+                },
+                'highlight_content' : $("#document_to_edit").html()
+            };
+            updateDocument.edges.NGram[ngid] = -1;
             TinaService.postDocument(
                 datasetEditor.dataset_id,
-                documentObj,
+                updateDocument,
                 'True',
                 { success : function(data) {
                     TinaService.getDocument(
