@@ -292,8 +292,27 @@ function TinaServiceClass(url) {
     },
 
     deleteDataset: function( _dataset, cb ) {
-        this._DELETE( "dataset?dataset="+_dataset, {}, { error:"couldn't deleteDataset" }, cb );
+        this._DELETE( "dataset?dataset="
+            +self.encodeURIComponent(_dataset),
+            {},
+            { error:"couldn't deleteDataset" },
+            cb
+        );
     },
+
+    deleteNGramForm: function( _dataset, _label, _id, cb ) {
+        this._DELETE( "dataset?dataset="
+            +self.encodeURIComponent(_dataset)
+            +"&label="
+            + self.encodeURIComponent(_label)
+            +"&id="
+            +self.encodeURIComponent(_id),
+            {},
+            { error:"couldn't deleteNGramForm" },
+            cb
+        );
+    },
+
 
     /*
      * transforms a relative path ("user/etc/") to an http:// url, compatible with windows paths

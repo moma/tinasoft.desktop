@@ -296,9 +296,37 @@ function displayDatasetRow(parent_div_id, list) {
                 datasetEditor.toggleEditionForm($(this).data("dataset_id"));
             });
             
+        var update_dataset = $("<a href='#'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-refresh'
+                }
+            })
+            .attr("id", dataset_id+"_update_button")
+            .attr("title", "click to update dataset's database")
+            .data("dataset_id", dataset_id)
+            .data("deleteNGramFormQueue", [])
+            .click( function(eventObject) {
+                datasetEditor.submitUpdateDataset($(this));
+            })
+            .hide()
+            .qtip({
+                content: {
+                    text: ""
+                },
+                hide: {
+                    delay : 1000
+                }
+            });
+            
         // appends action buttons to the dataset's row
         var tr = $("<tr class='ui-widget-content' id='"+trid+"'></tr>")
-            .append( $("<td class='ui-widget-content'></td>").append(delete_dataset).append(edit_dataset) )
+            .append( $("<td class='ui-widget-content'></td>")
+                .append(delete_dataset)
+                .append(edit_dataset)
+                .append(update_dataset)
+            )
             .append( $("<td class='ui-widget-content'></td>").text(dataset_id) )
         ;
         
