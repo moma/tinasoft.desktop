@@ -129,14 +129,17 @@ var datasetEditor = {
     
     highlightTobeRemovedText: function(selection) {
         var deleteNGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("deleteNGramFormQueue");
-        for (var form in deleteNGramFormQueue) {
+        for (var i=0; i<deleteNGramFormQueue.length; i++) {
             selection.each(function(){
-                if (form.label == $(this).text()) {
+                if (deleteNGramFormQueue[i].label == $(this).text()) {
                     $(this).removeClass("highlight");
                     $(this).addClass("highlight_toberemoved");
                     if($(this).qtip('api') !== undefined)
                         $(this).qtip('disable');
                     // TODO : attach undo
+                }
+                else {
+                    $(this).removeClass("highlight_toberemoved");
                 }
             });
         }
@@ -194,7 +197,10 @@ var datasetEditor = {
             console.log(ngid+" is not in Document edges");
         }
         if (documentObj['edges']['NGram'][ngid] > 0) {
-
+            if(datasetEditor.dataset_needs_update == false) {
+                datasetEditor.dataset_needs_update = true;
+                $("#"+datasetEditor.dataset_id + "_update_button").show();
+            }
             node.removeClass("highlight");
             // will decrement the value on update
             updateDocument = {
@@ -244,7 +250,6 @@ var datasetEditor = {
                 'label':  node.text(),
                 'id': node.attr("dbid")
             });
-
             $("#"+datasetEditor.dataset_id + "_update_button").data("deleteNGramFormQueue", deleteNGramFormQueue);
 
             datasetEditor.highlightTobeRemovedText($('span.highlight'));
@@ -255,13 +260,14 @@ var datasetEditor = {
             }
             $("#"+datasetEditor.dataset_id + "_update_button").qtip('option', 'content.text',
                 function() {
-                    var tiptext = "NGrams to be removed : "
+                    var tiptext = "NGrams to be removed : ";
                     var data = $(this).data("deleteNGramFormQueue");
+                    if (data.length==0)
+                        return "";
                     for(var i=0; i<data.length; i++) {
-                         tiptext += data[i].label+", ";
-                         console.log(tiptext);
+                        tiptext += data[i].label+", ";
                     }
-                    return $('<p></p>').text(tiptext);
+                    return tiptext;
                 }
             );
 
@@ -274,30 +280,35 @@ var datasetEditor = {
     submitUpdateDataset: function(button) {
         var deleteNGramFormQueue = button.data("deleteNGramFormQueue");
         var dataset_id = button.data("dataset_id");
+        // TODO verify loop
         for(var i=0; i<deleteNGramFormQueue.length; i++) {
             var form = deleteNGramFormQueue.pop();
+            var label = form.label;
+            var id = form.id;
             TinaService.deleteNGramForm(
                 dataset_id,
-                form.label,
-                form.id,
+                label,
+                id,
                 {
                     'success': function(doc_count_data) {
-                        $("#working_session").notify("create", {
+                        $("#notification").notify("create", {
                             title: 'Tinasoft Notification',
-                            text: 'Successfully removed all occurences of '
-                                +form.label
-                                +' in data set "'
+                            text: 'Successfully removed all occurences of "'
+                                +label
+                                +'" in data set "'
                                 +dataset_id
                                 +'" (appearing in '
                                 +doc_count_data
                                 +' documents)'
                         });
-                        button.hide();
-                        datasetEditor.highlightTobeRemovedText($('span.highlight'));
                     }
                 }
             );
         }
+        // TODO call graphpreprocess
+        button.hide();
+        $('#document_to_edit > span').removeClass("highlight_toberemoved")
+        datasetEditor.dataset_needs_update = false;
     },
 
     toggleEditionForm: function(dataset_id) {

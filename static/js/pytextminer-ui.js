@@ -492,6 +492,8 @@ var initPytextminerUi = function() {
 
     datasetEditor.init();
 
+    $("#notification").notify();
+
     TinaService.getLog(TinaServiceCallback.getLog);
 };
 

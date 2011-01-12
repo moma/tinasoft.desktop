@@ -301,7 +301,7 @@ function TinaServiceClass(url) {
     },
 
     deleteNGramForm: function( _dataset, _label, _id, cb ) {
-        this._DELETE( "dataset?dataset="
+        this._DELETE( "ngramform?dataset="
             +self.encodeURIComponent(_dataset)
             +"&label="
             + self.encodeURIComponent(_label)
