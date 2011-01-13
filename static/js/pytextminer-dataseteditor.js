@@ -282,7 +282,7 @@ var datasetEditor = {
         var dataset_id = button.data("dataset_id");
         // TODO verify loop
         for(var i=0; i<deleteNGramFormQueue.length; i++) {
-            var form = deleteNGramFormQueue.pop();
+            var form = deleteNGramFormQueue[i];
             var label = form.label;
             var id = form.id;
             TinaService.deleteNGramForm(
@@ -307,6 +307,7 @@ var datasetEditor = {
         }
         // TODO call graphpreprocess
         button.hide();
+        button.data("deleteNGramFormQueue", []);
         $('#document_to_edit > span').removeClass("highlight_toberemoved")
         datasetEditor.dataset_needs_update = false;
     },
