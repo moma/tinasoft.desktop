@@ -283,6 +283,20 @@ var datasetEditor = {
         // global deleteNGramForm state indicator
         datasetEditor.updateDatasetSemaphore = deleteNGramFormQueue.length;
         
+        if(deleteNGramFormQueue.length==0) {
+            // calls graph_preprocess
+            TinaService.postGraphPreprocess(dataset_id, {
+                success: function(data, textStatus, XMLHttpRequest) {
+                    $("#notification").notify("create", {
+                        title: 'Tinasoft Notification',
+                        text: 'Successfully updated index of data set "'
+                            +dataset_id
+                            +'"'
+                    });
+                }
+            });
+        }
+        
         for(var i=0; i<deleteNGramFormQueue.length; i++) {
             TinaService.deleteNGramForm(
                 dataset_id,

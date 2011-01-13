@@ -150,6 +150,8 @@ function displayWhitelistColumn(corpora) {
                 for ( var i=0; i < list.length; i++ ) {
                     // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
+                    if( /csv$/.test(list[i]) == false )
+                        continue;
                     var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
                         + parseFileLabel(path_comp[0])
                         + "&#09;"
@@ -352,8 +354,9 @@ function displayDataTable(parent_div_id) {
     TinaService.getDatasetList({
         success: function(list) {
             displayDatasetRow(parent_div_id, list);
+            $("#importdatasetid").autocomplete({ source: list });
+            $("#indexdatasetid").autocomplete({ source: list });
         }
-        //Cache.setValue("last_data_table", table);
     });
 }
 
