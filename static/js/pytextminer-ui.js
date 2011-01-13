@@ -292,7 +292,7 @@ function displayDatasetRow(list) {
             });
             
         var tr = $("<tr id='"+trid+"'></tr>")
-            .append( $("<td class='ui-widget-content'></td>").append(delete_dataset).append(edit_dataset) )
+            .append( $("<td class='ui-widget-content'></td>").append(delete_dataset) )
             .append( $("<td class='ui-widget-content'></td>").html(htmlEncode(dataset_id)) )
         ;
         
@@ -472,6 +472,11 @@ var initPytextminerUi = function() {
     $("#updateDocument").button("enable");
 
     TinaService.getLog(TinaServiceCallback.getLog);
+    
+    TinaService.getDatasetList( { success: function(list) {
+        $("#importdatasetid").autocomplete({ source: list });
+        $("#indexdatasetid").autocomplete({ source: list });
+    }});
 };
 
 
