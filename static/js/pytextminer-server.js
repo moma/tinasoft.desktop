@@ -29,9 +29,16 @@ function TinaServiceClass(url) {
     SERVER_URL: SERVER_URL,
 
     /**
-     * do an HTTP REQUEST request to SERVER_URL + path
-     * SERVER_URL is a constant,
-     * path is a parameter,
+     * HTTP generic REQUEST to SERVER_URL + path using $.ajax
+     * SERVER_URL is initialized with this object,
+     * @param type {string} HTTP type of the request
+     * @param path {string} the path of the request
+     * @param params {Object} a JSON of parameters passed with the request
+     * @param defaultcb {Object} default callbacks if missing in _cb
+     * @param _cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+     * @params traditional {bool} telling $.ajax to switch parameters serialization method (form-urlencoded)
+     * @params cache {bool} telling $.ajax to avoid browser caching if false
+     * @params contentType {string} how data is sent with the request
      */
     _REQUEST: function(type, path, params, defaultcb, _cb, traditional, cache, contentType) {
         // setup default values, if defined
@@ -52,12 +59,10 @@ function TinaServiceClass(url) {
         // overwrites default with the application's parmas
         for (key in _cb) { cb[key] = _cb[key]; }
         $.ajax({
-            // jquery to url
             url: SERVER_URL+"/"+path,
             type: type,
             // expected return value
             dataType: "json",
-            // request parameters
             data: params,
             beforeSend: cb.beforeSend,
             error: cb.error,
@@ -70,8 +75,12 @@ function TinaServiceClass(url) {
 
     },
 
-    /*
-     * HTTP GET request
+    /**
+     * HTTP GET request to SERVER_URL + path
+     * @param path {string}
+     * @param params {Object} a JSON of parameters passed with the request
+     * @param defaultcb {Object} default callbacks if missing in _cb
+     * @param _cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
      */
     _GET: function(path, params, defaultcb, _cb) {
         this._REQUEST("GET", path, params, defaultcb, _cb);
@@ -208,17 +217,25 @@ function TinaServiceClass(url) {
     },
 
     /**
-     * HTTP POST request
+     * HTTP POST request to SERVER_URL + path
+     * @param path {string}
+     * @param params {Object} a JSON of parameters passed with the request
+     * @param defaultcb {Object} default callbacks if missing in _cb
+     * @param _cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
      */
     _POST: function(path, params, defaultcb, _cb) {
         this._REQUEST("POST", path, params, defaultcb, _cb);
     },
 
     /*
-    * postFile
-    * curl http://localhost:8888/file -d dataset="test_data_set" -d path="tests/data/pubmed_tina_test.csv"
+     * postFile
+     *  @param _path {string} source file path
+     * @param _dataset {string} dataset id
+     * @param _whitelistpath {string} whitelist file path
+     * @param _format {string} source file format
+     * @param _overwrite {string} "True" or "False" telling the Pytextminer to overwrite index or not 
+     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
     */
-
     postFile: function(_path, _dataset, _whitelistpath, _format, _overwrite, cb) {
         this._POST("file",
             {
@@ -265,6 +282,16 @@ function TinaServiceClass(url) {
     },
 
     /*
+    * POST updates an prteprocessed values of an entire dataset
+    * @param _dataset {String} dataset id
+    * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+    * 
+    */
+    postGraphPreprocess: function(_dataset, cb) {
+        this._POST("graph_preprocess", { dataset: _dataset }, { error:"couldn't postGraphPreprocess" }, cb);
+    },
+
+    /*
     * POST updates of Pytextminer nodes
     * @param _obj {Object} a JSON containing a minimal version of a Pytextminer node and only attr and edges you want to update
     * @param _redondant {String} 'True' or 'False' asking the server to rewrite edges of every linked Pytextminer nodes (from an different category)
@@ -285,7 +312,11 @@ function TinaServiceClass(url) {
     },
 
     /**
-     * do an HTTP DELETE request to SERVER_URL + path
+     * HTTP DELETE request to SERVER_URL + path
+     * @param path {string}
+     * @param params {Object} ignored because of jquery.ajax
+     * @param defaultcb {Object} default callbacks if missing in _cb
+     * @param _cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
      */
     _DELETE: function( path, params, defaultcb, _cb ) {
         this._REQUEST( "DELETE", path, params, defaultcb, _cb);

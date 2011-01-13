@@ -280,32 +280,44 @@ var datasetEditor = {
     submitUpdateDataset: function(button) {
         var deleteNGramFormQueue = button.data("deleteNGramFormQueue");
         var dataset_id = button.data("dataset_id");
-        // TODO verify loop
+        // global deleteNGramForm state indicator
+        datasetEditor.updateDatasetSemaphore = deleteNGramFormQueue.length;
+        
         for(var i=0; i<deleteNGramFormQueue.length; i++) {
-            var form = deleteNGramFormQueue[i];
-            var label = form.label;
-            var id = form.id;
             TinaService.deleteNGramForm(
                 dataset_id,
-                label,
-                id,
+                deleteNGramFormQueue[i].label,
+                deleteNGramFormQueue[i].id,
                 {
-                    'success': function(doc_count_data) {
+                    success: function(data, textStatus, XMLHttpRequest) {
                         $("#notification").notify("create", {
-                            title: 'Tinasoft Notification',
-                            text: 'Successfully removed all occurences of "'
-                                +label
-                                +'" in data set "'
-                                +dataset_id
-                                +'" (appearing in '
-                                +doc_count_data
-                                +' documents)'
+                        title: 'Tinasoft Notification',
+                        text: 'Successfully removed all occurrences of "'
+                            +data[0]
+                            +'" in data set "'
+                            +dataset_id
+                            +'" (appearing in '
+                            +data[1]
+                            +' documents)'
                         });
+                        datasetEditor.updateDatasetSemaphore -= 1;
+                        if (datasetEditor.updateDatasetSemaphore==0){
+                            // calls graph_preprocess
+                            TinaService.postGraphPreprocess(dataset_id, {
+                                success: function(data, textStatus, XMLHttpRequest) {
+                                    $("#notification").notify("create", {
+                                        title: 'Tinasoft Notification',
+                                        text: 'Successfully updated index of data set "'
+                                            +dataset_id
+                                            +'"'
+                                    });
+                                }
+                            });
+                        }
                     }
                 }
             );
         }
-        // TODO call graphpreprocess
         button.hide();
         button.data("deleteNGramFormQueue", []);
         $('#document_to_edit > span').removeClass("highlight_toberemoved")
