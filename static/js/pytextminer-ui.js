@@ -150,6 +150,8 @@ function displayWhitelistColumn(corpora) {
                 for ( var i=0; i < list.length; i++ ) {
                     // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
+                    if( /csv$/.test(list[i]) == false )
+                        continue;
                     var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
                         + parseFileLabel(path_comp[0])
                         + "&#09;"
@@ -244,12 +246,32 @@ function selectableCorpusInit( ol, corpora ) {
     });
 }
 
-function displayDatasetRow(list) {
-    var tbody = $("#data_table > table > tbody");
+function displayDeleteDatasetDialog(dataset_id) {
+    $("#dialog-confirm-delete-dataset").dialog({
+        title: "Erase "+dataset_id+" ?",
+        resizable: false,
+        position: ['center','top'],
+        modal: true,
+        buttons: {
+            'Delete' : function(eventObject) {
+                TinaService.deleteDataset($(this).data("dataset_id"), TinaServiceCallback.deleteDataset);
+                $(this).dialog('close');
+            },
+            Cancel: function() {
+                $(this).dialog('close');
+            }
+        }
+    }).data("dataset_id", dataset_id);
+}
+
+function displayDatasetRow(parent_div_id, list) {
+    var tbody = $("#"+parent_div_id+" > table > tbody");
+    tbody.empty();
     for ( var i=0; i<list.length; i++ ) {
         // populates and attach table rows
         var dataset_id = list[i];
         var trid = dataset_id + "_tr";
+
         var delete_dataset = $("<a href='#'></a>")
             .button({
                 text: false,
@@ -258,23 +280,11 @@ function displayDatasetRow(list) {
                 }
             })
             .attr("title", "click to definitely remove all dataset's files")
-            //.data("id", dataset_id)
-            .click( dataset_id ,function(eventObject) {
-                $("#dialog-confirm-delete-dataset").dialog({
-			resizable: false,
-                        position: ['center','top'],
-			modal: true,
-			buttons: {
-                            'Delete': function(eventObject) {
-                                TinaService.deleteDataset(dataset_id, TinaServiceCallback.deleteDataset);
-                                $(this).dialog('close');
-                            },
-                            Cancel: function() {
-                                $(this).dialog('close');
-                            }
-			}
-		});
+            .data("dataset_id", dataset_id)
+            .click( function(eventObject) {
+                displayDeleteDatasetDialog($(this).data("dataset_id"));
             });
+
         var edit_dataset = $("<a href='#'></a>")
             .button({
                 text: false,
@@ -283,19 +293,45 @@ function displayDatasetRow(list) {
                 }
             })
             .attr("title", "click to edit dataset's contents")
-            .data("id", dataset_id)
+            .data("dataset_id", dataset_id)
             .click( function(eventObject) {
-                // fills the form
-                var id = $(this).data("id");
-                $(".fold_form:visible:not(#editdocument_form)").hide("fold");
-                $("#editdocument_form").toggle("fold");
+                datasetEditor.toggleEditionForm($(this).data("dataset_id"));
             });
-            
-        var tr = $("<tr id='"+trid+"'></tr>")
-            .append( $("<td class='ui-widget-content'></td>").append(delete_dataset) )
-            .append( $("<td class='ui-widget-content'></td>").html(htmlEncode(dataset_id)) )
-        ;
-        
+
+
+        var update_dataset = $("<a href='#'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-refresh'
+                }
+            })
+            .attr("id", dataset_id+"_update_button")
+            .attr("title", "click to update dataset's database")
+            .data("dataset_id", dataset_id)
+            .data("deleteNGramFormQueue", [])
+            .click( function(eventObject) {
+                datasetEditor.submitUpdateDataset($(this));
+            })
+            .hide()
+            .qtip({
+                content: {
+                    text: ""
+                },
+                hide: {
+                    delay : 1000
+                }
+            });
+
+        // appends action buttons to the dataset's row
+        var tr = $("<tr class='ui-widget-content' id='"+trid+"'></tr>")
+            .append( $("<td class='ui-widget-content'></td>")
+                .append(delete_dataset)
+                .append(edit_dataset)
+                .append(update_dataset)
+            )
+            .append( $("<td class='ui-widget-content'></td>").text(dataset_id) );
+
         tbody.append(tr);
         TinaService.getDataset(dataset_id, {
             success: function(dataset) {
@@ -314,16 +350,13 @@ function displayDatasetRow(list) {
  * and populates a table
  * with corpus and graphs
  */
-function displayDataTable(parent_div) {
-    // populates each row
-    var tbody = $( "<tbody></tbody>" );
-    $("#"+parent_div+" > table > tbody").remove();
-    $("#"+parent_div+" > table").append(tbody);
+function displayDataTable(parent_div_id) {
     TinaService.getDatasetList({
         success: function(list) {
-            displayDatasetRow(list);
+            displayDatasetRow(parent_div_id, list);
+            $("#importdatasetid").autocomplete({ source: list });
+            $("#indexdatasetid").autocomplete({ source: list });
         }
-        //Cache.setValue("last_data_table", table);
     });
 }
 
@@ -333,7 +366,7 @@ function loadSourceFiles(select_id) {
         success: function(list) {
             select.empty().append($("<option value=''></option>"));
             for ( var i=0; i < list.length; i++ ) {
-                select.append($("<option value='"+list[i]+"'>"+htmlEncode(list[i])+"</option>"))
+                select.append($("<option value='"+list[i]+"'>"+htmlEncode(list[i])+"</option>"));
             }
         }
     });
@@ -346,6 +379,7 @@ var initPytextminerUi = function() {
     /* resets cache vars */
     var corporaAndPeriods = Cache.setValue( "last_selected_periods", {} );
     var dupldoc = $( "#duplicate_docs" ).empty().hide();
+
     $("#duplicate_docs_toggle").button({
         icons: {primary:'ui-icon-lightbulb'},
         text: true
@@ -356,8 +390,6 @@ var initPytextminerUi = function() {
 
     $("#dialog-confirm-delete-dataset").hide();
 
-    // hide by default all submit forms
-    $("#editdocument_form").hide();
     $("#import_form").hide();
     $("#toggle_import_form").button({
         icons: {primary:'ui-icon-plus'},
@@ -461,18 +493,12 @@ var initPytextminerUi = function() {
     $(".ui-spinner-buttons").height(12);
     $(".ui-spinner-button").height(6);
 
-    $("#updateDocument")
-        .button({
-            icons: { primary:'ui-icon-check' },
-            text: true,
-            label: "update document indexation"
-        }).click(function(event) {
-            TinaService.postWhitelistUpdate(TinaServiceCallback.postWhitelistUpdate);
-        });
-    $("#updateDocument").button("enable");
+    datasetEditor.init();
+
+    $("#notification").notify();
 
     TinaService.getLog(TinaServiceCallback.getLog);
-    
+
     TinaService.getDatasetList( { success: function(list) {
         $("#importdatasetid").autocomplete({ source: list });
         $("#indexdatasetid").autocomplete({ source: list });

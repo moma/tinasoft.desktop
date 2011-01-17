@@ -22,22 +22,31 @@
         <meta name="description" content="scientometrics datamining graphviz"/>
         <meta name="keywords" content="TinaSoft,TinaViz,CREA"/>
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-
+        <!-- JQUERY UI CSS -->
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/eggplant/jquery-ui-1.8.1.custom.css"/>
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.spinner.css"/>
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/jquery.qtip.min.css"/>
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.notify.css"/>
+        <!--TINAWEB CSS -->
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/tinaweb.css"/>
+        <!--TINASOFT OVERWRITING CSS -->
+        <link type="text/css" rel="stylesheet" href="css/main.css"/>
         <!-- JQUERY -->
         <script type="text/javascript" src="tinaweb/js/jquery/jquery-1.4.4.min.js" language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.ba-dotimeout.min.js" language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.json-2.2.min.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery/jquery.dynacloud-5.js" language="javascript"></script>
 
         <!-- JQUERY UI -->
         <script type="text/javascript" src="tinaweb/js/jquery-ui/jquery-ui-1.8.min.js" language="javascript"></script>
         <script src='tinaweb/js/rating/jquery.ratings.js' type="text/javascript" language="javascript"></script>
-        <link href='tinaweb/js/rating/jquery.ratings.16.css' type="text/css" rel="stylesheet"/>
+        <script type="text/javascript" src="tinaweb/js/jquery/jquery.qtip.min.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery/jquery.notify.min.js" language="javascript"></script>
+        <!--<link href='tinaweb/js/rating/jquery.ratings.16.css' type="text/css" rel="stylesheet"/>-->
 
         <!-- JQUERY UI PLUGINS -->
         <script type="text/javascript" src="tinaweb/js/jquery-ui/ui.spinner.min.js" language="javascript"></script>
-        <!-- JQUERY UI CSS -->
-        <link type="text/css" rel="stylesheet" href="tinaweb/css/eggplant/jquery-ui-1.8.1.custom.css"/>
-        <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.spinner.css"/>
+
         <!-- TINASOFT UTILITIES -->
         <script type="text/javascript" src="tinaweb/js/cache.js"></script>
         <!-- TINAVIZ -->
@@ -52,16 +61,14 @@
         <script type="text/javascript" src="js/pytextminer-server.js" language="javascript"></script>
         <script type="text/javascript" src="js/pytextminer-server-callbacks.js" language="javascript"></script>
         <script type="text/javascript" src="js/pytextminer-server-submit.js" language="javascript"></script>
+        <script type="text/javascript" src="js/pytextminer-dataseteditor.js" language="javascript"></script>
         <script type="text/javascript" src="js/pytextminer-ui.js" language="javascript"></script>
         <!--<script type="text/javascript" src="js/upload-file.js" language="javascript"></script> -->
         <!-- TINASOFT APP MAIN SCRIPT -->
         <script type="text/javascript" src="js/main.js" language="javascript"></script>
+
         <!-- ENABLE DEBUG -->
         <script type="text/javascript" src="tinaweb/js/firebug-lite/firebug-lite.js" language="javascript"></script>
-        <!--TINASOFT CSS -->
-        <link type="text/css" rel="stylesheet" href="tinaweb/css/tinaweb.css"/>
-        <!--TINASOFT OVERWRITING CSS -->
-        <link type="text/css" rel="stylesheet" href="css/main.css"/>
         <!--TINAWEB APPLET LOADER -->
         <script type="text/javascript" src="tinaweb/js/tinaviz/deployJava.js" language="javascript"></script>
 
@@ -70,6 +77,13 @@
     <body>
         <div id="main">
             <div id="working_session" class="ui-widget ui-corner-all">
+                <div id="notification">
+                    <div id="basic-template">
+                        <a class="ui-notify-cross ui-notify-close" href="#">x</a>
+                        <h1>#{title}</h1>
+                        <p>#{text}</p>
+                    </div>
+                </div>
                 <button id="toggle_working_session"></button>
                 <button id="toggle_about"></button>
                 <button id="exit_server"></button>
@@ -84,36 +98,30 @@
                                 <th class="ui-widget-header">graphs <button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
                             </tr>
                         </thead>
-                        <!--<tbody class="ui-widget-content"></tbody>-->
+                        <tbody class="ui-widget-content"></tbody>
                     </table>
                 </div>
-                <div id="dialog-confirm-delete-dataset" title="Erase a data set ?"> 
-                        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>All the dataset's files and database will be erased !</p> 
+                <div id="dialog-confirm-delete-dataset" title="">
+                        <p><span class="ui-icon ui-icon-alert"></span> All the dataset's files and database will be erased !</p> 
                 </div>        
-                <div id="editdocument_form" class="fold_form ui-widget-content">
-                    <table id="editdocument_table" class="ui-widget-content ui-corner-all">
-                        <thead>
-                            <tr>
-                                <th class="ui-widget-header">field</th>
-                                <th class="ui-widget-header">value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th class="ui-widget-content">label</th>
-                                <th class="ui-widget-content" id="editdocument_label_value"></th>
-                            </tr>
-                            <tr>
-                                <th class="ui-widget-content">content</th>
-                                <th class="ui-widget-content" id="editdocument_content_value"></th>
-                            </tr>
-                           <tr>
-                                <th class="ui-widget-content">keywords</th>
-                                <th class="ui-widget-content" id="editdocument_keywords_value"></th>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button id="updateDocument"></button>
+                <div id="editdocument_form" class="fold_form ui-widget-content ui-corner-all">
+                    <div class="ui-widget-header ui-corner-all">
+                        <p>
+                        period <select id="editdataset_corpus"></select>
+                        document <select id="editdataset_document"></select>
+                        </p>
+                    </div>
+                    <div class="ui-widget-content ui-corner-all">
+                        <table id="editdocument_table" class="ui-widget-content ui-corner-all">
+                            <thead>
+    <!--                            <tr>
+                                    <th class="ui-widget-header">field</th>
+                                    <th class="ui-widget-header">value</th>
+                                </tr>-->
+                            </thead>
+                            <tbody class="ui-widget-content"></tbody>
+                        </table>
+                    </div>
                 </div>                
                 <div id="import_form" class="fold_form">
                     <table id="import_table" class="ui-widget-content ui-corner-all">
