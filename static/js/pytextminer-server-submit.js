@@ -104,12 +104,7 @@ $(document).ready(function() {
      * Requests to generate a new graph
      */
     var submitGenerateGraph = function(event) {
-        var whitelistpath = $("#graph_whitelist").data("whitelistpath");
-        if ( whitelistpath == '' ||  whitelistpath === undefined ) {
-            $("#graph_whitelist").addClass('ui-state-error');
-            alert("please select a white list");
-            return false;
-        }
+
         var corporaAndPeriods = Cache.getValue( "last_selected_periods", {} );
         if( Object.size(corporaAndPeriods) == 0) {
             $("#graph_periods").addClass('ui-state-error');
@@ -150,7 +145,6 @@ $(document).ready(function() {
         TinaService.postGraph(
             corpora,
             corporaAndPeriods[corpora],
-            whitelistpath,
             safeString( label.val() ),
             ngramGraphOptions,
             documentGraphOptions,
@@ -160,7 +154,7 @@ $(document).ready(function() {
         return true;
     };
 
-    
+
     $("#extractFileButton")
         .button({
             text: true,

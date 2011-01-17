@@ -233,7 +233,7 @@ function TinaServiceClass(url) {
      * @param _dataset {string} dataset id
      * @param _whitelistpath {string} whitelist file path
      * @param _format {string} source file format
-     * @param _overwrite {string} "True" or "False" telling the Pytextminer to overwrite index or not 
+     * @param _overwrite {string} "True" or "False" telling the Pytextminer to overwrite index or not
      * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
     */
     postFile: function(_path, _dataset, _whitelistpath, _format, _overwrite, cb) {
@@ -254,21 +254,19 @@ function TinaServiceClass(url) {
 
     /*
      * postGraph
-     * @param _dataset {String} dataset id
-     * @param _periods {String} a list of periods
-     * @param _whitelistpath {String} whitelist file path
-     * @param _outpath {String} custom name of the new whitelist
+     * @param _dataset {string} dataset id
+     * @param _periods {string} a list of periods
+     * @param _outpath {string} custom name of the new whitelist
      * @param _ngramoptions {Object} JSON object of parameters for the NGram Graph
      * @param _documentoptions {Object} JSON object of parameters for the Document Graph
-     * @param _exportedges {String} 'True' or 'False' asking the server to export the complete graph to "current.gexf" on the local disk
+     * @param _exportedges {string} 'True' or 'False' asking the server to export the complete graph to "current.gexf" on the local disk
      * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
     */
-    postGraph: function(_dataset, _periods, _whitelistpath, _outpath, _ngramoptions, _documentoptions, _exportedges, cb) {
+    postGraph: function(_dataset, _periods, _outpath, _ngramoptions, _documentoptions, _exportedges, cb) {
         this._POST("graph",
             {
                 dataset: _dataset,
                 periods: _periods,
-                whitelistpath: _whitelistpath,
                 outpath: this.protectPath(_outpath),
                 ngramgraphconfig: $.param( _ngramoptions ),
                 documentgraphconfig: $.param( _documentoptions ),
@@ -285,7 +283,7 @@ function TinaServiceClass(url) {
     * POST updates an prteprocessed values of an entire dataset
     * @param _dataset {String} dataset id
     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
-    * 
+    *
     */
     postGraphPreprocess: function(_dataset, cb) {
         this._POST("graph_preprocess", { dataset: _dataset }, { error:"couldn't postGraphPreprocess" }, cb);
@@ -296,7 +294,7 @@ function TinaServiceClass(url) {
     * @param _obj {Object} a JSON containing a minimal version of a Pytextminer node and only attr and edges you want to update
     * @param _redondant {String} 'True' or 'False' asking the server to rewrite edges of every linked Pytextminer nodes (from an different category)
     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
-    * 
+    *
     */
     postDataset: function(_obj, _redondant, cb) {
         this._POST("dataset", { dataset: _obj }, { error:"couldn't postDataset" }, cb);
@@ -309,6 +307,9 @@ function TinaServiceClass(url) {
     },
     postDocument: function(_dataset, _obj, _redondant, cb) {
         this._POST("document", { dataset: _dataset, object: JSON.stringify(_obj), redondant: _redondant }, {error:"couldn't postDocument"}, cb);
+    },
+    postNGramForm: function(_dataset, _label, _is_keyword, cb) {
+        this._POST("ngramform", { dataset: _dataset, label: _label, is_keyword: _is_keyword }, {error:"couldn't postNGramForm"}, cb);
     },
 
     /**
@@ -331,13 +332,15 @@ function TinaServiceClass(url) {
         );
     },
 
-    deleteNGramForm: function( _dataset, _label, _id, cb ) {
+    deleteNGramForm: function( _dataset, _label, _id, _is_keyword, cb ) {
         this._DELETE( "ngramform?dataset="
             +self.encodeURIComponent(_dataset)
             +"&label="
             + self.encodeURIComponent(_label)
             +"&id="
-            +self.encodeURIComponent(_id),
+            +self.encodeURIComponent(_id)
+            +"ís_keyword="
+            +self.encodeURIComponent(_is_keyword),
             {},
             { error:"couldn't deleteNGramForm" },
             cb
