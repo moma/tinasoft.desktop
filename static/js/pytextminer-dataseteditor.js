@@ -118,37 +118,25 @@ var datasetEditor = {
     },
 
     submitAddKeyword: function(keyword) {
-
         var documentObj = $("#document_to_edit").data("documentObj");
-
         if (documentObj['edges']['keyword'][keyword] !== undefined) {
             alert(keyword+" is already a keyword for document "+documentObj['id']+" : aborting");
             return;
         }
+        var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
+        NGramFormQueue['add'].push({
+            'label':  node.text(),
+            'keyword': 'True'
+        });
+        $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
+
+        datasetEditor.highlightTobeAddText($('span.highlight'));
 
         if(datasetEditor.dataset_needs_update == false) {
-                datasetEditor.dataset_needs_update = true;
-                $("#"+datasetEditor.dataset_id + "_update_button").show();
-            }
-
-        TinaService.postNGramForm(
-            datasetEditor.dataset_id,
-            keyword,
-            'True',
-            {
-                success: function(data, textStatus, XMLHttpRequest) {
-                    $("#notification").notify("create", {
-                        title: 'Tinasoft Notification',
-                        text: 'Successfully added the keyword "'
-                            +keyword
-                            +'" to '
-                            +data[1]
-                            +' Documents in the current data set'
-                    });
-                }
-            }
-        )
-
+            datasetEditor.dataset_needs_update = true;
+            $("#"+datasetEditor.dataset_id + "_update_button").show();
+        }
+        datasetEditor.updateDatasetButton();
     },
 
     highlightText: function(data, textStatus, XMLHttpRequest) {
@@ -160,13 +148,14 @@ var datasetEditor = {
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
         datasetEditor.highlightTobeRemovedText($("span.highlight"));
+        datasetEditor.highlightTobeAddedText($("span.highlight"));
     },
 
     highlightTobeRemovedText: function(selection) {
-        var deleteNGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("deleteNGramFormQueue");
-        for (var i=0; i<deleteNGramFormQueue.length; i++) {
+        var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
+        for (var i=0; i<NGramFormQueue['delete'].length; i++) {
             selection.each(function(){
-                if (deleteNGramFormQueue[i].label == $(this).text()) {
+                if (NGramFormQueue['delete'][i].label == $(this).text()) {
                     $(this).removeClass("highlight");
                     $(this).addClass("highlight_toberemoved");
                     if($(this).qtip('api') !== undefined)
@@ -175,6 +164,23 @@ var datasetEditor = {
                 }
                 else {
                     $(this).removeClass("highlight_toberemoved");
+                }
+            });
+        }
+    },
+    highlightTobeAddedText: function(selection) {
+        var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
+        for (var i=0; i<NGramFormQueue['add'].length; i++) {
+            selection.each(function(){
+                if (NGramFormQueue['add'][i].label == $(this).text()) {
+                    $(this).removeClass("highlight");
+                    $(this).addClass("highlight_tobeadded");
+                    if($(this).qtip('api') !== undefined)
+                        $(this).qtip('disable');
+                    // TODO : attach undo
+                }
+                else {
+                    $(this).removeClass("highlight_tobeadded");
                 }
             });
         }
@@ -283,14 +289,13 @@ var datasetEditor = {
         }
 
         if (documentObj['edges']['NGram'][ngid] > 0) {
-
             // queue one storage.deleteNGramForm
-            var deleteNGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("deleteNGramFormQueue");
-            deleteNGramFormQueue.push({
+            var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
+            NGramFormQueue['delete'].push({
                 'label':  node.text(),
                 'id': node.attr("dbid")
             });
-            $("#"+datasetEditor.dataset_id + "_update_button").data("deleteNGramFormQueue", deleteNGramFormQueue);
+            $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
 
             datasetEditor.highlightTobeRemovedText($('span.highlight'));
 
@@ -298,51 +303,94 @@ var datasetEditor = {
                 datasetEditor.dataset_needs_update = true;
                 $("#"+datasetEditor.dataset_id + "_update_button").show();
             }
-
-            $("#"+datasetEditor.dataset_id + "_update_button").qtip('option', 'content.text',
-                function() {
-                    var tiptext = "NGrams to be removed : ";
-                    var data = $(this).data("deleteNGramFormQueue");
-                    if (data.length==0)
-                        return "";
-                    for(var i=0; i<data.length; i++) {
-                        tiptext += data[i].label+", ";
-                    }
-                    return tiptext;
-                }
-            );
-
+            datasetEditor.updateDatasetButton();
         }
         else {
             console.log("ngram edge weight is already == 0");
         }
     },
 
+    updateDatasetButton: function() {
+        $("#"+datasetEditor.dataset_id + "_update_button").qtip('option', 'content.text',
+            function() {
+                var tiptext = "Keyphrases modifications : ";
+                var data = $(this).data("NGramFormQueue");
+                for(var type in data) {
+                    tiptext += "<br/>"+type+" : ";
+                    for(var i=0; i<data[type].length; i++) {
+                        tiptext += data[type][i].label + ", ";
+                    }
+                }
+                return tiptext;
+            }
+        );
+    },
+
     submitUpdateDataset: function(button) {
-        var deleteNGramFormQueue = button.data("deleteNGramFormQueue");
+        var NGramFormQueue = button.data("NGramFormQueue");
         var dataset_id = button.data("dataset_id");
         // global deleteNGramForm state indicator
-        datasetEditor.updateDatasetSemaphore = deleteNGramFormQueue.length;
-
-        if(deleteNGramFormQueue.length==0) {
-            // calls graph_preprocess
-            TinaService.postGraphPreprocess(dataset_id, {
-                success: function(data, textStatus, XMLHttpRequest) {
-                    $("#notification").notify("create", {
-                        title: 'Tinasoft Notification',
-                        text: 'Successfully updated index of data set "'
-                            +dataset_id
-                            +'"'
-                    });
-                }
-            });
+        datasetEditor.updateDatasetSemaphore = NGramFormQueue["delete"].length + NGramFormQueue["add"].length;
+        if (datasetEditor.updateDatasetSemaphore > 0) {
+            datasetEditor.deleteNGramFormQueue(dataset_id, NGramFormQueue["delete"]);
+            datasetEditor.addNGramFormQueue(dataset_id, NGramFormQueue["add"]);
         }
+        else {
+            datasetEditor.submitGraphPreprocess(dataset_id);
+        }
+        button.hide();
+    },
 
-        for(var i=0; i<deleteNGramFormQueue.length; i++) {
+    submitGraphPreprocess: function(dataset_id) {
+        TinaService.postGraphPreprocess(dataset_id, {
+            success: function(data, textStatus, XMLHttpRequest) {
+                $("#notification").notify("create", {
+                    title: 'Tinasoft Notification',
+                    text: 'Successfully updated index of data set "'
+                        +dataset_id
+                        +'"'
+                });
+
+                $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", { "delete":[], "add": [] });
+                $('#document_to_edit > span').removeClass("highlight_toberemoved");
+                $('#document_to_edit > span').removeClass("highlight_tobeadded");
+                datasetEditor.dataset_needs_update = false;
+            }
+        });
+    },
+
+    addNGramFormQueue: function(dataset_id, NGramFormQueue){
+        for(var i=0; i<NGramFormQueue.length; i++) {
+            TinaService.postNGramForm(
+                dataset_id,
+                NGramFormQueue[i].label,
+                NGramFormQueue[i].is_keyword,
+                {
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        $("#notification").notify("create", {
+                            title: 'Tinasoft Notification',
+                            text: 'Successfully added the keyword "'
+                                + NGramFormQueue[i]
+                                + '" to '
+                                + data[1]
+                                + ' Documents'
+                        });
+                        datasetEditor.updateDatasetSemaphore -= 1;
+                        if (datasetEditor.updateDatasetSemaphore==0){
+                            datasetEditor.submitGraphPreprocess(dataset_id);
+                        }
+                    }
+                }
+            )
+        }
+    },
+
+    deleteNGramFormQueue: function(dataset_id, NGramFormQueue){
+        for(var i=0; i<NGramFormQueue.length; i++) {
             TinaService.deleteNGramForm(
                 dataset_id,
-                deleteNGramFormQueue[i].label,
-                deleteNGramFormQueue[i].id,
+                NGramFormQueue[i].label,
+                NGramFormQueue[i].id,
                 'False',
                 {
                     success: function(data, textStatus, XMLHttpRequest) {
@@ -358,26 +406,12 @@ var datasetEditor = {
                         });
                         datasetEditor.updateDatasetSemaphore -= 1;
                         if (datasetEditor.updateDatasetSemaphore==0){
-                            // calls graph_preprocess
-                            TinaService.postGraphPreprocess(dataset_id, {
-                                success: function(data, textStatus, XMLHttpRequest) {
-                                    $("#notification").notify("create", {
-                                        title: 'Tinasoft Notification',
-                                        text: 'Successfully updated index of data set "'
-                                            +dataset_id
-                                            +'"'
-                                    });
-                                }
-                            });
+                            datasetEditor.submitGraphPreprocess(dataset_id);
                         }
                     }
                 }
             );
         }
-        button.hide();
-        button.data("deleteNGramFormQueue", []);
-        $('#document_to_edit > span').removeClass("highlight_toberemoved")
-        datasetEditor.dataset_needs_update = false;
     },
 
     toggleEditionForm: function(dataset_id) {

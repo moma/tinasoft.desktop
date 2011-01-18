@@ -16,3 +16,6 @@ body {
 .highlight_toberemoved {
     background-color: rgba(255,0,0,0.75);
 }
+.highlight_tobeadded {
+    background-color: rgba(100,0,100,0.75);
+}

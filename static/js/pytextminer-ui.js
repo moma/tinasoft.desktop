@@ -309,7 +309,7 @@ function displayDatasetRow(parent_div_id, list) {
             .attr("id", dataset_id+"_update_button")
             .attr("title", "click to update dataset's database")
             .data("dataset_id", dataset_id)
-            .data("deleteNGramFormQueue", [])
+            .data("NGramFormQueue", { "add": [], "delete": [] })
             .click( function(eventObject) {
                 datasetEditor.submitUpdateDataset($(this));
             })
