@@ -339,7 +339,7 @@ function TinaServiceClass(url) {
             + self.encodeURIComponent(_label)
             +"&id="
             +self.encodeURIComponent(_id)
-            +"ís_keyword="
+            +"&is_keyword="
             +self.encodeURIComponent(_is_keyword),
             {},
             { error:"couldn't deleteNGramForm" },
