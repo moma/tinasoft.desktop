@@ -69,7 +69,13 @@ var datasetEditor = {
                             $("<p></p>")
                                 .append("<b>user-defined keyphrases&nbsp;:</b>&nbsp;&nbsp;")
                                 .append(
-                                    $("<span id='document_keywords'></span>").html("---list of keywords---")
+                                    $("<span id='document_keywords'></span>").append(function(elt_index, old_html){
+                                        doc_keywords = "";
+                                        for(var keyword in documentObj['edges']['keyword']){
+                                            doc_keywords += "<span class='doc_keyword' dbid='"+documentObj['edges']['keyword'][keyword]+"'>"+keyword+"</span>&nbsp;&nbsp;"
+                                        }
+                                        return doc_keywords;
+                                    })
                                 )
                                 .append(
                                     $("<input type='text' id='add_document_keyword'></input>")
@@ -90,13 +96,16 @@ var datasetEditor = {
                 )
         );
         //$("#document_to_edit").dynaCloud("#dynacloud");
-
         for (var ngid in documentObj['edges']['NGram']) {
-            TinaService.getNGram(
-                datasetEditor.dataset_id,
-                ngid,
-                { success: datasetEditor.highlightText }
-            );
+            var keyword_id_array = Object.values(documentObj['edges']['keyword']);
+            // restrict ngram highlight to indexed ngram only, not keywords
+            if( keyword_id_array.indexOf(ngid) == -1 ) {
+                TinaService.getNGram(
+                    datasetEditor.dataset_id,
+                    ngid,
+                    { success: datasetEditor.highlightText }
+                );
+            }
         }
 
     },
@@ -110,12 +119,10 @@ var datasetEditor = {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         NGramFormQueue['add'].push({
             'label':  keyword,
-            'keyword': 'True'
+            'is_keyword': 'True'
         });
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
-
-        datasetEditor.highlightTobeAddedText($('span.highlight'));
-
+        datasetEditor.highlightTobeAddedText();
         if(datasetEditor.dataset_needs_update == false) {
             datasetEditor.dataset_needs_update = true;
             $("#"+datasetEditor.dataset_id + "_update_button").show();
@@ -132,7 +139,7 @@ var datasetEditor = {
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
         datasetEditor.highlightTobeRemovedText($("span.highlight"));
-        datasetEditor.highlightTobeAddedText($("span.highlight"));
+        datasetEditor.highlightTobeAddedText();
     },
 
     highlightTobeRemovedText: function(selection) {
@@ -152,7 +159,7 @@ var datasetEditor = {
             });
         }
     },
-    highlightTobeAddedText: function(selection) {
+    highlightTobeAddedText: function() {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var pattern = new RegExp('\\b'+NGramFormQueue['add'][i].label+'\\b', 'gi');
@@ -160,6 +167,7 @@ var datasetEditor = {
             var resultString = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
             $("#document_to_edit")[0].innerHTML = resultString;
         }
+        datasetEditor.attachNGramEditor($("span.highlight"));
     },
 
     attachNGramEditor: function(selection) {
@@ -314,7 +322,6 @@ var datasetEditor = {
         else {
             datasetEditor.submitGraphPreprocess(dataset_id);
         }
-        button.hide();
     },
 
     submitGraphPreprocess: function(dataset_id) {
@@ -326,11 +333,17 @@ var datasetEditor = {
                         +dataset_id
                         +'"'
                 });
-
                 $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", { "delete":[], "add": [] });
                 $('#document_to_edit > span').removeClass("highlight_toberemoved");
                 $('#document_to_edit > span').removeClass("highlight_tobeadded");
                 datasetEditor.dataset_needs_update = false;
+                $("#"+datasetEditor.dataset_id + "_update_button").hide();
+            },
+            complete: function() {
+                $("#editdataset_document").change();
+                /*datasetEditor.attachNGramEditor($("span.highlight"));
+                datasetEditor.highlightTobeRemovedText($("span.highlight"));
+                datasetEditor.highlightTobeAddedText();*/
             }
         });
     },
@@ -346,7 +359,7 @@ var datasetEditor = {
                         $("#notification").notify("create", {
                             title: 'Tinasoft Notification',
                             text: 'Successfully added the keyword "'
-                                + NGramFormQueue[i]
+                                + data[0]
                                 + '" to '
                                 + data[1]
                                 + ' Documents'
