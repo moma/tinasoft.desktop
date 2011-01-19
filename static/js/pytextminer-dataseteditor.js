@@ -57,7 +57,7 @@ var datasetEditor = {
                         )
                 )
                 .append(
-                    $("<td></td>")
+                    $("<td class='ui-widget-content ui-corner-all'></td>")
                         .css({ width: 400 })
                         /*.append(
                             $("<h4>highest frequency suggestions</h4>")
@@ -67,16 +67,18 @@ var datasetEditor = {
                         )*/
                         .append(
                             $("<p></p>")
-                                .append("<b>user-defined keyphrases&nbsp;:</b>&nbsp;&nbsp;")
                                 .append(
                                     $("<span id='document_keywords'></span>").append(function(elt_index, old_html){
-                                        doc_keywords = "";
+                                        if(Object.size(documentObj['edges']['keyword'])==0)
+                                            return "";
+                                        doc_keywords = "<b>user-defined keyphrases&nbsp;:</b>&nbsp;&nbsp;";
                                         for(var keyword in documentObj['edges']['keyword']){
                                             doc_keywords += "<span class='doc_keyword' dbid='"+documentObj['edges']['keyword'][keyword]+"'>"+keyword+"</span>&nbsp;&nbsp;"
                                         }
                                         return doc_keywords;
                                     })
                                 )
+                                .append("<br/>")
                                 .append(
                                     $("<input type='text' id='add_document_keyword'></input>")
                                         .autocomplete({
@@ -95,6 +97,7 @@ var datasetEditor = {
                         )
                 )
         );
+        //datasetEditor.attachKeywordEditor( $("#document_keywords > span") );
         //$("#document_to_edit").dynaCloud("#dynacloud");
         for (var ngid in documentObj['edges']['NGram']) {
             var keyword_id_array = Object.values(documentObj['edges']['keyword']);
@@ -169,6 +172,37 @@ var datasetEditor = {
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
     },
+
+    //attachKeywordEditor: function(selection) {
+    //    selection.qtip({
+    //        content: {
+    //            text: function() {
+    //                var node = $(this);
+    //                return $('<div></div>').append(
+    //                    $("<button></button>")
+    //                        .button({
+    //                            //icons: { primary:'ui-icon-circle-minus' },
+    //                            text: true,
+    //                            label : "delete keyword"
+    //                        })
+    //                        .css({
+    //                            "font-size": "0.8em"
+    //                            //"line-height": 1,0
+    //                        })
+    //                        .click(function(event){
+    //                            datasetEditor.submitDeleteKeyword(node);
+    //                        })
+    //                    );
+    //            }
+    //        },
+    //        hide: {
+    //            delay : 1000
+    //        },
+    //        show: {
+    //            solo: true
+    //        }
+    //     });
+    //},
 
     attachNGramEditor: function(selection) {
         selection.qtip({
@@ -277,7 +311,8 @@ var datasetEditor = {
             var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
             NGramFormQueue['delete'].push({
                 'label':  node.text(),
-                'id': node.attr("dbid")
+                'id': node.attr("dbid"),
+                'is_keyword': 'False'
             });
             $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
 
@@ -380,7 +415,7 @@ var datasetEditor = {
                 dataset_id,
                 NGramFormQueue[i].label,
                 NGramFormQueue[i].id,
-                'False',
+                NGramFormQueue[i].is_keyword,
                 {
                     success: function(data, textStatus, XMLHttpRequest) {
                         $("#notification").notify("create", {
