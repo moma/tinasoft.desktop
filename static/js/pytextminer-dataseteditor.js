@@ -1,7 +1,6 @@
 /*
-* Handles the dataset editor events logic and display
+* Handles the dataset editor logic and display
 */
-
 
 var datasetEditor = {
 
@@ -30,14 +29,7 @@ var datasetEditor = {
                 );
             })
         });
-        /*$("#updateDocument")
-            .button({
-                icons: { primary:'ui-icon-check' },
-                text: true,
-                label: "update document indexation"
-            }).click(function(event) {
-                this.submitUpdateDocumentIndex(event);
-            });
+        /*$
         $.dynaCloud.max = 100;
         $.dynaCloud.scale = 2;
         $.dynaCloud.single = false;*/
@@ -45,15 +37,10 @@ var datasetEditor = {
 
     populateDocumentForm: function(documentObj, textStatus, XMLHttpRequest) {
         var self = this;
-        $('#document_to_edit').removeHighlight();
         var tbody = $("#editdocument_table > tbody");
         tbody.empty();
-        /*if (documentObj['highlight_content'] !== undefined) {
-            var html = documentObj['highlight_content'];
-        }
-        else {   */
-            var html = documentObj['content'];
-        //}
+        var html = documentObj['content'];
+
         tbody.append(
             $("<tr class='ui-widget-content'></tr>")
                 .append(
@@ -103,18 +90,15 @@ var datasetEditor = {
                 )
         );
         //$("#document_to_edit").dynaCloud("#dynacloud");
-        //if (documentObj['highlight_content'] === undefined || datasetEditor.dataset_needs_update == true) {
-            for (var ngid in documentObj['edges']['NGram']) {
-                TinaService.getNGram(
-                    datasetEditor.dataset_id,
-                    ngid,
-                    { success: datasetEditor.highlightText }
-                );
-            }
-        /*}
-        else {
-            datasetEditor.toggleNGramEditor();
-        }*/
+
+        for (var ngid in documentObj['edges']['NGram']) {
+            TinaService.getNGram(
+                datasetEditor.dataset_id,
+                ngid,
+                { success: datasetEditor.highlightText }
+            );
+        }
+
     },
 
     submitAddKeyword: function(keyword) {
@@ -125,12 +109,12 @@ var datasetEditor = {
         }
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         NGramFormQueue['add'].push({
-            'label':  node.text(),
+            'label':  keyword,
             'keyword': 'True'
         });
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
 
-        datasetEditor.highlightTobeAddText($('span.highlight'));
+        datasetEditor.highlightTobeAddedText($('span.highlight'));
 
         if(datasetEditor.dataset_needs_update == false) {
             datasetEditor.dataset_needs_update = true;
@@ -171,18 +155,10 @@ var datasetEditor = {
     highlightTobeAddedText: function(selection) {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
-            selection.each(function(){
-                if (NGramFormQueue['add'][i].label == $(this).text()) {
-                    $(this).removeClass("highlight");
-                    $(this).addClass("highlight_tobeadded");
-                    if($(this).qtip('api') !== undefined)
-                        $(this).qtip('disable');
-                    // TODO : attach undo
-                }
-                else {
-                    $(this).removeClass("highlight_tobeadded");
-                }
-            });
+            var pattern = new RegExp('\\b'+NGramFormQueue['add'][i].label+'\\b', 'gi');
+            var searchString = $("#document_to_edit")[0].innerHTML;
+            var resultString = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
+            $("#document_to_edit")[0].innerHTML = resultString;
         }
     },
 
