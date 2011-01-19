@@ -21,12 +21,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="description" content="scientometrics datamining graphviz"/>
         <meta name="keywords" content="TinaSoft,TinaViz,CREA"/>
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+        <meta name="tinaviz" content="tinaweb/" />
+        <link rel="shortcut icon" href="css/branding/favicon.ico" type="image/x-icon" />
         <!-- JQUERY UI CSS -->
         <link type="text/css" rel="stylesheet" href="tinaweb/css/eggplant/jquery-ui-1.8.1.custom.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.spinner.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/jquery.qtip.min.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.notify.css"/>
+        <!--<link href='tinaweb/js/rating/jquery.ratings.16.css' type="text/css" rel="stylesheet"/>-->
         <!--TINAWEB CSS -->
         <link type="text/css" rel="stylesheet" href="tinaweb/css/tinaweb.css"/>
         <!--TINASOFT OVERWRITING CSS -->
@@ -35,22 +37,23 @@
         <script type="text/javascript" src="tinaweb/js/jquery/jquery-1.4.4.min.js" language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.ba-dotimeout.min.js" language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.json-2.2.min.js" language="javascript"></script>
-        <script type="text/javascript" src="tinaweb/js/jquery/jquery.dynacloud-5.js" language="javascript"></script>
+        <!--<script type="text/javascript" src="tinaweb/js/jquery/jquery.dynacloud-5.js" language="javascript"></script>-->
 
         <!-- JQUERY UI -->
         <script type="text/javascript" src="tinaweb/js/jquery-ui/jquery-ui-1.8.min.js" language="javascript"></script>
         <script src='tinaweb/js/rating/jquery.ratings.js' type="text/javascript" language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.qtip.min.js" language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.notify.min.js" language="javascript"></script>
-        <!--<link href='tinaweb/js/rating/jquery.ratings.16.css' type="text/css" rel="stylesheet"/>-->
-
-        <!-- JQUERY UI PLUGINS -->
         <script type="text/javascript" src="tinaweb/js/jquery-ui/ui.spinner.min.js" language="javascript"></script>
 
         <!-- TINASOFT UTILITIES -->
         <script type="text/javascript" src="tinaweb/js/cache.js"></script>
+        <!--TINAWEB APPLET LOADER -->
+        <script type="text/javascript" src="tinaweb/js/tinaviz/deployJava.js" language="javascript"></script>
         <!-- TINAVIZ -->
         <script type="text/javascript" src="tinaweb/js/tinaviz/tinaviz.js" language="javascript"></script>
+        <!-- WE NEED TINAWEB MAIN-->
+        <script type="text/javascript" src="tinaweb/js/tinaweb-main.js" language="javascript"></script>
         <!-- WE USE TINAWEB UTILS-->
         <script type="text/javascript" src="tinaweb/js/tinaweb-utils.js" language="javascript"></script>
         <!-- WE USE TINAWEB INFO PANEL -->
@@ -64,13 +67,9 @@
         <script type="text/javascript" src="js/pytextminer-dataseteditor.js" language="javascript"></script>
         <script type="text/javascript" src="js/pytextminer-ui.js" language="javascript"></script>
         <!--<script type="text/javascript" src="js/upload-file.js" language="javascript"></script> -->
-        <!-- TINASOFT APP MAIN SCRIPT -->
-        <script type="text/javascript" src="js/main.js" language="javascript"></script>
 
         <!-- ENABLE DEBUG -->
         <script type="text/javascript" src="tinaweb/js/firebug-lite/firebug-lite.js" language="javascript"></script>
-        <!--TINAWEB APPLET LOADER -->
-        <script type="text/javascript" src="tinaweb/js/tinaviz/deployJava.js" language="javascript"></script>
 
     </head>
 
@@ -229,7 +228,7 @@
                 <div id="hd"  class="ui-widget">
                     <div id="hdb">
                         <div id="htoolbar" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-                            <div id="title" class="noSelect"></div>
+                            <div id="title" class="noSelect">Tinasoft Desktop</div>
                             <button id="toggle-paused" class="fg-button toolbar-left">pause</button>
                             <button id="toggle-switch" class="fg-button toolbar-left">switch category</button>
                             <button id="level" class="fg-button toolbar-left">macro</button>
