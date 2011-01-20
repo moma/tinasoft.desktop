@@ -1,4 +1,22 @@
 /*
+    Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+/*
 * Handles the dataset editor logic and display
 */
 
@@ -39,50 +57,26 @@ var datasetEditor = {
         var self = this;
         var tbody = $("#editdocument_table > tbody");
         tbody.empty();
-        var html = "";
+
+        var content = $("<span id='document_to_edit'></span>");
+        content.data("documentObj", documentObj);
+
         for (var i=0; i < documentObj['target'].length; i++) {
-            html += "<b>"+documentObj['target'][i]+"&nbsp;:</b>&nbsp;&nbsp;";
-            html += documentObj[documentObj['target'][i]] + "<br/>";
+            content.append($("<b></b>").html(documentObj['target'][i]+"&nbsp;:"));
+            content.append( "&nbsp;&nbsp;" + documentObj[documentObj['target'][i]] + "<br/>" );
         }
+
+        var keywords = $("<span id='document_keywords'><b>user-defined keyphrases&nbsp;:</b>&nbsp;&nbsp;</span>");
 
         tbody.append(
             $("<tr class='ui-widget-content'></tr>")
-                .append(
-                    $("<td></td>")
-                        .append(
-                            $("<p></p>")
-                                //.append("<b>content&nbsp;:</b>&nbsp;&nbsp;")
-                                .append(
-                                    $("<span id='document_to_edit'></span>")
-                                        .data("documentObj", documentObj)
-                                        //.addClass("dynacloud")
-                                        .html(html)
-                                )
-                        )
-                )
+                .append( $("<td></td>").append( $("<p id='display_document_object'></p>").append( content ).append( keywords ) ) )
                 .append(
                     $("<td class='ui-widget-content ui-corner-all'></td>")
                         .css({ width: 400 })
-                        /*.append(
-                            $("<h4>highest frequency suggestions</h4>")
-                        )
-                        .append(
-                            $("<p id='dynacloud'></p>")
-                        )*/
+                        /*.append($("<h4>highest frequency suggestions</h4>")).append($("<p id='dynacloud'></p>"))*/
                         .append(
                             $("<p></p>")
-                                .append(
-                                    $("<span id='document_keywords'></span>").append(function(elt_index, old_html){
-                                        if(Object.size(documentObj['edges']['keyword'])==0)
-                                            return "";
-                                        doc_keywords = "<b>user-defined keyphrases&nbsp;:</b>&nbsp;&nbsp;";
-                                        for(var keyword in documentObj['edges']['keyword']){
-                                            doc_keywords += "<span class='doc_keyword' dbid='"+documentObj['edges']['keyword'][keyword]+"'>"+keyword+"</span>&nbsp;&nbsp;"
-                                        }
-                                        return doc_keywords;
-                                    })
-                                )
-                                .append("<br/>")
                                 .append(
                                     $("<input type='text' id='add_document_keyword'></input>")
                                         .autocomplete({
@@ -101,18 +95,13 @@ var datasetEditor = {
                         )
                 )
         );
-        //datasetEditor.attachKeywordEditor( $("#document_keywords > span") );
         //$("#document_to_edit").dynaCloud("#dynacloud");
         for (var ngid in documentObj['edges']['NGram']) {
-            //var keyword_id_array = Object.values(documentObj['edges']['keyword']);
-            // restrict ngram highlight to indexed ngram only, not keywords
-            //if( keyword_id_array.indexOf(ngid) == -1 ) {
-                TinaService.getNGram(
-                    datasetEditor.dataset_id,
-                    ngid,
-                    { success: datasetEditor.highlightNGramForm }
-                );
-            //}
+            TinaService.getNGram(
+                datasetEditor.dataset_id,
+                ngid,
+                { success: datasetEditor.highlightNGramForm }
+            );
         }
 
     },
@@ -121,12 +110,27 @@ var datasetEditor = {
         for (var form_words in ngramObj['edges']['label']) {
             var pattern = new RegExp('\\b'+form_words+'\\b', 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
-            var resultString = searchString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
-            $("#document_to_edit")[0].innerHTML = resultString;
+            var test = pattern.test(searchString);
+            if(test == false){
+                datasetEditor.displayDocumentKeyword(form_words);
+            }
+            else {
+                var resultString = searchString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
+                 $("#document_to_edit")[0].innerHTML = resultString;
+            }
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
         datasetEditor.highlightToBeDeleted($("span.highlight"));
         datasetEditor.highlightToBeAdded();
+
+
+    },
+
+    displayDocumentKeyword: function(keyword) {
+        var documentObj = $("#document_to_edit").data("documentObj");
+        $("#document_keywords").append(
+            "<span class='doc_keyword'>"+keyword+"</span>&nbsp;&nbsp;"
+        );
     },
 
     highlightToBeDeleted: function(selection) {
@@ -302,6 +306,7 @@ var datasetEditor = {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         NGramFormQueue['add'].push({
             'label':  keyword,
+            'id': documentObj.id,
             'is_keyword': 'True'
         });
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
@@ -404,6 +409,7 @@ var datasetEditor = {
             TinaService.postNGramForm(
                 dataset_id,
                 NGramFormQueue[i].label,
+                NGramFormQueue[i].id,
                 NGramFormQueue[i].is_keyword,
                 {
                     success: function(data, textStatus, XMLHttpRequest) {

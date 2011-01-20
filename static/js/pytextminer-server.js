@@ -308,8 +308,8 @@ function TinaServiceClass(url) {
     postDocument: function(_dataset, _obj, _redondant, cb) {
         this._POST("document", { dataset: _dataset, object: JSON.stringify(_obj), redondant: _redondant }, {error:"couldn't postDocument"}, cb);
     },
-    postNGramForm: function(_dataset, _label, _is_keyword, cb) {
-        this._POST("ngramform", { dataset: _dataset, label: _label, is_keyword: _is_keyword }, {error:"couldn't postNGramForm"}, cb);
+    postNGramForm: function(_dataset, _label, _id, _is_keyword, cb) {
+        this._POST("ngramform", { dataset: _dataset, label: _label, id: _id, is_keyword: _is_keyword }, {error:"couldn't postNGramForm"}, cb);
     },
 
     /**

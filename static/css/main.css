@@ -17,8 +17,8 @@ body {
     background-color: rgba(255,0,0,0.75);
 }
 .highlight_tobeadded {
-    background-color: rgba(100,0,100,0.50);
+    background-color: rgba(204,153,51,1.00);
 }
 .doc_keyword {
-    background-color: rgba(100,0,100,1.00);
+    background-color: rgba(102,153,153,1.00);
 }
