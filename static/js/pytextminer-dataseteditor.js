@@ -104,32 +104,32 @@ var datasetEditor = {
         //datasetEditor.attachKeywordEditor( $("#document_keywords > span") );
         //$("#document_to_edit").dynaCloud("#dynacloud");
         for (var ngid in documentObj['edges']['NGram']) {
-            var keyword_id_array = Object.values(documentObj['edges']['keyword']);
+            //var keyword_id_array = Object.values(documentObj['edges']['keyword']);
             // restrict ngram highlight to indexed ngram only, not keywords
-            if( keyword_id_array.indexOf(ngid) == -1 ) {
+            //if( keyword_id_array.indexOf(ngid) == -1 ) {
                 TinaService.getNGram(
                     datasetEditor.dataset_id,
                     ngid,
-                    { success: datasetEditor.highlightText }
+                    { success: datasetEditor.highlightNGramForm }
                 );
-            }
+            //}
         }
 
     },
 
-    highlightText: function(data, textStatus, XMLHttpRequest) {
-        for (var form_words in data['edges']['label']) {
+    highlightNGramForm: function(ngramObj, textStatus, XMLHttpRequest) {
+        for (var form_words in ngramObj['edges']['label']) {
             var pattern = new RegExp('\\b'+form_words+'\\b', 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
-            var resultString = searchString.replace( pattern, "<span class='highlight' dbid='"+data['id']+"'>$&</span>" );
+            var resultString = searchString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
             $("#document_to_edit")[0].innerHTML = resultString;
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
-        datasetEditor.highlightTobeRemovedText($("span.highlight"));
-        datasetEditor.highlightTobeAddedText();
+        datasetEditor.highlightToBeDeleted($("span.highlight"));
+        datasetEditor.highlightToBeAdded();
     },
 
-    highlightTobeRemovedText: function(selection) {
+    highlightToBeDeleted: function(selection) {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         for (var i=0; i<NGramFormQueue['delete'].length; i++) {
             selection.each(function(){
@@ -147,7 +147,7 @@ var datasetEditor = {
         }
     },
 
-    highlightTobeAddedText: function() {
+    highlightToBeAdded: function() {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var pattern = new RegExp('\\b'+NGramFormQueue['add'][i].label+'\\b', 'gi');
@@ -242,8 +242,7 @@ var datasetEditor = {
         if (documentObj['edges']['NGram'][ngid] === undefined) {
             console.log(ngid+" is not in Document edges");
         }
-
-        if (documentObj['edges']['NGram'][ngid] > 0) {
+        else if (documentObj['edges']['NGram'][ngid] > 0) {
 
             if(datasetEditor.dataset_needs_update == false) {
                 datasetEditor.dataset_needs_update = true;
@@ -259,6 +258,19 @@ var datasetEditor = {
                     'NGram' : {}
                 }
             };
+
+            // if not a keyword then decrement, else  do not decrement less than 1
+            /*var keyword_id_array = Object.values(documentObj['edges']['keyword']);
+            if( keyword_id_array.indexOf(ngid) == -1 ) {
+                updateDocument.edges.NGram[ngid] = -1;
+            }
+            else if (documentObj['edges']['NGram'] > 1) {
+                updateDocument.edges.NGram[ngid] = -1;
+            }
+            else {
+                console.log("document-ngram edge weight is == 1, and NGram is a keyword : DOES NOTHING");
+                return;
+            }*/
             updateDocument.edges.NGram[ngid] = -1;
             TinaService.postDocument(
                 datasetEditor.dataset_id,
@@ -276,7 +288,8 @@ var datasetEditor = {
             );
         }
         else {
-            console.log("document-ngram edge weight is already <= 0");
+            console.log("document-ngram edge weight is <= 0, will submitGraphPreprocess to clean the database");
+            datasetEditor.submitGraphPreprocess(datasetEditor.dataset_id);
         }
     },
 
@@ -292,7 +305,7 @@ var datasetEditor = {
             'is_keyword': 'True'
         });
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
-        datasetEditor.highlightTobeAddedText();
+        datasetEditor.highlightToBeAdded();
         if(datasetEditor.dataset_needs_update == false) {
             datasetEditor.dataset_needs_update = true;
             $("#"+datasetEditor.dataset_id + "_update_button").show();
@@ -308,8 +321,7 @@ var datasetEditor = {
             console.error(ngid+" is not in Document edges");
             return;
         }
-
-        if (documentObj['edges']['NGram'][ngid] > 0) {
+        else if (documentObj['edges']['NGram'][ngid] > 0) {
             // queue one storage.deleteNGramForm
             var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
             NGramFormQueue['delete'].push({
@@ -319,7 +331,7 @@ var datasetEditor = {
             });
             $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
 
-            datasetEditor.highlightTobeRemovedText($('span.highlight'));
+            datasetEditor.highlightToBeDeleted($('span.highlight'));
 
             if(datasetEditor.dataset_needs_update == false) {
                 datasetEditor.dataset_needs_update = true;
@@ -328,7 +340,8 @@ var datasetEditor = {
             datasetEditor.updateDatasetButton();
         }
         else {
-            console.log("ngram edge weight is already == 0");
+            console.log("document-ngram edge weight is <= 0, will submitGraphPreprocess to clean the database");
+            datasetEditor.submitGraphPreprocess(datasetEditor.dataset_id);
         }
     },
 
@@ -380,8 +393,8 @@ var datasetEditor = {
             complete: function() {
                 $("#editdataset_document").change();
                 /*datasetEditor.attachNGramEditor($("span.highlight"));
-                datasetEditor.highlightTobeRemovedText($("span.highlight"));
-                datasetEditor.highlightTobeAddedText();*/
+                datasetEditor.highlightToBeDeleted($("span.highlight"));
+                datasetEditor.highlightToBeAdded();*/
             }
         });
     },
