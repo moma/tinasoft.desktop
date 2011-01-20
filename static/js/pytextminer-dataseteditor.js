@@ -40,9 +40,9 @@ var datasetEditor = {
         var tbody = $("#editdocument_table > tbody");
         tbody.empty();
         var html = "";
-        for (var target in documentObj['target']) {
-            html += "<b>"+target+"&nbsp;:</b>&nbsp;&nbsp;";
-            html += documentObj[target] + "<br/>";
+        for (var i=0; i < documentObj['target'].length; i++) {
+            html += "<b>"+documentObj['target'][i]+"&nbsp;:</b>&nbsp;&nbsp;";
+            html += documentObj[documentObj['target'][i]] + "<br/>";
         }
 
         tbody.append(
@@ -221,7 +221,7 @@ var datasetEditor = {
                                 //"line-height": 1,0
                             })
                             .click(function(event){
-                                datasetEditor.submitRemoveNGramForm(node);
+                                datasetEditor.pushDeleteNGramForm(node);
                             })
                         )
                 }
