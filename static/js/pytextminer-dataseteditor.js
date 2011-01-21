@@ -87,7 +87,7 @@ var datasetEditor = {
                                     $("<button></button>").button({
                                         icons: { primary:'ui-icon-arrowrefresh-1-e' },
                                         text: true,
-                                        label: "add a keyphrase"
+                                        label: "add a keyphrase to the document"
                                     }).click(function(event) {
                                         datasetEditor.pushAddKeyword($("#add_document_keyword").val());
                                     })
@@ -107,16 +107,19 @@ var datasetEditor = {
     },
 
     highlightNGramForm: function(ngramObj, textStatus, XMLHttpRequest) {
+
+        var htmlString = $("#document_to_edit")[0].innerHTML;
+        var searchString = $("#document_to_edit").text();
+
         for (var form_words in ngramObj['edges']['label']) {
-            var pattern = new RegExp('\\b'+form_words+'\\b', 'gi');
-            var searchString = $("#document_to_edit")[0].innerHTML;
-            var test = pattern.test(searchString);
+            var words = form_words.split(" ");
+            var pattern = new RegExp('((<span.*>)|(\\b))'+words.join("(( )|(<\/*span.*>))*")+'((\\b)|(<\/span>))', 'gi');
+            var test = pattern.test(htmlString);
             if(test == false){
                 datasetEditor.displayDocumentKeyword(form_words);
             }
             else {
-                var resultString = searchString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
-                 $("#document_to_edit")[0].innerHTML = resultString;
+                $("#document_to_edit")[0].innerHTML = htmlString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
             }
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
@@ -200,7 +203,8 @@ var datasetEditor = {
                 text: function() {
                     var node = $(this);
                     return $('<div></div>').append(
-                        $("<button></button>")
+                            $("<p></p>").text(node.text()).css({"font-size": "0.8em","line-height": "1.0"})
+                        ).append($("<button></button>")
                             .button({
                                 //icons: { primary:'ui-icon-circle-minus' },
                                 text: true,
@@ -213,8 +217,7 @@ var datasetEditor = {
                             .click(function(event){
                                 datasetEditor.submitRemoveNode(node);
                             })
-                        ).append(
-                            $("<button></button>")
+                        ).append($("<button></button>")
                             .button({
                                 //icons: { primary:'ui-icon-circle-minus' },
                                 text: true,
