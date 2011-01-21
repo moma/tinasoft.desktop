@@ -122,15 +122,15 @@ var datasetEditor = {
         datasetEditor.attachNGramEditor($("span.highlight"));
         datasetEditor.highlightToBeDeleted($("span.highlight"));
         datasetEditor.highlightToBeAdded();
-
-
     },
 
     displayDocumentKeyword: function(keyword) {
         var documentObj = $("#document_to_edit").data("documentObj");
-        $("#document_keywords").append(
-            "<span class='doc_keyword'>"+keyword+"</span>&nbsp;&nbsp;"
-        );
+        if (documentObj.edges.keyword[keyword] !== undefined) {
+            $("#document_keywords").append(
+                "<span class='doc_keyword'>"+keyword+"</span>&nbsp;&nbsp;"
+            );
+        }
     },
 
     highlightToBeDeleted: function(selection) {
