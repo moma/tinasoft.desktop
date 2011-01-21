@@ -262,20 +262,8 @@ var datasetEditor = {
                     'NGram' : {}
                 }
             };
-
-            // if not a keyword then decrement, else  do not decrement less than 1
-            /*var keyword_id_array = Object.values(documentObj['edges']['keyword']);
-            if( keyword_id_array.indexOf(ngid) == -1 ) {
-                updateDocument.edges.NGram[ngid] = -1;
-            }
-            else if (documentObj['edges']['NGram'] > 1) {
-                updateDocument.edges.NGram[ngid] = -1;
-            }
-            else {
-                console.log("document-ngram edge weight is == 1, and NGram is a keyword : DOES NOTHING");
-                return;
-            }*/
             updateDocument.edges.NGram[ngid] = -1;
+
             TinaService.postDocument(
                 datasetEditor.dataset_id,
                 updateDocument,
