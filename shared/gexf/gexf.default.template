@@ -17,7 +17,7 @@
         <attribute id="0" title="weight" type="float"></attribute>
         <attribute id="1" title="category" type="string"></attribute>
         <attribute id="2" title="content" type="string"></attribute>
-        <attribute id="3" title="keywords" type="string"></attribute>
+        <attribute id="3" title="keyword" type="string"></attribute>
     </attributes>
     <nodes>
 <?py categories = [] ?>
@@ -62,9 +62,6 @@
                             <?py #endif ?>
                             <?py sourcegraphid = sourcecategory + "::" + source ?>
                             <?py targetgraphid = targetcategory + "::" + target ?>
-                            <?py if sourcecategory != targetcategory: ?>
-            <edge id="#{i}" source="#{sourcegraphid}" target="#{targetgraphid}" type="mutual" weight="${weight}"></edge>
-                            <?py else: ?>
             <edge id="#{i}" source="#{sourcegraphid}" target="#{targetgraphid}" type="directed" weight="${weight}"></edge>
                             <?py #endif ?>
                             <?py i += 1 ?>
