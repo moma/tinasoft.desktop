@@ -107,24 +107,22 @@ var datasetEditor = {
     },
 
     highlightNGramForm: function(ngramObj, textStatus, XMLHttpRequest) {
-
         var htmlString = $("#document_to_edit")[0].innerHTML;
-        var searchString = $("#document_to_edit").text();
-
         for (var form_words in ngramObj['edges']['label']) {
             var words = form_words.split(" ");
-            var pattern = new RegExp('((<span.*>)|(\\b))'+words.join("(( )|(<\/*span.*>))*")+'((\\b)|(<\/span>))', 'gi');
+            var pattern = new RegExp("((<span class='[^']' dbid='[^']'>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )(<span class='[^']' dbid='[^']'>)*)")+"((\\b)|(<\/span>)|(<span class='[^']' dbid='[^']'>))", 'gi');
             var test = pattern.test(htmlString);
             if(test == false){
                 datasetEditor.displayDocumentKeyword(form_words);
             }
             else {
                 $("#document_to_edit")[0].innerHTML = htmlString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
+                console.log($("#document_to_edit")[0].innerHTML);
             }
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
         datasetEditor.highlightToBeDeleted($("span.highlight"));
-        datasetEditor.highlightToBeAdded();
+        //datasetEditor.highlightToBeAdded();
     },
 
     displayDocumentKeyword: function(keyword) {
@@ -157,10 +155,10 @@ var datasetEditor = {
     highlightToBeAdded: function() {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
-            var pattern = new RegExp('\\b'+NGramFormQueue['add'][i].label+'\\b', 'gi');
+            var words = NGramFormQueue['add'][i].label.split(" ");
+            var pattern = new RegExp("((<span class='[^']' dbid='[^']'>)*(\\b)(<\/span>)*)"+words.join("((<\/span>)*( )(<span class='[^']' dbid='[^']'>)*)")+"((<\/span>)*(\\b)(<span class='[^']' dbid='[^']'>)*)", 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
-            var resultString = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
-            $("#document_to_edit")[0].innerHTML = resultString;
+            $("#document_to_edit")[0].innerHTML = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
         }
         // refresh qtip on this modified html
         datasetEditor.attachNGramEditor($("span.highlight"));
@@ -301,7 +299,7 @@ var datasetEditor = {
             'is_keyword': 'True'
         });
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
-        datasetEditor.highlightToBeAdded();
+        //datasetEditor.highlightToBeAdded();
         if(datasetEditor.dataset_needs_update == false) {
             datasetEditor.dataset_needs_update = true;
             $("#"+datasetEditor.dataset_id + "_update_button").show();
@@ -388,9 +386,6 @@ var datasetEditor = {
             },
             complete: function() {
                 $("#editdataset_document").change();
-                /*datasetEditor.attachNGramEditor($("span.highlight"));
-                datasetEditor.highlightToBeDeleted($("span.highlight"));
-                datasetEditor.highlightToBeAdded();*/
             }
         });
     },
