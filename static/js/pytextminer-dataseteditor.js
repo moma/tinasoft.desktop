@@ -47,7 +47,6 @@ var datasetEditor = {
                 );
             })
         });
-
         $("#add_document_keyword_button").button({
             icons: { primary:'ui-icon-arrowrefresh-1-e' },
             text: true,
@@ -84,9 +83,10 @@ var datasetEditor = {
         });
         //$("#document_to_edit").dynaCloud("#dynacloud");
         var ngrams = Object.keys(documentObj['edges']['NGram']);
-        var total_ngrams =ngrams.length;
+        var total_ngrams = 0;
         for (var ngid in documentObj['edges']['NGram']) {
-            if (total_ngrams==0){
+            total_ngrams++;
+            if (total_ngrams==ngrams.length){
                 TinaService.getNGram(
                     datasetEditor.dataset_id,
                     ngid,
@@ -100,7 +100,6 @@ var datasetEditor = {
                     { success: datasetEditor.highlightNGramForm }
                 );
             }
-            total_ngrams--;
         }
         datasetEditor.highlightToBeAdded();
     },
@@ -124,7 +123,7 @@ var datasetEditor = {
         datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
     },
 
-    HighlghtNGramFormFinal: function(ngramObj, textStatus, XMLHttpRequest) {
+    highlightNGramFormFinal: function(ngramObj, textStatus, XMLHttpRequest) {
         datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
         datasetEditor.attachNGramEditor($("span.highlight"));
         datasetEditor.highlightToBeDeleted($("span.highlight"));
@@ -412,6 +411,7 @@ var datasetEditor = {
                 $('#document_to_edit > span').removeClass("highlight_tobeadded");
                 datasetEditor.dataset_needs_update = false;
                 $("#"+datasetEditor.dataset_id + "_update_button").hide();
+                //datasetEditor.attachNGramEditor($("span.highlight"));
             },
             complete: function() {
                 $("#editdataset_document").change();
