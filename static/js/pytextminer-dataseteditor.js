@@ -54,6 +54,21 @@ var datasetEditor = {
         }).click(function(event) {
             datasetEditor.pushAddKeyword($("#add_document_keyword").val());
         });
+
+        $("#editprevious_document").button({
+            icons: { primary:'ui-icon-triangle-1-w' },
+            text: false
+        }).click( function(event){
+            $("#editdataset_document option:selected").previous().attr('selected', 'selected');
+            $("#editdataset_document").change();
+        });
+        $("#editnext_document").button({
+            icons: { primary:'ui-icon-triangle-1-e' },
+            text: false
+        }).click( function(event){
+            $("#editdataset_document option:selected").next().attr('selected', 'selected');
+            $("#editdataset_document").change();
+        });
         /*$
         $.dynaCloud.max = 100;
         $.dynaCloud.scale = 2;
@@ -492,8 +507,11 @@ var datasetEditor = {
     displayDocumentSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         var document_select = $("#editdataset_document").empty();//.append($("<option value=''></option>"));
-        // TODO : sort document labels
-        for (var doc_id in data['edges']['Document']) {
+        //console.log(Object.keys(data['edges']['Document']));
+        var id_list = Object.keys(data['edges']['Document']);
+        id_list.sort();
+        for (var i=0; i< id_list.length;i++) {
+            var doc_id = id_list[i];
             document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
         }
         document_select.change();
