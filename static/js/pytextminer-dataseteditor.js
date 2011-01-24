@@ -47,6 +47,14 @@ var datasetEditor = {
                 );
             })
         });
+
+        $("#add_document_keyword_button").button({
+            icons: { primary:'ui-icon-arrowrefresh-1-e' },
+            text: true,
+            label: "add a keyphrase"
+        }).click(function(event) {
+            datasetEditor.pushAddKeyword($("#add_document_keyword").val());
+        });
         /*$
         $.dynaCloud.max = 100;
         $.dynaCloud.scale = 2;
@@ -70,30 +78,10 @@ var datasetEditor = {
         tbody.append(
             $("<tr class='ui-widget-content'></tr>")
                 .append( $("<td></td>").append( $("<p id='display_document_object'></p>").append( content ).append( keywords ).append(queued_keywords) ) )
-                .append(
-                    $("<td class='ui-widget-content ui-corner-all'></td>")
-                        .css({ width: 400 })
-                        /*.append($("<h4>highest frequency suggestions</h4>")).append($("<p id='dynacloud'></p>"))*/
-                        .append(
-                            $("<p></p>")
-                                .append(
-                                    $("<input type='text' id='add_document_keyword'></input>")
-                                        .autocomplete({
-                                            source: documentObj['content'].split(" ")
-                                        })
-                                )
-                                .append(
-                                    $("<button></button>").button({
-                                        icons: { primary:'ui-icon-arrowrefresh-1-e' },
-                                        text: true,
-                                        label: "add a keyphrase"
-                                    }).click(function(event) {
-                                        datasetEditor.pushAddKeyword($("#add_document_keyword").val());
-                                    })
-                                )
-                        )
-                )
         );
+        $("#add_document_keyword").autocomplete({
+            source: documentObj['content'].split(" ")
+        });
         //$("#document_to_edit").dynaCloud("#dynacloud");
         var ngrams = Object.keys(documentObj['edges']['NGram']);
         var total_ngrams =ngrams.length;
@@ -152,7 +140,6 @@ var datasetEditor = {
                 "<span class='doc_keyword'>"+keyword+"</span>&nbsp;&nbsp;"
             );
         }
-
         // ADDS A TITLE
         if($("#document_keywords > span").size() > 0){
             $("#document_keywords_title").text("user defined keyphrases :  ");
@@ -505,6 +492,7 @@ var datasetEditor = {
     displayDocumentSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         var document_select = $("#editdataset_document").empty();//.append($("<option value=''></option>"));
+        // TODO : sort document labels
         for (var doc_id in data['edges']['Document']) {
             document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
         }
