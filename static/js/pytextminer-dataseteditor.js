@@ -65,9 +65,7 @@ var datasetEditor = {
             content.append($("<b></b>").html(documentObj['target'][i]+"&nbsp;:"));
             content.append( "&nbsp;&nbsp;" + documentObj[documentObj['target'][i]] + "<br/>" );
         }
-
-        var keywords = $("<span id='document_keywords'><b>user-defined keyphrases&nbsp;:</b>&nbsp;&nbsp;</span>");
-
+        var keywords = $("<span id='document_keywords'></span>");
         tbody.append(
             $("<tr class='ui-widget-content'></tr>")
                 .append( $("<td></td>").append( $("<p id='display_document_object'></p>").append( content ).append( keywords ) ) )
@@ -117,7 +115,6 @@ var datasetEditor = {
             }
             else {
                 $("#document_to_edit")[0].innerHTML = htmlString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
-                console.log($("#document_to_edit")[0].innerHTML);
             }
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
@@ -127,10 +124,16 @@ var datasetEditor = {
 
     displayDocumentKeyword: function(keyword) {
         var documentObj = $("#document_to_edit").data("documentObj");
+        var list_of_keywords = $("#document_keywords");
+        var indicator = 0;
         if (documentObj.edges.keyword[keyword] !== undefined) {
-            $("#document_keywords").append(
+            indicator++;
+            list_of_keywords.append(
                 "<span class='doc_keyword'>"+keyword+"</span>&nbsp;&nbsp;"
             );
+        }
+        if(indicator>0){
+           list_of_keywords.prepend($("<b>user defined keyphrases&nbsp;:&nbsp;&nbsp;</b>"))
         }
     },
 
@@ -287,6 +290,7 @@ var datasetEditor = {
     },
 
     pushAddKeyword: function(keyword) {
+        $("#add_document_keyword").empty();
         var documentObj = $("#document_to_edit").data("documentObj");
         if (documentObj['edges']['keyword'][keyword] !== undefined) {
             alert(keyword+" is already a keyword for document "+documentObj['id']+" : aborting");
@@ -305,7 +309,6 @@ var datasetEditor = {
             $("#"+datasetEditor.dataset_id + "_update_button").show();
         }
         datasetEditor.updateDatasetButton();
-        $("#add_document_keyword").empty()
     },
 
     pushDeleteNGramForm: function(node) {
@@ -357,6 +360,7 @@ var datasetEditor = {
     },
 
     submitUpdateDataset: function(button) {
+        button.hide();
         var NGramFormQueue = button.data("NGramFormQueue");
         var dataset_id = button.data("dataset_id");
         // global deleteNGramForm state indicator
