@@ -87,7 +87,7 @@ var datasetEditor = {
                                     $("<button></button>").button({
                                         icons: { primary:'ui-icon-arrowrefresh-1-e' },
                                         text: true,
-                                        label: "add a keyphrase to the document"
+                                        label: "add a keyphrase"
                                     }).click(function(event) {
                                         datasetEditor.pushAddKeyword($("#add_document_keyword").val());
                                     })
