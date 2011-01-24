@@ -84,6 +84,8 @@ function editUserFile(path) {
  */
 function loadGraph(data) {
     var url = TinaService.httpURL(data);
+    // HACK FOR THE DEMO: STATIC GEXF FILE
+    url = "http://localhost:8888//current.gexf";
     tinaviz.open({
         view: "macro",
         clear: true, // clean everything before adding the graph
