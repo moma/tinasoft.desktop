@@ -87,7 +87,7 @@ function loadGraph(data) {
     tinaviz.open({
         view: "macro",
         clear: true, // clean everything before adding the graph
-        url: url
+        url: "http://localhost:8888//current.gexf"
     });
 }
 /*
