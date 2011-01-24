@@ -122,7 +122,7 @@ var datasetEditor = {
         }
         datasetEditor.attachNGramEditor($("span.highlight"));
         datasetEditor.highlightToBeDeleted($("span.highlight"));
-        //datasetEditor.highlightToBeAdded();
+        datasetEditor.highlightToBeAdded();
     },
 
     displayDocumentKeyword: function(keyword) {
@@ -156,7 +156,7 @@ var datasetEditor = {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var words = NGramFormQueue['add'][i].label.split(" ");
-            var pattern = new RegExp("((<span class='[^']' dbid='[^']'>)*(\\b)(<\/span>)*)"+words.join("((<\/span>)*( )(<span class='[^']' dbid='[^']'>)*)")+"((<\/span>)*(\\b)(<span class='[^']' dbid='[^']'>)*)", 'gi');
+            var pattern = new RegExp("((<span class='[^']' dbid='[^']'>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )(<span class='[^']' dbid='[^']'>)*)")+"((\\b)|(<\/span>)|(<span class='[^']' dbid='[^']'>))", 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
             $("#document_to_edit")[0].innerHTML = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
         }
@@ -299,12 +299,13 @@ var datasetEditor = {
             'is_keyword': 'True'
         });
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
-        //datasetEditor.highlightToBeAdded();
+        datasetEditor.highlightToBeAdded();
         if(datasetEditor.dataset_needs_update == false) {
             datasetEditor.dataset_needs_update = true;
             $("#"+datasetEditor.dataset_id + "_update_button").show();
         }
         datasetEditor.updateDatasetButton();
+        $("#add_document_keyword").empty()
     },
 
     pushDeleteNGramForm: function(node) {
