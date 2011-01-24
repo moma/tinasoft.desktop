@@ -47,6 +47,14 @@ var datasetEditor = {
                 );
             })
         });
+
+        $("#add_document_keyword_button").button({
+            icons: { primary:'ui-icon-arrowrefresh-1-e' },
+            text: true,
+            label: "add a keyphrase"
+        }).click(function(event) {
+            datasetEditor.pushAddKeyword($("#add_document_keyword").val());
+        });
         /*$
         $.dynaCloud.max = 100;
         $.dynaCloud.scale = 2;
@@ -65,46 +73,39 @@ var datasetEditor = {
             content.append($("<b></b>").html(documentObj['target'][i]+"&nbsp;:"));
             content.append( "&nbsp;&nbsp;" + documentObj[documentObj['target'][i]] + "<br/>" );
         }
-        var keywords = $("<span id='document_keywords'></span>");
+        var keywords = $("<span id='document_keywords' title='user defined keyphrases'><b id='document_keywords_title'></b></span>");
+        var queued_keywords = $("<span id='document_queued_keywords'><b id='document_queued_keywords_title'></b></span>");
         tbody.append(
             $("<tr class='ui-widget-content'></tr>")
-                .append( $("<td></td>").append( $("<p id='display_document_object'></p>").append( content ).append( keywords ) ) )
-                .append(
-                    $("<td class='ui-widget-content ui-corner-all'></td>")
-                        .css({ width: 400 })
-                        /*.append($("<h4>highest frequency suggestions</h4>")).append($("<p id='dynacloud'></p>"))*/
-                        .append(
-                            $("<p></p>")
-                                .append(
-                                    $("<input type='text' id='add_document_keyword'></input>")
-                                        .autocomplete({
-                                            source: documentObj['content'].split(" ")
-                                        })
-                                )
-                                .append(
-                                    $("<button></button>").button({
-                                        icons: { primary:'ui-icon-arrowrefresh-1-e' },
-                                        text: true,
-                                        label: "add a keyphrase"
-                                    }).click(function(event) {
-                                        datasetEditor.pushAddKeyword($("#add_document_keyword").val());
-                                    })
-                                )
-                        )
-                )
+                .append( $("<td></td>").append( $("<p id='display_document_object'></p>").append( content ).append( keywords ).append(queued_keywords) ) )
         );
+        $("#add_document_keyword").autocomplete({
+            source: documentObj['content'].split(" ")
+        });
         //$("#document_to_edit").dynaCloud("#dynacloud");
+        var ngrams = Object.keys(documentObj['edges']['NGram']);
+        var total_ngrams =ngrams.length;
         for (var ngid in documentObj['edges']['NGram']) {
-            TinaService.getNGram(
-                datasetEditor.dataset_id,
-                ngid,
-                { success: datasetEditor.highlightNGramForm }
-            );
+            if (total_ngrams==0){
+                TinaService.getNGram(
+                    datasetEditor.dataset_id,
+                    ngid,
+                    { success: datasetEditor.highlightNGramFormFinal }
+                );
+            }
+            else {
+                TinaService.getNGram(
+                    datasetEditor.dataset_id,
+                    ngid,
+                    { success: datasetEditor.highlightNGramForm }
+                );
+            }
+            total_ngrams--;
         }
-
+        datasetEditor.highlightToBeAdded();
     },
 
-    highlightNGramForm: function(ngramObj, textStatus, XMLHttpRequest) {
+    searchAndReplaceNGrams: function(ngramObj, textStatus, XMLHttpRequest){
         var htmlString = $("#document_to_edit")[0].innerHTML;
         for (var form_words in ngramObj['edges']['label']) {
             var words = form_words.split(" ");
@@ -117,6 +118,14 @@ var datasetEditor = {
                 $("#document_to_edit")[0].innerHTML = htmlString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
             }
         }
+    },
+
+    highlightNGramForm: function(ngramObj, textStatus, XMLHttpRequest) {
+        datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
+    },
+
+    HighlghtNGramFormFinal: function(ngramObj, textStatus, XMLHttpRequest) {
+        datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
         datasetEditor.attachNGramEditor($("span.highlight"));
         datasetEditor.highlightToBeDeleted($("span.highlight"));
         datasetEditor.highlightToBeAdded();
@@ -125,15 +134,15 @@ var datasetEditor = {
     displayDocumentKeyword: function(keyword) {
         var documentObj = $("#document_to_edit").data("documentObj");
         var list_of_keywords = $("#document_keywords");
-        var indicator = 0;
+
         if (documentObj.edges.keyword[keyword] !== undefined) {
-            indicator++;
             list_of_keywords.append(
                 "<span class='doc_keyword'>"+keyword+"</span>&nbsp;&nbsp;"
             );
         }
-        if(indicator>0){
-           list_of_keywords.prepend($("<b>user defined keyphrases&nbsp;:&nbsp;&nbsp;</b>"))
+        // ADDS A TITLE
+        if($("#document_keywords > span").size() > 0){
+            $("#document_keywords_title").text("user defined keyphrases :  ");
         }
     },
 
@@ -157,14 +166,23 @@ var datasetEditor = {
 
     highlightToBeAdded: function() {
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
+        var queued_keywords_span = $("#document_queued_keywords").empty();
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var words = NGramFormQueue['add'][i].label.split(" ");
             var pattern = new RegExp("((<span class='[^']' dbid='[^']'>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )(<span class='[^']' dbid='[^']'>)*)")+"((\\b)|(<\/span>)|(<span class='[^']' dbid='[^']'>))", 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
             $("#document_to_edit")[0].innerHTML = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
+            queued_keywords_span.append(
+                "<span class='highlight_tobeadded'>"+NGramFormQueue['add'][i].label+"</span>&nbsp;&nbsp;"
+            );
+        }
+        // ADDS A TITLE
+        if($("#document_queued_keywords > span").size() > 0){
+            $("#document_keywords_title").text("user defined keyphrases :  ");
         }
         // refresh qtip on this modified html
         datasetEditor.attachNGramEditor($("span.highlight"));
+
     },
 
     //attachKeywordEditor: function(selection) {
@@ -290,18 +308,21 @@ var datasetEditor = {
     },
 
     pushAddKeyword: function(keyword) {
-        $("#add_document_keyword").empty();
+        $("#add_document_keyword").val("");
+
         var documentObj = $("#document_to_edit").data("documentObj");
         if (documentObj['edges']['keyword'][keyword] !== undefined) {
             alert(keyword+" is already a keyword for document "+documentObj['id']+" : aborting");
             return;
         }
+
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         NGramFormQueue['add'].push({
             'label':  keyword,
             'id': documentObj.id,
             'is_keyword': 'True'
         });
+
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
         datasetEditor.highlightToBeAdded();
         if(datasetEditor.dataset_needs_update == false) {
@@ -350,13 +371,16 @@ var datasetEditor = {
                 var data = $(this).data("NGramFormQueue");
                 for(var type in data) {
                     tiptext += "<br/>"+type+" : ";
+                    labels=[];
                     for(var i=0; i<data[type].length; i++) {
-                        tiptext += data[type][i].label + ", ";
+                        labels.push(data[type][i].label);
                     }
+                    tiptext += labels.join(", ");
                 }
                 return tiptext;
             }
         );
+
     },
 
     submitUpdateDataset: function(button) {
@@ -468,6 +492,7 @@ var datasetEditor = {
     displayDocumentSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         var document_select = $("#editdataset_document").empty();//.append($("<option value=''></option>"));
+        // TODO : sort document labels
         for (var doc_id in data['edges']['Document']) {
             document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
         }
