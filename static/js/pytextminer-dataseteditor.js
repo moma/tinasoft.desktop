@@ -47,6 +47,7 @@ var datasetEditor = {
                 );
             })
         });
+        
         $("#add_document_keyword_button").button({
             icons: { primary:'ui-icon-arrowrefresh-1-e' },
             text: true,
@@ -59,15 +60,19 @@ var datasetEditor = {
             icons: { primary:'ui-icon-triangle-1-w' },
             text: false
         }).click( function(event){
-            $("#editdataset_document option:selected").previous().attr('selected', 'selected');
-            $("#editdataset_document").change();
+            if($("#editdataset_document option:selected")['prev']!==undefined){
+                $("#editdataset_document option:selected").prev().attr('selected', 'selected');
+                $("#editdataset_document").change();
+            }
         });
         $("#editnext_document").button({
             icons: { primary:'ui-icon-triangle-1-e' },
             text: false
         }).click( function(event){
-            $("#editdataset_document option:selected").next().attr('selected', 'selected');
-            $("#editdataset_document").change();
+            if($("#editdataset_document option:selected")['next']!==undefined){
+                $("#editdataset_document option:selected").next().attr('selected', 'selected');
+                $("#editdataset_document").change();
+            }
         });
         /*$
         $.dynaCloud.max = 100;
@@ -91,7 +96,10 @@ var datasetEditor = {
         var queued_keywords = $("<span id='document_queued_keywords'><b id='document_queued_keywords_title'></b></span>");
         tbody.append(
             $("<tr class='ui-widget-content'></tr>")
-                .append( $("<td></td>").append( $("<p id='display_document_object'></p>").append( content ).append( keywords ).append(queued_keywords) ) )
+                .append( $("<td></td>").append( $("<p id='display_document_object'></p>")
+                .append( content )
+                .append( keywords ).
+                append(queued_keywords) ) )
         );
         $("#add_document_keyword").autocomplete({
             source: documentObj['content'].split(" ")
@@ -99,24 +107,36 @@ var datasetEditor = {
         //$("#document_to_edit").dynaCloud("#dynacloud");
         var ngrams = Object.keys(documentObj['edges']['NGram']);
         var total_ngrams = 0;
+        // welcome to the async world
         for (var ngid in documentObj['edges']['NGram']) {
             total_ngrams++;
             if (total_ngrams==ngrams.length){
+                // last iteration
                 TinaService.getNGram(
                     datasetEditor.dataset_id,
                     ngid,
-                    { success: datasetEditor.highlightNGramFormFinal }
+                    {
+                        success: function(ngramObj, textStatus, XMLHttpRequest){
+                            datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
+                            datasetEditor.attachNGramEditor($("span.highlight"));
+                            datasetEditor.highlightToBeDeleted($("span.highlight"));
+                            datasetEditor.highlightToBeAdded();
+                        }
+                    }
                 );
             }
             else {
                 TinaService.getNGram(
                     datasetEditor.dataset_id,
                     ngid,
-                    { success: datasetEditor.highlightNGramForm }
+                    {
+                        success: function(ngramObj, textStatus, XMLHttpRequest){
+                            datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
+                        }
+                    }
                 );
             }
         }
-        datasetEditor.highlightToBeAdded();
     },
 
     searchAndReplaceNGrams: function(ngramObj, textStatus, XMLHttpRequest){
@@ -132,17 +152,6 @@ var datasetEditor = {
                 $("#document_to_edit")[0].innerHTML = htmlString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
             }
         }
-    },
-
-    highlightNGramForm: function(ngramObj, textStatus, XMLHttpRequest) {
-        datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
-    },
-
-    highlightNGramFormFinal: function(ngramObj, textStatus, XMLHttpRequest) {
-        datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
-        datasetEditor.attachNGramEditor($("span.highlight"));
-        datasetEditor.highlightToBeDeleted($("span.highlight"));
-        datasetEditor.highlightToBeAdded();
     },
 
     displayDocumentKeyword: function(keyword) {
@@ -167,8 +176,10 @@ var datasetEditor = {
                 if (NGramFormQueue['delete'][i].label == $(this).text()) {
                     $(this).removeClass("highlight");
                     $(this).addClass("highlight_toberemoved");
-                    if($(this).qtip('api') !== undefined)
+                    // removes qtip on matching nodes
+                    if($(this).qtip('api') !== undefined) {
                         $(this).qtip('disable');
+                    }
                     // TODO : attach undo
                 }
                 else {
@@ -239,26 +250,22 @@ var datasetEditor = {
                             $("<p></p>").text(node.text()).css({"font-size": "0.8em","line-height": "1.0"})
                         ).append($("<button></button>")
                             .button({
-                                //icons: { primary:'ui-icon-circle-minus' },
                                 text: true,
                                 label : "delete this one"
                             })
                             .css({
                                 "font-size": "0.8em"
-                                //"line-height": 1,0
                             })
                             .click(function(event){
                                 datasetEditor.submitRemoveNode(node);
                             })
                         ).append($("<button></button>")
                             .button({
-                                //icons: { primary:'ui-icon-circle-minus' },
                                 text: true,
                                 label : "delete all"
                             })
                             .css({
                                 "font-size": "0.8em"
-                                //"line-height": 1,0
                             })
                             .click(function(event){
                                 datasetEditor.pushDeleteNGramForm(node);
@@ -338,7 +345,9 @@ var datasetEditor = {
         });
 
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
+        
         datasetEditor.highlightToBeAdded();
+        
         if(datasetEditor.dataset_needs_update == false) {
             datasetEditor.dataset_needs_update = true;
             $("#"+datasetEditor.dataset_id + "_update_button").show();
@@ -422,8 +431,10 @@ var datasetEditor = {
                         +'"'
                 });
                 $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", { "delete":[], "add": [] });
-                $('#document_to_edit > span').removeClass("highlight_toberemoved");
-                $('#document_to_edit > span').removeClass("highlight_tobeadded");
+                
+                //$('#document_to_edit > span').removeClass("highlight_toberemoved");
+                //$('#document_to_edit > span').removeClass("highlight_tobeadded");
+                
                 datasetEditor.dataset_needs_update = false;
                 $("#"+datasetEditor.dataset_id + "_update_button").hide();
                 //datasetEditor.attachNGramEditor($("span.highlight"));
@@ -492,6 +503,8 @@ var datasetEditor = {
 
     toggleEditionForm: function(dataset_id) {
         var self = this;
+        // TODO : hide data_table and move update dataset button to this div
+        
         // fills the form if it's going to be visible
         if ( $("#editdocument_form:visible").length == 0 ) {
             datasetEditor.dataset_id = dataset_id;
