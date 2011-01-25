@@ -110,7 +110,7 @@ var datasetEditor = {
         // welcome to the async world
         for (var ngid in documentObj['edges']['NGram']) {
             total_ngrams++;
-            if (total_ngrams==ngrams.length){
+            /*if (total_ngrams==ngrams.length){
                 // last iteration
                 TinaService.getNGram(
                     datasetEditor.dataset_id,
@@ -118,24 +118,27 @@ var datasetEditor = {
                     {
                         success: function(ngramObj, textStatus, XMLHttpRequest){
                             datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
-                            datasetEditor.attachNGramEditor($("span.highlight"));
                             datasetEditor.highlightToBeDeleted($("span.highlight"));
                             datasetEditor.highlightToBeAdded();
+                            datasetEditor.attachNGramEditor($("span.highlight"));
                         }
                     }
                 );
-            }
-            else {
+            }*/
+            //else {
                 TinaService.getNGram(
                     datasetEditor.dataset_id,
                     ngid,
                     {
                         success: function(ngramObj, textStatus, XMLHttpRequest){
                             datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
+                            datasetEditor.highlightToBeDeleted($("span.highlight"));
+                            datasetEditor.highlightToBeAdded();
+                            datasetEditor.attachNGramEditor($("span.highlight"));
                         }
                     }
                 );
-            }
+            //}
         }
     },
 
@@ -143,7 +146,7 @@ var datasetEditor = {
         var htmlString = $("#document_to_edit")[0].innerHTML;
         for (var form_words in ngramObj['edges']['label']) {
             var words = form_words.split(" ");
-            var pattern = new RegExp("((<span class='[^']' dbid='[^']'>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )(<span class='[^']' dbid='[^']'>)*)")+"((\\b)|(<\/span>)|(<span class='[^']' dbid='[^']'>))", 'gi');
+            var pattern = new RegExp("((<span class='[^']'( dbid='[^']')?>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )(<span class='[^']'( dbid='[^']')?>)*)")+"((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')?>))", 'gi');
             var test = pattern.test(htmlString);
             if(test == false){
                 datasetEditor.displayDocumentKeyword(form_words);
@@ -195,7 +198,7 @@ var datasetEditor = {
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var words = NGramFormQueue['add'][i].label.split(" ");
             console.log(words);
-            var pattern = new RegExp("((<span class='[^']'( dbid='[^']')?>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )(<span class='[^']'( dbid='[^']')?>)*)")+"((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')?>))", 'gi');
+            var pattern = new RegExp("((<span class='[^']'( dbid='[^']')?>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )?(<span class='[^']'( dbid='[^']')?>)*)")+"((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')?>))", 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
             $("#document_to_edit")[0].innerHTML = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
             queued_keywords_span.append(
@@ -206,8 +209,6 @@ var datasetEditor = {
         if($("#document_queued_keywords > span").size() > 0) {
             $("#document_keywords_title").text("user defined keyphrases :  ");
         }
-        // refresh qtip on this modified html
-        datasetEditor.attachNGramEditor($("span.highlight"));
 
     },
 
@@ -344,6 +345,8 @@ var datasetEditor = {
         $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", NGramFormQueue);
 
         datasetEditor.highlightToBeAdded();
+        // refresh qtip on this modified html
+        datasetEditor.attachNGramEditor($("span.highlight"));
 
         if(datasetEditor.dataset_needs_update == false) {
             datasetEditor.dataset_needs_update = true;
