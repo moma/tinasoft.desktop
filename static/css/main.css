@@ -3,8 +3,12 @@ body {
     font-size: .7em;
 }
 /* Periods selectors style */
-#data_table ol { list-style-type: none; margin: 0; padding: 0; }
-#data_table li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
+#sessions ol { list-style-type: none; margin: 0; padding: 0; }
+#sessions li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
+
+.floatleft {
+    float: left;
+}
 
 .ui-widget-content a {
     color: #ADD8E6;
