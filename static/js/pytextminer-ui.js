@@ -129,6 +129,38 @@ function displayGraphColumn(corpora) {
         }
     );
 }
+/*
+ * Adds the source files list to the dataset row (using the same TR id)
+ */
+function displaySourcesColumn(corpora) {
+    var trid = corpora['id'] + "_tr";
+    var tr = $( "#" + trid );
+    var olid = 'sources_' + trid
+    tr.append("<td class='ui-widget-content'>"
+        + "<ol id='"
+        + olid + "' class='sortable_ol'>"
+        + "</ol></td>"
+    );
+    var ol = $( "#" + olid  ).empty();
+    for ( var sourcefile in corpora['edges']['Source']) {
+        var path = corpora['edges']['Source'][sourcefile];
+        var item = $("<li></li>").text(sourcefile).addClass("sortable_li");
+
+        var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-pencil'
+            }
+        }).attr("path", path).click( function(eventObject) {
+            editUserFile($(this).attr("path"));
+        });
+        item.append(edit_link);
+        ol.append(item);
+    }
+    ol.sortable();
+    ol.disableSelection();
+}
 
 /*
  * Adds the whitelist files list to the dataset row (using the same TR id)
@@ -140,24 +172,17 @@ function displayWhitelistColumn(corpora) {
     var olid = 'whitelist_' + trid
     tr.append("<td class='ui-widget-content'>"
         + "<ol id='"
-        + olid + "' >"
+        + olid + "' class='sortable_ol' >"
         + "</ol></td>"
     );
     var ol = $( "#" + olid  ).empty();
     for ( var wllabel in corpora['edges']['Whitelist']) {
-        // gets the filename from a path (first position of the list)
         var path = corpora['edges']['Whitelist'][wllabel];
-        /*var path_comp = list[i].split(/\/|\\/).reverse();
-        if( /csv$/.test(list[i]) == false )
-            continue;*/
         var whitelist_item = $("<li title='click on the pencil button the edit the whitelist'>"
             + wllabel
             + "&#09;"
             + "</li>"
-        ).data("whitelistpath", path);
-        /*.draggable({
-            helper: "clone"
-        })*/
+        ).addClass("sortable_li");
 
         var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
         .button({
@@ -165,12 +190,15 @@ function displayWhitelistColumn(corpora) {
             icons: {
                 primary: 'ui-icon-pencil'
             }
-        }).attr("id", path).click( function(eventObject) {
-            editUserFile($(this).attr("id"));
+        }).attr("path", path).click( function(eventObject) {
+            editUserFile($(this).attr("path"));
         });
+
         whitelist_item.append(edit_link);
         ol.append(whitelist_item);
     }
+    ol.sortable();
+    ol.disableSelection();
 }
 
 /*
@@ -245,7 +273,7 @@ function selectableCorpusInit( ol, corpora ) {
 function displayWhitelists(div_id){
 
     var div = $( "#"+div_id ).empty();
-
+    $( "#"+div_id ).addClass("sortable_ol");
     TinaService.getWalkUserPath(
         "None",
         "whitelist",
@@ -261,10 +289,8 @@ function displayWhitelists(div_id){
                     if( /csv$/.test(list[i]) == false )
                         continue;
 
-                    var whitelist_item = $("<span title='click on the pencil button the edit the whitelist'>"
-                        + label
-                        + "</span>&nbsp;&nbsp;"
-                    );
+                    var whitelist_item = $("<li title='click on the pencil button the edit the whitelist'></li>")
+                        .text(label).addClass('sortable_li');
                     labels.push(label)
                     var edit_link = $("<a href='#' title='click to open in an external software'></a>").button({
                         text: false,
@@ -274,10 +300,11 @@ function displayWhitelists(div_id){
                     }).attr("id",list[i]).click( function(eventObject) {
                         editUserFile($(this).attr("id"));
                     });
-
                     whitelist_item.append(edit_link);
                     div.append(whitelist_item);
                 }
+                div.sortable();
+                div.disableSelection();
                 Cache.setValue('whitelists',whitelists);
                 $("#index_whitelist").autocomplete({ source: labels });
             }
@@ -294,6 +321,7 @@ function displayDeleteDatasetDialog(dataset_id) {
         buttons: {
             'Delete' : function(eventObject) {
                 TinaService.deleteDataset($(this).data("dataset_id"), TinaServiceCallback.deleteDataset);
+                $(this).dialog('close');
             },
             Cancel: function() {
                 $(this).dialog('close');
@@ -375,6 +403,7 @@ function displayDatasetRow(parent_div_id, list) {
             success: function(dataset) {
                 if(dataset != "") {
                     displayWhitelistColumn( dataset );
+                    displaySourcesColumn( dataset );
                     displayPeriodColumn( dataset );
                     displayGraphColumn( dataset );
                 }

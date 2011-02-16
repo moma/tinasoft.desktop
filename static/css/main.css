@@ -6,8 +6,10 @@ body {
 #sessions ol { list-style-type: none; margin: 0; padding: 0; }
 #sessions li { margin: 3px; padding: 0.4em; height: 18px; float:left; }
 
-.floatleft {
+.session_div {
     float: left;
+    margin: 5px;
+    width: 48%;
 }
 
 .ui-widget-content a {
@@ -25,4 +27,14 @@ body {
 }
 .doc_keyword {
     background-color: rgba(0,200,0,0.75);
+}
+.sortable_ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.sortable_li {
+    float: left;
+    width: 100px;
+    height: 90px;
 }

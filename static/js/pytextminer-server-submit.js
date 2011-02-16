@@ -167,7 +167,7 @@ $(document).ready(function() {
         }).click(function(event) {
             submitExtractFile(event);
         });
-
+    $("#extractFileButton").button('enable');
     $("#indexFileButton")
         .button({
             text: true,
@@ -175,7 +175,7 @@ $(document).ready(function() {
         }).click(function(event) {
             submitIndexFile(event);
         });
-
+    $("#indexFileButton").button('enable');
     $("#generateGraphButton")
         .button({
             text: true,
@@ -184,5 +184,5 @@ $(document).ready(function() {
             submitGenerateGraph(event);
         });
     $("#export-gexf").button();
-
+    $("#generateGraphButton").button('enable');
 });

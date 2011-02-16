@@ -24,7 +24,7 @@
         <meta name="tinaviz" content="tinaweb/" />
         <link rel="shortcut icon" href="css/branding/favicon.ico" type="image/x-icon" />
         <!-- JQUERY UI CSS -->
-        <link type="text/css" rel="stylesheet" href="tinaweb/css/sunny/jquery-ui-1.8.9.custom.css"/>
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/start/jquery-ui-1.8.9.custom.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.spinner.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/jquery.qtip.min.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.notify.css"/>
@@ -88,7 +88,7 @@
                 <button id="exit_server"></button>
                 <div id="sessions" class="ui-widget ui-corner-all">
                     <!--<button id="toggle_whitelists"></button>-->
-                    <div class="ui-widget-content ui-corner-all floatleft">
+                    <div class="ui-widget-content ui-corner-all session_div">
                         <p>
                         <table id="corpora_table">
                             <thead>
@@ -96,6 +96,7 @@
                                     <th class="ui-widget-header"></th>
                                     <th class="ui-widget-header">sessions&nbsp;<button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
                                     <th class="ui-widget-header">indexed whitelists</th>
+                                    <th class="ui-widget-header">indexed sources</th>
                                     <th class="ui-widget-header">indexed periods</th>
                                     <th class="ui-widget-header">networks&nbsp;<button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
                                 </tr>
@@ -104,9 +105,9 @@
                         </table>
                         </p>
                     </div>
-                    <div class="ui-widget-content ui-corner-all floatleft">
+                    <div class="ui-widget-content ui-corner-all session_div">
                         <p class="ui-widget-header">your whitelists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></p>
-                        <p id="whitelist_items"></p>
+                        <ul id="whitelist_items"></ul>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
