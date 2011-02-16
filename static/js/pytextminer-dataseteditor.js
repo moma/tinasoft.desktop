@@ -53,7 +53,9 @@ var datasetEditor = {
             text: true,
             label: "add a keyphrase"
         }).click(function(event) {
-            datasetEditor.pushAddKeyword($("#add_document_keyword").val());
+            if ($("#add_document_keyword").val() != "") {
+                datasetEditor.pushAddKeyword($("#add_document_keyword").val());
+            }
         });
 
         $("#editprevious_document").button({

@@ -24,7 +24,7 @@
         <meta name="tinaviz" content="tinaweb/" />
         <link rel="shortcut icon" href="css/branding/favicon.ico" type="image/x-icon" />
         <!-- JQUERY UI CSS -->
-        <link type="text/css" rel="stylesheet" href="tinaweb/css/eggplant/jquery-ui-1.8.1.custom.css"/>
+        <link type="text/css" rel="stylesheet" href="tinaweb/css/sunny/jquery-ui-1.8.9.custom.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.spinner.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/jquery.qtip.min.css"/>
         <link type="text/css" rel="stylesheet" href="tinaweb/css/ui.notify.css"/>
@@ -40,8 +40,8 @@
         <!--<script type="text/javascript" src="tinaweb/js/jquery/jquery.dynacloud-5.js" language="javascript"></script>-->
 
         <!-- JQUERY UI -->
-        <script type="text/javascript" src="tinaweb/js/jquery-ui/jquery-ui-1.8.min.js" language="javascript"></script>
-        <script src='tinaweb/js/rating/jquery.ratings.js' type="text/javascript" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery-ui/jquery-ui-1.8.9.custom.min.js" language="javascript"></script>
+        <script type="text/javascript" src='tinaweb/js/rating/jquery.ratings.js' language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.qtip.min.js" language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.notify.min.js" language="javascript"></script>
         <script type="text/javascript" src="tinaweb/js/jquery-ui/ui.spinner.min.js" language="javascript"></script>
@@ -50,8 +50,6 @@
         <script type="text/javascript" src="tinaweb/js/cache.js"></script>
         <!--TINAWEB APPLET LOADER -->
         <script type="text/javascript" src="tinaweb/js/tinaviz/deployJava.js" language="javascript"></script>
-        <!-- PREFERENCES -->
-        <script type="text/javascript" src="tinaweb/js/tinaviz/preferences.js" language="javascript"></script>
         <!-- TINAVIZ -->
         <script type="text/javascript" src="tinaweb/js/tinaviz/tinaviz.js" language="javascript"></script>
         <!-- WE NEED TINAWEB MAIN-->
@@ -85,23 +83,38 @@
                         <p>#{text}</p>
                     </div>
                 </div>
-                <button id="toggle_working_session"></button>
+                <button id="toggle_sessions"></button>
                 <button id="toggle_about"></button>
                 <button id="exit_server"></button>
-                <div id="data_table" class="ui-widget-content ui-corner-all">
-                    <table id="corpora_table">
-                        <thead>
-                            <tr>
-                                <th class="ui-widget-header"></th>
-                                <th class="ui-widget-header">data sets</th>
-                                <th class="ui-widget-header">white lists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></th>
-                                <th class="ui-widget-header">periods <button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
-                                <th class="ui-widget-header">graphs <button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
-                            </tr>
-                        </thead>
-                        <tbody class="ui-widget-content"></tbody>
-                    </table>
+                <div id="sessions" class="ui-widget ui-corner-all">
+                    <!--<button id="toggle_whitelists"></button>-->
+                    <div class="ui-widget-content ui-corner-all floatleft">
+                        <table id="corpora_table">
+                            <thead>
+                                <tr>
+                                    <th class="ui-widget-header"></th>
+                                    <th class="ui-widget-header">sessions</th>
+                                    <th class="ui-widget-header">indexed whitelists</th>
+                                    <th class="ui-widget-header">indexed periods <button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
+                                    <th class="ui-widget-header">networks <button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
+                                </tr>
+                            </thead>
+                            <tbody class="ui-widget-content"></tbody>
+                        </table>
+                    </div>
+                    <div class="ui-widget-content ui-corner-all floatleft">
+                        <p class="ui-widget-header">your whitelists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></p>
+                        <p class="ui-widget-content" id="whitelist_items"></p>
+                    </div>
+                    <div style="clear: both;"></div>
                 </div>
+                <!--<div id="whitelists" class="ui-widget-content ui-corner-all">
+                    <div class="floatleft">
+                        <p class="ui-widget-header">your whitelists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></p>
+                        <p class="ui-widget-content" id="whitelist_items"></p>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>-->
                 <div id="dialog-confirm-delete-dataset" title="">
                         <p><span class="ui-icon ui-icon-alert"></span> All the dataset's files and database will be erased !</p>
                 </div>
@@ -136,8 +149,8 @@
                                         <option value ='medline'>pubmed.gov medline file</option>
                                     </select>
                                 </th>
-                                <th class="ui-widget-content">data set name <input id="importdatasetid" type="text" name="import dataset id" size="12"/>
-                                </th>
+                                <!--<th class="ui-widget-content">dsession name <input id="importdatasetid" type="text" name="import dataset id" size="12"/>
+                                </th>-->
                                 <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
 
                                 <th class="ui-widget-content"><button id="extractFileButton"></button>
@@ -166,9 +179,10 @@
                                         <option value ='medline'>pubmed.gov medline file</option>
                                     </select>
                                 </th>
-                                <th class="ui-widget-content">data set name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
+                                <th class="ui-widget-content">session name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
                                 </th>
-                                <th id="index_whitelist" class="ui-widget-content whitelistdroppable">
+                                <th class="ui-widget-content">
+                                    whitelist name <input id="index_whitelist" type="text" name="index whitelist id" size="12"/>
                                 </th>
                                 <!--<th>overwrite existing documents <input id="importoverwrite" type="checkbox" name="overwrite" value=""></input>-->
 

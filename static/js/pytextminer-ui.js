@@ -144,41 +144,33 @@ function displayWhitelistColumn(corpora) {
         + "</ol></td>"
     );
     var ol = $( "#" + olid  ).empty();
-    TinaService.getWalkUserPath(
-        corpora['id'],
-        "whitelist",
-        {
-            success: function(list) {
-                for ( var i=0; i < list.length; i++ ) {
-                    // gets the filename from a path (first position of the list)
-                    var path_comp = list[i].split(/\/|\\/).reverse();
-                    if( /csv$/.test(list[i]) == false )
-                        continue;
-                    var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
-                        + parseFileLabel(path_comp[0])
-                        + "&#09;"
-                        + "</li>"
-                    ).draggable({
-                        helper: "clone"
-                    })
-                    .data("whitelistpath", list[i]);
-                    var edit_link = $("<a href='#' title='click to open in an external software'></a>")
-                    .button({
-                        text: false,
-                        icons: {
-                            primary: 'ui-icon-pencil'
-                        }
-                    })
-                    .attr("id",list[i])
-                    .click( function(eventObject) {
-                        editUserFile($(this).attr("id"));
-                    });
-                    whitelist_item.append(edit_link);
-                    ol.append(whitelist_item);
-                }
+    for ( var wllabel in corpora['edges']['Whitelist']) {
+        // gets the filename from a path (first position of the list)
+        var path = corpora['edges']['Whitelist'][wllabel];
+        /*var path_comp = list[i].split(/\/|\\/).reverse();
+        if( /csv$/.test(list[i]) == false )
+            continue;*/
+        var whitelist_item = $("<li title='click on the pencil button the edit the whitelist'>"
+            + wllabel
+            + "&#09;"
+            + "</li>"
+        ).data("whitelistpath", path);
+        /*.draggable({
+            helper: "clone"
+        })*/
+
+        var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-pencil'
             }
-        }
-    );
+        }).attr("id", path).click( function(eventObject) {
+            editUserFile($(this).attr("id"));
+        });
+        whitelist_item.append(edit_link);
+        ol.append(whitelist_item);
+    }
 }
 
 /*
@@ -247,6 +239,46 @@ function selectableCorpusInit( ol, corpora ) {
         }
     });
 }
+/*
+ * Displays the list of all available whitelists
+ */
+function displayWhitelist(div_id){
+
+    var div = $( "#"+div_id );
+
+    TinaService.getWalkUserPath(
+        "None",
+        "whitelist",
+        {
+            success: function(list) {
+                for ( var i=0; i < list.length; i++ ) {
+                    // gets the filename from a path (first position of the list)
+                    var path_comp = list[i].split(/\/|\\/).reverse();
+                    if( /csv$/.test(list[i]) == false )
+                        continue;
+
+                    var whitelist_item = $("<span title='click on the pencil button the edit the whitelist'>"
+                        + parseFileLabel(path_comp[0])
+                        + "&#09;"
+                        + "</span>"
+                    ).data("whitelistpath", list[i]);
+
+                    var edit_link = $("<a href='#' title='click to open in an external software'></a>").button({
+                        text: false,
+                        icons: {
+                            primary: 'ui-icon-pencil'
+                        }
+                    }).attr("id",list[i]).click( function(eventObject) {
+                        editUserFile($(this).attr("id"));
+                    });
+
+                    whitelist_item.append(edit_link);
+                    div.append(whitelist_item);
+                }
+            }
+        }
+    );
+}
 
 function displayDeleteDatasetDialog(dataset_id) {
     $("#dialog-confirm-delete-dataset").dialog({
@@ -267,7 +299,7 @@ function displayDeleteDatasetDialog(dataset_id) {
 }
 
 function displayDatasetRow(parent_div_id, list) {
-    var tbody = $("#"+parent_div_id+" > table > tbody");
+    var tbody = $("#"+parent_div_id+" > div > table > tbody");
     tbody.empty();
     for ( var i=0; i<list.length; i++ ) {
         // populates and attach table rows
@@ -360,6 +392,7 @@ function displayDataTable(parent_div_id) {
             $("#indexdatasetid").autocomplete({ source: list });
         }
     });
+    displayWhitelist( "whitelist_items" );
 }
 
 function loadSourceFiles(select_id) {
@@ -422,25 +455,34 @@ var initPytextminerUi = function() {
         $("#processcooc_form").toggle("fold");
     });
 
-    $("#toggle_working_session").button({
+    $("#toggle_sessions").button({
         icons: {primary:'ui-icon-carat-2-e-w'},
         text: true,
-        label: "work session manager"
-    })
-    .click(function(event) {
+        label: "session manager"
+    }).click(function(event) {
         $(".fold_form:visible").hide("fold");
-        $("#data_table").toggle("fold");
+        $("#sessions").toggle("fold");
         // TODO : display current state of the session in the button label
     });
+    $("#toggle_sessions").button('enable');
+    $("#sessions").hide();
 
+    /*$("#toggle_whitelists").button({
+        icons: {primary:'ui-icon-carat-2-e-w'},
+        text: true,
+        label: "whitelist manager"
+    }).click(function(event) {
+        $(".fold_form:visible").hide("fold");
+        $("#whitelists").toggle("fold");
+    });
+    $("#whitelists").hide();*/
     $("#about_tinasoft").hide();
 
     $("#toggle_about").button({
         icons: {primary:'ui-icon-info'},
         text: true,
         label: "about tinasoft"
-    })
-    .click(function(event) {
+    }).click(function(event) {
         $("#about_tinasoft").dialog(
             {
                 modal: true,
@@ -450,21 +492,20 @@ var initPytextminerUi = function() {
         );
     });
 
-    $("#exit_server")
-        .button({
-            icons: { primary:'ui-icon-power' },
-            text: true,
-            label: "shutdown server"
-        }).click(function(event) {
-            TinaService.exit(TinaServiceCallback.exit);
-        });
+    $("#exit_server").button({
+        icons: { primary:'ui-icon-power' },
+        text: true,
+        label: "shutdown server"
+    }).click(function(event) {
+        TinaService.exit(TinaServiceCallback.exit);
+    });
     $("#exit_server").button("enable");
 
-    /* Fetch data into table */
-    displayDataTable("data_table");
+    /* Fetch data into session box */
+    displayDataTable( "sessions" );
 
     /* Init droppable elements */
-    $(".whitelistdroppable").droppable({
+    /*$(".whitelistdroppable").droppable({
         activeClass: "ui-state-default",
         hoverClass: "ui-state-hover",
         drop: function(event, ui) {
@@ -472,8 +513,8 @@ var initPytextminerUi = function() {
             $(this).append("chosen whitelist : " + ui.draggable.text());
             $(this).data("whitelistpath", ui.draggable.data("whitelistpath"));
         }
-    }).html("<p>drag and drop here a white list</p>");
-
+    }).html("<p>drag and drop here a white list</p>"); */
+    $("#index_whitelist").autocomplete({ source: Cache.getValue( "whitelists", [] ) });
     $(".periodselectable").html("<p>select periods<br/>(ctrl key for multiple selection)</p>");
     /* Init every upload file handler */
     /*var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");
@@ -482,7 +523,7 @@ var initPytextminerUi = function() {
     loadSourceFiles("#importfilepath");
     loadSourceFiles("#indexfilepath");
 
-    $("#graphalpha").spinner();
+    /*$("#graphalpha").spinner();
     $("#graph-ngrams-edges-min").spinner();
     $("#graph-ngrams-edges-max").spinner();
     $("#graph-documents-edges-min").spinner();
@@ -490,7 +531,7 @@ var initPytextminerUi = function() {
     $("#graph-ngrams-nodes-min").spinner();
     $("#graph-ngrams-nodes-max").spinner();
     $("#graph-documents-nodes-min").spinner();
-    $("#graph-documents-nodes-max").spinner();
+    $("#graph-documents-nodes-max").spinner();*/
     $("#extractminoccs").spinner();
     $(".ui-spinner-buttons").height(12);
     $(".ui-spinner-button").height(6);

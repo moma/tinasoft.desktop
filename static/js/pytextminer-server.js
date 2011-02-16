@@ -94,11 +94,10 @@ function TinaServiceClass(url) {
         this._GET("file",
             {
                 path: _path,
-                dataset: this.encodeURIComponent(this.protectPath(_dataset)),
+                //dataset: this.encodeURIComponent(this.protectPath(_dataset)),
                 whitelistlabel: this.encodeURIComponent(this.protectPath(_whitelistlabel)),
                 format:  _format,
-                minoccs: _minoccs,
-                userstopwords: _userstopwords
+                minoccs: _minoccs
             },
             {
                 error:"couldn't getFile"

@@ -35,19 +35,20 @@ $(document).ready(function() {
      */
     var submitExtractFile = function(event) {
 
-        var corpora = $("#importdatasetid");
+        /*var corpora = $("#importdatasetid");
         if ( corpora.val() == '' ) {
             corpora.addClass('ui-state-error');
             return false;
-        }
+        }*/
         var path = $("#importfilepath");
         if ( path.val() == "" ) {
             path.addClass('ui-state-error');
             return false;
         }
+
         var whitelistlabel = $("#importwhitelistlabel");
         var filetype = $("#importfiletype");
-        var userstopwords = $("#importuserstopwords");
+        //var userstopwords = $("#importuserstopwords");
         var minoccs = $("#extractminoccs").spinner('value');
         if( ! IsNumeric(minoccs) ) {
             alert("minimum occurrences must be an integer");
@@ -56,11 +57,11 @@ $(document).ready(function() {
         }
         TinaService.getFile(
             path.val(),
-            safeString(corpora.val()),
+            //safeString(corpora.val()),
             safeString(whitelistlabel.val()),
             filetype.val(),
             minoccs,
-            userstopwords.val(),
+            //userstopwords.val(),
             TinaServiceCallback.extractFile
         );
         return true;
@@ -81,7 +82,8 @@ $(document).ready(function() {
             path.addClass('ui-state-error');
             return false;
         }
-        var whitelistpath = $("#index_whitelist").data("whitelistpath");
+        var whitelistpath = $("#index_whitelist").val();
+
         if ( whitelistpath == '' ||  whitelistpath === undefined ) {
             $("#index_whitelist").addClass('ui-state-error');
             alert("please select a white list");
