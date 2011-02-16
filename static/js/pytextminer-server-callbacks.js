@@ -141,7 +141,6 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {
             /* Updates data into table */
             displayDataTable("sessions");
-        },
-        beforeSend: function() {}
+        }
     }
 };

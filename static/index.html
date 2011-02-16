@@ -89,22 +89,24 @@
                 <div id="sessions" class="ui-widget ui-corner-all">
                     <!--<button id="toggle_whitelists"></button>-->
                     <div class="ui-widget-content ui-corner-all floatleft">
+                        <p>
                         <table id="corpora_table">
                             <thead>
                                 <tr>
                                     <th class="ui-widget-header"></th>
-                                    <th class="ui-widget-header">sessions</th>
+                                    <th class="ui-widget-header">sessions&nbsp;<button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
                                     <th class="ui-widget-header">indexed whitelists</th>
-                                    <th class="ui-widget-header">indexed periods <button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
-                                    <th class="ui-widget-header">networks <button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
+                                    <th class="ui-widget-header">indexed periods</th>
+                                    <th class="ui-widget-header">networks&nbsp;<button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
                                 </tr>
                             </thead>
                             <tbody class="ui-widget-content"></tbody>
                         </table>
+                        </p>
                     </div>
                     <div class="ui-widget-content ui-corner-all floatleft">
                         <p class="ui-widget-header">your whitelists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></p>
-                        <p class="ui-widget-content" id="whitelist_items"></p>
+                        <p id="whitelist_items"></p>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
@@ -116,7 +118,7 @@
                     <div style="clear: both;"></div>
                 </div>-->
                 <div id="dialog-confirm-delete-dataset" title="">
-                        <p><span class="ui-icon ui-icon-alert"></span> All the dataset's files and database will be erased !</p>
+                    <p><span class="ui-icon ui-icon-alert"></span> All the dataset's graphs and database will be erased !</p>
                 </div>
                 <div id="editdocument_form" class="fold_form ui-widget-content ui-corner-all">
                     <div class="ui-widget-header ui-corner-all">
@@ -169,17 +171,17 @@
                     <table id="index_table" class="ui-widget-content ui-corner-all">
                         <thead>
                             <tr>
-                                <th class="ui-widget-header">Indexation</th>
+                                <th class="ui-widget-header">Create or update a session</th>
                             </tr>
                             <tr>
+                                <th class="ui-widget-content">session name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
+                                </th>
                                 <th class="ui-widget-content">source file <select id="indexfilepath"><option value=""></option></select>
                                 </th>
                                 <th class="ui-widget-content">file type <select id="indexfiletype" name="index filetype">
                                         <option selected value='tinacsv'>tinasoft csv</option>
                                         <option value ='medline'>pubmed.gov medline file</option>
                                     </select>
-                                </th>
-                                <th class="ui-widget-content">session name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
                                 </th>
                                 <th class="ui-widget-content">
                                     whitelist name <input id="index_whitelist" type="text" name="index whitelist id" size="12"/>

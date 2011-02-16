@@ -242,27 +242,30 @@ function selectableCorpusInit( ol, corpora ) {
 /*
  * Displays the list of all available whitelists
  */
-function displayWhitelist(div_id){
+function displayWhitelists(div_id){
 
-    var div = $( "#"+div_id );
+    var div = $( "#"+div_id ).empty();
 
     TinaService.getWalkUserPath(
         "None",
         "whitelist",
         {
             success: function(list) {
+                var labels = [];
+                var whitelists = {};
                 for ( var i=0; i < list.length; i++ ) {
                     // gets the filename from a path (first position of the list)
                     var path_comp = list[i].split(/\/|\\/).reverse();
+                    var label = parseFileLabel(path_comp[0]);
+                    whitelists[label] = list[i];
                     if( /csv$/.test(list[i]) == false )
                         continue;
 
                     var whitelist_item = $("<span title='click on the pencil button the edit the whitelist'>"
-                        + parseFileLabel(path_comp[0])
-                        + "&#09;"
-                        + "</span>"
-                    ).data("whitelistpath", list[i]);
-
+                        + label
+                        + "</span>&nbsp;&nbsp;"
+                    );
+                    labels.push(label)
                     var edit_link = $("<a href='#' title='click to open in an external software'></a>").button({
                         text: false,
                         icons: {
@@ -275,6 +278,8 @@ function displayWhitelist(div_id){
                     whitelist_item.append(edit_link);
                     div.append(whitelist_item);
                 }
+                Cache.setValue('whitelists',whitelists);
+                $("#index_whitelist").autocomplete({ source: labels });
             }
         }
     );
@@ -289,7 +294,6 @@ function displayDeleteDatasetDialog(dataset_id) {
         buttons: {
             'Delete' : function(eventObject) {
                 TinaService.deleteDataset($(this).data("dataset_id"), TinaServiceCallback.deleteDataset);
-                $(this).dialog('close');
             },
             Cancel: function() {
                 $(this).dialog('close');
@@ -392,7 +396,7 @@ function displayDataTable(parent_div_id) {
             $("#indexdatasetid").autocomplete({ source: list });
         }
     });
-    displayWhitelist( "whitelist_items" );
+    displayWhitelists( "whitelist_items" );
 }
 
 function loadSourceFiles(select_id) {
@@ -514,7 +518,6 @@ var initPytextminerUi = function() {
             $(this).data("whitelistpath", ui.draggable.data("whitelistpath"));
         }
     }).html("<p>drag and drop here a white list</p>"); */
-    $("#index_whitelist").autocomplete({ source: Cache.getValue( "whitelists", [] ) });
     $(".periodselectable").html("<p>select periods<br/>(ctrl key for multiple selection)</p>");
     /* Init every upload file handler */
     /*var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");

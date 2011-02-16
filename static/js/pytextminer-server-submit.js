@@ -82,14 +82,17 @@ $(document).ready(function() {
             path.addClass('ui-state-error');
             return false;
         }
-        var whitelistpath = $("#index_whitelist").val();
-
-        if ( whitelistpath == '' ||  whitelistpath === undefined ) {
-            $("#index_whitelist").addClass('ui-state-error');
-            alert("please select a white list");
-            return false;
+        var wlcache = Cache.getValue('whitelists',{});
+        var whitelistlabel = $("#index_whitelist").val();
+        if ( whitelistlabel == '' ||  whitelistlabel === undefined ) {
+            if ( wlcache[whitelistlabel] === undefined ) {
+                $("#index_whitelist").addClass('ui-state-error');
+                alert("please select a white list");
+                return false;
+            }
         }
-        // debug
+        var whitelistpath = wlcache[whitelistlabel];
+        // secure overwrite value
         var overwrite = 'False';
         TinaService.postFile(
             path.val(),
