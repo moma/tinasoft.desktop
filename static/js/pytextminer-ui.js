@@ -32,12 +32,10 @@ function displayDuplicateDocs(data) {
         div.empty().show();
         div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
         for ( var i=0; i < data.length; i++ ) {
-            div.append( "<p class='ui-state-active'>"
-                +htmlEncode(data[i]['id'])
-                +"<br/>"
-                +htmlEncode(data[i]['label'])
-                +"</p>"
-            );
+            div.append(
+                $("<p></p>").addClass('ui-state-active')
+                    .text( (data[i]['id'])+ " - " + data[i]['label'])
+                );
         }
     }
 }
@@ -146,7 +144,11 @@ function displaySourcesColumn(corpora) {
     var ol = $( "#" + olid  ).empty();
     for ( var sourcefile in corpora['edges']['Source']) {
         var path = corpora['edges']['Source'][sourcefile];
-        var item = $("<li></li>").text(sourcefile).addClass("sortable_li");
+        var item = $("<li></li>")
+            .text(sourcefile)
+            .addClass("sortable_li")
+            .addClass("ui-widget-content")
+            .attr("title","sources indexed within this session");
 
         var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
         .button({
@@ -160,6 +162,7 @@ function displaySourcesColumn(corpora) {
         item.append(edit_link);
         ol.append(item);
     }
+    alphabeticJquerySort(ol, "li", "");
     ol.sortable();
     ol.disableSelection();
 }
@@ -180,11 +183,10 @@ function displayWhitelistColumn(corpora) {
     var ol = $( "#" + olid  ).empty();
     for ( var wllabel in corpora['edges']['Whitelist']) {
         var path = corpora['edges']['Whitelist'][wllabel];
-        var whitelist_item = $("<li title='click on the pencil button the edit the whitelist'>"
-            + wllabel
-            + "&#09;"
-            + "</li>"
-        ).addClass("sortable_li");
+        var whitelist_item = $("<li></li>")
+            .text(wllabel)
+            .addClass("sortable_li").addClass("ui-widget-content")
+            .attr("title", 'click on the pencil button the edit the whitelist');
 
         var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
         .button({
@@ -195,10 +197,10 @@ function displayWhitelistColumn(corpora) {
         }).attr("path", path).click( function(eventObject) {
             editUserFile($(this).attr("path"));
         });
-
         whitelist_item.append(edit_link);
         ol.append(whitelist_item);
     }
+    alphabeticJquerySort(ol, "li", "");
     ol.sortable();
     ol.disableSelection();
 }
@@ -225,6 +227,7 @@ function displayPeriodColumn(corpora) {
             + id
         +"</li>");
     }
+
     selectableCorpusInit( ol, corpora );
 }
 
@@ -291,8 +294,12 @@ function displayWhitelists(div_id){
                     if( /csv$/.test(list[i]) == false )
                         continue;
 
-                    var whitelist_item = $("<li title='click on the pencil button the edit the whitelist'></li>")
-                        .text(label).addClass('sortable_li');
+                    var whitelist_item = $("<li></li>")
+                        .text(label)
+                        .addClass("sortable_li")
+                        .addClass("ui-widget-content")
+                        .attr("title","click on the pencil button the edit the whitelist");
+
                     labels.push(label)
                     var edit_link = $("<a href='#' title='click to open in an external software'></a>").button({
                         text: false,
@@ -305,6 +312,7 @@ function displayWhitelists(div_id){
                     whitelist_item.append(edit_link);
                     div.append(whitelist_item);
                 }
+                alphabeticJquerySort(div, "li", "");
                 div.sortable();
                 div.disableSelection();
                 Cache.setValue('whitelists',whitelists);
