@@ -71,6 +71,7 @@ $(document).ready(function() {
      * Requests indexation of a source file
      */
     var submitIndexFile = function(event) {
+
         var corpora = $("#indexdatasetid");
         var path = $("#indexfilepath");
         var filetype = $("#indexfiletype");
@@ -102,6 +103,7 @@ $(document).ready(function() {
             overwrite,
             TinaServiceCallback.postFile
         );
+        Cache.setValue('dataset_id', safeString(corpora.val()));
         return true;
     };
 
@@ -151,7 +153,7 @@ $(document).ready(function() {
         // HACK
         exportGexf = 'True';
         // HACK
-        
+
         TinaService.postGraph(
             corpora,
             corporaAndPeriods[corpora],

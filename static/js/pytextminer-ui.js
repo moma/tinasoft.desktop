@@ -340,86 +340,110 @@ function displayDeleteDatasetDialog(dataset_id) {
     }).data("dataset_id", dataset_id);
 }
 
-function displayDatasetRow(parent_div_id, list) {
+function displayDatasetRow(parent_div_id, dataset_id) {
+    if (dataset_id=='create'){
+        $(".fold_form:visible:not(#index_form)").hide("fold");
+        $("#index_form").show("fold");
+        return;
+    }
+    if (dataset_id==''){
+        return;
+    }
     var tbody = $("#"+parent_div_id+" > div > table > tbody");
     tbody.empty();
-    for ( var i=0; i<list.length; i++ ) {
-        // populates and attach table rows
-        var dataset_id = list[i];
-        var trid = dataset_id + "_tr";
+    // populates and attach table rows
+    var trid = dataset_id + "_tr";
 
-        var delete_dataset = $("<a href='#'></a>")
-            .button({
-                text: false,
-                icons: {
-                    primary: 'ui-icon-trash'
-                }
-            })
-            .attr("title", "click to definitely remove all dataset's files")
-            .data("dataset_id", dataset_id)
-            .click( function(eventObject) {
-                displayDeleteDatasetDialog($(this).data("dataset_id"));
-            });
+    var delete_dataset = $("<a href='#'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-trash'
+            }
+        })
+        .attr("title", "click to definitely remove all dataset's files")
+        .data("dataset_id", dataset_id)
+        .click( function(eventObject) {
+            displayDeleteDatasetDialog($(this).data("dataset_id"));
+        });
 
-        var edit_dataset = $("<a href='#'></a>")
-            .button({
-                text: false,
-                icons: {
-                    primary: 'ui-icon-pencil'
-                }
-            })
-            .attr("title", "click to edit dataset's contents")
-            .data("dataset_id", dataset_id)
-            .click( function(eventObject) {
-                datasetEditor.toggleEditionForm($(this).data("dataset_id"));
-            });
+    var edit_dataset = $("<a href='#'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-pencil'
+            }
+        })
+        .attr("title", "click to edit dataset's contents")
+        .data("dataset_id", dataset_id)
+        .click( function(eventObject) {
+            datasetEditor.toggleEditionForm($(this).data("dataset_id"));
+        });
 
 
-        var update_dataset = $("<a href='#'></a>")
-            .button({
-                text: false,
-                icons: {
-                    primary: 'ui-icon-refresh'
-                }
-            })
-            .attr("id", dataset_id+"_update_button")
-            .attr("title", "click to update dataset's database")
-            .data("dataset_id", dataset_id)
-            .data("NGramFormQueue", { "add": [], "delete": [] })
-            .click( function(eventObject) {
-                datasetEditor.submitUpdateDataset($(this));
-            })
-            .hide()
-            .qtip({
-                content: {
-                    text: ""
-                },
-                hide: {
-                    delay : 1000
-                }
-            });
-
-        // appends action buttons to the dataset's row
-        var tr = $("<tr class='ui-widget-content' id='"+trid+"'></tr>")
-            .append( $("<td class='ui-widget-content'></td>")
-                .append(delete_dataset)
-                .append(edit_dataset)
-                .append(update_dataset)
-            )
-            .append( $("<td class='ui-widget-content'></td>").text(dataset_id) );
-
-        tbody.append(tr);
-        TinaService.getDataset(dataset_id, {
-            success: function(dataset) {
-                if(dataset != "") {
-                    displayWhitelistColumn( dataset );
-                    displaySourcesColumn( dataset );
-                    displayPeriodColumn( dataset );
-                    displayGraphColumn( dataset );
-                }
+    var update_dataset = $("<a href='#'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-refresh'
+            }
+        })
+        .attr("id", dataset_id+"_update_button")
+        .attr("title", "click to update dataset's database")
+        .data("dataset_id", dataset_id)
+        .data("NGramFormQueue", { "add": [], "delete": [] })
+        .click( function(eventObject) {
+            datasetEditor.submitUpdateDataset($(this));
+        })
+        .hide()
+        .qtip({
+            content: {
+                text: ""
+            },
+            hide: {
+                delay : 1000
             }
         });
+
+    // appends action buttons to the dataset's row
+    var tr = $("<tr class='ui-widget-content' id='"+trid+"'></tr>")
+        .append( $("<td class='ui-widget-content'></td>")
+            .append(delete_dataset)
+            .append(edit_dataset)
+            .append(update_dataset)
+        )
+        .append( $("<td class='ui-widget-content'></td>").text(dataset_id) );
+
+    tbody.append(tr);
+    TinaService.getDataset(dataset_id, {
+        success: function(dataset) {
+            if(dataset != "") {
+                displayWhitelistColumn( dataset );
+                displaySourcesColumn( dataset );
+                displayPeriodColumn( dataset );
+                displayGraphColumn( dataset );
+            }
+        }
+    });
+}
+
+function displayDatasetSelect(parent_div_id, list){
+    list.sort();
+    var select = $("#dataset_select")
+        .empty()
+        .append(
+            $('<option></option>')
+        ).append(
+            $('<option></option>').attr('value','create').text('new session')
+        );
+    for (var i=0; i<list.length; i++){
+        var option = $('<option></option>').attr('value',list[i]).text(list[i]);
+        select.append(option);
+        if (Cache.getValue('dataset_id')==list[i]){
+            option.attr("selected", "selected");
+        }
     }
+    select.change();
 }
 
 /*
@@ -430,7 +454,7 @@ function displayDatasetRow(parent_div_id, list) {
 function displayDataTable(parent_div_id) {
     TinaService.getDatasetList({
         success: function(list) {
-            displayDatasetRow(parent_div_id, list);
+            displayDatasetSelect(parent_div_id, list);
             $("#importdatasetid").autocomplete({ source: list });
             $("#indexdatasetid").autocomplete({ source: list });
         }
@@ -505,20 +529,10 @@ var initPytextminerUi = function() {
     }).click(function(event) {
         $(".fold_form:visible").hide("fold");
         $("#sessions").toggle("fold");
-        // TODO : display current state of the session in the button label
     });
     $("#toggle_sessions").button('enable');
     $("#sessions").hide();
 
-    /*$("#toggle_whitelists").button({
-        icons: {primary:'ui-icon-carat-2-e-w'},
-        text: true,
-        label: "whitelist manager"
-    }).click(function(event) {
-        $(".fold_form:visible").hide("fold");
-        $("#whitelists").toggle("fold");
-    });
-    $("#whitelists").hide();*/
     $("#about_tinasoft").hide();
 
     $("#toggle_about").button({
@@ -544,19 +558,18 @@ var initPytextminerUi = function() {
     });
     $("#exit_server").button("enable");
 
+    /* loads a session table */
+    $("#dataset_select").change(function(event) {
+        $("#dataset_select option:selected").each(function() {
+            if ($(this).val()=='create'){
+                Cache.setValue("dataset_id", $(this).val());
+            }
+            displayDatasetRow("sessions", $(this).val());
+        })
+    });
     /* Fetch data into session box */
-    displayDataTable( "sessions" );
+    displayDataTable("sessions");
 
-    /* Init droppable elements */
-    /*$(".whitelistdroppable").droppable({
-        activeClass: "ui-state-default",
-        hoverClass: "ui-state-hover",
-        drop: function(event, ui) {
-            $(this).empty();
-            $(this).append("chosen whitelist : " + ui.draggable.text());
-            $(this).data("whitelistpath", ui.draggable.data("whitelistpath"));
-        }
-    }).html("<p>drag and drop here a white list</p>"); */
     $(".periodselectable").html("<p>select periods<br/>(ctrl key for multiple selection)</p>");
     /* Init every upload file handler */
     /*var extract_input_upload = new UploadFileClass("#importfilepath", TinaService.SERVER_URL + "/uploadpath");

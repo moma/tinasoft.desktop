@@ -522,7 +522,6 @@ var datasetEditor = {
     displayDocumentSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         var document_select = $("#editdataset_document").empty();//.append($("<option value=''></option>"));
-        //console.log(Object.keys(data['edges']['Document']));
         var id_list = Object.keys(data['edges']['Document']);
         id_list.sort();
         for (var i=0; i< id_list.length;i++) {

@@ -62,7 +62,7 @@ var TinaServiceCallback = {
             $('#indexFileButton').button("enable");
             $('#indexFileButton').button( "option", "label", "launch" );
             /* Updates data into table */
-            displayDataTable( "sessions" );
+            displayDataTable("sessions");
         },
         beforeSend: function() {
             $("#indexfilepath").removeClass("ui-state-error");
