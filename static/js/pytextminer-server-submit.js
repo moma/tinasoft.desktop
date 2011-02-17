@@ -147,6 +147,11 @@ $(document).ready(function() {
         var exportGexf = $("#export-gexf").attr("checked");
         if (exportGexf == true) exportGexf = 'True';
         else exportGexf = 'False';
+
+        // HACK
+        exportGexf = 'True';
+        // HACK
+        
         TinaService.postGraph(
             corpora,
             corporaAndPeriods[corpora],

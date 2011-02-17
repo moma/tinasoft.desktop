@@ -348,7 +348,7 @@ function TinaServiceClass(url) {
 
 
     /*
-     * transforms a relative path ("user/etc/") to an http:// url, compatible with windows paths
+     * transforms a relative path ("sessions/dataset/gexf") to an http:// url, compatible with windows paths
      */
     httpURL: function(relativePath) {
         var relativeURL = relativePath.split('user');
