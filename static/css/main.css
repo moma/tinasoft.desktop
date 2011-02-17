@@ -2,8 +2,10 @@
 body {
     font-size: .7em;
 }
-#top_buttons {
+
+.session_manager_element {
     margin: 5px;
+    padding: 5px;
 }
 /* Periods selectors style */
 #sessions ol {
