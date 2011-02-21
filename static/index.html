@@ -93,27 +93,28 @@
                 <div id="sessions" class="ui-widget ui-corner-all session_manager_element">
                     <!--<button id="toggle_whitelists"></button>-->
                     <div class="ui-widget-content ui-corner-all session_div">
+                        <p class="ui-widget-header">your whitelists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></p>
+                        <ul id="whitelist_items"></ul>
+                    </div>
+                    <div class="ui-widget-content ui-corner-all session_div">
                         <p class='ui-widget-header'>choose a session&nbsp;<select id="dataset_select" class="ui-widget-content"></select></p>
                         <p>
                         <table id="corpora_table">
                             <thead>
                                 <tr>
                                     <th class="ui-widget-header"></th>
-                                    <th class="ui-widget-header">sessions&nbsp;<button id="toggle_index_form" title="second step : index phrases in a source file"></button></th>
-                                    <th class="ui-widget-header">indexed whitelists</th>
-                                    <th class="ui-widget-header">indexed sources</th>
+                                    <th class="ui-widget-header">sessions&nbsp;&nbsp;<button id="toggle_create_session" title="second step : index phrases in a source file"></button></th>
+                                    <th class="ui-widget-header">indexed whitelists&nbsp;&nbsp;<button id="toggle_update_session" title="second step : index phrases in a source file"></button></th>
+                                    <th class="ui-widget-header">indexed sources files</th>
                                     <th class="ui-widget-header">indexed periods</th>
-                                    <th class="ui-widget-header">networks&nbsp;<button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
+                                    <th class="ui-widget-header">networks&nbsp;&nbsp;<button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
                                 </tr>
                             </thead>
                             <tbody class="ui-widget-content"></tbody>
                         </table>
                         </p>
                     </div>
-                    <div class="ui-widget-content ui-corner-all session_div">
-                        <p class="ui-widget-header">your whitelists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></p>
-                        <ul id="whitelist_items"></ul>
-                    </div>
+
                     <div style="clear: both;"></div>
                 </div>
                 <!--<div id="whitelists" class="ui-widget-content ui-corner-all">
@@ -123,6 +124,9 @@
                     </div>
                     <div style="clear: both;"></div>
                 </div>-->
+                <div id="dialog-confirm-delete-whitelist" title="">
+                    <p><span class="ui-icon ui-icon-alert"></span> Whitelist file will be erased !</p>
+                </div>
                 <div id="dialog-confirm-delete-dataset" title="">
                     <p><span class="ui-icon ui-icon-alert"></span> All the dataset's graphs and database will be erased !</p>
                 </div>
@@ -180,7 +184,7 @@
                                 <th class="ui-widget-header">Create or update a session</th>
                             </tr>
                             <tr>
-                                <th class="ui-widget-content">session name <input id="indexdatasetid" type="text" name="index dataset id" size="12"/>
+                                <th class="ui-widget-content">session name <input id="indexdatasetid" type="text" name="index dataset id" size="12"></input>
                                 </th>
                                 <th class="ui-widget-content">source file <select id="indexfilepath"><option value=""></option></select>
                                 </th>
