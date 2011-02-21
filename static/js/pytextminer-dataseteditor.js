@@ -53,7 +53,7 @@ var datasetEditor = {
             text: true,
             label: "add a keyphrase"
         }).click(function(event) {
-            if ($("#add_document_keyword").val() != "") {
+            if ($("#add_document_keyword").val() != "" && $("#add_document_keyword").val() !== undefined) {
                 datasetEditor.pushAddKeyword($("#add_document_keyword").val());
             }
         });
@@ -199,7 +199,7 @@ var datasetEditor = {
         var queued_keywords_span = $("#document_queued_keywords").empty();
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var words = NGramFormQueue['add'][i].label.split(" ");
-            console.log(words);
+
             var pattern = new RegExp("((<span class='[^']'( dbid='[^']')?>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )?(<span class='[^']'( dbid='[^']')?>)*)")+"((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')?>))", 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
             $("#document_to_edit")[0].innerHTML = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
@@ -333,10 +333,20 @@ var datasetEditor = {
 
         var documentObj = $("#document_to_edit").data("documentObj");
         if (documentObj['edges']['keyword'][keyword] !== undefined) {
-            alert(keyword+" is already a keyword for document "+documentObj['id']+" : aborting");
+            alert("Sorry, " +keyword+" is already a keyword of the document "+documentObj['id']+" : aborting");
             return;
         }
-
+        var found = false;
+        $("span.highlight").each(function(index, highlighted) {
+            if ($(highlighted).text() == keyword) {
+                alert("Sorry, you can't index twice an existing keyphrase : aborting");
+                found = true;
+                return false;
+            }
+        });
+        if (found === true){
+            return;
+        }
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         NGramFormQueue['add'].push({
             'label':  keyword,
