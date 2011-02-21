@@ -7,13 +7,15 @@ body {
     margin: 5px;
     padding: 5px;
 }
+
 /* Periods selectors style */
-#sessions ol {
+.selectable {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-#sessions li {
+
+.selectable_li {
     margin: 3px;
     padding: 0.4em;
     height: 18px;
@@ -27,9 +29,9 @@ body {
     padding: 5px
 }
 
-.ui-widget-content a {
+/*.ui-widget-content a {
     color: #ADD8E6;
-}
+}*/
 
 .highlight {
     background-color: rgba(0,200,0,0.25);
@@ -45,11 +47,17 @@ body {
 }
 .sortable_ol {
     list-style-type: none;
-    margin: 0;
-    padding: 0;
+    margin: 2px;
+    padding: 2px;
 }
 .sortable_li {
     float: left;
-    width: 30%;
+    /*width: 80%;*/
     height: 100%;
+    margin: 2px;
+    padding: 5px;
+}
+
+.mini_button {
+    margin: 5px;
 }
