@@ -140,6 +140,7 @@ var TinaServiceCallback = {
         success: function(data, textStatus, XMLHttpRequest) {},
         complete: function(XMLHttpRequest, textStatus) {
             /* Updates data into table */
+            Cache.setValue("dataset_id","");
             displayDataTable("sessions");
         }
     },

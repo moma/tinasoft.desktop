@@ -322,6 +322,11 @@ function TinaServiceClass(url) {
         this._REQUEST( "DELETE", path, params, defaultcb, _cb);
     },
 
+    /**
+     * Dataset's directories deleting
+     * @param _dataset {string} dataset id
+     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+     */
     deleteDataset: function( _dataset, cb ) {
         this._DELETE( "dataset?dataset="
             + self.encodeURIComponent(_dataset),
@@ -331,6 +336,11 @@ function TinaServiceClass(url) {
         );
     },
 
+    /**
+     * Whitelist's directories deleting
+     * @param _whitelistpath {string} whitelist absolute path
+     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+     */
     deleteWhitelist: function( _whitelistpath, cb ) {
         this._DELETE( "file?whitelistpath="
             + self.encodeURIComponent( _whitelistpath ),
@@ -340,6 +350,14 @@ function TinaServiceClass(url) {
         );
     },
 
+    /**
+     * Deletes a NGram form from dataset's db
+     * @param _dataset {string} dataset id
+     * @param _label {string} ngram form
+     * @param _id {string} ngram id
+     * @param _is_keyword  {string} 'True' or 'False'
+     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+     */
     deleteNGramForm: function( _dataset, _label, _id, _is_keyword, cb ) {
         this._DELETE( "ngramform?dataset="
             +self.encodeURIComponent(_dataset)

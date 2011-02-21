@@ -180,7 +180,7 @@ function displayWhitelistColumn(corpora) {
         + "</ol></td>"
     );
     var ol = $( "#" + olid  ).empty();
-    var whitelists = Cache.setValue('whitelists', {});
+    var whitelists = Cache.getValue('whitelists', {});
     for ( var wllabel in corpora['edges']['Whitelist']) {
         var path = corpora['edges']['Whitelist'][wllabel];
         var whitelist_item = $("<li></li>")
@@ -195,19 +195,24 @@ function displayWhitelistColumn(corpora) {
                 icons: {
                     primary: 'ui-icon-pencil'
                 }
-            }).attr("path", path).click( function(eventObject) {
+            })
+            .attr("path", path)
+            .click( function(eventObject) {
                 editUserFile($(this).attr("path"));
             });
 
-            var delete_link = $("<a href='#' title='click to remove'></a>")
+            var delete_link = $("<a href='#' title='click to delete'></a>")
             .button({
                 text: false,
                 icons: {
                     primary: 'ui-icon-trash'
                 }
-            }).attr("path", path).click( function(eventObject) {
-                TinaService.deleteWhitelist($(this).attr("path"), TinaServiceCallback.deleteWhitelist);
+            })
+            .attr("path", path)
+            .click( function(eventObject) {
+                displayDeleteWhitelistDialog($(this).attr("path"));
             });
+            
             whitelist_item.append(edit_link).append(delete_link);
         }
         else {
@@ -238,7 +243,7 @@ function displayPeriodColumn(corpora) {
     for ( var id in corpora['edges']['Corpus'] ) {
         ol.append("<li id='"
             + id
-            + "' class='ui-widget-content ui-state-default'>"
+            + "' class='ui-widget-content ui-state-default selectable_li'>"
             + id
         +"</li>");
     }
@@ -323,7 +328,9 @@ function displayWhitelists(div_id){
                         icons: {
                             primary: 'ui-icon-pencil'
                         }
-                    }).attr("path",list[i]).click( function(eventObject) {
+                    })
+                    .attr("path",list[i])
+                    .click( function(eventObject) {
                         editUserFile($(this).attr("path"));
                     });
                     
@@ -332,8 +339,10 @@ function displayWhitelists(div_id){
                         icons: {
                             primary: 'ui-icon-trash'
                         }
-                    }).attr("path", list[i]).click( function(eventObject) {
-                        TinaService.deleteWhitelist($(this).attr("path"), TinaServiceCallback.deleteWhitelist)
+                    })
+                    .attr("path", list[i])
+                    .click( function(eventObject) {
+                        displayDeleteWhitelistDialog($(this).attr("path"));
                     });
 
                     whitelist_item.append(edit_link).append(delete_link);
@@ -349,6 +358,27 @@ function displayWhitelists(div_id){
     );
 }
 
+function displayDeleteWhitelistDialog(whitelistpath) {
+    $("#dialog-confirm-delete-whitelist").dialog({
+        title: "Erase "+whitelistpath+" ?",
+        resizable: false,
+        position: ['center','top'],
+        modal: true,
+        buttons: {
+            'Delete' : function(eventObject) {
+                TinaService.deleteWhitelist(
+                    $(this).data("path"),
+                    TinaServiceCallback.deleteWhitelist
+                );
+                $(this).dialog('close');
+            },
+            Cancel: function() {
+                $(this).dialog('close');
+            }
+        }
+    }).data("path", whitelistpath);
+}
+
 function displayDeleteDatasetDialog(dataset_id) {
     $("#dialog-confirm-delete-dataset").dialog({
         title: "Erase "+dataset_id+" ?",
@@ -357,7 +387,10 @@ function displayDeleteDatasetDialog(dataset_id) {
         modal: true,
         buttons: {
             'Delete' : function(eventObject) {
-                TinaService.deleteDataset($(this).data("dataset_id"), TinaServiceCallback.deleteDataset);
+                TinaService.deleteDataset(
+                    $(this).data("dataset_id"),
+                    TinaServiceCallback.deleteDataset
+                );
                 $(this).dialog('close');
             },
             Cancel: function() {
@@ -368,6 +401,8 @@ function displayDeleteDatasetDialog(dataset_id) {
 }
 
 function displayDatasetRow(parent_div_id, dataset_id) {
+    var tbody = $("#"+parent_div_id+" > div > table > tbody");
+    tbody.empty();
     if (dataset_id=='create'){
         $(".fold_form:visible:not(#index_form)").hide("fold");
         $("#index_form").show("fold");
@@ -376,8 +411,6 @@ function displayDatasetRow(parent_div_id, dataset_id) {
     if (dataset_id==''){
         return;
     }
-    var tbody = $("#"+parent_div_id+" > div > table > tbody");
-    tbody.empty();
     // populates and attach table rows
     var trid = dataset_id + "_tr";
 
@@ -394,7 +427,7 @@ function displayDatasetRow(parent_div_id, dataset_id) {
             displayDeleteDatasetDialog($(this).data("dataset_id"));
         });
 
-    var edit_dataset = $("<a href='#'></a>")
+    var edit_dataset = $("<a href='#' class='mini_button'></a>")
         .button({
             text: false,
             icons: {
@@ -436,10 +469,9 @@ function displayDatasetRow(parent_div_id, dataset_id) {
     var tr = $("<tr class='ui-widget-content' id='"+trid+"'></tr>")
         .append( $("<td class='ui-widget-content'></td>")
             .append(delete_dataset)
-            .append(edit_dataset)
             .append(update_dataset)
         )
-        .append( $("<td class='ui-widget-content'></td>").text(dataset_id) );
+        .append( $("<td class='ui-widget-content'></td>").text(dataset_id).append(edit_dataset) );
 
     tbody.append(tr);
     TinaService.getDataset(dataset_id, {
@@ -518,7 +550,7 @@ var initPytextminerUi = function() {
     });
 
     $("#dialog-confirm-delete-dataset").hide();
-
+    $("#dialog-confirm-delete-whitelist").hide();
     $("#import_form").hide();
     $("#toggle_import_form").button({
         icons: {primary:'ui-icon-plus'},
@@ -530,12 +562,26 @@ var initPytextminerUi = function() {
     });
 
     $("#index_form").hide();
-    $("#toggle_index_form").button({
+
+    $("#toggle_create_session").button({
         icons: {primary:'ui-icon-plus'},
         text: false
     })
     .click(function(event) {
         $(".fold_form:visible:not(#index_form)").hide("fold");
+        $("#index_form").toggle("fold");
+    });
+    
+    $("#toggle_update_session").button({
+        icons: {primary:'ui-icon-plus'},
+        text: false
+    })
+    .click(function(event) {
+        $(".fold_form:visible:not(#index_form)").hide("fold");
+        var current = Cache.getValue('dataset_id');
+        console.log(current);
+        $("#indexdatasetid").val( current );
+        // pre-select a source file
         $("#index_form").toggle("fold");
     });
 
@@ -588,9 +634,10 @@ var initPytextminerUi = function() {
     /* loads a session table */
     $("#dataset_select").change(function(event) {
         $("#dataset_select option:selected").each(function() {
-            if ($(this).val()=='create'){
-                Cache.setValue("dataset_id", $(this).val());
-            }
+//            if ($(this).val()=='create'){
+//                Cache.setValue("dataset_id", $(this).val());
+//            }
+            Cache.setValue("dataset_id", $(this).val());
             displayDatasetRow("sessions", $(this).val());
         })
     });
