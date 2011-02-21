@@ -87,6 +87,12 @@ var datasetEditor = {
         var tbody = $("#editdocument_table > tbody");
         tbody.empty();
 
+        if(documentObj == "" || documentObj === undefined) {
+            console.error("database returned empty document");
+            tbody.text("document not found");
+            return;
+        }
+
         var content = $("<span id='document_to_edit'></span>");
         content.data("documentObj", documentObj);
 
@@ -420,6 +426,8 @@ var datasetEditor = {
 
     submitUpdateDataset: function(button) {
         button.hide();
+        $("#indexFileButton").button('disable');
+        $("#generateGraphButton").button('disable');
         var NGramFormQueue = button.data("NGramFormQueue");
         var dataset_id = button.data("dataset_id");
         // global deleteNGramForm state indicator
@@ -453,6 +461,8 @@ var datasetEditor = {
                 //datasetEditor.attachNGramEditor($("span.highlight"));
             },
             complete: function() {
+                $("#indexFileButton").button('enable');
+                $("#generateGraphButton").button('enable');
                 $("#editdataset_document").change();
             }
         });
@@ -537,7 +547,7 @@ var datasetEditor = {
         id_list.sort();
         for (var i=0; i< id_list.length;i++) {
             var doc_id = id_list[i];
-            document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
+            document_select.append($("<option></option>").attr('value', doc_id).text(doc_id));
         }
         document_select.change();
     },
