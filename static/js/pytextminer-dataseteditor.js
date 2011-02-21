@@ -439,6 +439,7 @@ var datasetEditor = {
 
                 datasetEditor.dataset_needs_update = false;
                 $("#"+datasetEditor.dataset_id + "_update_button").hide();
+                displayDataTable("sessions");
                 //datasetEditor.attachNGramEditor($("span.highlight"));
             },
             complete: function() {
