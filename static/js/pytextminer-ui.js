@@ -569,6 +569,7 @@ var initPytextminerUi = function() {
     })
     .click(function(event) {
         $(".fold_form:visible:not(#index_form)").hide("fold");
+        $("#indexdatasetid").val( "" );
         $("#index_form").toggle("fold");
     });
     
@@ -579,7 +580,6 @@ var initPytextminerUi = function() {
     .click(function(event) {
         $(".fold_form:visible:not(#index_form)").hide("fold");
         var current = Cache.getValue('dataset_id');
-        console.log(current);
         $("#indexdatasetid").val( current );
         // pre-select a source file
         $("#index_form").toggle("fold");
