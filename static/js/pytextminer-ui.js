@@ -15,9 +15,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/******************************************************************************
- * Functions displaying dynamic content
- *****************************************************************************/
 
 /*
  * Displays all duplicate documents
@@ -92,6 +89,7 @@ function loadGraph(data) {
         url: url
     });
 }
+
 /*
  * displays the list of existing graphs
  * for a given <TR> and a dataset id (using the same TR id)
@@ -129,6 +127,7 @@ function displayGraphColumn(corpora) {
         }
     );
 }
+
 /*
  * Adds the source files list to the dataset row (using the same TR id)
  */
@@ -181,6 +180,7 @@ function displayWhitelistColumn(corpora) {
         + "</ol></td>"
     );
     var ol = $( "#" + olid  ).empty();
+    var whitelists = Cache.setValue('whitelists', {});
     for ( var wllabel in corpora['edges']['Whitelist']) {
         var path = corpora['edges']['Whitelist'][wllabel];
         var whitelist_item = $("<li></li>")
@@ -188,16 +188,31 @@ function displayWhitelistColumn(corpora) {
             .addClass("sortable_li").addClass("ui-widget-content")
             .attr("title", 'click on the pencil button the edit the whitelist');
 
-        var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
-        .button({
-            text: false,
-            icons: {
-                primary: 'ui-icon-pencil'
-            }
-        }).attr("path", path).click( function(eventObject) {
-            editUserFile($(this).attr("path"));
-        });
-        whitelist_item.append(edit_link);
+        if (whitelists[wllabel]!==undefined) {
+            var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-pencil'
+                }
+            }).attr("path", path).click( function(eventObject) {
+                editUserFile($(this).attr("path"));
+            });
+
+            var delete_link = $("<a href='#' title='click to remove'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-trash'
+                }
+            }).attr("path", path).click( function(eventObject) {
+                TinaService.deleteWhitelist($(this).attr("path"), TinaServiceCallback.deleteWhitelist);
+            });
+            whitelist_item.append(edit_link).append(delete_link);
+        }
+        else {
+            whitelist_item.addClass("ui-state-error");
+        }
         ol.append(whitelist_item);
     }
     alphabeticJquerySort(ol, "li", "");
@@ -272,6 +287,7 @@ function selectableCorpusInit( ol, corpora ) {
         }
     });
 }
+
 /*
  * Displays the list of all available whitelists
  */
@@ -300,16 +316,27 @@ function displayWhitelists(div_id){
                         .addClass("ui-widget-content")
                         .attr("title","click on the pencil button the edit the whitelist");
 
-                    labels.push(label)
+                    labels.push(label);
+                    
                     var edit_link = $("<a href='#' title='click to open in an external software'></a>").button({
                         text: false,
                         icons: {
                             primary: 'ui-icon-pencil'
                         }
-                    }).attr("id",list[i]).click( function(eventObject) {
-                        editUserFile($(this).attr("id"));
+                    }).attr("path",list[i]).click( function(eventObject) {
+                        editUserFile($(this).attr("path"));
                     });
-                    whitelist_item.append(edit_link);
+                    
+                     var delete_link = $("<a href='#' title='click to remove'></a>").button({
+                        text: false,
+                        icons: {
+                            primary: 'ui-icon-trash'
+                        }
+                    }).attr("path", list[i]).click( function(eventObject) {
+                        TinaService.deleteWhitelist($(this).attr("path"), TinaServiceCallback.deleteWhitelist)
+                    });
+
+                    whitelist_item.append(edit_link).append(delete_link);
                     div.append(whitelist_item);
                 }
                 alphabeticJquerySort(div, "li", "");
@@ -452,6 +479,7 @@ function displayDatasetSelect(parent_div_id, list){
  * with corpus and graphs
  */
 function displayDataTable(parent_div_id) {
+    displayWhitelists( "whitelist_items" );
     TinaService.getDatasetList({
         success: function(list) {
             displayDatasetSelect(parent_div_id, list);
@@ -459,7 +487,6 @@ function displayDataTable(parent_div_id) {
             $("#indexdatasetid").autocomplete({ source: list });
         }
     });
-    displayWhitelists( "whitelist_items" );
 }
 
 function loadSourceFiles(select_id) {

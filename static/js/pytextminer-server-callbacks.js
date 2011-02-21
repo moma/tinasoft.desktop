@@ -142,5 +142,13 @@ var TinaServiceCallback = {
             /* Updates data into table */
             displayDataTable("sessions");
         }
+    },
+
+    deleteWhitelist: {
+        success: function(data, textStatus, XMLHttpRequest) {},
+        complete: function(XMLHttpRequest, textStatus) {
+            /* Updates data into table */
+            displayDataTable("sessions");
+        }
     }
 };

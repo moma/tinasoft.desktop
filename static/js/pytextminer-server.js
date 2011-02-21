@@ -324,9 +324,18 @@ function TinaServiceClass(url) {
 
     deleteDataset: function( _dataset, cb ) {
         this._DELETE( "dataset?dataset="
-            +self.encodeURIComponent(_dataset),
+            + self.encodeURIComponent(_dataset),
             {},
             { error:"couldn't deleteDataset" },
+            cb
+        );
+    },
+
+    deleteWhitelist: function( _whitelistpath, cb ) {
+        this._DELETE( "file?whitelistpath="
+            + self.encodeURIComponent( _whitelistpath ),
+            {},
+            { error:"couldn't deleteWhitelist" },
             cb
         );
     },
