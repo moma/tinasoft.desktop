@@ -146,13 +146,12 @@ $(document).ready(function() {
                 $("#graph-documents-nodes-max").spinner('value')
             ]*/
         };
-        var exportGexf = $("#export-gexf").attr("checked");
+        /*var exportGexf = $("#export-gexf").attr("checked");
         if (exportGexf == true) exportGexf = 'True';
-        else exportGexf = 'False';
+        else exportGexf = 'False';*/
 
         // HACK
         exportGexf = 'True';
-        // HACK
 
         TinaService.postGraph(
             corpora,
@@ -190,6 +189,6 @@ $(document).ready(function() {
         }).click(function(event) {
             submitGenerateGraph(event);
         });
-    $("#export-gexf").button();
+    //$("#export-gexf").button();
     $("#generateGraphButton").button('enable');
 });
