@@ -53,7 +53,9 @@ var datasetEditor = {
             text: true,
             label: "add a keyphrase"
         }).click(function(event) {
-            datasetEditor.pushAddKeyword($("#add_document_keyword").val());
+            if ($("#add_document_keyword").val() != "" && $("#add_document_keyword").val() !== undefined) {
+                datasetEditor.pushAddKeyword($("#add_document_keyword").val());
+            }
         });
 
         $("#editprevious_document").button({
@@ -84,6 +86,12 @@ var datasetEditor = {
         var self = this;
         var tbody = $("#editdocument_table > tbody");
         tbody.empty();
+
+        if(documentObj == "" || documentObj === undefined) {
+            console.error("database returned empty document");
+            tbody.text("document not found");
+            return;
+        }
 
         var content = $("<span id='document_to_edit'></span>");
         content.data("documentObj", documentObj);
@@ -197,7 +205,7 @@ var datasetEditor = {
         var queued_keywords_span = $("#document_queued_keywords").empty();
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var words = NGramFormQueue['add'][i].label.split(" ");
-            console.log(words);
+
             var pattern = new RegExp("((<span class='[^']'( dbid='[^']')?>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )?(<span class='[^']'( dbid='[^']')?>)*)")+"((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')?>))", 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
             $("#document_to_edit")[0].innerHTML = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
@@ -331,10 +339,20 @@ var datasetEditor = {
 
         var documentObj = $("#document_to_edit").data("documentObj");
         if (documentObj['edges']['keyword'][keyword] !== undefined) {
-            alert(keyword+" is already a keyword for document "+documentObj['id']+" : aborting");
+            alert("Sorry, " +keyword+" is already a keyword of the document "+documentObj['id']+" : aborting");
             return;
         }
-
+        var found = false;
+        $("span.highlight").each(function(index, highlighted) {
+            if ($(highlighted).text() == keyword) {
+                alert("Sorry, you can't index twice an existing keyphrase : aborting");
+                found = true;
+                return false;
+            }
+        });
+        if (found === true){
+            return;
+        }
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         NGramFormQueue['add'].push({
             'label':  keyword,
@@ -408,6 +426,8 @@ var datasetEditor = {
 
     submitUpdateDataset: function(button) {
         button.hide();
+        $("#indexFileButton").button('disable');
+        $("#generateGraphButton").button('disable');
         var NGramFormQueue = button.data("NGramFormQueue");
         var dataset_id = button.data("dataset_id");
         // global deleteNGramForm state indicator
@@ -437,9 +457,12 @@ var datasetEditor = {
 
                 datasetEditor.dataset_needs_update = false;
                 $("#"+datasetEditor.dataset_id + "_update_button").hide();
+                displayDataTable("sessions");
                 //datasetEditor.attachNGramEditor($("span.highlight"));
             },
             complete: function() {
+                $("#indexFileButton").button('enable');
+                $("#generateGraphButton").button('enable');
                 $("#editdataset_document").change();
             }
         });
@@ -520,12 +543,11 @@ var datasetEditor = {
     displayDocumentSelect: function(data, textStatus, XMLHttpRequest) {
         var self = this;
         var document_select = $("#editdataset_document").empty();//.append($("<option value=''></option>"));
-        //console.log(Object.keys(data['edges']['Document']));
         var id_list = Object.keys(data['edges']['Document']);
         id_list.sort();
         for (var i=0; i< id_list.length;i++) {
             var doc_id = id_list[i];
-            document_select.append($("<option value='"+doc_id+"'>"+htmlEncode(doc_id)+"</option>"));
+            document_select.append($("<option></option>").attr('value', doc_id).text(doc_id));
         }
         document_select.change();
     },

@@ -89,16 +89,15 @@ function TinaServiceClass(url) {
     /*
      * url="http://localhost:8888/file?$path$dataset$index$format$overwrite"
     */
-    getFile: function(_path, _dataset, _whitelistlabel, _format, _minoccs, _userstopwords, cb) {
+    getFile: function(_path, _whitelistlabel, _format, _minoccs, cb) {
 
         this._GET("file",
             {
                 path: _path,
-                dataset: this.encodeURIComponent(this.protectPath(_dataset)),
+                //dataset: this.encodeURIComponent(this.protectPath(_dataset)),
                 whitelistlabel: this.encodeURIComponent(this.protectPath(_whitelistlabel)),
                 format:  _format,
-                minoccs: _minoccs,
-                userstopwords: _userstopwords
+                minoccs: _minoccs
             },
             {
                 error:"couldn't getFile"
@@ -323,15 +322,42 @@ function TinaServiceClass(url) {
         this._REQUEST( "DELETE", path, params, defaultcb, _cb);
     },
 
+    /**
+     * Dataset's directories deleting
+     * @param _dataset {string} dataset id
+     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+     */
     deleteDataset: function( _dataset, cb ) {
         this._DELETE( "dataset?dataset="
-            +self.encodeURIComponent(_dataset),
+            + self.encodeURIComponent(_dataset),
             {},
             { error:"couldn't deleteDataset" },
             cb
         );
     },
 
+    /**
+     * Whitelist's directories deleting
+     * @param _whitelistpath {string} whitelist absolute path
+     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+     */
+    deleteWhitelist: function( _whitelistpath, cb ) {
+        this._DELETE( "file?whitelistpath="
+            + self.encodeURIComponent( _whitelistpath ),
+            {},
+            { error:"couldn't deleteWhitelist" },
+            cb
+        );
+    },
+
+    /**
+     * Deletes a NGram form from dataset's db
+     * @param _dataset {string} dataset id
+     * @param _label {string} ngram form
+     * @param _id {string} ngram id
+     * @param _is_keyword  {string} 'True' or 'False'
+     * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
+     */
     deleteNGramForm: function( _dataset, _label, _id, _is_keyword, cb ) {
         this._DELETE( "ngramform?dataset="
             +self.encodeURIComponent(_dataset)
@@ -349,7 +375,7 @@ function TinaServiceClass(url) {
 
 
     /*
-     * transforms a relative path ("user/etc/") to an http:// url, compatible with windows paths
+     * transforms a relative path ("sessions/dataset/gexf") to an http:// url, compatible with windows paths
      */
     httpURL: function(relativePath) {
         var relativeURL = relativePath.split('user');

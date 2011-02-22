@@ -37,11 +37,11 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {
             $('#extractFileButton').button("enable");
             $('#extractFileButton').button( "option", "label", "Launch" );
-            displayDataTable( "data_table" );
+            displayDataTable( "sessions" );
         },
         beforeSend: function() {
             $("#importfilepath").removeClass("ui-state-error");
-            $("#importdatasetid").removeClass("ui-state-error");
+            //$("#importdatasetid").removeClass("ui-state-error");
             $("#extractminoccs").removeClass("ui-state-error");
             $('#extractFileButton').removeClass("ui-state-error");
             $('#extractFileButton').button("disable");
@@ -62,7 +62,7 @@ var TinaServiceCallback = {
             $('#indexFileButton').button("enable");
             $('#indexFileButton').button( "option", "label", "launch" );
             /* Updates data into table */
-            displayDataTable( "data_table" );
+            displayDataTable("sessions");
         },
         beforeSend: function() {
             $("#indexfilepath").removeClass("ui-state-error");
@@ -87,7 +87,7 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {
             $('#generateGraphButton').button("enable");
             $('#generateGraphButton').button( "option", "label", "launch" );
-            displayDataTable( "data_table" );
+            displayDataTable( "sessions" );
         },
         beforeSend: function() {
             $('#generateGraphButton').removeClass("ui-state-error");
@@ -140,8 +140,16 @@ var TinaServiceCallback = {
         success: function(data, textStatus, XMLHttpRequest) {},
         complete: function(XMLHttpRequest, textStatus) {
             /* Updates data into table */
-            displayDataTable("data_table");
-        },
-        beforeSend: function() {}
+            Cache.setValue("dataset_id","");
+            displayDataTable("sessions");
+        }
+    },
+
+    deleteWhitelist: {
+        success: function(data, textStatus, XMLHttpRequest) {},
+        complete: function(XMLHttpRequest, textStatus) {
+            /* Updates data into table */
+            displayDataTable("sessions");
+        }
     }
 };

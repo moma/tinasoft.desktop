@@ -15,9 +15,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/******************************************************************************
- * Functions displaying dynamic content
- *****************************************************************************/
 
 /*
  * Displays all duplicate documents
@@ -32,12 +29,10 @@ function displayDuplicateDocs(data) {
         div.empty().show();
         div.append( "<h3>duplicate documents found ("+ (data.length) +")</h3>" );
         for ( var i=0; i < data.length; i++ ) {
-            div.append( "<p class='ui-state-active'>"
-                +htmlEncode(data[i]['id'])
-                +"<br/>"
-                +htmlEncode(data[i]['label'])
-                +"</p>"
-            );
+            div.append(
+                $("<p></p>").addClass('ui-state-active')
+                    .text( (data[i]['id'])+ " - " + data[i]['label'])
+                );
         }
     }
 }
@@ -83,15 +78,18 @@ function editUserFile(path) {
  * Commen function to ask Tinaviz to open a graph
  */
 function loadGraph(data) {
-    var url = TinaService.httpURL(data);
+
+    //var url = TinaService.httpURL(data);
     // HACK FOR THE DEMO: STATIC GEXF FILE
-    url = "http://localhost:8888//current.gexf";
+    var url = "http://localhost:8888/user/current.gexf";
+    // HACK
     tinaviz.open({
         view: "macro",
         clear: true, // clean everything before adding the graph
         url: url
     });
 }
+
 /*
  * displays the list of existing graphs
  * for a given <TR> and a dataset id (using the same TR id)
@@ -131,6 +129,44 @@ function displayGraphColumn(corpora) {
 }
 
 /*
+ * Adds the source files list to the dataset row (using the same TR id)
+ */
+function displaySourcesColumn(corpora) {
+    var trid = corpora['id'] + "_tr";
+    var tr = $( "#" + trid );
+    var olid = 'sources_' + trid
+    tr.append("<td class='ui-widget-content'>"
+        + "<ol id='"
+        + olid + "' class='sortable_ol'>"
+        + "</ol></td>"
+    );
+    var ol = $( "#" + olid  ).empty();
+    for ( var sourcefile in corpora['edges']['Source']) {
+        var path = corpora['edges']['Source'][sourcefile];
+        var item = $("<li></li>")
+            .text(sourcefile)
+            .addClass("sortable_li")
+            .addClass("ui-widget-content")
+            .attr("title","sources indexed within this session");
+
+        var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-pencil'
+            }
+        }).attr("path", path).click( function(eventObject) {
+            editUserFile($(this).attr("path"));
+        });
+        item.append(edit_link);
+        ol.append(item);
+    }
+    alphabeticJquerySort(ol, "li", "");
+    ol.sortable();
+    ol.disableSelection();
+}
+
+/*
  * Adds the whitelist files list to the dataset row (using the same TR id)
  */
 function displayWhitelistColumn(corpora) {
@@ -140,45 +176,53 @@ function displayWhitelistColumn(corpora) {
     var olid = 'whitelist_' + trid
     tr.append("<td class='ui-widget-content'>"
         + "<ol id='"
-        + olid + "' >"
+        + olid + "' class='sortable_ol' >"
         + "</ol></td>"
     );
     var ol = $( "#" + olid  ).empty();
-    TinaService.getWalkUserPath(
-        corpora['id'],
-        "whitelist",
-        {
-            success: function(list) {
-                for ( var i=0; i < list.length; i++ ) {
-                    // gets the filename from a path (first position of the list)
-                    var path_comp = list[i].split(/\/|\\/).reverse();
-                    if( /csv$/.test(list[i]) == false )
-                        continue;
-                    var whitelist_item = $("<li title='drag and drop to select this whitelist'>"
-                        + parseFileLabel(path_comp[0])
-                        + "&#09;"
-                        + "</li>"
-                    ).draggable({
-                        helper: "clone"
-                    })
-                    .data("whitelistpath", list[i]);
-                    var edit_link = $("<a href='#' title='click to open in an external software'></a>")
-                    .button({
-                        text: false,
-                        icons: {
-                            primary: 'ui-icon-pencil'
-                        }
-                    })
-                    .attr("id",list[i])
-                    .click( function(eventObject) {
-                        editUserFile($(this).attr("id"));
-                    });
-                    whitelist_item.append(edit_link);
-                    ol.append(whitelist_item);
+    var whitelists = Cache.getValue('whitelists', {});
+    for ( var wllabel in corpora['edges']['Whitelist']) {
+        var path = corpora['edges']['Whitelist'][wllabel];
+        var whitelist_item = $("<li></li>")
+            .text(wllabel)
+            .addClass("sortable_li").addClass("ui-widget-content")
+            .attr("title", 'click on the pencil button the edit the whitelist');
+
+        if (whitelists[wllabel]!==undefined) {
+            var edit_link = $("<a href='#' title='click to edit in an external software'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-pencil'
                 }
-            }
+            })
+            .attr("path", path)
+            .click( function(eventObject) {
+                editUserFile($(this).attr("path"));
+            });
+
+            var delete_link = $("<a href='#' title='click to delete'></a>")
+            .button({
+                text: false,
+                icons: {
+                    primary: 'ui-icon-trash'
+                }
+            })
+            .attr("path", path)
+            .click( function(eventObject) {
+                displayDeleteWhitelistDialog($(this).attr("path"));
+            });
+            
+            whitelist_item.append(edit_link).append(delete_link);
         }
-    );
+        else {
+            whitelist_item.addClass("ui-state-error");
+        }
+        ol.append(whitelist_item);
+    }
+    alphabeticJquerySort(ol, "li", "");
+    ol.sortable();
+    ol.disableSelection();
 }
 
 /*
@@ -199,10 +243,11 @@ function displayPeriodColumn(corpora) {
     for ( var id in corpora['edges']['Corpus'] ) {
         ol.append("<li id='"
             + id
-            + "' class='ui-widget-content ui-state-default'>"
+            + "' class='ui-widget-content ui-state-default selectable_li'>"
             + id
         +"</li>");
     }
+
     selectableCorpusInit( ol, corpora );
 }
 
@@ -248,6 +293,92 @@ function selectableCorpusInit( ol, corpora ) {
     });
 }
 
+/*
+ * Displays the list of all available whitelists
+ */
+function displayWhitelists(div_id){
+
+    var div = $( "#"+div_id ).empty();
+    $( "#"+div_id ).addClass("sortable_ol");
+    TinaService.getWalkUserPath(
+        "None",
+        "whitelist",
+        {
+            success: function(list) {
+                var labels = [];
+                var whitelists = {};
+                for ( var i=0; i < list.length; i++ ) {
+                    // gets the filename from a path (first position of the list)
+                    var path_comp = list[i].split(/\/|\\/).reverse();
+                    var label = parseFileLabel(path_comp[0]);
+                    whitelists[label] = list[i];
+                    if( /csv$/.test(list[i]) == false )
+                        continue;
+
+                    var whitelist_item = $("<li></li>")
+                        .text(label)
+                        .addClass("sortable_li")
+                        .addClass("ui-widget-content")
+                        .attr("title","click on the pencil button the edit the whitelist");
+
+                    labels.push(label);
+                    
+                    var edit_link = $("<a href='#' title='click to open in an external software'></a>").button({
+                        text: false,
+                        icons: {
+                            primary: 'ui-icon-pencil'
+                        }
+                    })
+                    .attr("path",list[i])
+                    .click( function(eventObject) {
+                        editUserFile($(this).attr("path"));
+                    });
+                    
+                     var delete_link = $("<a href='#' title='click to remove'></a>").button({
+                        text: false,
+                        icons: {
+                            primary: 'ui-icon-trash'
+                        }
+                    })
+                    .attr("path", list[i])
+                    .click( function(eventObject) {
+                        displayDeleteWhitelistDialog($(this).attr("path"));
+                    });
+
+                    whitelist_item.append(edit_link).append(delete_link);
+                    div.append(whitelist_item);
+                }
+                alphabeticJquerySort(div, "li", "");
+                div.sortable();
+                div.disableSelection();
+                Cache.setValue('whitelists',whitelists);
+                $("#index_whitelist").autocomplete({ source: labels });
+            }
+        }
+    );
+}
+
+function displayDeleteWhitelistDialog(whitelistpath) {
+    $("#dialog-confirm-delete-whitelist").dialog({
+        title: "Erase "+whitelistpath+" ?",
+        resizable: false,
+        position: ['center','top'],
+        modal: true,
+        buttons: {
+            'Delete' : function(eventObject) {
+                TinaService.deleteWhitelist(
+                    $(this).data("path"),
+                    TinaServiceCallback.deleteWhitelist
+                );
+                $(this).dialog('close');
+            },
+            Cancel: function() {
+                $(this).dialog('close');
+            }
+        }
+    }).data("path", whitelistpath);
+}
+
 function displayDeleteDatasetDialog(dataset_id) {
     $("#dialog-confirm-delete-dataset").dialog({
         title: "Erase "+dataset_id+" ?",
@@ -256,7 +387,10 @@ function displayDeleteDatasetDialog(dataset_id) {
         modal: true,
         buttons: {
             'Delete' : function(eventObject) {
-                TinaService.deleteDataset($(this).data("dataset_id"), TinaServiceCallback.deleteDataset);
+                TinaService.deleteDataset(
+                    $(this).data("dataset_id"),
+                    TinaServiceCallback.deleteDataset
+                );
                 $(this).dialog('close');
             },
             Cancel: function() {
@@ -266,85 +400,109 @@ function displayDeleteDatasetDialog(dataset_id) {
     }).data("dataset_id", dataset_id);
 }
 
-function displayDatasetRow(parent_div_id, list) {
-    var tbody = $("#"+parent_div_id+" > table > tbody");
+function displayDatasetRow(parent_div_id, dataset_id) {
+    var tbody = $("#"+parent_div_id+" > div > table > tbody");
     tbody.empty();
-    for ( var i=0; i<list.length; i++ ) {
-        // populates and attach table rows
-        var dataset_id = list[i];
-        var trid = dataset_id + "_tr";
+    if (dataset_id=='create'){
+        $(".fold_form:visible:not(#index_form)").hide("fold");
+        $("#index_form").show("fold");
+        return;
+    }
+    if (dataset_id==''){
+        return;
+    }
+    // populates and attach table rows
+    var trid = dataset_id + "_tr";
 
-        var delete_dataset = $("<a href='#'></a>")
-            .button({
-                text: false,
-                icons: {
-                    primary: 'ui-icon-trash'
-                }
-            })
-            .attr("title", "click to definitely remove all dataset's files")
-            .data("dataset_id", dataset_id)
-            .click( function(eventObject) {
-                displayDeleteDatasetDialog($(this).data("dataset_id"));
-            });
+    var delete_dataset = $("<a href='#'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-trash'
+            }
+        })
+        .attr("title", "click to definitely remove all dataset's files")
+        .data("dataset_id", dataset_id)
+        .click( function(eventObject) {
+            displayDeleteDatasetDialog($(this).data("dataset_id"));
+        });
 
-        var edit_dataset = $("<a href='#'></a>")
-            .button({
-                text: false,
-                icons: {
-                    primary: 'ui-icon-pencil'
-                }
-            })
-            .attr("title", "click to edit dataset's contents")
-            .data("dataset_id", dataset_id)
-            .click( function(eventObject) {
-                datasetEditor.toggleEditionForm($(this).data("dataset_id"));
-            });
+    var edit_dataset = $("<a href='#' class='mini_button'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-pencil'
+            }
+        })
+        .attr("title", "click to edit dataset's contents")
+        .data("dataset_id", dataset_id)
+        .click( function(eventObject) {
+            datasetEditor.toggleEditionForm($(this).data("dataset_id"));
+        });
 
 
-        var update_dataset = $("<a href='#'></a>")
-            .button({
-                text: false,
-                icons: {
-                    primary: 'ui-icon-refresh'
-                }
-            })
-            .attr("id", dataset_id+"_update_button")
-            .attr("title", "click to update dataset's database")
-            .data("dataset_id", dataset_id)
-            .data("NGramFormQueue", { "add": [], "delete": [] })
-            .click( function(eventObject) {
-                datasetEditor.submitUpdateDataset($(this));
-            })
-            .hide()
-            .qtip({
-                content: {
-                    text: ""
-                },
-                hide: {
-                    delay : 1000
-                }
-            });
-
-        // appends action buttons to the dataset's row
-        var tr = $("<tr class='ui-widget-content' id='"+trid+"'></tr>")
-            .append( $("<td class='ui-widget-content'></td>")
-                .append(delete_dataset)
-                .append(edit_dataset)
-                .append(update_dataset)
-            )
-            .append( $("<td class='ui-widget-content'></td>").text(dataset_id) );
-
-        tbody.append(tr);
-        TinaService.getDataset(dataset_id, {
-            success: function(dataset) {
-                if(dataset != "") {
-                    displayWhitelistColumn( dataset );
-                    displayPeriodColumn( dataset );
-                    displayGraphColumn( dataset );
-                }
+    var update_dataset = $("<a href='#'></a>")
+        .button({
+            text: false,
+            icons: {
+                primary: 'ui-icon-refresh'
+            }
+        })
+        .attr("id", dataset_id+"_update_button")
+        .attr("title", "click to update dataset's database")
+        .data("dataset_id", dataset_id)
+        .data("NGramFormQueue", { "add": [], "delete": [] })
+        .click( function(eventObject) {
+            datasetEditor.submitUpdateDataset($(this));
+        })
+        .hide()
+        .qtip({
+            content: {
+                text: ""
+            },
+            hide: {
+                delay : 1000
             }
         });
+
+    // appends action buttons to the dataset's row
+    var tr = $("<tr class='ui-widget-content' id='"+trid+"'></tr>")
+        .append( $("<td class='ui-widget-content'></td>")
+            .append(delete_dataset)
+            .append(update_dataset)
+        )
+        .append( $("<td class='ui-widget-content'></td>").text(dataset_id).append(edit_dataset) );
+
+    tbody.append(tr);
+    TinaService.getDataset(dataset_id, {
+        success: function(dataset) {
+            if(dataset != "") {
+                displayWhitelistColumn( dataset );
+                displaySourcesColumn( dataset );
+                displayPeriodColumn( dataset );
+                displayGraphColumn( dataset );
+            }
+        }
+    });
+}
+
+function displayDatasetSelect(parent_div_id, list){
+    list.sort();
+    var select = $("#dataset_select")
+        .empty()
+        .append(
+            $('<option></option>')
+        ).append(
+            $('<option></option>').attr('value','create').text('new session')
+        );
+    for (var i=0; i<list.length; i++){
+        var option = $('<option></option>').attr('value',list[i]).text(list[i]);
+        select.append(option);
+        if (Cache.getValue('dataset_id')==list[i]){
+            option.attr("selected", "selected");
+        }
     }
+    select.change();
 }
 
 /*
@@ -353,9 +511,10 @@ function displayDatasetRow(parent_div_id, list) {
  * with corpus and graphs
  */
 function displayDataTable(parent_div_id) {
+    displayWhitelists( "whitelist_items" );
     TinaService.getDatasetList({
         success: function(list) {
-            displayDatasetRow(parent_div_id, list);
+            displayDatasetSelect(parent_div_id, list);
             $("#importdatasetid").autocomplete({ source: list });
             $("#indexdatasetid").autocomplete({ source: list });
         }
@@ -391,7 +550,7 @@ var initPytextminerUi = function() {
     });
 
     $("#dialog-confirm-delete-dataset").hide();
-
+    $("#dialog-confirm-delete-whitelist").hide();
     $("#import_form").hide();
     $("#toggle_import_form").button({
         icons: {primary:'ui-icon-plus'},
@@ -403,12 +562,26 @@ var initPytextminerUi = function() {
     });
 
     $("#index_form").hide();
-    $("#toggle_index_form").button({
+
+    $("#toggle_create_session").button({
         icons: {primary:'ui-icon-plus'},
         text: false
     })
     .click(function(event) {
         $(".fold_form:visible:not(#index_form)").hide("fold");
+        $("#indexdatasetid").val( "" );
+        $("#index_form").toggle("fold");
+    });
+    
+    $("#toggle_update_session").button({
+        icons: {primary:'ui-icon-plus'},
+        text: false
+    })
+    .click(function(event) {
+        $(".fold_form:visible:not(#index_form)").hide("fold");
+        var current = Cache.getValue('dataset_id');
+        $("#indexdatasetid").val( current );
+        // pre-select a source file
         $("#index_form").toggle("fold");
     });
 
@@ -422,16 +595,16 @@ var initPytextminerUi = function() {
         $("#processcooc_form").toggle("fold");
     });
 
-    $("#toggle_working_session").button({
+    $("#toggle_sessions").button({
         icons: {primary:'ui-icon-carat-2-e-w'},
         text: true,
-        label: "work session manager"
-    })
-    .click(function(event) {
+        label: "session manager"
+    }).click(function(event) {
         $(".fold_form:visible").hide("fold");
-        $("#data_table").toggle("fold");
-        // TODO : display current state of the session in the button label
+        $("#sessions").toggle("fold");
     });
+    $("#toggle_sessions").button('enable');
+    $("#sessions").hide();
 
     $("#about_tinasoft").hide();
 
@@ -439,8 +612,7 @@ var initPytextminerUi = function() {
         icons: {primary:'ui-icon-info'},
         text: true,
         label: "about tinasoft"
-    })
-    .click(function(event) {
+    }).click(function(event) {
         $("#about_tinasoft").dialog(
             {
                 modal: true,
@@ -450,29 +622,27 @@ var initPytextminerUi = function() {
         );
     });
 
-    $("#exit_server")
-        .button({
-            icons: { primary:'ui-icon-power' },
-            text: true,
-            label: "shutdown server"
-        }).click(function(event) {
-            TinaService.exit(TinaServiceCallback.exit);
-        });
+    $("#exit_server").button({
+        icons: { primary:'ui-icon-power' },
+        text: true,
+        label: "shutdown server"
+    }).click(function(event) {
+        TinaService.exit(TinaServiceCallback.exit);
+    });
     $("#exit_server").button("enable");
 
-    /* Fetch data into table */
-    displayDataTable("data_table");
-
-    /* Init droppable elements */
-    $(".whitelistdroppable").droppable({
-        activeClass: "ui-state-default",
-        hoverClass: "ui-state-hover",
-        drop: function(event, ui) {
-            $(this).empty();
-            $(this).append("chosen whitelist : " + ui.draggable.text());
-            $(this).data("whitelistpath", ui.draggable.data("whitelistpath"));
-        }
-    }).html("<p>drag and drop here a white list</p>");
+    /* loads a session table */
+    $("#dataset_select").change(function(event) {
+        $("#dataset_select option:selected").each(function() {
+//            if ($(this).val()=='create'){
+//                Cache.setValue("dataset_id", $(this).val());
+//            }
+            Cache.setValue("dataset_id", $(this).val());
+            displayDatasetRow("sessions", $(this).val());
+        })
+    });
+    /* Fetch data into session box */
+    displayDataTable("sessions");
 
     $(".periodselectable").html("<p>select periods<br/>(ctrl key for multiple selection)</p>");
     /* Init every upload file handler */
@@ -482,7 +652,7 @@ var initPytextminerUi = function() {
     loadSourceFiles("#importfilepath");
     loadSourceFiles("#indexfilepath");
 
-    $("#graphalpha").spinner();
+    /*$("#graphalpha").spinner();
     $("#graph-ngrams-edges-min").spinner();
     $("#graph-ngrams-edges-max").spinner();
     $("#graph-documents-edges-min").spinner();
@@ -490,7 +660,7 @@ var initPytextminerUi = function() {
     $("#graph-ngrams-nodes-min").spinner();
     $("#graph-ngrams-nodes-max").spinner();
     $("#graph-documents-nodes-min").spinner();
-    $("#graph-documents-nodes-max").spinner();
+    $("#graph-documents-nodes-max").spinner();*/
     $("#extractminoccs").spinner();
     $(".ui-spinner-buttons").height(12);
     $(".ui-spinner-button").height(6);
