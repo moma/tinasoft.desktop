@@ -132,7 +132,7 @@ var TinaServiceCallback = {
         complete: function(XMLHttpRequest, textStatus) {},
         beforeSend: function() {},
         error: function(XMLHttpRequest, textStatus) {
-            console.log("error getting server's log, please open tinasoft-log.txt file instead");
+            console.log("error getting server's log, please open pytextminer-log.txt file instead");
         }
     },
 
