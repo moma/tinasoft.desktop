@@ -78,10 +78,9 @@ function editUserFile(path) {
  * Commen function to ask Tinaviz to open a graph
  */
 function loadGraph(data) {
-
-    //var url = TinaService.httpURL(data);
+    var url = TinaService.httpURL(data);
     // HACK FOR THE DEMO: STATIC GEXF FILE
-    var url = "http://localhost:8888/user/current.gexf";
+    //var url = "http://localhost:8888/user/current.gexf";
     // HACK
     tinaviz.open({
         view: "macro",
