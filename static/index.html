@@ -40,7 +40,7 @@
         <!--<script type="text/javascript" src="tinaweb/js/jquery/jquery.dynacloud-5.js" language="javascript"></script>-->
 
         <!-- JQUERY UI -->
-        <script type="text/javascript" src="tinaweb/js/jquery-ui/jquery-ui-1.8.9.min.js" ></script>
+        <script type="text/javascript" src="tinaweb/js/jquery-ui/jquery-ui-1.8.9.custom.min.js" ></script>
         <script type="text/javascript" src="tinaweb/js/rating/jquery.ratings.js"></script>
 
         <script type="text/javascript" src="tinaweb/js/jquery/jquery.qtip.min.js"></script>
@@ -303,17 +303,29 @@
                                 </div>
                             </div>
 
-                            <div id="sliders_topology" class="sliders toolbar-left">
+                            <div id="sliders_A" class="sliders toolbar-left">
+                                Document Filter:
                                 <div class="slider">
-                                    <span class="sliderLabel noSelect">edges filter</span>
-                                    <div id="sliderEdgeWeight"></div>
+                                    <span class="sliderLabel noSelect">edges</span>
+                                    <div id="sliderAEdgeWeight"></div>
                                 </div>
                                 <div class="slider">
-                                    <span class="sliderLabel noSelect">nodes filter</span>
-                                    <div id="sliderNodeWeight"></div>
+                                    <span class="sliderLabel noSelect">nodes</span>
+                                    <div id="sliderANodeWeight"></div>
                                 </div>
                             </div>
-
+                            
+                         <div id="sliders_B" class="sliders toolbar-left">
+                                NGrams Filter:
+                                <div class="slider">
+                                    <span class="sliderLabel noSelect">edges</span>
+                                    <div id="sliderBEdgeWeight"></div>
+                                </div>
+                                <div class="slider">
+                                    <span class="sliderLabel noSelect">nodes</span>
+                                    <div id="sliderBNodeWeight"></div>
+                                </div>
+                            </div>
 
                             <!-- end of sliders -->
                             <!--<div class="fg-buttonset ui-helper-clearfix fg-button">-->
