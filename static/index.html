@@ -34,44 +34,47 @@
         <!--TINASOFT OVERWRITING CSS -->
         <link type="text/css" rel="stylesheet" href="css/main.css"/>
         <!-- JQUERY -->
-        <script type="text/javascript" src="tinaweb/js/jquery/jquery-1.4.4.min.js" language="javascript"></script>
-        <script type="text/javascript" src="tinaweb/js/jquery/jquery.ba-dotimeout.min.js" language="javascript"></script>
-        <script type="text/javascript" src="tinaweb/js/jquery/jquery.json-2.2.min.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery/jquery.ba-dotimeout.min.js"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery/jquery.json-2.2.min.js"></script>
         <!--<script type="text/javascript" src="tinaweb/js/jquery/jquery.dynacloud-5.js" language="javascript"></script>-->
 
         <!-- JQUERY UI -->
-        <script type="text/javascript" src="tinaweb/js/jquery-ui/jquery-ui-1.8.9.custom.min.js" language="javascript"></script>
-        <!--<script type="text/javascript" src='tinaweb/js/rating/jquery.ratings.js' language="javascript"></script>-->
-        <script type="text/javascript" src="tinaweb/js/jquery/jquery.qtip.min.js" language="javascript"></script>
-        <script type="text/javascript" src="tinaweb/js/jquery/jquery.notify.min.js" language="javascript"></script>
-        <script type="text/javascript" src="tinaweb/js/jquery-ui/ui.spinner.min.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery-ui/jquery-ui-1.8.9.custom.min.js" ></script>
+        <script type="text/javascript" src="tinaweb/js/rating/jquery.ratings.js"></script>
+
+        <script type="text/javascript" src="tinaweb/js/jquery/jquery.qtip.min.js"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery/jquery.notify.min.js"></script>
+        <script type="text/javascript" src="tinaweb/js/jquery-ui/ui.spinner.min.js"></script>
 
         <!-- TINASOFT UTILITIES -->
         <script type="text/javascript" src="tinaweb/js/cache.js"></script>
         <!-- PREFERENCES -->
-        <script type="text/javascript" src="js/preferences.js" language="javascript"></script>
+        <script type="text/javascript" src="js/preferences.js"></script>
+        
         <!--TINAWEB APPLET LOADER -->
-        <script type="text/javascript" src="tinaweb/js/tinaviz/deployJava.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/tinaviz/deployJava.js"></script>
+
         <!-- TINAVIZ -->
-        <script type="text/javascript" src="tinaweb/js/tinaviz/tinaviz.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/tinaviz/tinaviz.js"></script>
         <!-- WE NEED TINAWEB MAIN-->
-        <script type="text/javascript" src="tinaweb/js/tinaweb-main.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/tinaweb-main.js" ></script>
         <!-- WE USE TINAWEB UTILS-->
-        <script type="text/javascript" src="tinaweb/js/tinaweb-utils.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/tinaweb-utils.js"></script>
         <!-- WE USE TINAWEB INFO PANEL -->
-        <script type="text/javascript" src="tinaweb/js/tinaweb-info.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/tinaweb-info.js"></script>
         <!-- WE USE TINAWEB TOOLBAR -->
-        <script type="text/javascript" src="tinaweb/js/tinaweb-toolbar.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/tinaweb-toolbar.js" ></script>
         <!-- PYTEXTMINER SERVER API AND UI -->
-        <script type="text/javascript" src="js/pytextminer-server.js" language="javascript"></script>
-        <script type="text/javascript" src="js/pytextminer-server-callbacks.js" language="javascript"></script>
-        <script type="text/javascript" src="js/pytextminer-server-submit.js" language="javascript"></script>
-        <script type="text/javascript" src="js/pytextminer-dataseteditor.js" language="javascript"></script>
-        <script type="text/javascript" src="js/pytextminer-ui.js" language="javascript"></script>
+        <script type="text/javascript" src="js/pytextminer-server.js"></script>
+        <script type="text/javascript" src="js/pytextminer-server-callbacks.js"></script>
+        <script type="text/javascript" src="js/pytextminer-server-submit.js"></script>
+        <script type="text/javascript" src="js/pytextminer-dataseteditor.js"></script>
+        <script type="text/javascript" src="js/pytextminer-ui.js"></script>
         <!--<script type="text/javascript" src="js/upload-file.js" language="javascript"></script> -->
 
         <!-- ENABLE DEBUG -->
-        <script type="text/javascript" src="tinaweb/js/firebug-lite/firebug-lite.js" language="javascript"></script>
+        <script type="text/javascript" src="tinaweb/js/firebug-lite/firebug-lite.js"></script>
 
     </head>
 
@@ -300,17 +303,29 @@
                                 </div>
                             </div>
 
-                            <div id="sliders_topology" class="sliders toolbar-left">
+                            <div id="sliders_A" class="sliders toolbar-left">
+                                Document Filter:
                                 <div class="slider">
-                                    <span class="sliderLabel noSelect">edges filter</span>
-                                    <div id="sliderEdgeWeight"></div>
+                                    <span class="sliderLabel noSelect">edges</span>
+                                    <div id="sliderAEdgeWeight"></div>
                                 </div>
                                 <div class="slider">
-                                    <span class="sliderLabel noSelect">nodes filter</span>
-                                    <div id="sliderNodeWeight"></div>
+                                    <span class="sliderLabel noSelect">nodes</span>
+                                    <div id="sliderANodeWeight"></div>
                                 </div>
                             </div>
-
+                            
+                         <div id="sliders_B" class="sliders toolbar-left">
+                                NGrams Filter:
+                                <div class="slider">
+                                    <span class="sliderLabel noSelect">edges</span>
+                                    <div id="sliderBEdgeWeight"></div>
+                                </div>
+                                <div class="slider">
+                                    <span class="sliderLabel noSelect">nodes</span>
+                                    <div id="sliderBNodeWeight"></div>
+                                </div>
+                            </div>
 
                             <!-- end of sliders -->
                             <!--<div class="fg-buttonset ui-helper-clearfix fg-button">-->
