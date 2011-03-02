@@ -24,7 +24,7 @@ find $outpath -name "*~" -delete
 find $outpath -name "*swo" -delete
 find $outpath -name "*.gexf" -delete
 find $outpath -name "*.gitignore" -delete
-find $outpath -name "tinasoft-log.txt*" -delete
+find $outpath -name "*-log.txt*" -delete
 find $outpath/shared/nltk_data -name "*.zip" -delete
 find $outpath/shared -name "*.cache" -delete
 rm -rf $outpath/.git/

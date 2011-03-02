@@ -375,10 +375,16 @@ function TinaServiceClass(url) {
 
 
     /*
-     * transforms a relative path ("sessions/dataset/gexf") to an http:// url, compatible with windows paths
+     * transforms a path within the user="sessions" directory
+     * like "sessions/dataset/gexf"
+     * to an http:// url, compatible with windows paths
      */
     httpURL: function(relativePath) {
-        var relativeURL = relativePath.split('user');
+        var relativeURL = relativePath.split('sessions');
+        if (relativeURL[1]===undefined) {
+            alert("Sorry, couldn't load graph file :\n"+relativePath+"\n"
+                +"(bad file path, should be under the 'sessions' directory)");
+        }
         var partURL = relativeURL[1].replace(/\\/g,"/").replace(/%5C/g,"/");
         return SERVER_URL+"/user"+partURL;
     },

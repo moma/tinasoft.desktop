@@ -1,8 +1,7 @@
 source_files
 user_stopwords.csv
 *.pyc
-*.pyo
-tinasoft-log.txt
+*-log.txt
 dist/*
 *.swp
 *.swo
@@ -14,6 +13,8 @@ user/*
 *.zip
 *.tar.bz*
 user
+sessions
+whitelists
 current.gexf
-static/default.gexf
 shared
+nbproject
