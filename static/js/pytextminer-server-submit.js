@@ -93,6 +93,10 @@ $(document).ready(function() {
             }
         }
         var whitelistpath = wlcache[whitelistlabel];
+        if (whitelistpath===undefined){
+            alert("please select a whitelist from the list");
+            return false;
+        }
         // secure overwrite value
         var overwrite = 'False';
         TinaService.postFile(
