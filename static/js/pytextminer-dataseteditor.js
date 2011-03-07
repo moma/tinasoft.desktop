@@ -261,7 +261,7 @@ var datasetEditor = {
                         ).append($("<button></button>")
                             .button({
                                 text: true,
-                                label : "delete this one"
+                                label : "delete from this document"
                             })
                             .css({
                                 "font-size": "0.8em"
@@ -272,7 +272,7 @@ var datasetEditor = {
                         ).append($("<button></button>")
                             .button({
                                 text: true,
-                                label : "delete all"
+                                label : "delete from all"
                             })
                             .css({
                                 "font-size": "0.8em"
@@ -311,7 +311,7 @@ var datasetEditor = {
                     'NGram' : {}
                 }
             };
-            updateDocument.edges.NGram[ngid] = -1;
+            updateDocument.edges.NGram[ngid] = -documentObj.edges.NGram[ngid];
 
             TinaService.postDocument(
                 datasetEditor.dataset_id,
@@ -349,6 +349,7 @@ var datasetEditor = {
                 found = true;
                 return false;
             }
+            
         });
         if (found === true){
             return;
