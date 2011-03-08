@@ -38,7 +38,7 @@ var datasetEditor = {
         })
         .attr("title", "click to update dataset's database")
         .click( function(eventObject) {
-            datasetEditor.submitUpdateDataset($(this), $("#"+datasetEditor.dataset_id + "_update_button").data());
+            datasetEditor.submitUpdateDataset($(this), $("#"+datasetEditor.dataset_id + "_update_button"));
         })
         .hide()
         .qtip({
@@ -425,12 +425,17 @@ var datasetEditor = {
 
     },
 
-    submitUpdateDataset: function(button, data) {
+    submitUpdateDataset: function(button, databutton) {
+        var data = databutton.data();
+        databutton.data("NGramFormQueue", { "delete":[], "add": [] });
         button.button('disable');
+        databutton.button('disable');
         $("#indexFileButton").button('disable');
         $("#generateGraphButton").button('disable');
+
         var NGramFormQueue = data["NGramFormQueue"];
         var dataset_id = data["dataset_id"];
+
         // global deleteNGramForm state indicator
         datasetEditor.updateDatasetSemaphore = NGramFormQueue["delete"].length + NGramFormQueue["add"].length;
         if (datasetEditor.updateDatasetSemaphore > 0) {
@@ -454,8 +459,8 @@ var datasetEditor = {
                 $("#update_dataset_button").button("enable").hide();
                 $("#"+datasetEditor.dataset_id + "_update_button")
                     .hide()
-                    .button("enable")
-                    .data("NGramFormQueue", { "delete":[], "add": [] });
+                    .button("enable");
+                    //.data("NGramFormQueue", { "delete":[], "add": [] });
                 datasetEditor.dataset_needs_update = false;
                 displayDataTable("sessions");
             },
