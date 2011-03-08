@@ -135,40 +135,20 @@ var datasetEditor = {
             source: documentObj['content'].split(" ")
         });
         //$("#document_to_edit").dynaCloud("#dynacloud");
-        var ngrams = Object.keys(documentObj['edges']['NGram']);
-        var total_ngrams = 0;
         // welcome to the async world
         for (var ngid in documentObj['edges']['NGram']) {
-            total_ngrams++;
-            /*if (total_ngrams==ngrams.length){
-                // last iteration
-                TinaService.getNGram(
-                    datasetEditor.dataset_id,
-                    ngid,
-                    {
-                        success: function(ngramObj, textStatus, XMLHttpRequest){
-                            datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
-                            datasetEditor.highlightToBeDeleted($("span.highlight"));
-                            datasetEditor.highlightToBeAdded();
-                            datasetEditor.attachNGramEditor($("span.highlight"));
-                        }
+            TinaService.getNGram(
+                datasetEditor.dataset_id,
+                ngid,
+                {
+                    success: function(ngramObj, textStatus, XMLHttpRequest){
+                        datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
+                        datasetEditor.highlightToBeDeleted($("span.highlight"));
+                        datasetEditor.highlightToBeAdded();
+                        datasetEditor.attachNGramEditor($("span.highlight"));
                     }
-                );
-            }*/
-            //else {
-                TinaService.getNGram(
-                    datasetEditor.dataset_id,
-                    ngid,
-                    {
-                        success: function(ngramObj, textStatus, XMLHttpRequest){
-                            datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
-                            datasetEditor.highlightToBeDeleted($("span.highlight"));
-                            datasetEditor.highlightToBeAdded();
-                            datasetEditor.attachNGramEditor($("span.highlight"));
-                        }
-                    }
-                );
-            //}
+                }
+            );
         }
     },
 
@@ -182,9 +162,10 @@ var datasetEditor = {
                 datasetEditor.displayDocumentKeyword(form_words);
             }
             else {
-                $("#document_to_edit")[0].innerHTML = htmlString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
+                htmlString = htmlString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
             }
         }
+        $("#document_to_edit")[0].innerHTML = htmlString;
     },
 
     displayDocumentKeyword: function(keyword) {
