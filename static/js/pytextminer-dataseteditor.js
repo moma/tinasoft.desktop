@@ -204,6 +204,7 @@ var datasetEditor = {
     },
 
     highlightToBeAdded: function() {
+        var documentObj = $("#document_to_edit").data("documentObj");
         var NGramFormQueue = $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue");
         var queued_keywords_span = $("#document_queued_keywords").empty();
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
@@ -212,9 +213,11 @@ var datasetEditor = {
             var pattern = new RegExp("((<span class='[^']'( dbid='[^']')?>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )?(<span class='[^']'( dbid='[^']')?>)*)")+"((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')?>))", 'gi');
             var searchString = $("#document_to_edit")[0].innerHTML;
             $("#document_to_edit")[0].innerHTML = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
-            queued_keywords_span.append(
-                "<span class='highlight_tobeadded'>"+NGramFormQueue['add'][i].label+"</span>&nbsp;&nbsp;"
-            );
+            if (documentObj.id == NGramFormQueue['add'][i].id) {
+                queued_keywords_span.append(
+                    "<span class='highlight_tobeadded'>"+NGramFormQueue['add'][i].label+"</span>&nbsp;&nbsp;"
+                );
+            }
         }
         // ADDS A TITLE
         if($("#document_queued_keywords > span").size() > 0) {
