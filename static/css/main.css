@@ -23,9 +23,9 @@ body {
 }
 
 .session_div {
-    float: left;
+    /*float: left;*/
     margin: 5px;
-    width: 45%;
+    /*width: 45%;*/
     padding: 5px
 }
 
@@ -60,4 +60,10 @@ body {
 
 .mini_button {
     margin: 5px;
+}
+
+.long_td_wrapper {
+    max-height: 200px;
+    max-width: 500px;
+    overflow: auto;
 }
