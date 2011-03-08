@@ -154,15 +154,22 @@ var datasetEditor = {
 
     searchAndReplaceNGrams: function(ngramObj, textStatus, XMLHttpRequest){
         var htmlString = $("#document_to_edit")[0].innerHTML;
+        var totaloccs = 0;
+        for (var corpid in ngramObj['edges']['Corpus']) {
+            totaloccs += ngramObj['edges']['Corpus'][corpid];
+        }
         for (var form_words in ngramObj['edges']['label']) {
             var words = form_words.split(" ");
-            var pattern = new RegExp("((<span class='[^']'( dbid='[^']')?>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )(<span class='[^']'( dbid='[^']')?>)*)")+"((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')?>))", 'gi');
+            var pattern = new RegExp("((<span class='[^']'( dbid='[^']')( occs='[^']')?>)|(\\b)|(<\/span>))"+
+                words.join("((<\/span>)*( )(<span class='[^']'( dbid='[^']')( occs='[^']')?>)*)")+
+                "((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')( occs='[^']')?>))", 'gi');
             var test = pattern.test(htmlString);
             if(test == false){
                 datasetEditor.displayDocumentKeyword(form_words);
             }
             else {
-                htmlString = htmlString.replace( pattern, "<span class='highlight' dbid='"+ngramObj['id']+"'>$&</span>" );
+                htmlString = htmlString.replace( pattern, "<span class='highlight' dbid='"+
+                    ngramObj['id']+"' occs='"+totaloccs.toString()+"'>$&</span>" );
             }
         }
         $("#document_to_edit")[0].innerHTML = htmlString;
@@ -226,42 +233,18 @@ var datasetEditor = {
 
     },
 
-    //attachKeywordEditor: function(selection) {
-    //    selection.qtip({
-    //        content: {
-    //            text: function() {
-    //                var node = $(this);
-    //                return $('<div></div>').append(
-    //                    $("<button></button>")
-    //                        .button({
-    //                            //icons: { primary:'ui-icon-circle-minus' },
-    //                            text: true,
-    //                            label : "delete keyword"
-    //                        })
-    //                        .css({
-    //                            "font-size": "0.8em"
-    //                            //"line-height": 1,0
-    //                        })
-    //                        .click(function(event){
-    //                            datasetEditor.submitDeleteKeyword(node);
-    //                        })
-    //                    );
-    //            }
-    //        },
-    //        hide: {
-    //            delay : 1000
-    //        },
-    //        show: {
-    //            solo: true
-    //        }
-    //     });
-    //},
-
     attachNGramEditor: function(selection) {
         selection.qtip({
             content: {
                 text: function() {
                     var node = $(this);
+                    var occurrences_text = "";
+                    if (parseInt( node.attr("occs") ) > 1) {
+                        occurrences_text = "occurring "+node.attr("occs")+" times";
+                    }
+                    else {
+                        occurrences_text = "occurring once";
+                    }
                     return $('<div></div>').append(
                             $("<p></p>").text(node.text()).css({"font-size": "0.8em","line-height": "1.0"})
                         ).append($("<button></button>")
@@ -286,6 +269,8 @@ var datasetEditor = {
                             .click(function(event){
                                 datasetEditor.pushDeleteNGramForm(node);
                             })
+                        ).append(
+                            $("<p></p>").text(occurrences_text).css({"font-size": "0.8em","line-height": "1.0"})
                         )
                 }
             },
