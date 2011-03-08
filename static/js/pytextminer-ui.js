@@ -452,7 +452,7 @@ function displayDatasetRow(parent_div_id, dataset_id) {
         .data("dataset_id", dataset_id)
         .data("NGramFormQueue", { "add": [], "delete": [] })
         .click( function(eventObject) {
-            datasetEditor.submitUpdateDataset($(this));
+            datasetEditor.submitUpdateDataset($(this), $(this).data());
         })
         .hide()
         .qtip({

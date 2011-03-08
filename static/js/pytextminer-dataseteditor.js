@@ -29,6 +29,28 @@ var datasetEditor = {
         var self = this;
         // hide by default all submit forms
         $("#editdocument_form").hide();
+        $("#update_dataset_button").hide().button({
+            text: true,
+            label: "update the dataset to validate changes",
+            icons: {
+                primary: 'ui-icon-refresh'
+            }
+        })
+        .attr("title", "click to update dataset's database")
+        .click( function(eventObject) {
+            datasetEditor.submitUpdateDataset($(this), $("#"+datasetEditor.dataset_id + "_update_button").data());
+        })
+        .hide()
+        .qtip({
+            content: {
+                text: ""
+            },
+            hide: {
+                delay : 1000
+            }
+        });
+
+
         $("#editdataset_corpus").change(function(event) {
             $("#editdataset_corpus option:selected").each(function() {
                 TinaService.getCorpus(
@@ -299,7 +321,8 @@ var datasetEditor = {
 
             if(datasetEditor.dataset_needs_update == false) {
                 datasetEditor.dataset_needs_update = true;
-                $("#"+datasetEditor.dataset_id + "_update_button").show();
+                datasetEditor.updateDatasetButton();
+                //$("#"+datasetEditor.dataset_id + "_update_button").show();
             }
 
             $("#document_to_edit > [dbid='"+ngid+"']").removeClass("highlight");
@@ -343,12 +366,13 @@ var datasetEditor = {
             return;
         }
         var found = false;
-        $("span.highlight").each(function(index, highlighted) {
+        $("span.highlight").each( function(index, highlighted) {
             if ($(highlighted).text() == keyword) {
                 alert("Sorry, you can't index twice an existing keyphrase : aborting");
                 found = true;
                 return false;
             }
+            return true;
             
         });
         if (found === true){
@@ -369,7 +393,7 @@ var datasetEditor = {
 
         if(datasetEditor.dataset_needs_update == false) {
             datasetEditor.dataset_needs_update = true;
-            $("#"+datasetEditor.dataset_id + "_update_button").show();
+            //$("#"+datasetEditor.dataset_id + "_update_button").show();
         }
         datasetEditor.updateDatasetButton();
     },
@@ -396,7 +420,7 @@ var datasetEditor = {
 
             if(datasetEditor.dataset_needs_update == false) {
                 datasetEditor.dataset_needs_update = true;
-                $("#"+datasetEditor.dataset_id + "_update_button").show();
+                //$("#"+datasetEditor.dataset_id + "_update_button").show();
             }
             datasetEditor.updateDatasetButton();
         }
@@ -407,6 +431,13 @@ var datasetEditor = {
     },
 
     updateDatasetButton: function() {
+        if (datasetEditor.dataset_needs_update == false) {
+            $("#"+datasetEditor.dataset_id + "_update_button").hide();
+            $("#update_dataset_button").hide();
+            return;
+        }
+        $("#update_dataset_button").addClass("ui-state-highlight").show();
+        $("#"+datasetEditor.dataset_id + "_update_button").addClass("ui-state-highlight").show();
         $("#"+datasetEditor.dataset_id + "_update_button").qtip('option', 'content.text',
             function() {
                 var tiptext = "Keyphrases modifications : ";
@@ -425,12 +456,12 @@ var datasetEditor = {
 
     },
 
-    submitUpdateDataset: function(button) {
-        button.hide();
+    submitUpdateDataset: function(button, data) {
+        button.button('disable');
         $("#indexFileButton").button('disable');
         $("#generateGraphButton").button('disable');
-        var NGramFormQueue = button.data("NGramFormQueue");
-        var dataset_id = button.data("dataset_id");
+        var NGramFormQueue = data["NGramFormQueue"];
+        var dataset_id = data["dataset_id"];
         // global deleteNGramForm state indicator
         datasetEditor.updateDatasetSemaphore = NGramFormQueue["delete"].length + NGramFormQueue["add"].length;
         if (datasetEditor.updateDatasetSemaphore > 0) {
@@ -451,15 +482,13 @@ var datasetEditor = {
                         +dataset_id
                         +'"'
                 });
-                $("#"+datasetEditor.dataset_id + "_update_button").data("NGramFormQueue", { "delete":[], "add": [] });
-
-                //$('#document_to_edit > span').removeClass("highlight_toberemoved");
-                //$('#document_to_edit > span').removeClass("highlight_tobeadded");
-
+                $("#update_dataset_button").button("enable").hide();
+                $("#"+datasetEditor.dataset_id + "_update_button")
+                    .hide()
+                    .button("enable")
+                    .data("NGramFormQueue", { "delete":[], "add": [] });
                 datasetEditor.dataset_needs_update = false;
-                $("#"+datasetEditor.dataset_id + "_update_button").hide();
                 displayDataTable("sessions");
-                //datasetEditor.attachNGramEditor($("span.highlight"));
             },
             complete: function() {
                 $("#indexFileButton").button('enable');
