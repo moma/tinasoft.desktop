@@ -267,7 +267,7 @@ var datasetEditor = {
                                 "font-size": "0.8em"
                             })
                             .click(function(event){
-                                datasetEditor.submitRemoveNode(node);
+                                datasetEditor.submitRemoveFromDocument(node);
                             })
                         ).append($("<button></button>")
                             .button({
@@ -283,12 +283,12 @@ var datasetEditor = {
                         )
                 }
             },
-            hide: { delay : 1000 },
+            hide: { delay : 2000 },
             show: { solo: true }
          });
     },
 
-    submitRemoveNode: function(node) {
+    submitRemoveFromDocument: function(node) {
         var documentObj = $("#document_to_edit").data("documentObj");
         var ngid = node.attr("dbid");
 
@@ -302,7 +302,7 @@ var datasetEditor = {
                 $("#"+datasetEditor.dataset_id + "_update_button").show();
             }
 
-            node.removeClass("highlight");
+            $("#document_to_edit > [dbid='"+ngid+"']").removeClass("highlight");
             // will decrement the value on update
             updateDocument = {
                 "py/object": "tinasoft.pytextminer.document.Document",
