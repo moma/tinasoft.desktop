@@ -263,52 +263,22 @@
                 <div id="hd"  class="ui-widget">
                     <div id="hdb">
                         <div id="htoolbar" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-                            <div id="title" class="noSelect"><div>Tinasoft Desktop</div>
-                                <div>
-                                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                   Documents
-                                </div>
-                                <div>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    NGrams
-                                </div>
-                            </div>
-                            <button id="toggle-paused" class="fg-button toolbar-left">pause</button>
+
+                          <div id="title" class="noSelect toolbar-left" style="width: 430px;">
+                            <div style="font-size: 1.2em;">Tinasoft Desktop</div>
+
+                            <button id="toggle-paused" class="fg-button toolbar-left">play</button>
                             <button id="toggle-switch" class="fg-button toolbar-left">switch category</button>
                             <button id="level" class="fg-button toolbar-left">macro</button>
-                            <!-- TEMPORARY DISABLED - FOR THE ONLINE VERSION -->
-                            <!--
-                            <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-
-                                    <a id="toggle-showLabels"
-                                       href="#"
-                                       class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-left"
-                                       title="hide/show labels"><span class="ui-icon ui-icon-labels"></span> <span class="noSelect">Labels</span></a>
-                                    <a id="toggle-showNodes"
-                                       href="#"
-                                       class="fg-button ui-state-default ui-state-active fg-button-icon-solo"
-                                       title="hide/show nodes"><span class="ui-icon ui-icon-nodes"></span> <span class="noSelect">Nodes</span></a>
-                                    <a id="toggle-showEdges"
-                                       href="#"
-                                       class="fg-button ui-state-default ui-state-active fg-button-icon-solo ui-corner-right"
-                                       title="hide/show edges"><span class="ui-icon ui-icon-edges"></span> <span class="noSelect">Edges</span></a>
-
-                            </div>
-
-                            <div class="fg-buttonset fg-buttonset-multi ui-helper-clearfix">
-                                <a id="toggle-paused"
-                                   href="#"
-                                   class="fg-button ui-state-default ui-state-active fg-button-icon-left ui-priority-primary ui-corner-all"
-                                   title="pause spatialization"><span class="ui-icon ui-icon-thunder"></span> <span class="noSelect">Run layout</span></a>
-                            </div>
-                            -->
 
                             <div id="sliders_view" class="sliders toolbar-left">
                                 <div class="slider smallslider">
                                     <span class="sliderLabel noSelect">cursor size</span>
+
                                     <div id="sliderSelectionZone"></div>
                                 </div>
                             </div>
+                        </div>
 
                             <!-- block for Document/NGram label -->
                             <div class="toolbar-left" style="width: 80px;">
@@ -360,12 +330,15 @@
                                 </div>
                             </div>
 
-                            <button id="export-view" class="fg-button toolbar-right">export</button>
-                            <button id="toggle-recenter" class="fg-button toolbar-right">center</button>
-                            <form id="search" action="#" class="toolbar-right">
-                                <input id="search_input" type="text" value=""/>
-                                <button id="search_button" class="fg-button">search</button>
-                            </form>
+                             <div id="title" class="noSelect toolbar-right" style="width: 430px;">
+                                <button id="export-view" class="fg-button toolbar-right">export</button>
+                                <button id="toggle-recenter" class="fg-button toolbar-right">center</button>
+                                <form id="search" action="#" class="toolbar-right">
+                                    <input id="search_input" type="text" value=""/>
+                                    <button id="search_button" class="fg-button">search</button>
+                                </form>
+                            </div>
+
                         </div><!-- End of htoolbar -->
                     </div><!-- End of hdb -->
                 </div><!-- End of hd -->
@@ -420,6 +393,7 @@
                                                                     <option>category</option>
                                                                     <option>rate</option>
                                                                     <option>co-occurrences</option>
+                                                                    <option>is user defined?</option>
                                                                     <option> </option>
                                                                 </select>
                                                             </td>
@@ -431,13 +405,6 @@
                                                                     <option>weight</option>
                                                                     <option>co-occurrences</option>
                                                                     <option>rate</option>
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Node Weight</th>
-                                                            <td><select id="nodeWeightSelector">
-                                                                    <option>weight</option>
                                                                 </select>
                                                             </td>
                                                         </tr>
