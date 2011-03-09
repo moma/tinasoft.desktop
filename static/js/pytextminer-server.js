@@ -356,9 +356,10 @@ function TinaServiceClass(url) {
      * @param _label {string} ngram form
      * @param _id {string} ngram id
      * @param _is_keyword  {string} 'True' or 'False'
+     * @param _docid  {string} a document id or ''
      * @param cb {Object} a JSON specifying success/error/complete/beforeSend $.ajax() callbacks
      */
-    deleteNGramForm: function( _dataset, _label, _id, _is_keyword, cb ) {
+    deleteNGramForm: function( _dataset, _label, _id, _is_keyword, _docid, cb ) {
         this._DELETE( "ngramform?dataset="
             +self.encodeURIComponent(_dataset)
             +"&label="
@@ -366,7 +367,9 @@ function TinaServiceClass(url) {
             +"&id="
             +self.encodeURIComponent(_id)
             +"&is_keyword="
-            +self.encodeURIComponent(_is_keyword),
+            +self.encodeURIComponent(_is_keyword)
+            +"&docid="
+            +self.encodeURIComponent(_docid),
             {},
             { error:"couldn't deleteNGramForm" },
             cb
