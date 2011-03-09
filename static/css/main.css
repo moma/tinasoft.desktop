@@ -42,9 +42,9 @@ body {
 .highlight_tobeadded {
     background-color: rgba(204,153,51,1.00);
 }
-.doc_keyword {
+/*.doc_keyword {
     background-color: rgba(0,200,0,0.75);
-}
+}*/
 .sortable_ol {
     list-style-type: none;
     margin: 2px;
@@ -66,4 +66,9 @@ body {
     max-height: 200px;
     max-width: 500px;
     overflow: auto;
+}
+
+.qtip_text {
+    font-size: 0.8em;
+    line-height: 1;
 }
