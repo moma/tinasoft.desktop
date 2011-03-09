@@ -99,6 +99,7 @@
                     <div class="ui-widget-content ui-corner-all session_div">
                         <p class="ui-widget-header">your whitelists <button id="toggle_import_form" title="first step : extract phrases from a source file"></button></p>
                         <ul id="whitelist_items"></ul>
+                        <div style='clear: both;'></div>
                     </div>
                     <div class="ui-widget-content ui-corner-all session_div">
                         <p class='ui-widget-header'>choose a session&nbsp;<select id="dataset_select" class="ui-widget-content"></select></p>
@@ -111,12 +112,11 @@
                                     <th class="ui-widget-header">indexed whitelists&nbsp;&nbsp;<button id="toggle_update_session" title="second step : index phrases in a source file"></button></th>
                                     <th class="ui-widget-header">indexed sources files</th>
                                     <th class="ui-widget-header">indexed periods</th>
-                                    <th class="ui-widget-header">networks&nbsp;&nbsp;<button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
+                                    <th class="ui-widget-header">existing networks&nbsp;&nbsp;<button id="toggle_processcooc_form" title="third step : produce graphs"></button></th>
                                 </tr>
                             </thead>
                             <tbody class="ui-widget-content"></tbody>
                         </table>
-                        
                     </div>
 
                     <div style="clear: both;"></div>
@@ -141,6 +141,7 @@
                         &nbsp;&nbsp;&nbsp;document <select id="editdataset_document"></select><span id="editprevious_document"></span><span id="editnext_document"></span>
                         &nbsp;&nbsp;&nbsp;<input type='text' id='add_document_keyword'></input>
                         <button id='add_document_keyword_button'></button>
+                        <button id='update_dataset_button'></button>
                         </p>
                     </div>
                     <div class="ui-widget-content ui-corner-all">

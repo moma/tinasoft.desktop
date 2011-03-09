@@ -232,13 +232,16 @@ function displayPeriodColumn(corpora) {
     var trid = corpora['id'] + "_tr";
     var tr = $( "#" + trid );
     // corpus list cell
-    var olid = 'selectable_corpus_' + trid
-    tr.append("<td class='ui-widget-content'>"
-        + "<ol id='"
-        + olid + "' class='selectable'>"
-        + "</ol></td>"
+    var olid = 'selectable_corpus_' + trid;
+    var ol = $("<ol></ol>").attr("id", olid ).addClass("selectable");
+    tr.append(
+        $("<td></td>").append(
+            $("<div></div>")
+                .addClass("long_td_wrapper")
+                .append(ol)
+       ).addClass("ui-widget-content")
     );
-    var ol = $( "#" + olid  ).empty()
+    
     for ( var id in corpora['edges']['Corpus'] ) {
         ol.append("<li id='"
             + id
@@ -452,7 +455,7 @@ function displayDatasetRow(parent_div_id, dataset_id) {
         .data("dataset_id", dataset_id)
         .data("NGramFormQueue", { "add": [], "delete": [] })
         .click( function(eventObject) {
-            datasetEditor.submitUpdateDataset($(this));
+            datasetEditor.submitUpdateDataset();
         })
         .hide()
         .qtip({
