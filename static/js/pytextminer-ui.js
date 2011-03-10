@@ -63,19 +63,32 @@ function getFileURL(absPath) {
  */
 function editUserFile(path) {
     var url = getFileURL(path);
-    alert("WHITE LIST EDITION\n"
-    +"Tips :\n"
+    alert("WHITELIST EDITION\n"
+    +"Confirm to open and edit with an external software"
+    +"How-to :\n"
     +"1- choose a spreadsheet or text editor to open the requested CSV file\n"
-    +"2- choose keyphrases you want to index by writing w in the status column\n"
-    +"3- make sure you save this file in place when finished\n"
+    +"2- choose keyphrases you want to index by writing 'w' in the status column\n"
+    +"3- save this file in place when finished\n"
     +"We recommend using OpenOffice.org Calc, or any other spreadsheet editor than can handle CSV file without changing the native encoding and formatting (default utf-8, comma separated values, double-quoted text cells)\n"
-    +"Warning : if nothing happens  after you close this window (e.g. blowser security blocking), please retry then copy and paste this URL in your browser's address bar :\n"+ url
+    +"Warning : if nothing happens after you close this window (e.g. browser security blocking), please retry then copy and paste this URL in your browser's address bar :\n"+ url
     );
     TinaService.getOpenUserFile(url);
 }
 
 /*
- * Commen function to ask Tinaviz to open a graph
+ * Common function sending signal to the server that externally opens a file
+ */
+function editSourceFile(path) {
+    var url = getFileURL(path);
+    alert("OPENING A SOURCE FILE\n"
+    +"Warning : if nothing happens after you close this window (e.g. browser security blocking), please retry then copy and paste this URL in your browser's address bar :\n"+ url
+    );
+    TinaService.getOpenUserFile(url);
+}
+
+
+/*
+ * Common function to ask Tinaviz to open a graph
  */
 function loadGraph(data) {
     var url = TinaService.httpURL(data);
@@ -155,7 +168,7 @@ function displaySourcesColumn(corpora) {
                 primary: 'ui-icon-pencil'
             }
         }).attr("path", path).click( function(eventObject) {
-            editUserFile($(this).attr("path"));
+            editSourceFile($(this).attr("path"));
         });
         item.append(edit_link);
         ol.append(item);
