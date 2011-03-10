@@ -415,17 +415,24 @@ function displayDeleteDatasetDialog(dataset_id) {
     }).data("dataset_id", dataset_id);
 }
 
+/*
+ * Responsible for requesting and displaying the session's informations
+ */
 function displayDatasetRow(parent_div_id, dataset_id) {
+
     var tbody = $("#"+parent_div_id+" > div > table > tbody");
     tbody.empty();
     if (dataset_id=='create'){
+        $("#"+parent_div_id+" > div > table > thead").hide();
         $(".fold_form:visible:not(#index_form)").hide("fold");
         $("#index_form").show("fold");
         return;
     }
     if (dataset_id==''){
+        $("#"+parent_div_id+" > div > table > thead").hide();
         return;
     }
+    $("#"+parent_div_id+" > div > table > thead").show();
     // populates and attach table rows
     var trid = dataset_id + "_tr";
 
