@@ -64,7 +64,7 @@ function getFileURL(absPath) {
 function editUserFile(path) {
     var url = getFileURL(path);
     alert("WHITELIST EDITION\n"
-    +"Confirm to open and edit with an external software"
+    +"Confirm to open and edit with an external software\n"
     +"How-to :\n"
     +"1- choose a spreadsheet or text editor to open the requested CSV file\n"
     +"2- choose keyphrases you want to index by writing 'w' in the status column\n"

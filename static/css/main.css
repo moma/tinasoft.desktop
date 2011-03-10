@@ -69,6 +69,6 @@ body {
 }
 
 .qtip_text {
-    font-size: 0.8em;
+/*    font-size: .8em;*/
     line-height: 1;
 }
