@@ -26,7 +26,10 @@ var datasetEditor = {
     dataset_needs_update: false,
     ngramformreverse: {},
     ngramcache: {},
-    
+    startpattern: "\\b((?:<span class='[^']'>)*?",
+    middlepattern: "(?:<\/span>)*?\\s(?:<span class='[^']'>)*?",
+    endpattern: "(?:<\/span>)*?)\\b",
+
     init: function() {
         var self = this;
         // hide by default all submit forms
@@ -168,19 +171,11 @@ var datasetEditor = {
     searchAndReplaceNGrams: function(ngramObj, textStatus, XMLHttpRequest){
         var htmlString = $("#document_to_edit")[0].innerHTML;
         var totaloccs = 0;
-//        for (var corpid in ngramObj['edges']['Corpus']) {
-//            totaloccs += ngramObj['edges']['Corpus'][corpid];
-//        }
-//        var startpattern = "(?:\\b|[-_])((?:<span class='[^']' dbid='[^']' occs='[^']'>)*?";
-//        var middlepattern = "(?:<\/span>)*?(?:\\s|[-_])+(?:<span class='[^']' dbid='[^']' occs='[^']'>)*?";
-        var startpattern = "(?:\\b|[-_])((?:<span class='[^']'>)*?";
-        var middlepattern = "(?:<\/span>)*?(?:\\s|[-_])+(?:<span class='[^']'>)*?";
-        var endpattern = "(?:<\/span>)*?)(?:\\b|[-_])";
 
         for (var form_words in ngramObj['edges']['label']) {
             datasetEditor.ngramformreverse[form_words]=ngramObj['id'];
             var words = form_words.split(" ");
-            var patternstring = startpattern + words.join(middlepattern) + endpattern;
+            var patternstring = datasetEditor.startpattern + words.join(datasetEditor.middlepattern) + datasetEditor.endpattern;
 //            console.log(patternstring);
             var pattern = new RegExp(patternstring, 'gi');
             var test = pattern.test(htmlString);
@@ -242,19 +237,19 @@ var datasetEditor = {
 
         var NGramFormQueue = datasetEditor.getNGramFormQueue();
         var queued_keywords_span = $("#document_queued_keywords").empty();
-
+        var searchString = $("#document_to_edit")[0].innerHTML;
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var words = NGramFormQueue['add'][i].label.split(" ");
-
-            var pattern = new RegExp("((<span class='[^']'( dbid='[^']')?>)|(\\b)|(<\/span>))"+words.join("((<\/span>)*( )?(<span class='[^']'( dbid='[^']')?>)*)")+"((\\b)|(<\/span>)|(<span class='[^']'( dbid='[^']')?>))", 'gi');
-            var searchString = $("#document_to_edit")[0].innerHTML;
-            $("#document_to_edit")[0].innerHTML = searchString.replace( pattern, "<span class='highlight_tobeadded' >$&</span>" );
+            var patternstring = datasetEditor.startpattern + words.join(datasetEditor.middlepattern) + datasetEditor.endpattern;
+            var pattern = new RegExp(patternstring, 'gi');
+            searchString = searchString.replace( pattern, "<span class='highlight_tobeadded'>$1</span>" );
             if (documentObj.id == NGramFormQueue['add'][i].id) {
                 queued_keywords_span.append(
                     "<span class='highlight_tobeadded'>"+NGramFormQueue['add'][i].label+"</span>&nbsp;&nbsp;"
                 );
             }
         }
+        $("#document_to_edit")[0].innerHTML = searchString
         // ADDS A TITLE
         if($("#document_queued_keywords > span").size() > 0) {
             $("#document_keywords_title").text("user defined keyphrases :  ");
@@ -328,17 +323,21 @@ var datasetEditor = {
             alert("Sorry, " +keyword+" is already a keyword of the document "+documentObj['id']+" : aborting");
             return;
         }
-        var found = false;
-        $("span.highlight").each( function(index, highlighted) {
-            if ($(highlighted).text() == keyword) {
-                found = true;
-                return;
-            } 
-        });
-        if (found === true){
+        if (datasetEditor.ngramformreverse[keyword]!== undefined) {
             alert("Sorry, you can't index twice an existing keyphrase : aborting");
-            return;
+            return
         }
+//        var found = false;
+//        $("span.highlight").each( function(index, highlighted) {
+//            if ($(highlighted).text() == keyword) {
+//                found = true;
+//                return;
+//            }
+//        });
+//        if (found === true){
+//            alert("Sorry, you can't index twice an existing keyphrase : aborting");
+//            return;
+//        }
         var NGramFormQueue = datasetEditor.getNGramFormQueue();
         NGramFormQueue['add'].push({
             'label':  keyword,
@@ -360,7 +359,7 @@ var datasetEditor = {
         var documentObj = $("#document_to_edit").data("documentObj");
 
         var ngid = datasetEditor.ngramformreverse[ node.text() ];
-        var ngramObj = datasetEditor.ngramcache[ ngid ];
+        //var ngramObj = datasetEditor.ngramcache[ ngid ];
 
         if (documentObj['edges']['NGram'][ngid] === undefined) {
             console.error(ngid+" is not in Document edges");
