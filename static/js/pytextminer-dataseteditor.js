@@ -26,9 +26,9 @@ var datasetEditor = {
     dataset_needs_update: false,
     ngramformreverse: {},
     ngramcache: {},
-    startpattern: "\\b((?:<span class='[^']'>)*?",
-    middlepattern: "(?:<\/span>)*?\\s(?:<span class='[^']'>)*?",
-    endpattern: "(?:<\/span>)*?)\\b",
+    startpattern: "\\b((?:<span class='[^']'>)*",
+    middlepattern: "(?:<\/span>)*\\s(?:<span class='[^']'>)*",
+    endpattern: "(?:<\/span>)*)\\b",
 
     init: function() {
         var self = this;
@@ -141,8 +141,8 @@ var datasetEditor = {
             $("<tr class='ui-widget-content'></tr>")
                 .append( $("<td></td>").append( $("<p id='display_document_object'></p>")
                 .append( content )
-                .append( keywords ).
-                append(queued_keywords) ) )
+                .append( keywords )
+                .append(queued_keywords) ) )
         );
         $("#add_document_keyword").autocomplete({
             source: documentObj['content'].split(" ")
@@ -151,41 +151,49 @@ var datasetEditor = {
         // welcome to the async world
         datasetEditor.ngramcache={};
         datasetEditor.ngramformreverse={};
+        datasetEditor.NGramSemaphore = 0;
+        var keys = Object.keys(documentObj['edges']['NGram']);
+        datasetEditor.TotalNGram = keys.length;
         for (var ngid in documentObj['edges']['NGram']) {
             TinaService.getNGram(
                 datasetEditor.dataset_id,
                 ngid,
                 {
                     success: function(ngramObj, textStatus, XMLHttpRequest){
+                        datasetEditor.NGramSemaphore += 1;
                         datasetEditor.ngramcache[ngramObj['id']]=ngramObj;
-                        datasetEditor.searchAndReplaceNGrams(ngramObj, textStatus, XMLHttpRequest);
-                        datasetEditor.highlightToBeDeleted($("span.highlight"));
-                        datasetEditor.highlightToBeAdded();
-                        datasetEditor.attachNGramEditor($("span.highlight"));
+                        if (datasetEditor.NGramSemaphore==datasetEditor.TotalNGram) {
+                            var sortedSizeNGram = Object.values( datasetEditor.ngramcache );
+                            sortedSizeNGram = numericLengthSort(sortedSizeNGram, "content");
+
+                            for (var i=0; i<sortedSizeNGram.length; i++) {
+                                datasetEditor.searchAndReplaceNGrams(sortedSizeNGram[i]);
+                            }
+                            datasetEditor.highlightToBeDeleted($("span.highlight"));
+                            datasetEditor.highlightToBeAdded();
+                            datasetEditor.attachNGramEditor($("span.highlight"));
+                        }
                     }
                 }
             );
         }
     },
 
-    searchAndReplaceNGrams: function(ngramObj, textStatus, XMLHttpRequest){
+    searchAndReplaceNGrams: function(ngramObj){
         var htmlString = $("#document_to_edit")[0].innerHTML;
         var totaloccs = 0;
 
         for (var form_words in ngramObj['edges']['label']) {
-            datasetEditor.ngramformreverse[form_words]=ngramObj['id'];
+            datasetEditor.ngramformreverse[form_words.toLowerCase()]=ngramObj['id'];
             var words = form_words.split(" ");
             var patternstring = datasetEditor.startpattern + words.join(datasetEditor.middlepattern) + datasetEditor.endpattern;
-//            console.log(patternstring);
-            var pattern = new RegExp(patternstring, 'gi');
+            var pattern = new RegExp(patternstring, 'gim');
             var test = pattern.test(htmlString);
             if(test == false){
                 datasetEditor.displayDocumentKeyword(form_words, ngramObj, totaloccs);
             }
             else {
-//                console.log("replacing " + ngramObj['id']);
-//                console.log(htmlString);
-                htmlString = htmlString.replace( pattern, "<span class='highlight'>$1</span>" );
+                htmlString = htmlString.replace( pattern, "<span class='highlight'>$&</span>" );
             }
         }
         $("#document_to_edit")[0].innerHTML = htmlString;
@@ -213,7 +221,7 @@ var datasetEditor = {
         for (var i=0; i<NGramFormQueue['delete'].length; i++) {
             selection.each(function(){
                 if (NGramFormQueue['delete'][i].docid != "" && documentObj.id != NGramFormQueue['delete'][i].docid) {
-                    console.log("not highlight_toberemoved");
+                    //console.log("not highlight_toberemoved");
                     return;
                 }
                 if (NGramFormQueue['delete'][i].label == $(this).text()) {
@@ -241,8 +249,10 @@ var datasetEditor = {
         for (var i=0; i<NGramFormQueue['add'].length; i++) {
             var words = NGramFormQueue['add'][i].label.split(" ");
             var patternstring = datasetEditor.startpattern + words.join(datasetEditor.middlepattern) + datasetEditor.endpattern;
-            var pattern = new RegExp(patternstring, 'gi');
-            searchString = searchString.replace( pattern, "<span class='highlight_tobeadded'>$1</span>" );
+            var pattern = new RegExp(patternstring, 'gim');
+            // searches in the documents' contents
+            searchString = searchString.replace( pattern, "<span class='highlight_tobeadded'>$&</span>" );
+            // append to a list
             if (documentObj.id == NGramFormQueue['add'][i].id) {
                 queued_keywords_span.append(
                     "<span class='highlight_tobeadded'>"+NGramFormQueue['add'][i].label+"</span>&nbsp;&nbsp;"
@@ -250,7 +260,7 @@ var datasetEditor = {
             }
         }
         $("#document_to_edit")[0].innerHTML = searchString
-        // ADDS A TITLE
+        // displays A TITLE
         if($("#document_queued_keywords > span").size() > 0) {
             $("#document_keywords_title").text("user defined keyphrases :  ");
         }
@@ -262,7 +272,7 @@ var datasetEditor = {
             content: {
                 text: function() {
                     var node = $(this);
-                    var ngramid = datasetEditor.ngramformreverse[ node.text() ];
+                    var ngramid = datasetEditor.ngramformreverse[ node.text().toLowerCase() ];
                     var ngramObj = datasetEditor.ngramcache[ ngramid ];
                     if (ngramObj===undefined) {
                         //alert("ngram editor could not find ngram obj cache");
@@ -320,24 +330,13 @@ var datasetEditor = {
 
         var documentObj = $("#document_to_edit").data("documentObj");
         if (documentObj['edges']['keyword'][keyword] !== undefined) {
-            alert("Sorry, " +keyword+" is already a keyword of the document "+documentObj['id']+" : aborting");
+            alert("Sorry, you can't index twice an existing keyphrase : aborting");
             return;
         }
-        if (datasetEditor.ngramformreverse[keyword]!== undefined) {
+        if (datasetEditor.ngramformreverse[keyword.toLowerCase()]!== undefined) {
             alert("Sorry, you can't index twice an existing keyphrase : aborting");
             return
         }
-//        var found = false;
-//        $("span.highlight").each( function(index, highlighted) {
-//            if ($(highlighted).text() == keyword) {
-//                found = true;
-//                return;
-//            }
-//        });
-//        if (found === true){
-//            alert("Sorry, you can't index twice an existing keyphrase : aborting");
-//            return;
-//        }
         var NGramFormQueue = datasetEditor.getNGramFormQueue();
         NGramFormQueue['add'].push({
             'label':  keyword,
@@ -358,7 +357,7 @@ var datasetEditor = {
     pushDeleteNGramForm: function(node, deleteone) {
         var documentObj = $("#document_to_edit").data("documentObj");
 
-        var ngid = datasetEditor.ngramformreverse[ node.text() ];
+        var ngid = datasetEditor.ngramformreverse[ node.text().toLowerCase() ];
         //var ngramObj = datasetEditor.ngramcache[ ngid ];
 
         if (documentObj['edges']['NGram'][ngid] === undefined) {
@@ -460,6 +459,7 @@ var datasetEditor = {
                     .button("enable");
                     //.data("NGramFormQueue", { "delete":[], "add": [] });
                 datasetEditor.dataset_needs_update = false;
+                //$("#editdataset_document").change();
                 displayDataTable("sessions");
             },
             complete: function() {

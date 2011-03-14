@@ -5,7 +5,7 @@ echo "############################################"
 echo ""
 
 name="Tinasoft"
-version="1.0alpha8"
+version="1.0beta"
 arch="macosx-10.6"
 
 pytextminer="TinasoftPytextminer"
