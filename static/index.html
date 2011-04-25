@@ -264,29 +264,24 @@
             <div id="doc3" class="yui-t5 ui-widget">
                 <div id="hd"  class="ui-widget">
                     <div id="hdb">
-                        <div id="htoolbar" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
-
-                <div id="title" class="noSelect toolbar-left">
+            <div id="htoolbar" class="toolbardiv fg-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <div id="title" class="noSelect toolbar-left" style="width: 460px;">
                     <div style="font-size: 1.2em;">Tinasoft</div>
 
                     <button id="toggle-paused" class="fg-button toolbar-left">play</button>
                     <button id="toggle-switch" class="fg-button toolbar-left">switch category</button>
                     <button id="level" class="fg-button toolbar-left">macro</button>
 
-                    <div id="sliders_view" class="sliders toolbar-left">
-                        <div class="slider smallslider">
-                            <span class="sliderLabel noSelect">cursor size</span>
-
+                    <div id="cursor-size-block" class="toolbar-left" style="width: 100px; margin-left: 30px;">
+                            <span class="sliderLabel"> &nbsp;&nbsp;&nbsp;&nbsp;cursor size</span>
                             <div id="sliderSelectionZone"></div>
-                        </div>
                     </div>
                 </div>
 
-
                 <!-- block for Category A Filter -->
-                <div class="noSelect toolbar-left" style="width: 130px;">
+                <div id="category-A" class="noSelect toolbar-left" style="width: 130px;">
                     <div>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Documents
+                        &nbsp;&nbsp;&nbsp;&nbsp;Documents
                     </div>
                     <div style="height: 16px; width: 100px;">
                         <div id="sliderANodeWeight" class="greenstart"></div>
@@ -300,7 +295,7 @@
                 </div>
 
                 <!-- block for Document/NGram label -->
-                <div class="noSelect toolbar-left" style="width: 75px;">
+                <div  id="category-legend" class="noSelect toolbar-left" style="width: 90px;">
                     <div>&nbsp;</div>
                     <div style="height: 16px;">
                         Node Filter
@@ -314,7 +309,7 @@
                 </div>
 
                  <!-- block for Category B Filter -->
-                <div class="noSelect toolbar-left" style="width: 130px;">
+                <div id="category-B" class="noSelect toolbar-left" style="width: 130px;">
                     <div>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NGrams
                     </div>
@@ -329,7 +324,7 @@
                     </div>
                 </div>
 
-                 <div id="title" class="toolbar-right">
+                 <div id="title" class="toolbar-right" style="width: 430px;">
                     <!--
                     <button id="export-png" class="noSelect fg-button toolbar-right">PNG</button>
                     <button id="export-pdf" class="noSelect fg-button toolbar-right">PDF</button>
@@ -341,8 +336,8 @@
                         <button id="search_button" class="noSelect fg-button">search</button>
                     </form>
                 </div>
-
-                        </div><!-- End of htoolbar -->
+            </div>
+            <!-- End of htoolbar -->
                     </div><!-- End of hdb -->
                 </div><!-- End of hd -->
 
