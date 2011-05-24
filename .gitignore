@@ -1,5 +1,4 @@
 source_files
-user_stopwords.csv
 *.pyc
 *-log.txt
 dist/*
