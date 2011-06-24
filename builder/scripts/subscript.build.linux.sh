@@ -19,6 +19,7 @@ mkdir $outpath
 echo " - freezing pytextminer"
 sleep 2
 cd TinasoftPytextminer
+rm -Rf build/*
 python2.6 freeze_linux.py build
 cd ..
 cp -Rf TinasoftPytextminer/build/$buildname $outpath/TinasoftPytextminer
@@ -27,7 +28,7 @@ echo " - moving platform specific files to the $outpath"
 sleep 2
 cp builder/start_unix.sh $outpath
 cp -f TinasoftPytextminer/config_unix.yaml $outpath
-
+rm -Rf dist/*
 ./builder/scripts/subscript.build.common.sh "$outpath"
 
 echo " - creating the compressed archive..."
