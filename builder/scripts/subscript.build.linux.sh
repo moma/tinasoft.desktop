@@ -3,7 +3,7 @@
 outpath=$1
 buildname=$2
 outfile=$3
-
+pythonversion=python2.6
 echo " - creating or emptying $outpath"
 sleep 2
 if [ -e $outpath ]
@@ -16,10 +16,10 @@ if [ ! -e dist ]
 fi
 mkdir $outpath
 
-echo " - freezing pytextminer"
+echo " - freezing pytextminer using $pythonversion"
 sleep 2
 cd TinasoftPytextminer
-python2.6 freeze_linux.py build
+$pythonversion freeze_linux.py build
 cd ..
 cp -Rf TinasoftPytextminer/build/$buildname $outpath/TinasoftPytextminer
 
