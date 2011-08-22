@@ -3,7 +3,7 @@
 outpath=$1
 buildname=$2
 outfile=$3
-pythonversion=python2.7
+pythonversion=python2.6
 echo " - creating or emptying $outpath"
 sleep 2
 if [ -e $outpath ]

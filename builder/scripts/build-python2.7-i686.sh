@@ -1,0 +1,12 @@
+#/bin/bash
+echo "#############################################"
+echo "# BUILD TINASOFT FOR 32 BIT LINUX PLATFORMS #"
+echo "#############################################"
+echo ""
+name="Tinasoft"
+version="1.1.2"
+arch="GNU_Linux_i686"
+buildname="exe.linux-i686-2.7"
+outfile="$name-$version-$arch"
+outpath="dist/$outfile"
+./builder/scripts/subscript.build.linux.python2.7.sh "$outpath" "$buildname" "$outfile"

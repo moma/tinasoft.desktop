@@ -1,12 +1,12 @@
 #/bin/bash
-echo "############################################"
-echo "# BUILD TINASOFT FOR SNOW LEOPARD PLATFORM #"
-echo "############################################"
+echo "##########################################"
+echo "# BUILD TINASOFT FOR LION (MAC OSX 10.7) #"
+echo "##########################################"
 echo ""
 
 name="Tinasoft"
-version="1.1.1"
-arch="macosx-10.6"
+version="1.1.2"
+arch="macosx-10.7"
 
 pytextminer="TinasoftPytextminer"
 outpath="$pytextminer/dist/$name.app"
@@ -43,7 +43,7 @@ echo " - freezing $pytextminer with the py2app tool..."
 sleep 2
 cd $pytextminer
 cp httpserver.py $name.py
-python freeze_mac.py py2app
+python2.6 freeze_mac.py py2app
 rm $name.py
 cd dist/Tinasoft.app/Contents/Resources/lib/python2.6/
 mkdir site-packages

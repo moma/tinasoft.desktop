@@ -5,10 +5,10 @@ echo "#############################################"
 echo ""
 name="Tinasoft"
 
-version="1.1.1"
+version="1.1.2"
 arch="GNU_Linux_x86_64"
-buildname="exe.linux-x86_64-2.6"
+buildname="exe.linux-x86_64-2.7"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
-./builder/scripts/subscript.build.linux.sh "$outpath" "$buildname" "$outfile"
+./builder/scripts/subscript.build.linux.python2.7.sh "$outpath" "$buildname" "$outfile"

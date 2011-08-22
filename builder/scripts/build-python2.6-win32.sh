@@ -5,7 +5,7 @@ echo "#############################################"
 echo ""
 sleep 2
 name="Tinasoft"
-version="1.1.1"
+version="1.1.2"
 arch="WIN32"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
@@ -35,7 +35,7 @@ sleep 2
 cp builder/start_win.bat $outpath
 cp -f TinasoftPytextminer/config_win.yaml $outpath
 
-./builder/scripts/subscript.build.common.sh "$outpath"
+./builder/scripts/subscript.build.common.python2.6.sh "$outpath"
 
 echo " - creating the compressed archive..."
 sleep 2
