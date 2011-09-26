@@ -27,7 +27,7 @@ echo " - moving platform specific files to the $outpath"
 sleep 2
 cp builder/start_unix.sh $outpath
 cp -f TinasoftPytextminer/config_unix.yaml $outpath
-./builder/scripts/subscript.build.common.sh "$outpath"
+./builder/scripts/subscript.build.common.$pythonversion.sh "$outpath"
 
 echo " - creating the compressed archive..."
 sleep 2
