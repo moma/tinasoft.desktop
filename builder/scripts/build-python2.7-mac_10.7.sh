@@ -61,7 +61,7 @@ if [ ! -e $outpathres/TinasoftPytextminer ]
     then
         mkdir $outpathres/TinasoftPytextminer
 fi
-./builder/scripts/subscript.build.common.sh "$outpathres"
+./builder/scripts/subscript.build.common.python2.7.sh "$outpathres"
 
 echo " - creating a release archive and a DMG"
 sleep 2
