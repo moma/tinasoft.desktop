@@ -65,6 +65,10 @@ fi
 
 echo " - creating a release archive and a DMG"
 sleep 2
-zip -q -r $outfile.zip $pytextminer/dist/$name.app
-hdiutil create $outfile.dmg -volname "$name $version" -fs HFS+ -srcfolder "$outpath"
+cd $pytextminer/dist/
+zip -q -r $outfile.zip $name.app
+hdiutil create $outfile.dmg -volname "$name $version" -fs HFS+ -srcfolder "$name.app"
+cd ../../
+mv $pytextminer/dist/$outfile.dmg .
+mv $pytextminer/dist/$outfile.zip .
 
