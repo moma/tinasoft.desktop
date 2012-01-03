@@ -5,7 +5,7 @@ echo "##########################################"
 echo ""
 
 name="Tinasoft"
-version="1.1.2"
+version="1.1.3"
 arch="mac"
 
 pytextminer="TinasoftPytextminer"
@@ -51,7 +51,7 @@ unzip -q site-packages.zip -d site-packages/
 rm site-packages.zip
 mv numpy site-packages/numpy
 zip -q -r site-packages.zip site-packages
-#rm -r site-packages/ #do not remove it (or numpy will not load..)
+#rm -r site-packages/ # do not remove it (or Numpy will not load..)
 cd ../../../../../../../
 
 echo " - moving platform specific files to the $outpathred"
@@ -70,11 +70,10 @@ mkdir Tinasoft
 mv $name.app Tinasoft/
 cp ../../builder/Tinasoft.sh Tinasoft/
 cp ../../builder/install.sh Tinasoft/
-cp ../../builder/README_LISEZ-MOI.txt Tinasoft/
-
+cp ../../builder/README-MAC.txt Tinasoft/
+cp ../../builder/LISEZ-MOI-MAC.txt Tinasoft/
 zip -q -r $outfile.zip Tinasoft
 hdiutil create $outfile.dmg -volname "$name $version" -fs HFS+ -srcfolder "Tinasoft"
 cd ../../
 mv $pytextminer/dist/$outfile.dmg .
 mv $pytextminer/dist/$outfile.zip .
-

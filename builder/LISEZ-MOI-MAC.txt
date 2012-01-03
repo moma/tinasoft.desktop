@@ -1,0 +1,46 @@
+
+------------------------------------------------------------------------------------------
+
+1. INSTALLATION
+
+ Pour installer Tinasoft, exécutez cette commande dans un Terminal:
+
+    sh install.sh
+
+ Vérifiez que tinasoft est installé :
+     un répertoire Tinasoft devrait apparaître dans le répertoire /Applications de votre mac)
+ 
+------------------------------------------------------------------------------------------
+
+2. LANCEMENT
+
+ Pour démarrer Tinasoft, exécutez sur votre bureau le script. Ouvrez un Terminal et tapez:
+
+    sh Tinasoft.sh
+
+
+ ATTENTION Si le navigateur ne se lance pas après quelques secondes, ouvrez-le manuellement et allez sur:
+
+    http://localhost:8888 
+
+
+------------------------------------------------------------------------------------------
+
+3. EN CAS DE PROBLEME
+
+ Veuillez utiliser un navigateur récent comme Firefox 7+ (default) ou Chrome 15+
+
+ Merci de ne pas oublier de fermer le serveur (bouton "server shutdown" dans l'interface)
+
+------------------------------------------------------------------------------------------
+
+4. CONTACT
+
+ web: http://tinasoft.eu
+ 
+ mail: julian.bilcke@iscpif.fr
+
+ (merci de préciser "Tinasoft" dans l'entête de votre mail)
+
+------------------------------------------------------------------------------------------
+
