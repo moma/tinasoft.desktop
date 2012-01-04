@@ -1,4 +1,6 @@
 #!/bin/bash
-/Applications/Tinasoft.app/Contents/MacOS/Tinasoft
-sleep 3
-open -a Firefox.app http://localhost:8888 &
+/Applications/Tinasoft/Tinasoft.app/Contents/MacOS/Tinasoft
+echo "trying to open automatically http://localhost:888"
+sleep 5
+echo "if it don't, please open-it yourself using Safari"
+open http://localhost:8888
