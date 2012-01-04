@@ -15,7 +15,7 @@ cp README $outpath
 cp LICENSE $outpath
 cp TinasoftPytextminer/README $outpath/TinasoftPytextminer/
 cp TinasoftPytextminer/LICENSE $outpath/TinasoftPytextminer/
-cp ../devel/generic/txt/*.txt $outpath/TinasoftPytextminer
+cp ../devel/generic/txt/*.txt $outpath/TinasoftPytextminer/
 
 echo " - cleaning some files..."
 sleep 0

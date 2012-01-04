@@ -19,8 +19,8 @@ mkdir -p $base/whitelists/
 mkdir -p $base/source_files/
 mkdir -p $base/sessions/
 resources=$base/Tinasoft.app/Contents/Resources
-cp -r $resources/shared $base/
-cp -r $resources/source_files $base/
+cp -r $resources/shared/* $base/shared/
+cp -r $resources/source_files/* $base/source_files/
 #mv $resources/whitelists $base/
 cp -r $resources/config_mac.yaml $base/config.yaml
 echo "  - installing shortcut to /Applications/Tinasoft/"
