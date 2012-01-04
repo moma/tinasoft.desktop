@@ -15,6 +15,7 @@ user/*
 *.tar.gz
 *.zip
 *.tar.bz*
+*.sqlite
 user
 sessions
 whitelists
