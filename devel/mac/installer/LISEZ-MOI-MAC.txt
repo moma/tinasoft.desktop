@@ -1,54 +1,73 @@
 
 ------------------------------------------------------------------------------------------
 
-1. FIRST TIME USE : INSTALLATION
+1. PREMIERE FOIS : INSTALLATION
 
- 1. Decompress the .zip and please, remember the directory path (eg. "Downloads", or "Desktop")
- 2. open a Terminal (search for the "Terminal" app in your mac and start it) 
- 3. Go to the directory where you unpacked the .zip.
-    This is really easy, you have to type "cd", followed by the directory path.
+ 1. Decompressz le .zip, et veuillez noter le chemin du répertoire (ex. "Downloads", ou "Desktop")
+ 2. Ouvrez l'application Terminal (vous pouvez la chercher dans votre mac, le nom est "Terminal") 
+ 3. Rentrer dans le répertoire où vous avez décompressé le fichier .zip
+    C'est très simple, vous devez taper dans le logiciel Terminal la commande "cd",
+    suivi d'un espace, et du chemin de fichier (celui-ci doit être sans espaces, ou mit entre guillemets).
     
-    For instance, if you decompressed the .zip in the "Downloads" folder, you should type:
+    Par exemple, si vous avez décompressé le fichier .zip dans le répertoire "Downloads", 
+    la commande a taper est:
     
        cd ~/Downloads/Tinasoft
        
- 4. now, type:
+ 4. Enfin, tapez cette commande pour installer Tina:
       
-       ./install
+       ./install.sh
       
        
- This will install the application to Applications > Tinasoft, and start the server.
- So you can then open Safari and go to http://localhost:8888
-
-
+ Cela va installer l'application Tina dans le répertoire Applications > Tinasoft, 
+ et démarrer automatiquement le serveur.
+ 
+ Cela devrait aussi ouvrir automatiquement Safari et le faire pointer sur le site suivant :
+   
+    http://localhost:8888
+    
+    
+    
+ Si vous ne voyez rien, alors vous devrez lancer manuellement Safari et allez à l'adresse suivante :
+ 
+    http://localhost:8888
+    
+    
 ------------------------------------------------------------------------------------------
 
-2. NORMAL USE : STARTING THE APPLICATION
+2. UTILISATION NORMAL : DEMARRAGE DU LOGICIEL
 
  
-  1. open a Terminal (search for the "Terminal" app in your mac and start it) 
-  2. type "cd ~/Desktop"
-  3. if it don't work, type "cd /Applications/Tinasoft"
-  4. type "./Tinasoft"
+  1. Ouvrez l'application Terminal (vous pouvez la chercher dans votre mac, le nom est "Terminal") 
+  2. tapez dans la fenêtre du Terminal la commande "cd ~/Desktop"
+  3. Si cela ne marche pas (répertoire Desktop introuvable) tapez "cd /Applications/Tinasoft"
+  4. Enfin, tapez "./Tinasoft"
 
-  Safari should now open the "http://localhost:8888" website
+  Safari devrait démarrer et pointer automatiquement sur le site suivant :
+    http://localhost:8888
   
-  If it don't, start Safari manually, then go to the following address (the ":8888" is mandatory):
+    
 
-    http://localhost:8888 
-
-
+ Si vous ne voyez rien, alors vous devrez lancer manuellement Safari et allez à l'adresse suivante :
+ 
+    http://localhost:8888
+    
+    
 ------------------------------------------------------------------------------------------
 
-3. TROUBLESHOOTING
+3. RESOLUTION DEE PROBLEMES FREQUENTS
 
- Safari is recommended
+ SI vous ne voyez pas vos whitelists ou fichiers sources, c'est qu'il faut rafraîchir la page web.
  
- You need a Spreadsheet editor
+ Vous devez utiliser Safari (version min 5.1), ou Chrome (version min. 16), ou Firefox (version min 9)
  
- When you close Safari and the Webpage, this won't stop the application and running computations.
+ Vous aurez besoin d'un éditeur de feuille de calcul (Numbers, Excel, OpenOffice..) pour éditer les listes
  
- To really stop all computations, you need to click on "Server Shutdown"
+ Quand vous partez de la page localhost:8888, notez que l'application continue de fonctionner,
+ et d'effectuer d'éventuels calculs
+ 
+ Pour vraiment fermer l'application et arrêter tout calcul, retourner sur la page
+    http://localhost:8888 et cliquez sur "Server Shutdown"
 
 ------------------------------------------------------------------------------------------
 

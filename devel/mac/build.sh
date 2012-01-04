@@ -13,7 +13,7 @@ pytextminer="TinasoftPytextminer"
 outpath="$pytextminer/dist/$name.app"
 outpathres="$outpath/Contents/Resources"
 outfile="$name-$version-$arch"
-
+setup="Tinasoft-$version"
 
 cd tinasoft
 
@@ -67,18 +67,19 @@ mkdir -p $outpathres/TinasoftPytextminer
 echo " - creating a release archive and a DMG"
 sleep 0
 cd $pytextminer/dist
-mkdir Tinasoft
-mv $name.app Tinasoft/
+
+mkdir $setup
+mv $name.app $setup/
 installer="../../../devel/mac/installer"
 echo pwd
-cp $installer/Tinasoft.sh Tinasoft/
-cp $installer/install.sh Tinasoft/
-cp $installer/README-MAC.txt Tinasoft/
-cp $installer/LISEZ-MOI-MAC.txt Tinasoft/
-zip -q -r $outfile.zip Tinasoft
-hdiutil create $outfile.dmg -volname "$name $version" -fs HFS+ -srcfolder "Tinasoft"
+cp $installer/Tinasoft.sh $setup/
+cp $installer/install.sh $setup/
+cp $installer/README-MAC.txt $setup/
+cp $installer/LISEZ-MOI-MAC.txt $setup/
+zip -q -r $outfile.zip $setup
+#hdiutil create $outfile.dmg -volname "$setup" -fs HFS+ -srcfolder "$setup"
 cd ../../
-mv $pytextminer/dist/$outfile.dmg ..
+#mv $pytextminer/dist/$outfile.dmg ..
 mv $pytextminer/dist/$outfile.zip ..
 echo "cleaning.."
 rm -Rf $pytextminer/dist/*

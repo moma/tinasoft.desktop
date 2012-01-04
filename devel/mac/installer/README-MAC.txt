@@ -14,7 +14,7 @@
        
  4. now, type:
       
-       ./install
+       ./install.sh
       
        
  This will install the application to Applications > Tinasoft, and start the server.
@@ -42,6 +42,8 @@
 
 3. TROUBLESHOOTING
 
+ If you don't see your whitelists or source-files, just refresh the page (this is not automatic yet).
+ 
  Safari is recommended
  
  You need a Spreadsheet editor

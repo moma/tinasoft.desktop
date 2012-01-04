@@ -19,27 +19,31 @@ mkdir -p $base/whitelists/
 mkdir -p $base/source_files/
 mkdir -p $base/sessions/
 resources=$base/Tinasoft.app/Contents/Resources
-mv $resources/shared $base/
-mv $resources/source_files $base/
+cp -r $resources/shared $base/
+cp -r $resources/source_files $base/
 #mv $resources/whitelists $base/
-mv $resources/config_mac.yaml $base/config.yaml
+cp -r $resources/config_mac.yaml $base/config.yaml
 echo "  - installing shortcut to /Applications/Tinasoft/"
 cp Tinasoft.sh $base/Tinasoft
 chmod +x $base/Tinasoft
 echo "  - installing shortcut to ~/Desktop/"
-mkdir -p ~/Desktop
+mkdir -p ~/Desktop/
+if [ -e ~/Desktop/Tinasoft ]
+  then
+    rm -Rf ~/Desktop/Tinasoft
+fi
 cp Tinasoft.sh ~/Desktop/Tinasoft
 chmod +x ~/Desktop/Tinasoft
 echo ""
 echo ""
 echo ""
-if [ -e /Desktop/Tinasoft ]
+if [ -e /Applications/Tinasoft/Tinasoft ]
   then
     echo "*************************"
     echo " INSTALLATION SUCCESSFUL "
     echo "*************************"
     echo ""
-    rm *
+    #rm *
     echo "Will now try to start server automatically. Please wait."
     echo ""
     echo "cd ~/Desktop"
@@ -53,8 +57,8 @@ if [ -e /Desktop/Tinasoft ]
     echo ""
     echo "please send the installation history (copy/pasted from this terminal)"
     echo "to julian.bilcke@gmail.com - Thanks a lot!"
-    if [ -e /Applications/Tinasoft ]
-      then
-        rm -Rf /Applications/Tinasoft
-    fi
+    #if [ -e /Applications/Tinasoft ]
+    #  then
+    #    #rm -Rf /Applications/Tinasoft
+    #fi
 fi
