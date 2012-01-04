@@ -14,8 +14,6 @@ outpath="$pytextminer/dist/$name.app"
 outpathres="$outpath/Contents/Resources"
 outfile="$name-$version-$arch"
 
-devel="../../../devel"
-installer="$devel/mac/installer"
 
 cd tinasoft
 
@@ -71,6 +69,7 @@ sleep 0
 cd $pytextminer/dist
 mkdir Tinasoft
 mv $name.app Tinasoft/
+installer="../devel/mac/installer"
 cp $installer/Tinasoft.sh Tinasoft/
 cp.$installer/install.sh Tinasoft/
 cp $installer/README-MAC.txt Tinasoft/

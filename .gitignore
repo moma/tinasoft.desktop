@@ -1,3 +1,5 @@
+.*
+*.dmg
 .DS_Store
 source_files
 user_stopwords.csv
