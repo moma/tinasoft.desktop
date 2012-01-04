@@ -20,9 +20,14 @@ mkdir -p $base/source_files/
 mkdir -p $base/sessions/
 resources=$base/Tinasoft.app/Contents/Resources
 cp -r $resources/shared/* $base/shared/
+rm -Rf $resources/shared
 cp -r $resources/source_files/* $base/source_files/
+rm -Rf $resources/shared
 #mv $resources/whitelists $base/
 cp -r $resources/config_mac.yaml $base/config.yaml
+rm $resources/config_mac.yaml
+cp -r $resources/user_stopwords.csv $base/shared/
+rm $resources/user_stopwords.csv
 echo "  - installing shortcut to /Applications/Tinasoft/"
 cp Tinasoft.sh $base/Tinasoft
 chmod +x $base/Tinasoft
