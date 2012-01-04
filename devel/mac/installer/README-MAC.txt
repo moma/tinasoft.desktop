@@ -1,25 +1,39 @@
 
 ------------------------------------------------------------------------------------------
 
-1. INSTALLATION
+1. FIRST TIME USE : INSTALLATION
 
- To install Tinasoft, run this command in a Terminal:
-
-    sh install.sh
-
- Check that tinasoft is installed:
-     a Tinasoft.app folder should have appeared in the Applications folder of your mac)
+ 1. Decompress the .zip and please, remember the directory path (eg. "Downloads", or "Desktop")
+ 2. open a Terminal (search for the "Terminal" app in your mac and start it) 
+ 3. Go to the directory where you unpacked the .zip.
+    This is really easy, you have to type "cd", followed by the directory path.
+    
+    For instance, if you decompressed the .zip in the "Downloads" folder, you should type:
+    
+       cd ~/Downloads/Tinasoft
+       
+ 4. now, type:
+      
+       ./install
+      
+       
+ This will install the application to Applications > Tinasoft, and start the server.
+ So you can then open Safari and go to http://localhost:8888
 
 
 ------------------------------------------------------------------------------------------
 
-2. RUNNING
+2. NORMAL USE : STARTING THE APPLICATION
 
- To start tinasoft, go on your Desktop, and run this script:
+ 
+  1. open a Terminal (search for the "Terminal" app in your mac and start it) 
+  2. type "cd ~/Desktop"
+  3. if it don't work, type "cd /Applications/Tinasoft"
+  4. type "./Tinasoft"
 
-    Tinasoft.sh
-
- If the browser don't show up after 5 seconds, open it manually and go to:
+  Safari should now open the "http://localhost:8888" website
+  
+  If it don't, start Safari manually, then go to the following address (the ":8888" is mandatory):
 
     http://localhost:8888 
 
@@ -28,9 +42,13 @@
 
 3. TROUBLESHOOTING
 
- Be sure to use a RECENT BROWSER like Firefox 7+ (default) or Chrome 15+
+ Safari is recommended
  
- Please don't forget to kill the server (Server Shutdown Button, in the interface)
+ You need a Spreadsheet editor
+ 
+ When you close Safari and the Webpage, this won't stop the application and running computations.
+ 
+ To really stop all computations, you need to click on "Server Shutdown"
 
 ------------------------------------------------------------------------------------------
 

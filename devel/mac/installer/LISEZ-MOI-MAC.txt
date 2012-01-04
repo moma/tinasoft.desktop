@@ -1,36 +1,54 @@
 
 ------------------------------------------------------------------------------------------
 
-1. INSTALLATION
+1. FIRST TIME USE : INSTALLATION
 
- Pour installer Tinasoft, exécutez cette commande dans un Terminal:
+ 1. Decompress the .zip and please, remember the directory path (eg. "Downloads", or "Desktop")
+ 2. open a Terminal (search for the "Terminal" app in your mac and start it) 
+ 3. Go to the directory where you unpacked the .zip.
+    This is really easy, you have to type "cd", followed by the directory path.
+    
+    For instance, if you decompressed the .zip in the "Downloads" folder, you should type:
+    
+       cd ~/Downloads/Tinasoft
+       
+ 4. now, type:
+      
+       ./install
+      
+       
+ This will install the application to Applications > Tinasoft, and start the server.
+ So you can then open Safari and go to http://localhost:8888
 
-    sh install.sh
 
- Vérifiez que tinasoft est installé :
-     un répertoire Tinasoft devrait apparaître dans le répertoire /Applications de votre mac)
- 
 ------------------------------------------------------------------------------------------
 
-2. LANCEMENT
+2. NORMAL USE : STARTING THE APPLICATION
 
- Pour démarrer Tinasoft, exécutez sur votre bureau le script. Ouvrez un Terminal et tapez:
+ 
+  1. open a Terminal (search for the "Terminal" app in your mac and start it) 
+  2. type "cd ~/Desktop"
+  3. if it don't work, type "cd /Applications/Tinasoft"
+  4. type "./Tinasoft"
 
-    sh Tinasoft.sh
-
-
- ATTENTION Si le navigateur ne se lance pas après quelques secondes, ouvrez-le manuellement et allez sur:
+  Safari should now open the "http://localhost:8888" website
+  
+  If it don't, start Safari manually, then go to the following address (the ":8888" is mandatory):
 
     http://localhost:8888 
 
 
 ------------------------------------------------------------------------------------------
 
-3. EN CAS DE PROBLEME
+3. TROUBLESHOOTING
 
- Veuillez utiliser un navigateur récent comme Firefox 7+ (default) ou Chrome 15+
-
- Merci de ne pas oublier de fermer le serveur (bouton "server shutdown" dans l'interface)
+ Safari is recommended
+ 
+ You need a Spreadsheet editor
+ 
+ When you close Safari and the Webpage, this won't stop the application and running computations.
+ 
+ To really stop all computations, you need to click on "Server Shutdown"
 
 ------------------------------------------------------------------------------------------
 
@@ -40,7 +58,7 @@
  
  mail: julian.bilcke@iscpif.fr
 
- (merci de préciser "Tinasoft" dans l'entête de votre mail)
+ (please specify "Tinasoft" in the header of your mail)
 
 ------------------------------------------------------------------------------------------
 
