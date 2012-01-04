@@ -1,0 +1,100 @@
+Thanks for using Tinasoft Desktop
+
+This work is part of TINA, an European Union FP7 project - FP7-ICT-2009-C
+
+HOMEPAGE
+
+    http://tinasoft.eu/
+
+SOURCE CODE REPOSITORY
+
+    https://forge.iscpif.fr/projects/tinasoft-desktop
+
+AUTHORS
+
+- Researchers and engineers of the CREA lab (UMR 7656, CNRS, Ecole Polytechnique, France)
+
+    david chavalarias <david.chavalarias@polytechnique.edu>
+    elias showk <elishowk@nonutc.fr>
+    julian bilcke <julian.bilcke@iscpif.fr>
+
+SUPPORT AND FEEDBACK
+
+    http://tinasoft.eu/tinauserdoc
+    https://forge.iscpif.fr/projects/tinasoft-desktop
+
+DOWNLOAD STANDALONE PACKAGES
+
+    Find them at http://tinasoft.eu/download
+
+REQUIREMENTS
+
+    JAVA : please download it from http://java.com
+    WEB BROWSER : we recommend Firefox (http://getfirefox.com)
+
+USAGE
+
+    MS Windows : execute start_win.bat
+    GNU/Linux (and probably other Unix-like systems) : execute start_unix.sh
+
+INSTALL TINASOFT AS A DEVELOPER
+
+    - get the source code :
+
+    https://forge.iscpif.fr/projects/tinasoft-desktop/repository
+    OR
+    git clone https://sources.iscpif.fr/tinasoft.desktop.git
+    git submodule update
+
+    - prepare working directory
+
+        1- follow instructions from the README file of "TinasoftPytextminer" git submodule
+        2- copy files and dirs from TinasoftPytextminer/ to .
+            - directories "shared", "source_files"
+            - files : "user_stopwords.csv"
+
+    - test !
+
+        start_unix.sh
+        OR
+        start_win.bat
+
+    DEVELOPER DOCUMENTATION
+
+        http://tina.csregistry.org/tinadevdoc
+
+
+SUPPORTED OPERATING SYSTEMS
+
+    tinasoft desktop was tested on the following platforms:
+
+        Linux 64 bits (amd64, i386)
+        Windows XP SP2 and SP3 (32bit)
+        Apple Mac OS X >= 10.6 (only with Chrome browser)
+
+SCIENTIFIC BACKGROUND
+
+The software implements scientific works by David Chavalarias (http://chavalarias.com)
+and Jean-Philippe Cointet (INRA, http://jph.cointet.free.fr).
+
+You can read their publications here:
+
+    http://arxiv.org/abs/0904.3154v1
+    http://www.springerlink.com/content/v57686u275653nt4/
+
+
+COPYRIGHT AND LICENSE
+
+Copyright (C) 2009-2011 CREA Lab, CNRS/Ecole Polytechnique UMR 7656 (Fr)
+
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+
+    the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/gpl.html>.
