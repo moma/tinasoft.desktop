@@ -95,11 +95,11 @@ function loadGraph(data) {
     // HACK FOR THE DEMO: STATIC GEXF FILE
     //var url = "http://localhost:8888/user/current.gexf";
     // HACK
-    tinaviz.open({
-        view: "macro",
-        clear: true, // clean everything before adding the graph
-        url: url
-    });
+    tinaviz.open(url);
+        //view: "macro",
+        //clear: true, // clean everything before adding the graph
+   //     url: url
+   // });
 }
 
 /*

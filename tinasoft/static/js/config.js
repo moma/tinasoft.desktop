@@ -2,7 +2,8 @@ var default_config;
 
 default_config = {
   elementId: "vizdiv",
-  gexf: "sample.gexf.gz",
+  gexf: "",
+  path: "tinaweb/",
   embed: false,
   view: "macro",
   category: "Document",
