@@ -1,6 +1,6 @@
 [submodule "static/tinaweb"]
-	path = static/tinaweb
+	path = tinasoft/static/tinaweb
 	url = git@github.com:moma/tinaweb.git
 [submodule "TinasoftPytextminer"]
-	path = TinasoftPytextminer
+	path = tinasoft/TinasoftPytextminer
 	url = git@github.com:moma/TinasoftPytextminer.git

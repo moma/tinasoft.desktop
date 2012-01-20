@@ -1,7 +1,7 @@
-#/bin/bash
-echo "building for mac"
-cd tinasoft
-version="1.2.0"
-builder/scripts/build-python2.7-mac.sh $version
+#!/bin/bash
+echo "building for unix"
+version="1.2.1"
+python="python2.7"
+cpu="x86_64"
+./devel/unix/build.sh "$version" "$cpu" "$python"
 echo "building complete"
-cd ..

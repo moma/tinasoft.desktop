@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 outpath=$1
-python=$2
+
 echo " - copying shared files to $outpath"
 sleep 0
 cp -Rf static $outpath
