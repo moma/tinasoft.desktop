@@ -7,10 +7,11 @@ echo ""
 name="Tinasoft"
 version=$1
 cpu=$2
-arch="GNU_Linux_x86_64"
-python=$3
+arch="GNU_Linux_$cpu"
+pythonversion=$3
+python="python$3"
 
-buildname="exe.linux-x86_64-$python"
+buildname="exe.linux-$cpu-$pythonversion"
 outfile="$name-$version-$arch"
 outpath="dist/$outfile"
 
@@ -37,7 +38,7 @@ cp -Rf TinasoftPytextminer/build/$buildname $outpath/TinasoftPytextminer
 
 echo " - moving platform specific files to the $outpath"
 sleep 0
-cp ../devel/x86_64/installer/start_unix.sh $outpath
+cp ../devel/unix/installer/* $outpath
 cp -f TinasoftPytextminer/config_unix.yaml $outpath
 
 ../devel/generic/common.sh "$outpath"

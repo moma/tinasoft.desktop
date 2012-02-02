@@ -7,7 +7,8 @@ echo ""
 name="Tinasoft"
 version=$1
 arch="mac"
-python=$2
+pythonversion=$2
+python=python$2
 
 pytextminer="TinasoftPytextminer"
 outpath="$pytextminer/dist/$name.app"

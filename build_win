@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "building for windows"
+version="1.3.0"
+pythonversion="2.7"
+cpu="win32"
+./devel/win32/build.sh "$version" "$cpu" "$pythonversion"
+echo "building complete"

@@ -1,87 +1,55 @@
-#!/bin/bash
-echo "##############################"
-echo "# BUILD TINASOFT FOR MAC OSX #"
-echo "##############################"
+#!/usr/bin/env bash
+echo "#############################################"
+echo "# BUILD TINASOFT FOR WINDOWS 32BIT PLATFORMS #"
+echo "#############################################"
 echo ""
+sleep 0
 
 name="Tinasoft"
 version=$1
-arch="mac"
-python=$2
+arch=$2
+pythonversion=$3
+python=python$pythonversion
 
 pytextminer="TinasoftPytextminer"
-outpath="$pytextminer/dist/$name.app"
-outpathres="$outpath/Contents/Resources"
 outfile="$name-$version-$arch"
 setup="Tinasoft-$version"
+outpath="dist/$outfile"
+
+buildname="exe.$arch-$pythonversion"
 
 cd tinasoft
 
-echo " - cleaning temporary dist and build directories..."
-sleep 0
-if [ -e $pytextminer/dist ]
+echo " - creating or emptying $outpath"
+sleep 2
+if [ -e $outpath ]
   then
-    rm -rf $pytextminer/dist
+    rm -rf $outpath
 fi
-
-if [ -e $pytextminer/build ]
-  then
-    rm -rf $pytextminer/build
+if [ ! -e dist ]
+    then
+        mkdir dist
 fi
+mkdir $outpath
 
-mkdir $pytextminer/build
-mkdir $pytextminer/dist
+echo " - copying freezed pytextminer from $buildname"
+sleep 2
+cp -Rf TinasoftPytextminer/build/$buildname $outpath/TinasoftPytextminer
+#echo " - copying builder/Microsoft.VC90.CRT"
+#sleep 2
+#cp -Rf builder/Microsoft.VC90.CRT $outpath/TinasoftPytextminer
 
-echo " - removing older packages..."
-sleep 0
-if [ -e $outfile.zip ]
-  then
-    rm -rf $outfile.zip
-fi
-if [ -e $outfile.dmg ]
-  then
-    rm -rf $outfile.dmg
-fi
+echo " - moving platform specific files to the $outpath"
+sleep 2
+cp builder/start_win.bat $outpath
+cp -f TinasoftPytextminer/config_win.yaml $outpath
 
-echo " - freezing $pytextminer with the py2app tool..."
-sleep 0
-cd $pytextminer
-cp httpserver.py $name.py
-$python freeze_mac.py py2app
-rm $name.py
-cd dist/$name.app/Contents/Resources/lib/$python/ # hu
-mkdir site-packages
-unzip -q site-packages.zip -d site-packages/
-rm site-packages.zip # HO..
-mv numpy site-packages/numpy
-zip -q -r site-packages.zip site-packages # ..LY..
-#rm -r site-packages/ # do not remove it (or Numpy will not load..)
-cd ../../../../../../../ # ..COW!
+../devel/generic/common.sh "$outpath"
 
-echo " - moving platform specific files to the $outpathres"
-cp $pytextminer/config_mac.yaml $outpathres
-# special directory for common files
-mkdir -p $outpathres/TinasoftPytextminer
-../devel/generic/build.sh "$outpathres" "$python"
-
-echo " - creating a release archive and a DMG"
-sleep 0
-cd $pytextminer/dist
-
-mkdir $setup
-mv $name.app $setup/
-installer="../../../devel/mac/installer"
-echo pwd
-cp $installer/Tinasoft.sh $setup/
-cp $installer/install.sh $setup/
-cp $installer/README-MAC.txt $setup/
-cp $installer/LISEZ-MOI-MAC.txt $setup/
-zip -q -r $outfile.zip $setup
-#hdiutil create $outfile.dmg -volname "$setup" -fs HFS+ -srcfolder "$setup"
-cd ../../
-#mv $pytextminer/dist/$outfile.dmg ..
-mv $pytextminer/dist/$outfile.zip ..
-echo "cleaning.."
-rm -Rf $pytextminer/dist/*
-rm -Rf $pytextminer/build/*
+echo " - creating the compressed archive..."
+sleep 2
+cd dist
+rm -f $outfile.zip
+zip -q -r $outfile.zip $outfile
 cd ..
+echo " - finished, archive is : $outfile.zip"
