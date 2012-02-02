@@ -5,6 +5,8 @@ source_files
 user_stopwords.csv
 *.pyc
 *-log.txt
+tinasoft/dist
+tinasoft/dist/*
 dist/*
 *.swp
 *.swo
