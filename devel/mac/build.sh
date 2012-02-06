@@ -47,9 +47,13 @@ fi
 echo " - freezing $pytextminer with the py2app tool..."
 sleep 0
 cd $pytextminer
+
+# NAME HACK
 cp httpserver.py $name.py
 $python freeze_mac.py py2app
 rm $name.py
+# END OF NAME HACK
+
 cd dist/$name.app/Contents/Resources/lib/$python/ # hu
 mkdir site-packages
 unzip -q site-packages.zip -d site-packages/
@@ -61,6 +65,7 @@ cd ../../../../../../../ # ..COW!
 
 echo " - moving platform specific files to the $outpathres"
 cp $pytextminer/config_mac.yaml $outpathres
+#cp -r $pytextminer/shared $outpathres/
 # special directory for common files
 mkdir -p $outpathres/TinasoftPytextminer
 ../devel/generic/common.sh "$outpathres"
