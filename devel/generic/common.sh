@@ -4,7 +4,9 @@ outpath=$1
 echo " - copying shared files to $outpath"
 sleep 0
 cp -Rf static $outpath
-cp -Rf TinasoftPytextminer/shared $outpath
+mkdir $outpath/shared
+cp -Rf TinasoftPytextminer/shared/* $outpath/shared/
+cp -Rf shared/* $outputpath/shared/
 mkdir $outpath/source_files
 cp TinasoftPytextminer/source_files/tinacsv_test_3.csv $outpath/source_files
 cp TinasoftPytextminer/user_stopwords.csv $outpath
