@@ -4,7 +4,7 @@ default_config = {
   elementId: "vizdiv",
   gexf: "",
   path: "tinaweb/js/tinaviz/",
-  assets: "",
+  assets: "tinaweb/",
   embed: false,
   view: "macro",
   category: "Document",
