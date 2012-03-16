@@ -92,14 +92,20 @@ function editSourceFile(path) {
  */
 function loadGraph(data) {
     var url = TinaService.httpURL(data);
-    // HACK FOR THE DEMO: STATIC GEXF FILE
-    //var url = "http://localhost:8888/user/current.gexf";
-    // HACK
-    tinaviz.open(url);
-        //view: "macro",
-        //clear: true, // clean everything before adding the graph
-   //     url: url
-   // });
+    tinaviz.open(url, function (data) {
+        var status = data.status;
+        if        (status === "downloading") {
+        
+        } else if (status === "downloaded") {
+          
+        } else if (status === "updated") {
+
+        } else if (status === "loaded") {
+            // called for updates
+        } else {
+
+        }
+    });
 }
 
 /*
