@@ -47,6 +47,6 @@ echo " - creating the compressed archive..."
 sleep 0
 cd dist
 tar -cjf $outfile.tar.bz2 $outfile
-mv $outfile.tar.bz2 ..
-cd ..
+mv $outfile.tar.bz2 ../..
+cd ../..
 echo " - finished, archive is : $outfile.tar.bz2"
