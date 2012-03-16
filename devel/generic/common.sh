@@ -9,6 +9,7 @@ cp -Rf TinasoftPytextminer/shared/* $outpath/shared/
 cp -Rf shared/* $outputpath/shared/
 mkdir $outpath/source_files
 cp TinasoftPytextminer/source_files/tinacsv_test_3.csv $outpath/source_files
+cp TinasoftPytextminer/source_files/FET74.csv $outpath/source_files
 cp TinasoftPytextminer/user_stopwords.csv $outpath
 
 echo " - copying licencing files to $outpath..."
