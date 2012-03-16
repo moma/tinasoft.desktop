@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "building for mac"
-version="1.4.0"
+version="1.4.1"
 pythonversion="2.7"
 ./devel/mac/build.sh "$version" "$pythonversion"
 echo "building complete"

@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "building for unix"
-version="1.4.0"
+version="1.4.1"
 pythonversion="2.7"
 cpu="x86_64"
 ./devel/unix/build.sh "$version" "$cpu" "$pythonversion"

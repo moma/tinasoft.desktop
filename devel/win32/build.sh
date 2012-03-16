@@ -51,5 +51,6 @@ sleep 2
 cd dist
 rm -f $outfile.zip
 zip -q -r $outfile.zip $outfile
+mv $outfile.zip ..
 cd ..
 echo " - finished, archive is : $outfile.zip"
