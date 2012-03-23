@@ -92,20 +92,7 @@ function editSourceFile(path) {
  */
 function loadGraph(data) {
     var url = TinaService.httpURL(data);
-    app.open(url, function (data) {
-        var status = data.status;
-        if        (status === "downloading") {
-        
-        } else if (status === "downloaded") {
-          
-        } else if (status === "updated") {
-
-        } else if (status === "loaded") {
-            // called for updates
-        } else {
-
-        }
-    });
+    app.open(url, app.graphLoadingProgress);
 }
 
 /*
