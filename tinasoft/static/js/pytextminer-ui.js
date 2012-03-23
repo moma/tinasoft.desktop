@@ -92,7 +92,7 @@ function editSourceFile(path) {
  */
 function loadGraph(data) {
     var url = TinaService.httpURL(data);
-    tinaviz.open(url, function (data) {
+    app.open(url, function (data) {
         var status = data.status;
         if        (status === "downloading") {
         
